@@ -1,0 +1,15 @@
+\documentclass[main.tex]{subfiles}
+
+%%  USED SENSORS  %% 
+
+
+\begin{document}
+
+\section{Used Sensors}
+There exists a broad range of sensors applicable for SLAM algorithms. Depending on the specific algorithm, Lidar \cite{8461000}, monocular \cite{Artal_Montiel_Tardos_2015} stereo \cite{Usenko_Engel_Stuckler_Cremers_2016} or even a combination of multiple Cameras can be integrated \cite{Harmat_Sharf_Trentini_2012}.
+Different types of cameras ultimately lead to different kinds of input. Lidar, for example, returns dense Point Clouds, whereas a RGB-D camera would return colorful images.
+Of course, cameras are not the only sensors used in SLAM algorithms. Many systems make use of an inertial measurement Unit (IMU) \cite{Leutenegger_Furgale_Rabaud_Chli_Konolige_Siegwart_2013,MurArtal_Tardos_2017}
+
+For this work we will be using the Intel RealSense T256\footnote{\href{https://www.intelrealsense.com/tracking-camera-t265/}{https://www.intelrealsense.com/tracking-camera-t265/}} tracking camera as well as the Intel RealSense D455\footnote{\href{https://www.intelrealsense.com/depth-camera-d455/}{https://www.intelrealsense.com/depth-camera-d455/}} depth camera. Not only do both have a built-in IMU, they also both have two imagers, which classifies them as stereo cameras. Another advantage of combining a fish-eye tracking camera (T256) with a RGB-D camera (D455) is that they support each other in situations a robot with only one of them would be unable to handle well. 
+
+\end{document}

@@ -1,0 +1,36 @@
+\documentclass[fontsize=12pt, paper=a4, headinclude, twoside=false, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=right, toc=listof, toc=bibliography]{scrreprt}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+\usepackage{biblatex}
+
+\addbibresource{refs.bib}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{algorithm2e}
+\usepackage{algpseudocode}
+
+
+
+\usepackage{blindtext}
+
+\usepackage{subfiles}
+
+\usepackage{hyperref}
+\begin{document}
+\subfile{Title}
+
+\subfile{TOC}
+\subfile{Introduction}
+\subfile{Background}
+
+\subfile{Concept}
+
+\subfile{Implementation}
+\subfile{Evaluation}
+
+\subfile{References}
+\end{document}
+
+
