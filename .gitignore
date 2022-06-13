@@ -9,3 +9,6 @@
 *.xml
 *.gz
 *.toc
+/build
+/devel
+
