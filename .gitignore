@@ -9,6 +9,8 @@
 *.xml
 *.gz
 *.toc
-/build
-/devel
+
+catkin_ws/install
+catkin_ws/build
+catkin_ws/devel
 
