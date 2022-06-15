@@ -13,3 +13,11 @@
 catkin_ws/build/
 catkin_ws/install/
 catkin_ws/devel/
+
+catkin_ws/src/realsense-ros/realsense2_camera/.vscode/settings.json
+catkin_ws/src/**/.vscode
+catkin_ws/src/**/__pycache_
+catkin_ws/src/**/*.png
+catkin_ws/src/**/build
+catkin_ws/src/**/.cmake
+catkin_ws/src/realsense-ros/realsense2_camera/scripts/__pycache__/rs2_listener.cpython-38.pyc
