@@ -1,2 +1,0 @@
-realsense-ros/realsense2_camera:realsense-ros/realsense2_description
--DCATKIN_DEVEL_PREFIX=/home/pedda/Documents/uni/BA/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/pedda/Documents/uni/BA/catkin_ws/install -G Unix Makefiles
