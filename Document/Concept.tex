@@ -4,17 +4,51 @@
 
 \chapter{Concept} \label{chap:Concept}
 
-\subfile{Sections-CP/CP-INTRO}
+\section{Introduction}
+\paragraph*{What this chapter is about}
+This chapter covers...
+\paragraph*{Chapter Structure}
+It is Structured as follows ...
 
-\subfile{Sections-CP/CP-PROB}
+\section{Used Sensors}
+\subsection*{Why these ones}
+\paragraph*{open source ros wrapper realsense-ros}
+\subsection*{Detailed Information i guess?}
 
-\subfile{Sections-CP/CP-SLAM}
+\section{SLAM}
+\subsection*{Why SLAM is needed}
+\paragraph*{map building}
+reduces complexity for plane detection
+\subsection*{SLAM SOTA}
+RTAB-MAP, ORBSLAM etc..
+\paragraph*{bc we are using visual, stereo etc.}
+\paragraph*{We choose RTAB-MAP bc..}
+just makes sense because its already included in realsense-ros and also has a wide variety of
+options regarding output formats
+\section{Requirements}
 
-\subfile{Sections-CP/CP-PDET}
+\paragraph*{Problem/Use case}
+We want to find planes quickly..
 
-\subfile{Sections-CP/CP-PDESC}
+\subsection*{Definition Real-time}
+Because camera runs at 30fps ..
+Daher definieren wir in dieser arbeit "echtzeit" als
 
-\subfile{Sections-CP/CP-SUMM}
+\subsection*{Precision}
+What does precision mean in general \\
+What is a "good" precision
+Werden wir \$später definieren
+fokus wird auf echtzeit gelegt wird und wir gucken was wir im rahmen der echtzeit im besten fall an präz raus holen können
+dazu sind allein die angegeben werte nicht 100\%ig aussagekräftig weil größtenteils verschiedene datensätze benutzt wurden
+somit werden wir in dieser arbeit einen einheitlichen vergleich von PDAs unter besonderer berücksichtigung des echtzeitkriteriums machen
 
 
+\section{PLane Detection Algorithms}
+\paragraph*{Intro?}
+\paragraph*{SOTA}
+aufgrund von \$SACHEN filtert sich die gesamte liste runter auf diese enge auswahl
+\$DARUM werden wir den fokus auf diese N algorithmen legen
+\section{Summary}
+we want to answer the question if real time plane detection is viable on OTS hardware like the intel realsense.
+to answer the q, we selected  \$SLAM which gives us \$OUTPUT which we use as input for out \$PDAs
 \end{document}
