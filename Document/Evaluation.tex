@@ -3,10 +3,49 @@
 
 \chapter{Evaluation}
 
+\section*{Intro}
 
-\subfile{Sections-EV/EV-INTRO}
-\subfile{Sections-EV/EV-EXP}
-\subfile{Sections-EV/EV-RES}
-\subfile{Sections-EV/EV-SUMM}
+wir wollen die frage beantworten, ob es möglich ist in echtzeit ebenen zu finden
+
+Ein problem an den PDAs ist dass nicht alle den selben datensatz nutzen
+
+schlecht/schwer zu vergleichen
+
+Daher werden wir hier alle ausgewählen algorithmen einheitlich unter gleichen bedingungen testen und auswerten in hinsicht auf echtzeit kompetenz
+
+\section{Datensätze}
+
+da wir von indoor envs (living room, office etc) werden dementsprechend die datensätze ausgewählt
+
+(kriterien: indoor, non-synthetic, point clouds, ground truth vorhanden)
+
+kurze beschreibung der datensätze
+
+\section{Experimente}
+
+Wie kriegen wir daten zu “echtzeit”
+log times per frame / time per image / zeit pro datensatz
+Wie kriegen wir daten für precision
+save plane parameters to file
+auswertung echtzeit
+plot every algorithm against its time
+auswertung precision
+compare with ground truth
+planes found
+compare visuals (Rviz)
+
+\section{Results}
+
+zunächst; welche algorithmen konnten echtzeit leistung erbringen?
+
+Von denen, die in echtzeit laufen konnten, wie präzise waren sie?
+
+vergleichen, tabellen etc
+
+“diese(r) Algo(s) haben solche und solche leistungen erbracht”
+
+\section{Summary}
+
+in this chapter we compared a couple algos on a few selected datasets
 
 \end{document}
