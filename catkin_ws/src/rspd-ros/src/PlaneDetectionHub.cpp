@@ -1,0 +1,194 @@
+/*********************************************************************
+ * Software License Agreement (BSD License)
+ *
+ *  Copyright (c) 2017, PickNik Consulting
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the Univ of CO, Boulder nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *********************************************************************/
+
+/* Author: Dave Coleman
+   Desc:   Demo implementation of rviz_visual_tools
+           To use, add a Rviz Marker Display subscribed to topic /rviz_visual_tools
+*/
+
+// ROS
+#include <ros/ros.h>
+#include <pcl_ros/point_cloud.h>
+#include <pcl/point_types.h>
+
+// For visualizing things in rviz
+#include <rviz_visual_tools/rviz_visual_tools.h>
+
+// C++
+#include <string>
+#include <vector>
+#include <boost/foreach.hpp>
+#include <fstream>
+#include <thread>
+
+// RSPD
+#include "RSPD/point.h"
+#include "RSPD/pointcloud.h"
+#include "RSPD/planedetector.h"
+#include "RSPD/normalestimator.h"
+#include "RSPD/boundaryvolumehierarchy.h"
+#include "RSPD/connectivitygraph.h"
+
+namespace rvt = rviz_visual_tools;
+typedef pcl::PointCloud<pcl::PointXYZ> PCLPointCloud;
+
+namespace rviz_visual_tools
+{
+
+    class PlaneDetectionHub
+    {
+    private:
+        // A shared node handle
+        ros::NodeHandle nh_;
+
+        // For visualizing things in rviz
+        rvt::RvizVisualToolsPtr visual_tools_;
+        std::string name_;
+
+    public:
+        ros::Subscriber sub;
+        /**
+         * \brief Constructor
+         */
+        PlaneDetectionHub() : name_("rviz_demo")
+        {
+            visual_tools_.reset(new rvt::RvizVisualTools("map", "/plane_visualization"));
+            visual_tools_->loadMarkerPub(); // create publisher before waiting
+
+            sub = nh_.subscribe("/rtabmap/cloud_map", 1000, &PlaneDetectionHub::callback_RSPD, this);
+
+            // Clear messages
+            visual_tools_->deleteAllMarkers();
+            visual_tools_->enableBatchPublishing();
+        }
+
+        void callback_RSPD(const PCLPointCloud::ConstPtr &msg)
+        {
+            ROS_INFO("Received MapCloud");
+            Eigen::Isometry3d pose1 = Eigen::Isometry3d::Identity();
+            double x_width = 0.15;
+            double y_width = 0.05;
+
+            std::vector<Point3d> points;
+            BOOST_FOREACH (const pcl::PointXYZ &pt, msg->points)
+            {
+                points.push_back(Point3d(Eigen::Vector3f(pt.x, pt.y, pt.z)));
+            }
+            PointCloud3d *pointCloud = new PointCloud3d(points);
+
+            ROS_INFO("Estimating normals..");
+            size_t normalsNeighborSize = 30;
+            Octree octree(pointCloud);
+            octree.partition(10, 30);
+            ConnectivityGraph *connectivity = new ConnectivityGraph(pointCloud->size());
+            pointCloud->connectivity(connectivity);
+            NormalEstimator3d estimator(&octree, normalsNeighborSize, NormalEstimator3d::QUICK);
+            ROS_INFO("Number of samples in Mapcloud: %zu", pointCloud->size());
+            for (size_t i = 0; i < pointCloud->size(); i++)
+            {
+                if (i % 10000 == 0)
+                {
+                    std::cout << i / float(pointCloud->size()) * 100 << "%..." << std::endl;
+                }
+                NormalEstimator3d::Normal normal = estimator.estimate(i);
+                connectivity->addNode(i, normal.neighbors);
+                (*pointCloud)[i].normal(normal.normal);
+                (*pointCloud)[i].normalConfidence(normal.confidence);
+                (*pointCloud)[i].curvature(normal.curvature);
+            }
+
+            ROS_INFO("Detecting planes..");
+
+            PlaneDetector detector(pointCloud);
+            detector.minNormalDiff(0.5f);
+            detector.maxDist(0.258819f);
+            detector.outlierRatio(0.75f);
+
+            std::set<Plane *> planes = detector.detect();
+            ROS_INFO("Found %zu planes!", planes.size());
+            ROS_INFO("Publishing results to Rviz...");
+
+            // Geometry *geometry = pointCloud->geometry();
+            // for (Plane *plane : planes)
+            // {
+            //     geometry->addPlane(plane);
+            // }
+            double a, b, c, d, lu, lv;
+            for (Plane *plane : planes)
+            {
+                a = plane->normal()[0];
+                b = plane->normal()[1];
+                c = plane->normal()[2];
+                d = plane->normal().dot(plane->center());
+                lu = plane->basisU().norm() * 2;
+                lv = plane->basisV().norm() * 2;
+                visual_tools_->publishABCDPlane(a, b, c, d, rvt::MAGENTA, lu, lv);
+            }
+            visual_tools_->trigger();
+            delete pointCloud;
+        }
+
+        void publishLabelHelper(const Eigen::Isometry3d &pose, const std::string &label)
+        {
+            Eigen::Isometry3d pose_copy = pose;
+            pose_copy.translation().x() -= 0.2;
+            visual_tools_->publishText(pose_copy, label, rvt::WHITE, rvt::XXLARGE, false);
+        }
+
+        void showplane(double a, double b, double c, double d)
+        {
+            Eigen::Isometry3d pose1 = Eigen::Isometry3d::Identity();
+            double x_width = 0.15;
+            double y_width = 0.05;
+
+            int step = 1.5;
+
+            visual_tools_->publishABCDPlane(a, b, c, d, rvt::MAGENTA, x_width, y_width);
+            visual_tools_->trigger();
+        }
+    };
+}
+
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "visual_tools_demo");
+    ROS_INFO_STREAM("Plane Detection");
+
+    rviz_visual_tools::PlaneDetectionHub demo;
+    ros::spin();
+
+    ROS_INFO_STREAM("Shutting down.");
+
+    return 0;
+}

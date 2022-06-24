@@ -210,7 +210,7 @@ include_directories(
 
 # # Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(rspd-ros src/rspd_listener src/RSPD/point.cpp src/RSPD/connectivitygraph.cpp src/RSPD/plane.cpp src/RSPD/circle.cpp src/RSPD/cylinder.cpp src/RSPD/planarpatch.cpp src/RSPD/planedetector.cpp)
+add_executable(rspd-ros src/PlaneDetectionHub src/RSPD/point.cpp src/RSPD/connectivitygraph.cpp src/RSPD/plane.cpp src/RSPD/circle.cpp src/RSPD/cylinder.cpp src/RSPD/planarpatch.cpp src/RSPD/planedetector.cpp)
 target_link_libraries(rspd-ros ${catkin_LIBRARIES})
 
 # add_dependencies(TestListener beginner_tutorials_generate_messages_cpp)

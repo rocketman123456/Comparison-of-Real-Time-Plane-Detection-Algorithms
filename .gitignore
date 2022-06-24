@@ -21,3 +21,8 @@ catkin_ws/src/**/*.png
 catkin_ws/src/**/build
 catkin_ws/src/**/.cmake
 catkin_ws/src/realsense-ros/realsense2_camera/scripts/__pycache__/rs2_listener.cpython-38.pyc
+catkin_ws/.vscode/c_cpp_properties.json
+catkin_ws/.vscode/browse.vc.db-shm
+catkin_ws/.vscode/browse.vc.db-wal
+catkin_ws/.vscode/browse.vc.db
+catkin_ws/planeIGuess.txt

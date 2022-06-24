@@ -1,0 +1,7 @@
+<launch>
+
+  <group ns="rspd">
+    <node pkg="rspd-ros" name="PlaneDetectionhub" type="rspd-ros" output="screen"/>
+  </group>
+
+</launch>
