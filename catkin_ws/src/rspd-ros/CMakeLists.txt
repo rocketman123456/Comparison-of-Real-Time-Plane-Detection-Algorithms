@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   sensor_msgs
+  geometry_msgs
   pcl_conversions
   pcl_ros
   rviz_visual_tools
@@ -209,8 +210,8 @@ include_directories(
 
 # # Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(rsps-ros src/rspd_listener.cpp src/RSPD/point.cpp src/RSPD/connectivitygraph.cpp src/RSPD/plane.cpp src/RSPD/circle.cpp src/RSPD/cylinder.cpp src/RSPD/planarpatch.cpp src/RSPD/planedetector.cpp)
-target_link_libraries(rsps-ros ${catkin_LIBRARIES})
+add_executable(rspd-ros src/rspd_listener src/RSPD/point.cpp src/RSPD/connectivitygraph.cpp src/RSPD/plane.cpp src/RSPD/circle.cpp src/RSPD/cylinder.cpp src/RSPD/planarpatch.cpp src/RSPD/planedetector.cpp)
+target_link_libraries(rspd-ros ${catkin_LIBRARIES})
 
 # add_dependencies(TestListener beginner_tutorials_generate_messages_cpp)
-add_dependencies(rsps-ros ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(rspd-ros ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

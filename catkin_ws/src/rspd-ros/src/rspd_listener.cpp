@@ -15,14 +15,10 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+
 typedef pcl::PointCloud<pcl::PointXYZ> PCLPointCloud;
-/**
- * This tutorial demonstrates simple receipt of messages over the ROS system.
- */
-// void callback(const sensor_msgs::PointCloud2 &msg)
 void callback(const PCLPointCloud::ConstPtr &msg)
 {
-  // printf("Cloud: width = %d, height = %d\n", msg->width, msg->height);
   std::vector<Point3d> points;
   BOOST_FOREACH (const pcl::PointXYZ &pt, msg->points)
   {
@@ -30,14 +26,16 @@ void callback(const PCLPointCloud::ConstPtr &msg)
   }
   PointCloud3d *pointCloud = new PointCloud3d(points);
   // you can skip the normal estimation if you point cloud already have normals
-  std::cout << "Estimating normals..." << std::endl;
+  // std::cout << "Estimating normals..." << std::endl;
+  ROS_INFO("Estiating normals..");
   size_t normalsNeighborSize = 30;
   Octree octree(pointCloud);
   octree.partition(10, 30);
   ConnectivityGraph *connectivity = new ConnectivityGraph(pointCloud->size());
   pointCloud->connectivity(connectivity);
   NormalEstimator3d estimator(&octree, normalsNeighborSize, NormalEstimator3d::QUICK);
-  std::cout << "Number of samples: " << pointCloud->size() << std::endl;
+  // std::cout << "Number of samples: " << pointCloud->size() << std::endl;
+  ROS_INFO("Number of samples: %zu", pointCloud->size());
   for (size_t i = 0; i < pointCloud->size(); i++)
   {
     if (i % 10000 == 0)
@@ -51,29 +49,35 @@ void callback(const PCLPointCloud::ConstPtr &msg)
     (*pointCloud)[i].curvature(normal.curvature);
   }
 
-  std::cout << "Detecting planes..." << std::endl;
+  // std::cout << "Detecting planes..." << std::endl;
+  ROS_INFO("Detecting planes..");
+
   PlaneDetector detector(pointCloud);
   detector.minNormalDiff(0.5f);
   detector.maxDist(0.258819f);
   detector.outlierRatio(0.75f);
 
   std::set<Plane *> planes = detector.detect();
-  std::cout << "Found " << planes.size() << " planes!" << std::endl;
-  std::cout << "Saving results..." << std::endl;
+  // std::cout << "Found " << planes.size() << " planes!" << std::endl;
+  ROS_INFO("Found %zu planes!", planes.size());
+  // std::cout << "Saving results..." << std::endl;
+  ROS_INFO("visualizing results...");
+
   Geometry *geometry = pointCloud->geometry();
   for (Plane *plane : planes)
   {
     geometry->addPlane(plane);
   }
-  // many output formats are allowed. if you want to run our 'compare_plane_detector', uncomment the line below and comment the rest
-  // pointCloudIO.saveGeometry(geometry, outputFileName);
+  // many output formats are allowed.if you want to run our 'compare_plane_detector', uncomment the line below and comment the rest
+  //  pointCloudIO.saveGeometry(geometry, outputFileName);
   std::ofstream outputFile(std::string("planeIGuess") + ".txt");
   for (Plane *plane : planes)
   {
     Eigen::Vector3f v1 = plane->center() + plane->basisU() + plane->basisV();
     Eigen::Vector3f v2 = plane->center() + plane->basisU() - plane->basisV();
-    Eigen::Vector3f v3 = plane->center() - plane->basisU() + plane->basisV();
-    Eigen::Vector3f v4 = plane->center() - plane->basisU() - plane->basisV();
+    Eigen::Vector3f v3 = plane->center() - plane->basisU() - plane->basisV();
+    Eigen::Vector3f v4 = plane->center() - plane->basisU() + plane->basisV();
+
     outputFile << "Normal: [" << plane->normal()[0] << ", " << plane->normal()[1] << ", " << plane->normal()[2] << "]; "
                << "Center: [" << plane->center()[0] << ", " << plane->center()[1] << ", " << plane->center()[2] << "]; "
                << "Vertices: [[" << v1.x() << "," << v1.y() << "," << v1.z() << "], "
@@ -82,6 +86,7 @@ void callback(const PCLPointCloud::ConstPtr &msg)
                << "[" << v4.x() << "," << v4.y() << "," << v4.z() << "]]" << std::endl;
   }
   std::cout << "Done Saving!" << std::endl;
+  ROS_INFO("Done Saving!");
   delete pointCloud;
 }
 
@@ -128,7 +133,6 @@ int main(int argc, char **argv)
    * callbacks will be called from within this thread (the main one).  ros::spin()
    * will exit when Ctrl-C is pressed, or the node is shutdown by the master.
    */
-  ros::spin();
 
   return 0;
 }
