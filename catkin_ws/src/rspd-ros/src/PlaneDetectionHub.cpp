@@ -41,7 +41,7 @@
 #include <ros/ros.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
-
+#include <visualization_msgs/Marker.h>
 // For visualizing things in rviz
 #include <rviz_visual_tools/rviz_visual_tools.h>
 
@@ -61,7 +61,7 @@
 #include "RSPD/connectivitygraph.h"
 
 namespace rvt = rviz_visual_tools;
-typedef pcl::PointCloud<pcl::PointXYZ> PCLPointCloud;
+typedef pcl::PointCloud<pcl::PointXYZRGBNormal> PCLPointCloud;
 
 namespace rviz_visual_tools
 {
@@ -78,16 +78,18 @@ namespace rviz_visual_tools
 
     public:
         ros::Subscriber sub;
+        ros::Publisher pub;
         /**
          * \brief Constructor
          */
         PlaneDetectionHub() : name_("rviz_demo")
         {
-            visual_tools_.reset(new rvt::RvizVisualTools("map", "/plane_visualization"));
+            visual_tools_.reset(new rvt::RvizVisualTools("d400_link", "/plane_visualization"));
             visual_tools_->loadMarkerPub(); // create publisher before waiting
 
             sub = nh_.subscribe("/rtabmap/cloud_map", 1000, &PlaneDetectionHub::callback_RSPD, this);
-
+            // sub = nh_.subscribe("/cloud_pcd", 1000, &PlaneDetectionHub::callback_RSPD, this);
+            pub = nh_.advertise<visualization_msgs::Marker>("plane_normals", 10);
             // Clear messages
             visual_tools_->deleteAllMarkers();
             visual_tools_->enableBatchPublishing();
@@ -101,20 +103,22 @@ namespace rviz_visual_tools
             double y_width = 0.05;
 
             std::vector<Point3d> points;
-            BOOST_FOREACH (const pcl::PointXYZ &pt, msg->points)
+            BOOST_FOREACH (const pcl::PointXYZRGBNormal &pt, msg->points)
             {
                 points.push_back(Point3d(Eigen::Vector3f(pt.x, pt.y, pt.z)));
             }
             PointCloud3d *pointCloud = new PointCloud3d(points);
+            ROS_INFO("Number of samples in Mapcloud: %zu", pointCloud->size());
 
-            ROS_INFO("Estimating normals..");
+            // ROS_INFO("Estimating normals..");
             size_t normalsNeighborSize = 30;
             Octree octree(pointCloud);
             octree.partition(10, 30);
             ConnectivityGraph *connectivity = new ConnectivityGraph(pointCloud->size());
             pointCloud->connectivity(connectivity);
             NormalEstimator3d estimator(&octree, normalsNeighborSize, NormalEstimator3d::QUICK);
-            ROS_INFO("Number of samples in Mapcloud: %zu", pointCloud->size());
+            std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
             for (size_t i = 0; i < pointCloud->size(); i++)
             {
                 if (i % 10000 == 0)
@@ -127,36 +131,44 @@ namespace rviz_visual_tools
                 (*pointCloud)[i].normalConfidence(normal.confidence);
                 (*pointCloud)[i].curvature(normal.curvature);
             }
+            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
+            std::cout << "Normal Estimation took " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
             ROS_INFO("Detecting planes..");
 
             PlaneDetector detector(pointCloud);
             detector.minNormalDiff(0.5f);
             detector.maxDist(0.258819f);
             detector.outlierRatio(0.75f);
-
             std::set<Plane *> planes = detector.detect();
             ROS_INFO("Found %zu planes!", planes.size());
             ROS_INFO("Publishing results to Rviz...");
 
-            // Geometry *geometry = pointCloud->geometry();
-            // for (Plane *plane : planes)
-            // {
-            //     geometry->addPlane(plane);
-            // }
-            double a, b, c, d, lu, lv;
+            visual_tools_->deleteAllMarkers();
+            Eigen::Vector3f v1, v2, v3, v4;
             for (Plane *plane : planes)
             {
-                a = plane->normal()[0];
-                b = plane->normal()[1];
-                c = plane->normal()[2];
-                d = plane->normal().dot(plane->center());
-                lu = plane->basisU().norm() * 2;
-                lv = plane->basisV().norm() * 2;
-                visual_tools_->publishABCDPlane(a, b, c, d, rvt::MAGENTA, lu, lv);
+                v1 = plane->center() + plane->basisU() + plane->basisV();
+                v2 = plane->center() + plane->basisU() - plane->basisV();
+                v3 = plane->center() - plane->basisU() + plane->basisV();
+                v4 = plane->center() - plane->basisU() - plane->basisV();
+                geometry_msgs::Polygon poly;
+                poly.points.push_back(eigen_to_point(v1));
+                poly.points.push_back(eigen_to_point(v2));
+                poly.points.push_back(eigen_to_point(v4));
+                poly.points.push_back(eigen_to_point(v3));
+                visual_tools_->publishPolygon(poly);
             }
             visual_tools_->trigger();
             delete pointCloud;
+        }
+        geometry_msgs::Point32 eigen_to_point(Eigen::Vector3f e)
+        {
+            geometry_msgs::Point32 p;
+            p.x = e[0];
+            p.y = e[1];
+            p.z = e[2];
+            return p;
         }
 
         void publishLabelHelper(const Eigen::Isometry3d &pose, const std::string &label)
