@@ -4,5 +4,4 @@
   <group ns="rspd">
     <node pkg="rspd-ros" name="PlaneDetectionhub" type="rspd-ros" output="screen" args="$(arg sub_topic) $(arg frame_id)"/>
   </group>
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find rspd-ros)/launch/rspd.rviz"/>
 </launch>
