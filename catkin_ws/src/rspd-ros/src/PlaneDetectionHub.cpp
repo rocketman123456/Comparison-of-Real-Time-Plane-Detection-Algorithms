@@ -80,9 +80,9 @@ namespace rviz_visual_tools
         /**
          * \brief Constructor
          */
-        PlaneDetectionHub(const std::string subTopic) : name_("PlaneDetection")
+        PlaneDetectionHub(const std::string subTopic, const std::string frame) : name_("PlaneDetection")
         {
-            visual_tools_.reset(new rvt::RvizVisualTools("d400_link", "/plane_visualization"));
+            visual_tools_.reset(new rvt::RvizVisualTools(frame, "/plane_visualization"));
             visual_tools_->loadMarkerPub(); // create publisher before waiting
             sub = nh_.subscribe(subTopic, 1000, &PlaneDetectionHub::callback_RSPD, this);
             // sub = nh_.subscribe("/cloud_pcd", 1000, &PlaneDetectionHub::callback_RSPD, this);
@@ -192,19 +192,13 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "visual_tools_demo");
     ROS_INFO_STREAM("Plane Detection");
-    std::string topic;
+    std::string topic, frame;
     std::cout << "arguments: " << argc << std::endl;
-    if (argc > 1)
-    {
-        topic = argv[1];
-        std::cout << "setting Topic to " << argv[1] << std::endl;
-    }
-    else
-    {
-        topic = "/cloud_pcd";
-        std::cout << "setting Topic to /cloud_pcd" << std::endl;
-    }
-    rviz_visual_tools::PlaneDetectionHub demo(topic);
+    topic = argv[1];
+    std::cout << "setting Topic to " << topic << std::endl;
+    frame = argv[2];
+    std::cout << "setting Frame to " << frame << std::endl;
+    rviz_visual_tools::PlaneDetectionHub demo(topic, frame);
     ros::spin();
 
     ROS_INFO_STREAM("Shutting down.");
