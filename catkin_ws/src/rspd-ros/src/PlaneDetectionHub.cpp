@@ -41,7 +41,6 @@
 #include <ros/ros.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
-#include <visualization_msgs/Marker.h>
 // For visualizing things in rviz
 #include <rviz_visual_tools/rviz_visual_tools.h>
 
@@ -78,18 +77,15 @@ namespace rviz_visual_tools
 
     public:
         ros::Subscriber sub;
-        ros::Publisher pub;
         /**
          * \brief Constructor
          */
-        PlaneDetectionHub() : name_("rviz_demo")
+        PlaneDetectionHub(const std::string subTopic) : name_("PlaneDetection")
         {
             visual_tools_.reset(new rvt::RvizVisualTools("d400_link", "/plane_visualization"));
             visual_tools_->loadMarkerPub(); // create publisher before waiting
-
-            sub = nh_.subscribe("/rtabmap/cloud_map", 1000, &PlaneDetectionHub::callback_RSPD, this);
+            sub = nh_.subscribe(subTopic, 1000, &PlaneDetectionHub::callback_RSPD, this);
             // sub = nh_.subscribe("/cloud_pcd", 1000, &PlaneDetectionHub::callback_RSPD, this);
-            pub = nh_.advertise<visualization_msgs::Marker>("plane_normals", 10);
             // Clear messages
             visual_tools_->deleteAllMarkers();
             visual_tools_->enableBatchPublishing();
@@ -196,8 +192,19 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "visual_tools_demo");
     ROS_INFO_STREAM("Plane Detection");
-
-    rviz_visual_tools::PlaneDetectionHub demo;
+    std::string topic;
+    std::cout << "arguments: " << argc << std::endl;
+    if (argc > 1)
+    {
+        topic = argv[1];
+        std::cout << "setting Topic to " << argv[1] << std::endl;
+    }
+    else
+    {
+        topic = "/cloud_pcd";
+        std::cout << "setting Topic to /cloud_pcd" << std::endl;
+    }
+    rviz_visual_tools::PlaneDetectionHub demo(topic);
     ros::spin();
 
     ROS_INFO_STREAM("Shutting down.");
