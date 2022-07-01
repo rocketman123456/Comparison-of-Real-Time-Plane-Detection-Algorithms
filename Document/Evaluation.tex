@@ -3,49 +3,64 @@
 
 \chapter{Evaluation}
 
-\section*{Intro}
+In diesem kapitel werden zuvor ausgewählte algorithmen einheitlich verglichen und die resultierenden ergebnisse ausgewertet.
 
-wir wollen die frage beantworten, ob es möglich ist in echtzeit ebenen zu finden
+\section{Protocol}
+Wir evaluieren die Auswahl an PDAs auf einem Datensatz.
+Der Datensatz wird aus aufnahmen einer indoor umgebung bestehen, dazu muss eine ground truth dazu verfügbar sein.
+(Da nicht alle PDAs auf dem Selben Datentypen als input arbeiten, muss der Datensatz teilweise in ein anderes Format
+überführt werden.)
 
-Ein problem an den PDAs ist dass nicht alle den selben datensatz nutzen
+\section{Metrics}
+Für den Vergleich muss erst geklärt werden, welche Metriken für den vergleich betrachtet werden.
 
-schlecht/schwer zu vergleichen
+Natürlich ist die benötigte Laufzeit von Interesse. Wir werden also die PDAs auch in der Zeit, die sie benötigt haben
+um die Ebenen zu finden vergleichen.
 
-Daher werden wir hier alle ausgewählen algorithmen einheitlich unter gleichen bedingungen testen und auswerten in hinsicht auf echtzeit kompetenz
+Wir wollen dazu ebenso die Präzision der PDAs evaluieren.
+Dazu vergleichen wir die gefundenen Ebenen mit den Ebenen der GT:
+Wir suchen für jede GT Ebene ein "best match", sobald vorhanden. Das beinhaltet Differenz der Rotation, Translation und
+den Flächeninhalt zwischen den Ebenen.
 
-\section{Datensätze}
+Weichen alle gefundenen Ebenen zu stark von einer Ebene der GT ab, so wird diese als "nicht gefunden" gewertet.
+Andernfalls gibt es ein "best match" und diese Ebene wird als "gefunden" gewertet.
+Aus \textit{\#gefunden} und \textit{\#nichtGefunden} lassen sich die Präzision, sowie Recall und der F1-score berechnen.
 
-da wir von indoor envs (living room, office etc) werden dementsprechend die datensätze ausgewählt
+Wir werden dazu noch die Intersection-over-Union für jede richtig gefundene Ebene berechnen.
+\textcolor{red}{Dafür muss ich jedoch einen weg finden, wie ich translation und rotation ausklammern kann.
+    Oder: muss ich die ausklammern? Reicht hier ggf sogar eine Qualitative auswertung?}
 
-(kriterien: indoor, non-synthetic, point clouds, ground truth vorhanden)
+\section{Dataset}
+\textcolor{red}{disclaimer: meine 2 favoriten der datensätze sind der kinect DS und der SR400.
+    Problem: ich war bisher zu blöd um das SegComp tool zu nutzen.}
+Der ausgewählte Datensatz besteht aus 30 Punktwolken (Kinect) \textcolor{red}{oder} 5 Tiefenbildern
+Problem: (SR400).
+Aufgenommen wurden indoor scenen und jeder frame besteht aus 307.200 Punkten/640x480 Pixeln.
+Da nicht alle algorithmen Punktwolken oder respektiv Tiefenbilder nutzen, werden die Daten verlustlos umgewandelt.
+\textcolor{red}{bei der umwandlung muss die GT ggf angepasst werden, entscheiden nachdem ich ergebnisse gesehen habe}
 
-kurze beschreibung der datensätze
+\section{Real-Test?}
+Um das Echtzeitkriterium genauer zu betrachten nehmen wir einen Datensatz in der fin auf.
+Da hierbei keine GT vorliegt beschränken wir uns hierbei auf eine qualitative Auswertung mit besonderem fokus auf Laufzeit.
 
-\section{Experimente}
 
-Wie kriegen wir daten zu “echtzeit”
-log times per frame / time per image / zeit pro datensatz
-Wie kriegen wir daten für precision
-save plane parameters to file
-auswertung echtzeit
-plot every algorithm against its time
-auswertung precision
-compare with ground truth
-planes found
-compare visuals (Rviz)
+hier beschreiben wie der in der fin aufgenommene datensatz aussieht?
+Ich muss dann wahrscheinlich manuell annotieren, wie ebenen in den bildern liegen.
 
-\section{Results}
+\textcolor{red}{meine idee hier ist, mit dem datensatz zu zeigen, dass die Präzision ausreichend ist und dass durch
+    die FIN gezeigt wird, dass das ganze echtzeitfähig ist. Sogesehen statisch für Präzision und dynamisch für laufzeit.}
 
-zunächst; welche algorithmen konnten echtzeit leistung erbringen?
+\section{Results Dataset}
 
-Von denen, die in echtzeit laufen konnten, wie präzise waren sie?
+Alle \textcolor{red}{N} Sequenzen des Datensatzs wurde \textcolor{red}{X} mal von jedem Algorithmus berechnet.
 
-vergleichen, tabellen etc
+Hier sind die Ergebnisse:
 
-“diese(r) Algo(s) haben solche und solche leistungen erbracht”
+\section{Results FIN?}
 
-\section{Summary}
+Der FIN Datensatz wurde auch \textcolor{red}{X} mal von jedem Datensatz berechnet.
 
-in this chapter we compared a couple algos on a few selected datasets
+Hier sind die Ergebnisse:
+
 
 \end{document}
