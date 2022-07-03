@@ -1,7 +1,0 @@
-<launch>
-  <arg name="sub_topic" default="/rtabmap/cloud_map"/>
-  <arg name="frame_id"  default="map"/>
-  <group ns="rspd">
-    <node pkg="rspd-ros" name="PlaneDetectionhub" type="rspd-ros" output="screen" args="$(arg sub_topic) $(arg frame_id)"/>
-  </group>
-</launch>
