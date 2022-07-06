@@ -5,58 +5,68 @@
 
 In diesem kapitel werden zuvor ausgewählte algorithmen einheitlich verglichen und die resultierenden ergebnisse ausgewertet.
 
-\section{Protocol}
-Wir evaluieren die Auswahl an PDAs auf einem Datensatz.
-Der Datensatz wird aus aufnahmen einer indoor umgebung bestehen, dazu muss eine ground truth dazu verfügbar sein.
-(Da nicht alle PDAs auf dem Selben Datentypen als input arbeiten, muss der Datensatz teilweise in ein anderes Format
-überführt werden.)
+\section{Evaluation Protocol}
+Das Ziel der Arbeit ist es, die Frage zu beantworten, ob präzise Ebenenfindung in Echtzeit möglich ist.
+Das Problem bei der Auswahl des "besten" algos ist, dass jeder Algorithmus auf anderen Daten getestet wurde, was die
+Vergleichbarkeit dezimiert.
+Daher wird diese Evaluation auf einem öffentlich erhältlichen Datensatz ausgeführt, sowie einem "live" test unterzogen.
+Der Datensatz besteht aus einer Anzahl indoor Aufnahmen mit dazugehöriger Ground Truth, beides in Punktwolken-Form.
 
-\section{Metrics}
-Für den Vergleich muss erst geklärt werden, welche Metriken für den vergleich betrachtet werden.
-
-Natürlich ist die benötigte Laufzeit von Interesse. Wir werden also die PDAs auch in der Zeit, die sie benötigt haben
-um die Ebenen zu finden vergleichen.
-
-Wir wollen dazu ebenso die Präzision der PDAs evaluieren.
-Dazu vergleichen wir die gefundenen Ebenen mit den Ebenen der GT:
-Wir suchen für jede GT Ebene ein "best match", sobald vorhanden. Das beinhaltet Differenz der Rotation, Translation und
-den Flächeninhalt zwischen den Ebenen.
-
-Weichen alle gefundenen Ebenen zu stark von einer Ebene der GT ab, so wird diese als "nicht gefunden" gewertet.
-Andernfalls gibt es ein "best match" und diese Ebene wird als "gefunden" gewertet.
-Aus \textit{\#gefunden} und \textit{\#nichtGefunden} lassen sich die Präzision, sowie Recall und der F1-score berechnen.
-
-Wir werden dazu noch die Intersection-over-Union für jede richtig gefundene Ebene berechnen.
-\textcolor{red}{Dafür muss ich jedoch einen weg finden, wie ich translation und rotation ausklammern kann.
-    Oder: muss ich die ausklammern? Reicht hier ggf sogar eine Qualitative auswertung?}
-
-\section{Dataset}
-\textcolor{red}{disclaimer: meine 2 favoriten der datensätze sind der kinect DS und der SR400.
-    Problem: ich war bisher zu blöd um das SegComp tool zu nutzen.}
-Der ausgewählte Datensatz besteht aus 30 Punktwolken (Kinect) \textcolor{red}{oder} 5 Tiefenbildern
-Problem: (SR400).
-Aufgenommen wurden indoor scenen und jeder frame besteht aus 307.200 Punkten/640x480 Pixeln.
-Da nicht alle algorithmen Punktwolken oder respektiv Tiefenbilder nutzen, werden die Daten verlustlos umgewandelt.
-\textcolor{red}{bei der umwandlung muss die GT ggf angepasst werden, entscheiden nachdem ich ergebnisse gesehen habe}
-
-\section{Real-Test?}
-Um das Echtzeitkriterium genauer zu betrachten nehmen wir einen Datensatz in der fin auf.
-Da hierbei keine GT vorliegt beschränken wir uns hierbei auf eine qualitative Auswertung mit besonderem fokus auf Laufzeit.
+grundlegend: \\
+- Problem: niemand nimmt den gleichen Datensatz \\
+- daher alle aufm selben testen für einheitlichen vergleich \\
+- quantitativ: datensatz+GT \\
+- qualitativ: "live" test in der FIN, überlagern der ebenen mit punktwolke \\
+- diese metriken sind wichtig: \\
 
 
-hier beschreiben wie der in der fin aufgenommene datensatz aussieht?
-Ich muss dann wahrscheinlich manuell annotieren, wie ebenen in den bildern liegen.
+\subsection{Metrics}
+grundlegend: \\
+- Laufzeit in relation zu len(PC) und \#planes \\
+- Präzision, Recall: "best match" berechnen. wie? i guess über MSE, wenn ich eh die cornerpoints habe. Dafür muss ich jedoch eine maximale entfernung angeben, bis eine ebene kein match hat\\
+- f1 i guess, tut genauso weh, es raus zu lassen, wie eine weitere spalte in die tabelle zu klatschen. man kann es ja eh aus P und R berechnen \\
+- MSE: durchschnittlicher abstand der cornerpoints \\
 
-\textcolor{red}{meine idee hier ist, mit dem datensatz zu zeigen, dass die Präzision ausreichend ist und dass durch
-    die FIN gezeigt wird, dass das ganze echtzeitfähig ist. Sogesehen statisch für Präzision und dynamisch für laufzeit.}
+Für die Bewertung eines Algos werden zum einen verschiedene Laufzeiten betrachtet. Wie lange dauert das finden von Ebenen
+in relation zur Größe der Punktwolke, wie lange dauert es pro Ebene.
 
-\section{Results Dataset}
+Dazu werden wir die Qualität der Algorithmen bewerten. Dafür berechnen wir die \textit{precision}, \textit{recall}, den
+\textit{f1-score} sowie eine Durchschnittliche Abweichung der Ebene von der gegebenen Ground truth über
+den \textit{Mean-Squared-Error}(MSE).
+
+\textcolor{red}{Erklärung der Metriken im Background nehme ich an?}
+Um eine gefundene Ebene einer Ebene der Ground truth zuzuordnen wird wird einfach die ebene mit der geringsten Abweichung
+(geringster MSE) ausgewählt. Ist der MSE aller gefundenen Ebenen zu groß, wird die bestimmte Ebene als "nicht gefunden" gewertet.
+
+\textcolor{red}{Was, wenn zu viele gefunden wurden? 1. wurden N ebenen doppelt gefunden oder Falsche ?}
+Daraus ergeben sich die Werte für \textit{precision}, \textit{recall} und \textit{f1-score}.
+
+Im anschluss betrachten wir das Maß an Korrektheit der Anordnung innerhalb der Scene. Im grunde berechnet sich dieses Maß
+erneut durch den MSE. \textcolor{red}{quasi 3d variante zu IoU}
+
+
+\subsection{Dataset}
+Wir benutzen den \textit{Stanford Large-Scale Indoor Spaces 3D Dataset} (S3DIS)\cite[]{armeni_cvpr16}.
+Der Datensatz beinhalt viele verschiedene Räume aus verschiedenen Gebäuden. Diese Indoor Umgebungen werden als Punktwolken
+dargestellt.
+Dazu werden Ground truths in form von annotierten punktwolken bereitgestellt, welche in insgesamt 12 Kategorien fallen.
+Da für diese arbeit allein die Ebenen interessant sind, werden wir aus diesen GTs manuell planare Strukturen extrahieren
+und durch ein convexes Polygon(\textcolor{red}{meistens 4 Ecken?}) beschreiben.
+
+\subsection{Real-Life Test}
+Bei dem Live test wird im Gebäude der FIN ein Datensatz aufgenommen. Der Scan wird \textcolor{red}{\$STUFF} beinhalten.
+Zu diesem Scan gibt es keine Ground Truth, daher wird neben der Laufzeitanalyse lediglich eine qualitative Analyse der
+Präzision vorgenommen.
+Dafür überlagern wir die Punktwolke mit den gefundenen Ebenen.
+
+\section{Results}
+\subsection{Results Dataset}
 
 Alle \textcolor{red}{N} Sequenzen des Datensatzs wurde \textcolor{red}{X} mal von jedem Algorithmus berechnet.
 
 Hier sind die Ergebnisse:
 
-\section{Results FIN?}
+\subsection{Results Real-Life Test}
 
 Der FIN Datensatz wurde auch \textcolor{red}{X} mal von jedem Datensatz berechnet.
 
