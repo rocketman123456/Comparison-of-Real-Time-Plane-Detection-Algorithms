@@ -1,11 +1,12 @@
 /**
  * Implementation of the following paper:
- * Oriented Point Sampling for Plane Detection in Unorganized Point Clouds, Bo Sun and Philippos Mordohai (2019)
+ * Oriented Point Sampling for OPSPlane Detection in Unorganized Point Clouds, Bo Sun and Philippos Mordohai (2019)
  *
  * by Victor AMBLARD
  */
 
 #include "Ops.h"
+
 #define VERTICAL 1
 #define HORIZONTAL 2
 #define OTHER 3
@@ -35,8 +36,8 @@ std::vector<int> getNearestNeighbors(const int idx,
     return idxNeighbors;
 }
 
-float getDistanceToPlane(const Eigen::Vector3f &p,
-                         const Plane &P)
+float getDistanceToOPSPlane(const Eigen::Vector3f &p,
+                            const OPSPlane &P)
 {
     Eigen::Vector3f diff = (p - P.second.second);
     float distance = std::fabs(diff.dot(P.second.first)); // normal vector is already of norm 1
@@ -44,10 +45,10 @@ float getDistanceToPlane(const Eigen::Vector3f &p,
     return distance;
 }
 
-float getDistanceToPlane(const int id,
-                         const int oId,
-                         const pcl::PointCloudXYZ::Ptr cloud,
-                         const Eigen::Vector3f &normal)
+float getDistanceToOPSPlane(const int id,
+                            const int oId,
+                            const pcl::PointCloudXYZ::Ptr cloud,
+                            const Eigen::Vector3f &normal)
 {
     Eigen::Vector3f diff = (cloud->points[id].getVector3fMap() - cloud->points[oId].getVector3fMap());
     float distance = std::fabs(diff.dot(normal)); // normal vector is already of norm 1
@@ -117,7 +118,7 @@ std::pair<int, std::set<int>> detectCloud(const pcl::PointCloudXYZ::Ptr cloud,
                                           const std::vector<Eigen::Vector3f> &allNormals,
                                           const std::vector<int> &allOrientations,
                                           const bool ground,
-                                          const double threshDistPlane,
+                                          const double threshDistOPSPlane,
                                           const int threshInliers,
                                           const float threshAngle,
                                           const float p,
@@ -150,10 +151,10 @@ std::pair<int, std::set<int>> detectCloud(const pcl::PointCloudXYZ::Ptr cloud,
             {
                 if (iPoint != randIdx && CLIP_ANGLE(std::acos(allNormals.at(iPoint).dot(allNormals.at(randIdx)))) < threshAngle)
                 {
-                    double dist = getDistanceToPlane(idxOI, samples.at(iPoint), cloud, allNormals.at(randIdx));
-                    if (dist < threshDistPlane)
+                    double dist = getDistanceToOPSPlane(idxOI, samples.at(iPoint), cloud, allNormals.at(randIdx));
+                    if (dist < threshDistOPSPlane)
                     {
-                        inliers.insert(iPoint); // 2 criteria : distance to plane and common orientation
+                        inliers.insert(iPoint); // 2 criteria : distance to OPSPlane and common orientation
                     }
                 }
             }
@@ -183,52 +184,52 @@ std::pair<int, std::set<int>> detectCloud(const pcl::PointCloudXYZ::Ptr cloud,
     std::chrono::time_point<std::chrono::system_clock> tEnd = std::chrono::system_clock::now();
     double elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count();
     if (converged)
-        std::cerr << "Converged after " << iIter << " iterations to a plane with " << curMaxInliers << " inliers [process took: " << elapsedTime << " ms]" << std::endl;
+        std::cerr << "Converged after " << iIter << " iterations to a OPSPlane with " << curMaxInliers << " inliers [process took: " << elapsedTime << " ms]" << std::endl;
     else
         std::cerr << "Failed to converge!" << std::endl;
 
     return std::make_pair(idxOI, bestInliers);
 }
 
-void visualizePlanes(const std::vector<Plane> &planes,
-                     const pcl::PointCloudXYZ::Ptr remainingCloud)
-{
-    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
-    viewer->setBackgroundColor(0, 0, 0);
+// void visualizeOPSPlanes(const std::vector<OPSPlane> &OPSPlanes,
+//                         const pcl::PointCloudXYZ::Ptr remainingCloud)
+// {
+//     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
+//     viewer->setBackgroundColor(0, 0, 0);
 
-    pcl::PointCloudXYZRGB::Ptr coloredCloud(new pcl::PointCloudXYZRGB);
-    int i = 0;
-    for (auto plane : planes)
-    {
-        for (pcl::PointXYZ point : plane.first)
-        {
-            pcl::PointXYZRGB p;
-            p.x = point.x;
-            p.y = point.y;
-            p.y = point.z;
-            p.r = r[(i * 61) % 255] * 255;
-            p.g = g[(i * 61) % 255] * 255;
-            p.b = b[(i * 61) % 255] * 255;
+//     pcl::PointCloudXYZRGB::Ptr coloredCloud(new pcl::PointCloudXYZRGB);
+//     int i = 0;
+//     for (auto OPSPlane : OPSPlanes)
+//     {
+//         for (pcl::PointXYZ point : OPSPlane.first)
+//         {
+//             pcl::PointXYZRGB p;
+//             p.x = point.x;
+//             p.y = point.y;
+//             p.y = point.z;
+//             p.r = r[(i * 61) % 255] * 255;
+//             p.g = g[(i * 61) % 255] * 255;
+//             p.b = b[(i * 61) % 255] * 255;
 
-            coloredCloud->points.push_back(p);
-            // coloredCloud->points.push_back(pcl::PointXYZRGB(point.x, point.y, point.z, r[(i * 61) % 255] * 255, g[(i * 61) % 255] * 255, b[(i * 61) % 255] * 255));
-            // coloredCloud->points.push_back(pcl::PointXYZRGB(point.x, point.y, point.z));
-        }
-        ++i;
-    }
-    std::cerr << "[INFO] Total " << coloredCloud->points.size() << " points in colored cloud" << std::endl;
+//             coloredCloud->points.push_back(p);
+//             // coloredCloud->points.push_back(pcl::PointXYZRGB(point.x, point.y, point.z, r[(i * 61) % 255] * 255, g[(i * 61) % 255] * 255, b[(i * 61) % 255] * 255));
+//             // coloredCloud->points.push_back(pcl::PointXYZRGB(point.x, point.y, point.z));
+//         }
+//         ++i;
+//     }
+//     std::cerr << "[INFO] Total " << coloredCloud->points.size() << " points in colored cloud" << std::endl;
 
-    viewer->addPointCloud<pcl::PointXYZRGB>(coloredCloud, "sample cloud");
+//     viewer->addPointCloud<pcl::PointXYZRGB>(coloredCloud, "sample cloud");
 
-    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "sample cloud");
-    viewer->addCoordinateSystem(1.0);
-    viewer->initCameraParameters();
+//     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "sample cloud");
+//     viewer->addCoordinateSystem(1.0);
+//     viewer->initCameraParameters();
 
-    while (!viewer->wasStopped())
-    {
-        viewer->spinOnce(100);
-    };
-}
+//     while (!viewer->wasStopped())
+//     {
+//         viewer->spinOnce(100);
+//     };
+// }
 
 std::pair<std::vector<Eigen::Vector3f>, std::vector<int>> computeAllNormals(const std::vector<int> &samples,
                                                                             const int K,
@@ -276,14 +277,14 @@ std::pair<std::vector<Eigen::Vector3f>, std::vector<int>> computeAllNormals(cons
     return std::make_pair(allNormals, allOrientations);
 }
 
-void process(const pcl::PointCloudXYZ::Ptr cloud,
-             const bool verbose,
-             const double alphaS,
-             const int K,
-             const double threshDistPlane,
-             const int threshInliers,
-             const float threshAngle,
-             const float p)
+std::vector<OPSPlane> process(const pcl::PointCloudXYZ::Ptr cloud,
+                              const bool verbose,
+                              const double alphaS,
+                              const int K,
+                              const double threshDistOPSPlane,
+                              const int threshInliers,
+                              const float threshAngle,
+                              const float p)
 {
 
     if (verbose)
@@ -291,9 +292,9 @@ void process(const pcl::PointCloudXYZ::Ptr cloud,
         std::cerr << "======= Current parameters =======" << std::endl;
         std::cerr << "Sampling rate: " << alphaS * 100 << "%" << std::endl;
         std::cerr << "# nearest neighbors: " << K << std::endl;
-        std::cerr << "Minimum number of inliers to approve a plane: " << threshInliers << std::endl;
+        std::cerr << "Minimum number of inliers to approve a OPSPlane: " << threshInliers << std::endl;
         std::cerr << "Tolerance to vertical axis (ground detection) in degrees: " << threshAngle * 180 / M_PI << std::endl;
-        std::cerr << "Distance threshold to plane: " << threshDistPlane << std::endl;
+        std::cerr << "Distance threshold to OPSPlane: " << threshDistOPSPlane << std::endl;
         std::cerr << "RANSAC probability for adaptive number of iterations: " << p << std::endl;
         std::cerr << "==================================" << std::endl;
     }
@@ -301,8 +302,8 @@ void process(const pcl::PointCloudXYZ::Ptr cloud,
     size_t sMini = 100;
     size_t sInliers = 0;
 
-    std::vector<Plane> planes;
-    std::pair<int, std::set<int>> inliersPlane;
+    std::vector<OPSPlane> OPSPlanes;
+    std::pair<int, std::set<int>> inliersOPSPlane;
     pcl::PointCloudXYZ originalCloud(*cloud);
     int iIter = 0;
 
@@ -321,7 +322,7 @@ void process(const pcl::PointCloudXYZ::Ptr cloud,
     std::vector<Eigen::Vector3f> allNormals = result.first;
     std::vector<int> allOrientations = result.second;
 
-    // Step 3: Detect planes
+    // Step 3: Detect OPSPlanes
 
     int defaultOrientation;
     bool stop[3] = {false, false, false};
@@ -346,24 +347,24 @@ void process(const pcl::PointCloudXYZ::Ptr cloud,
                 continue;
             defaultOrientation = OTHER;
         }
-        inliersPlane = detectCloud(cloud, ps, allNormals, allOrientations, false, threshDistPlane, threshInliers, threshAngle, p, defaultOrientation);
+        inliersOPSPlane = detectCloud(cloud, ps, allNormals, allOrientations, false, threshDistOPSPlane, threshInliers, threshAngle, p, defaultOrientation);
 
         // Remove inliers from cloud
         pcl::ExtractIndices<pcl::PointXYZ> extractIndices;
         pcl::PointIndices::Ptr inliers(new pcl::PointIndices());
 
-        sInliers = inliersPlane.second.size();
+        sInliers = inliersOPSPlane.second.size();
 
         if (!sInliers)
             break; // Failed to converge
 
         Eigen::Vector3f centroid(0, 0, 0);
-        std::vector<pcl::PointXYZ> curPlane;
+        std::vector<pcl::PointXYZ> curOPSPlane;
 
-        for (auto it = inliersPlane.second.begin(); it != inliersPlane.second.end(); ++it)
+        for (auto it = inliersOPSPlane.second.begin(); it != inliersOPSPlane.second.end(); ++it)
         {
             centroid += (cloud->points[ps.at(*it)]).getVector3fMap() / sInliers;
-            curPlane.push_back(cloud->points[ps.at(*it)]);
+            curOPSPlane.push_back(cloud->points[ps.at(*it)]);
         }
 
         std::vector<int> tmpPs;
@@ -375,7 +376,7 @@ void process(const pcl::PointCloudXYZ::Ptr cloud,
 
         for (int i = 0; i < Ns; ++i)
         {
-            if (inliersPlane.second.find(i) == inliersPlane.second.end()) // current point not in detected plane
+            if (inliersOPSPlane.second.find(i) == inliersOPSPlane.second.end()) // current point not in detected OPSPlane
             {
                 tmpPs.push_back(ps.at(i));
                 tmpNormals.push_back(allNormals.at(i));
@@ -387,12 +388,12 @@ void process(const pcl::PointCloudXYZ::Ptr cloud,
         ps = tmpPs;
 
         Ns = ps.size();
-        Eigen::Vector3f planeNormal = computeGlobalSVD(curPlane, centroid);
-        planes.push_back(std::make_pair(curPlane, std::make_pair(planeNormal, centroid)));
+        Eigen::Vector3f OPSPlaneNormal = computeGlobalSVD(curOPSPlane, centroid);
+        OPSPlanes.push_back(std::make_pair(curOPSPlane, std::make_pair(OPSPlaneNormal, centroid)));
 
         if (verbose)
         {
-            std::cerr << "[INFO] Plane normal: (" << planeNormal(0) << " ;" << planeNormal(1) << " ; " << planeNormal(2) << ")" << std::endl;
+            std::cerr << "[INFO] OPSPlane normal: (" << OPSPlaneNormal(0) << " ;" << OPSPlaneNormal(1) << " ; " << OPSPlaneNormal(2) << ")" << std::endl;
             std::cerr << "       Centroid: (" << centroid(0) << ";" << centroid(1) << ";" << centroid(2) << ")" << std::endl;
             std::cerr << "       Orientation: " << orientationStr[defaultOrientation] << std::endl;
         }
@@ -404,32 +405,32 @@ void process(const pcl::PointCloudXYZ::Ptr cloud,
 
     } while (!stop[0] || !stop[1] || !stop[2]);
 
-    // Step 4: Merge planes
-    size_t planesNumber;
+    // Step 4: Merge OPSPlanes
+    size_t OPSPlanesNumber;
 
     do
     {
-        std::cerr << planes.size() << std::endl;
-        planesNumber = planes.size();
-        mergePlanes(planes);
+        std::cerr << OPSPlanes.size() << std::endl;
+        OPSPlanesNumber = OPSPlanes.size();
+        mergeOPSPlanes(OPSPlanes);
 
-    } while (planes.size() != planesNumber);
-
+    } while (OPSPlanes.size() != OPSPlanesNumber);
+    return OPSPlanes;
     // Step 5: Visualize result
-    visualizePlanes(planes, cloud);
+    // visualizeOPSPlanes(OPSPlanes, cloud);
 }
 
-void mergePlanes(std::vector<Plane> &planes)
+void mergeOPSPlanes(std::vector<OPSPlane> &OPSPlanes)
 {
     bool out = false;
 
-    for (auto itA = planes.begin(); itA != planes.end();)
+    for (auto itA = OPSPlanes.begin(); itA != OPSPlanes.end();)
     {
-        for (auto itB = itA; itB != planes.end();)
+        for (auto itB = itA; itB != OPSPlanes.end();)
         {
             if (itA != itB)
             {
-                bool toMerge = comparePlanes(*itA, *itB);
+                bool toMerge = compareOPSPlanes(*itA, *itB);
 
                 if (toMerge)
                 {
@@ -446,7 +447,7 @@ void mergePlanes(std::vector<Plane> &planes)
                     itB->second.first = nNormal;
                     itB->second.second = nCentroid;
                     out = true;
-                    itA = planes.erase(itA);
+                    itA = OPSPlanes.erase(itA);
 
                     break;
                 }
@@ -467,12 +468,12 @@ void mergePlanes(std::vector<Plane> &planes)
     }
 }
 
-bool comparePlanes(const Plane &A,
-                   const Plane &B)
+bool compareOPSPlanes(const OPSPlane &A,
+                      const OPSPlane &B)
 {
-    float distA = getDistanceToPlane(A.second.second, B);
-    float distB = getDistanceToPlane(B.second.second, A);
+    float distA = getDistanceToOPSPlane(A.second.second, B);
+    float distB = getDistanceToOPSPlane(B.second.second, A);
     float angle = CLIP_ANGLE(std::acos(A.second.first.dot(B.second.first)));
 
-    return (distA < defaultParams::threshDistToPlane) && (distB < defaultParams::threshDistToPlane) && (angle < defaultParams::threshAngleToAxis);
+    return (distA < defaultParams::threshDistToOPSPlane) && (distB < defaultParams::threshDistToOPSPlane) && (angle < defaultParams::threshAngleToAxis);
 }

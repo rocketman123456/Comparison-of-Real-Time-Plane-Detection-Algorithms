@@ -59,8 +59,17 @@
 #include "RSPD/boundaryvolumehierarchy.h"
 #include "RSPD/connectivitygraph.h"
 
+// OPS
+#include "OPS/Ops.h"
+
 namespace rvt = rviz_visual_tools;
 typedef pcl::PointCloud<pcl::PointXYZRGBNormal> PCLPointCloud;
+
+enum ALGO
+{
+    RSPD,
+    OPS
+};
 
 namespace rviz_visual_tools
 {
@@ -80,15 +89,50 @@ namespace rviz_visual_tools
         /**
          * \brief Constructor
          */
-        PlaneDetectionHub(const std::string subTopic, const std::string frame) : name_("PlaneDetection")
+        PlaneDetectionHub(std::string alg, const std::string subTopic, const std::string frame) : name_("PlaneDetection")
         {
             visual_tools_.reset(new rvt::RvizVisualTools(frame, "/plane_visualization"));
             visual_tools_->loadMarkerPub(); // create publisher before waiting
-            sub = nh_.subscribe(subTopic, 1000, &PlaneDetectionHub::callback_RSPD, this);
-            // sub = nh_.subscribe("/cloud_pcd", 1000, &PlaneDetectionHub::callback_RSPD, this);
+            if (alg == "rspd")
+            {
+                sub = nh_.subscribe(subTopic, 1000, &PlaneDetectionHub::callback_RSPD, this);
+            }
+            if (alg == "ops")
+            {
+                sub = nh_.subscribe(subTopic, 1000, &PlaneDetectionHub::callback_OPS, this);
+            }
             // Clear messages
             visual_tools_->deleteAllMarkers();
             visual_tools_->enableBatchPublishing();
+        }
+
+        void callback_OPS(const pcl::PointCloudXYZ::Ptr &msg)
+        {
+            ROS_INFO("Received MapCloud");
+            std::vector<OPSPlane> planes;
+            planes = process(msg); // [[inliers], (normal, centroid))]
+            geometry_msgs::Vector3 scale;
+            scale.x = 0.02;
+            scale.y = 0.02;
+            scale.z = 0.02;
+            visual_tools_->deleteAllMarkers();
+
+            // for (auto p : planes)
+            for (size_t i = 0; i < planes.size(); i++)
+            {
+
+                std::vector<geometry_msgs::Point> ps;
+                for (auto in : planes[i].first)
+                {
+                    geometry_msgs::Point point;
+                    point.x = in.x;
+                    point.y = in.y;
+                    point.z = in.z;
+                    ps.push_back(point);
+                }
+                visual_tools_->publishSpheres(ps, visual_tools_->intToRvizColor(2), scale);
+            }
+            visual_tools_->trigger();
         }
 
         void callback_RSPD(const PCLPointCloud::ConstPtr &msg)
@@ -192,13 +236,15 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "visual_tools_demo");
     ROS_INFO_STREAM("Plane Detection");
-    std::string topic, frame;
-    std::cout << "arguments: " << argc << std::endl;
+    std::string topic, frame, algo;
+    std::cout << "#arguments: " << argc << std::endl;
     topic = argv[1];
     std::cout << "setting Topic to " << topic << std::endl;
     frame = argv[2];
     std::cout << "setting Frame to " << frame << std::endl;
-    rviz_visual_tools::PlaneDetectionHub demo(topic, frame);
+    algo = argv[3];
+    std::cout << "setting Algorithm to " << algo << std::endl;
+    rviz_visual_tools::PlaneDetectionHub demo(algo, topic, frame);
     ros::spin();
 
     ROS_INFO_STREAM("Shutting down.");
