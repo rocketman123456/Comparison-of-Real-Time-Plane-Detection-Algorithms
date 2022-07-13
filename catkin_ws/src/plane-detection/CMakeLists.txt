@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plane-detection)
 
 # # Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++17)
 
 # # Find catkin macros and libraries
 # # if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -211,7 +211,11 @@ include_directories(
 
 # # Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(plane-detection src/PlaneDetectionHub src/RSPD/point.cpp src/RSPD/connectivitygraph.cpp src/RSPD/plane.cpp src/RSPD/circle.cpp src/RSPD/cylinder.cpp src/RSPD/planarpatch.cpp src/RSPD/planedetector.cpp)
+add_executable(
+  plane-detection src/PlaneDetectionHub
+  src/RSPD/point.cpp src/RSPD/connectivitygraph.cpp src/RSPD/plane.cpp src/RSPD/circle.cpp src/RSPD/cylinder.cpp src/RSPD/planarpatch.cpp src/RSPD/planedetector.cpp # RSPD
+  src/OPS/Ops.cpp
+)
 target_link_libraries(plane-detection ${catkin_LIBRARIES})
 
 # add_dependencies(TestListener beginner_tutorials_generate_messages_cpp)
