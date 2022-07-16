@@ -36,6 +36,11 @@ def calc_plane_voxels(planes: List[Plane], voxel_grid: o3d.geometry.VoxelGrid):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) < 4:
+        print('Too few arguments!')
+        print(
+            'Usage: python evaluate.py [cloud].pcd [found_planes_folder] [gt_folder]')
+        sys.exit(1)
     pcd_file = sys.argv[1]
     planes_folder = sys.argv[2]
     gt_folder = sys.argv[3]
