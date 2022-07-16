@@ -120,7 +120,9 @@ namespace rviz_visual_tools
             // for (auto p : planes)
             for (size_t i = 0; i < planes.size(); i++)
             {
-
+                std::string fname = "plane-" + std::to_string(i) + ".txt";
+                std::cout << "writing to " << fname << std::endl;
+                std::ofstream oFile(fname);
                 std::vector<geometry_msgs::Point> ps;
                 for (auto in : planes[i].first)
                 {
@@ -129,7 +131,9 @@ namespace rviz_visual_tools
                     point.y = in.y;
                     point.z = in.z;
                     ps.push_back(point);
+                    oFile << in.x << " " << in.y << " " << in.z << "\n";
                 }
+                oFile.close();
                 visual_tools_->publishSpheres(ps, visual_tools_->intToRvizColor(2), scale);
             }
             visual_tools_->trigger();
