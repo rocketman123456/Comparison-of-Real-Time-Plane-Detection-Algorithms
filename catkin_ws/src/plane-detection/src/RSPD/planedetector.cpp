@@ -3,10 +3,11 @@
 #include "pcacalculator.h"
 #include "unionfind.h"
 #include "angleutils.h"
+#include <ros/ros.h>
 
 #include <iostream>
 #include <unordered_map>
-
+#include <fstream>
 PlaneDetector::PlaneDetector(const PointCloud3d *pointCloud)
     : PrimitiveDetector<3, Plane>(pointCloud), mMinNormalDiff(std::cos(AngleUtils::deg2rad(60.0f))), mMaxDist(std::cos(AngleUtils::deg2rad(75.0f))), mOutlierRatio(0.75f)
 {
@@ -64,8 +65,28 @@ std::set<Plane *> PlaneDetector::detect()
         planes.insert(plane);
         delete patch;
     }
+    int counter = 0;
+    ROS_INFO("Found %zu planes!", planes.size());
 
-    return planes;
+    for (Plane *plane : planes)
+    {
+
+        std::string fname = "plane-" + std::to_string(counter) + ".txt";
+        std::ofstream oFile(fname);
+        for (size_t inlier : plane->inliers())
+        {
+            // // lower 8 bits
+            // auto x = static_cast<unsigned int>(inlier & 0xFF);
+            // // middle 8 bits
+            // auto y = static_cast<unsigned int>((inlier >> 8) & 0xFF);
+
+            // // upper 8 bits
+            // auto z = static_cast<unsigned int>((inlier >> 16) & 0xFF);
+            // oFile << x << " " << y << " " << z << "\n";
+            oFile << inlier << std::endl;
+        }
+    }
+    // return planes;
 }
 
 bool PlaneDetector::detectPlanarPatches(Octree *node, StatisticsUtils *statistics, size_t minNumPoints, std::vector<PlanarPatch *> &patches)
