@@ -6,52 +6,50 @@
 In diesem kapitel werden zuvor ausgewählte algorithmen einheitlich verglichen und die resultierenden ergebnisse ausgewertet.
 
 \section{Evaluation Protocol}
-Das Ziel der Arbeit ist es, die Frage zu beantworten, ob präzise Ebenenfindung in Echtzeit möglich ist.
-Das Problem bei der Auswahl des "besten" algos ist, dass jeder Algorithmus auf anderen Daten getestet wurde, was die
-Vergleichbarkeit dezimiert.
-Daher wird diese Evaluation auf einem öffentlich erhältlichen Datensatz ausgeführt, sowie einem "live" test unterzogen.
-Der Datensatz besteht aus einer Anzahl indoor Aufnahmen mit dazugehöriger Ground Truth, beides in Punktwolken-Form.
-
-grundlegend: \\
-- Problem: niemand nimmt den gleichen Datensatz \\
-- daher alle aufm selben testen für einheitlichen vergleich \\
-- quantitativ: datensatz+GT \\
-- qualitativ: "live" test in der FIN, überlagern der ebenen mit punktwolke \\
-- diese metriken sind wichtig: \\
+The goal of this work is to determine wether or not real-time, precise plane detection is realistic.
+When selection an algorithm for said task a problem presents itself; Most algorithms had been tested on different, non-comparable conditions.
+We therefore select a dataset on which all plane detection algorithms will be tested on to achieve comparability.
+For the evaluation protocol itself, we took inspiration from the \textit{Results} Section of \citeauthor{Araújo_Oliveira_2020}s work on RSPD \cite{Araújo_Oliveira_2020}.  
 
 
 \subsection{Metrics}
-grundlegend: \\
-- Laufzeit in relation zu len(PC) und \#planes \\
-- Präzision, Recall: "best match" berechnen. wie? i guess über MSE, wenn ich eh die cornerpoints habe. Dafür muss ich jedoch eine maximale entfernung angeben, bis eine ebene kein match hat\\
-- f1 i guess, tut genauso weh, es raus zu lassen, wie eine weitere spalte in die tabelle zu klatschen. man kann es ja eh aus P und R berechnen \\
-- MSE: durchschnittlicher abstand der cornerpoints \\
+To quantitatively evaluate each algorithms performance, we calculate the precision, recall and the f1 score.
+For that, we took inspiration from the work of \cite{Araújo_Oliveira_2020} and their approach of evaluation. 
+First we regularize the original point cloud to reduce complexity and furthermore to avoid proximity bias, because of the inverse relationship
+between distance to sensor and cloud density. This regularization is obtained through voxelization of the pointcloud.\\
+With this voxelgrid we can now calculate corresponding sets of voxels for each point cloud representing a plane.
+In the next step, we compare our planes from the ground truth with the planes obtained from an algorithm to obtain a list of corresponding pairs
+of ground truth and found planes.\\
+A grund truth plane $p_{gt_i}$ is marked as \textit{detected}, if any plane from the list of found planes achieves a voxel overlap of $\geq 50\%$.
+With this list of correspondences, we calculate precision, recall and the f1-score as explained in the following.
+For a given ground truth plane $p_{gt_j}$ and a corresponding found plane $p_{a_k}$ we sort a given voxel $v_i$ into the categories 
+\textit{True Positive(TP), False Positive(FP), False Negative(FN), True Negative(TN)} as follows.
+$$v_i \in p_{gt_j} \land v_i \in p_{a_k} \Rightarrow v_{i} \in TP$$
+$$v_i \in p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in FN$$
+$$v_i \notin p_{gt_j} \land v_i \in p_{a_k} \Rightarrow v_{i} \in FP$$
+$$v_i \notin p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in TN$$
 
-Für die Bewertung eines Algos werden zum einen verschiedene Laufzeiten betrachtet. Wie lange dauert das finden von Ebenen
-in relation zur Größe der Punktwolke, wie lange dauert es pro Ebene.
+With those four rules, we can calculate the precision, recall and F1-score like this:
+$$Precision = \frac{|TP|}{|TP|+|FP|}$$  
+$$Recall = \frac{|TP|}{|TP|+|FN|}$$  
+$$F1 = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}$$  
 
-Dazu werden wir die Qualität der Algorithmen bewerten. Dafür berechnen wir die \textit{precision}, \textit{recall}, den
-\textit{f1-score} sowie eine Durchschnittliche Abweichung der Ebene von der gegebenen Ground truth über
-den \textit{Mean-Squared-Error}(MSE).
+Aside from the accuracy, we also need to compare the time each algorithm needs to find its respective set of planes.
+For that, we measure the time spent in the plane detection phase, excluding any preprocessing or postprocessing steps, e.g. RSPD needs to calculate normals for each sample, 
+if normal vectors are not included in the dataset. 
+To measure the detection time, we simply log the exact times before and after calculations and write the differences to a file.\\
+\textcolor{red}{a variation would be interesting probably right? like time per plane, time per sample etc}
 
-\textcolor{red}{Erklärung der Metriken im Background nehme ich an?}
-Um eine gefundene Ebene einer Ebene der Ground truth zuzuordnen wird wird einfach die ebene mit der geringsten Abweichung
-(geringster MSE) ausgewählt. Ist der MSE aller gefundenen Ebenen zu groß, wird die bestimmte Ebene als "nicht gefunden" gewertet.
-
-\textcolor{red}{Was, wenn zu viele gefunden wurden? 1. wurden N ebenen doppelt gefunden oder Falsche ?}
-Daraus ergeben sich die Werte für \textit{precision}, \textit{recall} und \textit{f1-score}.
-
-Im anschluss betrachten wir das Maß an Korrektheit der Anordnung innerhalb der Scene. Im grunde berechnet sich dieses Maß
-erneut durch den MSE. \textcolor{red}{quasi 3d variante zu IoU}
 
 
 \subsection{Dataset}
-Wir benutzen den \textit{Stanford Large-Scale Indoor Spaces 3D Dataset} (S3DIS)\cite[]{armeni_cvpr16}.
-Der Datensatz beinhalt viele verschiedene Räume aus verschiedenen Gebäuden. Diese Indoor Umgebungen werden als Punktwolken
-dargestellt.
-Dazu werden Ground truths in form von annotierten punktwolken bereitgestellt, welche in insgesamt 12 Kategorien fallen.
-Da für diese arbeit allein die Ebenen interessant sind, werden wir aus diesen GTs manuell planare Strukturen extrahieren
-und durch ein convexes Polygon(\textcolor{red}{meistens 4 Ecken?}) beschreiben.
+To evaluate each plane detection algorithm on even grounds, we select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS). The Dataset had been recorded in three different buildings, 
+which then were divided into six distinct areas. Those six areas include a total of 270 different types of rooms, e.g. offices, hallways, WCs and two auditoriums to name a few.\\
+Each room has a complete unstructured point cloud in form of a list of XYZ values, as well as a list of annotated files representing semantically different objects that can be found in this point cloud 
+of the room. 
+Since our focus lies not on 3D semantic segmentation, we manually select planar regions using CloudCompare\footnote{https://cloudcompare.org/}, obtaining a list of sub-clouds.
+
+\textcolor{red}{insert statistic here}
 
 \subsection{Real-Life Test}
 Bei dem Live test wird im Gebäude der FIN ein Datensatz aufgenommen. Der Scan wird \textcolor{red}{\$STUFF} beinhalten.

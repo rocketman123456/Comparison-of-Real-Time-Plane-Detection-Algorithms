@@ -54,3 +54,7 @@ catkin_ws/src/plane-detection/src/EVAL/pointclouds/room.con
 catkin_ws/src/plane-detection/src/EVAL/pointclouds/room.pcl
 catkin_ws/src/plane-detection/src/EVAL/pointclouds/utrecht.con
 catkin_ws/src/plane-detection/src/EVAL/pointclouds/utrecht.pcl
+catkin_ws/src/plane-detection/src/EVAL/__pycache__/classes.cpython-38.pyc
+.gitignore
+catkin_ws/src/plane-detection/src/EVAL/__pycache__/fileio.cpython-38.pyc
+catkin_ws/src/plane-detection/src/EVAL/__pycache__/evaluator.cpython-38.pyc
