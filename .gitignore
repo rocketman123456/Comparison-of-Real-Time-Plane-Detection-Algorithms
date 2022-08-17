@@ -37,3 +37,7 @@ catkin_ws/src/plane-detection/src/CAPE/CAPE/CAPE.vcxproj.filters
 catkin_ws/src/plane-detection/src/CAPE/CAPE/CAPE.vcxproj.user
 Document/.vscode/settings.json
 catkin_ws/.vscode/settings.json
+catkin_ws/src/plane-detection/src/EVAL/__pycache__/classes.cpython-38.pyc
+catkin_ws/src/plane-detection/src/EVAL/__pycache__/evaluator.cpython-38.pyc
+.gitignore
+catkin_ws/src/plane-detection/src/EVAL/__pycache__/fileio.cpython-38.pyc
