@@ -26,6 +26,7 @@ catkin_ws/.vscode/browse.vc.db-shm
 catkin_ws/.vscode/browse.vc.db-wal
 catkin_ws/.vscode/browse.vc.db
 catkin_ws/planeIGuess.txt
+catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version
 catkin_ws/src/plane-detection/src/CAPE/LICENSE
 catkin_ws/src/plane-detection/src/CAPE/CAPE/.DS_Store
 catkin_ws/src/plane-detection/src/CAPE/CAPE/CAPE.sln
