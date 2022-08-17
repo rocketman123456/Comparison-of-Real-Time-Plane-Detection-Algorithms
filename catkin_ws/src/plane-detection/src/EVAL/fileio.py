@@ -39,6 +39,9 @@ class Reader:
                         return self.read_planes_i_from_folder(path)
         elif path.endswith('.geo'):
             return self.read_planes_geo(path)
+        elif path.endswith('asc'):
+            return [Plane.xyzfrom_txt(path)]
+
         l: List[Plane] = [self.read_plane_i(path)]
         return l
 
