@@ -6,6 +6,7 @@
  */
 
 #include "Ops.h"
+#include "../RSPD/pointcloudio.hpp"
 
 #define VERTICAL 1
 #define HORIZONTAL 2
@@ -415,7 +416,12 @@ std::vector<OPSPlane> process(const pcl::PointCloudXYZ::Ptr cloud,
         mergeOPSPlanes(OPSPlanes);
 
     } while (OPSPlanes.size() != OPSPlanesNumber);
-    return OPSPlanes;
+    PointCloudIO pointCloudIO;
+    for (OPSPlane plane : OPSPlanes)
+    {
+        auto f = plane.first;
+    }
+
     // Step 5: Visualize result
     // visualizeOPSPlanes(OPSPlanes, cloud);
 }
