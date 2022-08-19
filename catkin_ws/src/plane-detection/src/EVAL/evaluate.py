@@ -1,8 +1,8 @@
 from matplotlib import pyplot as plt
 import numpy as np
 from evaluator import Evaluator, VoxelEvaluator
+from visualizer import draw_bb_planes, draw_compare, draw_planes, draw_voxel_correspondence
 from fileio import Reader
-import sys
 import open3d as o3d
 if __name__ == '__main__':
     # cloud_path = sys.argv[1]
@@ -12,22 +12,29 @@ if __name__ == '__main__':
     # cloud_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/pointclouds/boiler_room.pcl"
     # gt_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ground_truth.geo"
     # algo_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ransac_schnabel.geo"
-    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_6/office_4/office_4.xyz"
-    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_6/office_4/GT"
-    algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_6/office_4/RSPD"
+    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_1/hallway_6/hallway_6.txt"
+    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_1/hallway_6/GT"
+    # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/here.geo"
+    algo_path = "/home/pedda/Documents/uni/BA/clones/PlaneDetection/CommandLineOption/hallway_6.geo"
 
     reader = Reader(cloud_path, gt_path, algo_path)
 
     points = reader.read_pcd()
+    colors  = np.loadtxt(cloud_path, dtype=int, usecols=(3,4,5))
+    colors  = colors * (1/255)
     ground_truth = reader.read_gt()
     test = reader.read_algo()
+    # draw_compare(ground_truth,test)
 
     pointcloud = o3d.geometry.PointCloud()
     pointcloud.points = o3d.utility.Vector3dVector(points)
+    pointcloud.colors = o3d.utility.Vector3dVector(colors)
+
+    draw_planes(test, pointcloud)
 
     kdtree = o3d.geometry.KDTreeFlann(pointcloud)
 
-    # o3d.visualization.draw_geometries([pointcloud])
+    o3d.visualization.draw_geometries([pointcloud])
 
     # if own datasets, find corresponding indices for planes in xyz format
     if ground_truth[0].indices == []:
@@ -44,7 +51,7 @@ if __name__ == '__main__':
     voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
         pointcloud, voxel_size=0.13)
 
-    o3d.visualization.draw_geometries([octree])
+    # o3d.visualization.draw_geometries([octree])
 
     inlier_evaluator = Evaluator.create(points, ground_truth, test)
     print('calculating correspondence')
@@ -66,6 +73,7 @@ if __name__ == '__main__':
     voxel_evaluator = Evaluator.create(points, ground_truth, test, voxel_grid)
     print('calculating correspondence')
     voxel_evaluator.correspondence()
+    draw_voxel_correspondence(ground_truth, test, pointcloud)
     print('done calculating correspondence')
     voxel_evaluator.calc_voxels(pointcloud)
     voxel_evaluator.get_precision()
@@ -98,28 +106,3 @@ if __name__ == '__main__':
         if k != None:
             f.add(k)
     print(f'found: {len(f)} / {len(ground_truth)}')
-    # y = []
-    # for p in ground_truth:
-    #     b = []
-    #     for i in p.xyz_points:
-    #         b.append(i)
-    #     b = np.array(b)
-    #     pc = o3d.geometry.PointCloud()
-    #     pc.points = o3d.utility.Vector3dVector(b)
-    #     v = pc.get_oriented_bounding_box()
-    #     v.color= (0,1,0)
-    #     y.append(v)
-    # for p in test:
-    #     b = []
-    #     for i in p.xyz_points:
-    #         b.append(i)
-    #     b = np.array(b)
-    #     pc = o3d.geometry.PointCloud()
-    #     pc.points = o3d.utility.Vector3dVector(b)
-    #     v = pc.get_oriented_bounding_box()
-    #     v.color= (0,0,1)
-    #     y.append(v)
-    # # pointcloud.paint_uniform_color([0.5, 0.5, 0.5])
-    # y.append(pointcloud)
-
-    # o3d.visualization.draw_geometries(y)

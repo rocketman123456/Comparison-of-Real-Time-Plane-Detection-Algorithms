@@ -26,6 +26,9 @@ class Plane:
             self.indices.append(idx[0])
             self.set_indices.add(idx[0])
 
+    def calc_xyz(self, pointcloud: o3d.geometry.PointCloud):
+        for point in self.set_indices:
+            self.xyz_points.append(pointcloud.points[point])
 
     def set_set(self, pc: o3d.geometry.PointCloud):
         # self.set_indices = set(self.indices)
