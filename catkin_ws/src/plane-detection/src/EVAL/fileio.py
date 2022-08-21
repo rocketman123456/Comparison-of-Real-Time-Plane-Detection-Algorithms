@@ -15,8 +15,9 @@ class IOHelper:
         self._path_pcd = cloud_path
         self._path_gt = gt_path
         self._path_algo = algo_path
+        self.dataset_path, _ = gt_path.rsplit('/', 1)
 
-    def read_pcd(self)->np.ndarray:
+    def read_pcd(self) -> np.ndarray:
         print('Reading Point cloud')
         if self._path_pcd.endswith('.pcl'):
             return self.read_pc_pcl()
@@ -29,12 +30,12 @@ class IOHelper:
     def read_algo(self):
         return self._read(self._path_algo)
 
-    def _read(self, path: str)->List[Plane]:
+    def _read(self, path: str) -> List[Plane]:
         if os.path.isdir(path):
             for file in os.listdir(path):
                 if file.endswith('.geo'):
                     return self.read_planes_geo(os.path.join(path, file))
-                with open(os.path.join(path, file),'r') as f:
+                with open(os.path.join(path, file), 'r') as f:
                     if len(f.readline().split(' ')) > 1:
                         return self.read_planes_xyz_from_folder(path)
                     else:
@@ -78,16 +79,17 @@ class IOHelper:
         p = Plane.xyzfrom_txt(filename)
         return p
 
-    def read_planes_xyz_from_folder(self, path: str)->List[Plane]:
+    def read_planes_xyz_from_folder(self, path: str) -> List[Plane]:
         planes = []
         for file in os.listdir(path):
             planes.append(self.read_plane_xyz(os.path.join(path, file)))
         return planes
-    def read_plane_i(self, filename: str)->Plane:
+
+    def read_plane_i(self, filename: str) -> Plane:
         p = Plane.i_from_txt(filename)
         return p
 
-    def read_planes_i_from_folder(self, path: str)->List[Plane]:
+    def read_planes_i_from_folder(self, path: str) -> List[Plane]:
         planes = []
         for file in os.listdir(path):
             planes.append(self.read_plane_i(os.path.join(path, file)))
@@ -100,7 +102,7 @@ class IOHelper:
         # p = Point(x,y,z)
         return [x, y, z]
 
-    def read_pc_pcl(self)->np.ndarray:
+    def read_pc_pcl(self) -> np.ndarray:
         points: List[List[float]] = []
         with open(self._path_pcd, "rb") as file:
             size = unpack('N', file.read(8))[0]
@@ -121,13 +123,18 @@ class IOHelper:
                     file.read(4)
         return np.array(points)
 
-    def read_pc_xyz(self)->np.ndarray:
-        points: np.ndarray = np.loadtxt(self._path_pcd, usecols=(0, 1, 2)).tolist()
+    def read_pc_xyz(self) -> np.ndarray:
+        points: np.ndarray = np.loadtxt(
+            self._path_pcd, usecols=(0, 1, 2)).tolist()
         return points
 
-    def save_results(self, p: float, r: float, f1: float, found_planes: int ,all_planes: int)->None:
-        parent, method = self._path_algo.rsplit('/',1)
-        output_file = os.path.join(parent, f'output_{method}.txt')
+    def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int) -> None:
+        _, dataset, method = self._path_algo.rsplit('/', 2)
+        output_folder = os.path.join(self.dataset_path, 'results')
+        if 'results' not in os.listdir(self.dataset_path):
+            os.mkdir(output_folder)
+        output_file = os.path.join(
+            output_folder, f'{dataset}_{method}.out')
         print(f'Writing results to {output_file}')
         with open(output_file, 'w') as ofile:
             ofile.write(f'precision: {p}\n')

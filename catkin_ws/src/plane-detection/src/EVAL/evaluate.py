@@ -109,6 +109,6 @@ if __name__ == '__main__':
     # algo_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ransac_schnabel.geo"
     cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_4/WC_1/WC_1.txt"
     gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_4/WC_1/GT"
-    algo_path = "/home/pedda/clones/PlaneDetection/CommandLineOption/here.geo"
+    algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/WC_1/RSPD"
     # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_1//RSPD"
     evaluate(cloud_path, gt_path, algo_path)
