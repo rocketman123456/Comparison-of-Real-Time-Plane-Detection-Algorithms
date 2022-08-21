@@ -10,7 +10,7 @@ from tqdm import tqdm
 from classes import Plane
 
 
-class Reader:
+class IOHelper:
     def __init__(self, cloud_path: str, gt_path: str, algo_path: str) -> None:
         self._path_pcd = cloud_path
         self._path_gt = gt_path
@@ -32,6 +32,8 @@ class Reader:
     def _read(self, path: str)->List[Plane]:
         if os.path.isdir(path):
             for file in os.listdir(path):
+                if file.endswith('.geo'):
+                    return self.read_planes_geo(os.path.join(path, file))
                 with open(os.path.join(path, file),'r') as f:
                     if len(f.readline().split(' ')) > 1:
                         return self.read_planes_xyz_from_folder(path)
@@ -122,3 +124,13 @@ class Reader:
     def read_pc_xyz(self)->np.ndarray:
         points: np.ndarray = np.loadtxt(self._path_pcd, usecols=(0, 1, 2)).tolist()
         return points
+
+    def save_results(self, p: float, r: float, f1: float, found_planes: int ,all_planes: int)->None:
+        parent, method = self._path_algo.rsplit('/',1)
+        output_file = os.path.join(parent, f'output_{method}.txt')
+        print(f'Writing results to {output_file}')
+        with open(output_file, 'w') as ofile:
+            ofile.write(f'precision: {p}\n')
+            ofile.write(f'recall: {r}\n')
+            ofile.write(f'f1-score: {f1}\n')
+            ofile.write(f'found: {found_planes}/{all_planes}\n')

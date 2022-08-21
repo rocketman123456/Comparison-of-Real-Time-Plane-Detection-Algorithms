@@ -15,7 +15,9 @@ class Plane:
         self.voxels = set()
         self.normal = []
         self.leafs = set()
-    def calc_voxel(self, vg: o3d.geometry.VoxelGrid):
+    def calc_voxel(self, vg: o3d.geometry.VoxelGrid, pointcloud: o3d.geometry.PointCloud):
+        if self.xyz_points == []:
+            self.calc_xyz(pointcloud)
         for inlier in self.xyz_points:
             v = vg.get_voxel(inlier)
             self.voxels.add(tuple(v))

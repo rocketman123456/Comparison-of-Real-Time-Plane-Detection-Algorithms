@@ -18,6 +18,12 @@ class Evaluator(abc.ABC):
             print("creating VoxelGridEvaluator")
             return VoxelEvaluator(points, ground_truth, test, method)
 
+    def get_metrics(self):
+        self.get_precision()
+        self.get_recall()
+        self.get_f1()
+        return self.precision, self.recall, self.f1
+
     def get_corr(self, plane: Plane):
         count = dict()
         count[None] = 0
@@ -48,7 +54,7 @@ class Evaluator(abc.ABC):
         for plane in self.test:
             ret = self.get_corr(plane)
             self.correspondences[plane] = ret
-        
+
     @abc.abstractmethod
     def get_precision(self) -> float:
         pass
@@ -58,7 +64,8 @@ class Evaluator(abc.ABC):
         pass
 
     def get_f1(self) -> float:
-        self.f1 = 2*(self.precision * self.recall) / (self.precision + self.recall)
+        self.f1 = 2*(self.precision * self.recall) / \
+            (self.precision + self.recall)
 
 
 class OctreeEvaluator(Evaluator):
@@ -100,13 +107,14 @@ class OctreeEvaluator(Evaluator):
         for gp in self.ground_truth:
             for leaf in gp.leafs:
                 self.all.add(leaf)
-                for t,g in self.correspondences.items():
+                for t, g in self.correspondences.items():
                     if g == gp and leaf in t.leafs:
                         self.correct.add(leaf)
                         break
         print(f'{len(self.correct)} / {len(self.all)}')
         self.recall = len(self.correct) / len(self.all)
         return len(self.correct) / len(self.all)
+
 
 class InlierEvaluator(Evaluator):
     def __init__(self, points: np.ndarray, ground_truth: List[Plane], test: List[Plane]) -> None:
@@ -130,7 +138,7 @@ class InlierEvaluator(Evaluator):
         for gp in self.ground_truth:
             for inlier in gp.set_indices:
                 al.add(inlier)
-                for x,y in self.correspondences.items():
+                for x, y in self.correspondences.items():
                     if y == gp and inlier in x.set_indices:
                         correct.add(inlier)
                         break
@@ -154,8 +162,8 @@ class VoxelEvaluator(Evaluator):
         for plane in self.test:
             for inlier in plane.set_indices:
                 v = self.voxel_grid.get_voxel(pc.points[inlier])
-                plane.voxels.add(tuple(v))    
-    
+                plane.voxels.add(tuple(v))
+
     def get_precision(self):
         self.all = set()
         self.correct = set()
