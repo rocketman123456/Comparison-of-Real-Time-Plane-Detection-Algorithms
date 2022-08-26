@@ -7,7 +7,7 @@ from typing import List
 import numpy as np
 
 from tqdm import tqdm
-from classes import Plane
+from classes import Plane, Result
 
 
 class IOHelper:
@@ -16,6 +16,7 @@ class IOHelper:
         self._path_gt = gt_path
         self._path_algo = algo_path
         self.dataset_path, _ = gt_path.rsplit('/', 1)
+        _, self.dataset, self.method = self._path_algo.rsplit('/', 2)
 
     def read_pcd(self) -> np.ndarray:
         print('Reading Point cloud')
@@ -129,15 +130,12 @@ class IOHelper:
         return points
 
     def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int) -> None:
-        _, dataset, method = self._path_algo.rsplit('/', 2)
+        result = Result(p, r, f1, found_planes, all_planes, self.dataset, self.method)
+
         output_folder = os.path.join(self.dataset_path, 'results')
         if 'results' not in os.listdir(self.dataset_path):
             os.mkdir(output_folder)
         output_file = os.path.join(
-            output_folder, f'{dataset}_{method}.out')
-        print(f'Writing results to {output_file}')
-        with open(output_file, 'w') as ofile:
-            ofile.write(f'precision: {p}\n')
-            ofile.write(f'recall: {r}\n')
-            ofile.write(f'f1-score: {f1}\n')
-            ofile.write(f'found: {found_planes}/{all_planes}\n')
+            output_folder, f'{self.dataset}_{self.method}.out')
+
+        result.to_file(output_file)

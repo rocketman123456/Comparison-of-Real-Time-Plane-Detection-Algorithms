@@ -54,7 +54,7 @@ class Evaluator(abc.ABC):
         for plane in self.test:
             ret = self.get_corr(plane)
             self.correspondences[plane] = ret
-
+        
     @abc.abstractmethod
     def get_precision(self) -> float:
         pass

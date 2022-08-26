@@ -6,7 +6,7 @@ import open3d as o3d
 import sys
 
 # TODO load cloud once, compare all algos at once?
-def evaluate(cloud_path: str, gt_path: str, algo_path: str) -> None:
+def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None:
     iohelper = IOHelper(cloud_path, gt_path, algo_path)
 
     points = iohelper.read_pcd()
@@ -14,17 +14,26 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str) -> None:
     # colors  = colors * (1/255)
     ground_truth = iohelper.read_gt()
     test = iohelper.read_algo()
-    # draw_compare(ground_truth,test)
+    if debug:
+        draw_compare(ground_truth,test)
 
     pointcloud = o3d.geometry.PointCloud()
     pointcloud.points = o3d.utility.Vector3dVector(points)
     # pointcloud.colors = o3d.utility.Vector3dVector(colors)
+    
+    if debug:
+        draw_planes(test, pointcloud)
 
     # draw_planes(test, pointcloud)
+=======
+    
+    if debug:
+        draw_planes(test, pointcloud)
+>>>>>>> evaluation
 
     kdtree = o3d.geometry.KDTreeFlann(pointcloud)
-
-    # o3d.visualization.draw_geometries([pointcloud])
+    if debug:
+        o3d.visualization.draw_geometries([pointcloud])
 
     # if own datasets, find corresponding indices for planes in xyz format
     if ground_truth[0].indices == []:
@@ -41,7 +50,8 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str) -> None:
     voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
         pointcloud, voxel_size=0.13)
 
-    # o3d.visualization.draw_geometries([octree])
+    if debug:
+        o3d.visualization.draw_geometries([octree])
 
     # inlier_evaluator = Evaluator.create(points, ground_truth, test)
     # print('calculating correspondence')
@@ -62,22 +72,15 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str) -> None:
     voxel_evaluator = Evaluator.create(points, ground_truth, test, voxel_grid)
     print('calculating correspondence')
     voxel_evaluator.correspondence()
-    draw_voxel_correspondence(ground_truth, test, pointcloud)
+    if debug:
+        draw_voxel_correspondence(ground_truth, test, pointcloud)
     print('done calculating correspondence')
-    for ap, gt in voxel_evaluator.correspondences.items():
-        if len(ap.voxels) < 1:
-            ap.calc_voxel(voxel_grid, pointcloud)
-        if gt != None and len(gt.voxels) < 1:
-            gt.calc_voxel(voxel_grid, pointcloud)
-
+    voxel_evaluator.calc_voxels(pointcloud)
     p, r, f1 = voxel_evaluator.get_metrics()
-    print(f'{voxel_evaluator.precision = }')
-    print(f'{voxel_evaluator.recall = }')
-    print(f'{voxel_evaluator.f1 = }')
     f = set()
-    for i, k in voxel_evaluator.correspondences.items():
-        if k != None:
-            f.add(k)
+    for gtp in voxel_evaluator.correspondences.values():
+        if gtp != None:
+            f.add(gtp)
     iohelper.save_results(p, r, f1, len(f), len(ground_truth))
     # print(f'found: {len(f)} / {len(ground_truth)}')
     # input("press enter to continue with octree evaluation")

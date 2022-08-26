@@ -1,9 +1,47 @@
 
+from dataclasses import dataclass
+import os
 from typing import List
 import open3d as o3d
 import numpy as np
 
 
+@dataclass
+class Result():
+    precision: float
+    recall: float
+    f1: float
+    detected: int
+    out_of: int
+    dataset: str
+    algorithm: str
+
+    def to_file(self, path: str):
+        print(f'Writing results to {path}')
+        with open(path, 'w') as ofile:
+            ofile.write(f'{self.algorithm} : {self.dataset} \n')
+            ofile.write(f'precision: {self.precision}\n')
+            ofile.write(f'recall: {self.recall}\n')
+            ofile.write(f'f1-score: {self.f1}\n')
+            ofile.write(f'found: {self.detected} / {self.out_of}\n')
+
+    @staticmethod
+    def from_file(path: str):
+        dataset, algo = np.loadtxt(
+            path, dtype=str, usecols=(0, 2), max_rows=1)
+        prec, rec, f1 = np.loadtxt(
+            path, dtype=float, skiprows=1, usecols=1, max_rows=3)
+        detected, out_of = np.loadtxt(path, dtype=int, usecols=(1,3), skiprows=4)
+        return Result(
+            precision=prec,
+            recall=rec,
+            f1=f1,
+            detected=detected,
+            out_of=out_of,
+            dataset=dataset,
+            algorithm=algo
+        )
+    
 class Plane:
     def __init__(self) -> None:
         self.indices: List[int] = []
@@ -15,6 +53,7 @@ class Plane:
         self.voxels = set()
         self.normal = []
         self.leafs = set()
+
     def calc_voxel(self, vg: o3d.geometry.VoxelGrid, pointcloud: o3d.geometry.PointCloud):
         if self.xyz_points == []:
             self.calc_xyz(pointcloud)
