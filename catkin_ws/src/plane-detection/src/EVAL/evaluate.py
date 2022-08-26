@@ -25,11 +25,9 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
         draw_planes(test, pointcloud)
 
     # draw_planes(test, pointcloud)
-=======
     
     if debug:
         draw_planes(test, pointcloud)
->>>>>>> evaluation
 
     kdtree = o3d.geometry.KDTreeFlann(pointcloud)
     if debug:
