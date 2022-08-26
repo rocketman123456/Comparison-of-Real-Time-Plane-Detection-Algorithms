@@ -49,6 +49,12 @@ class Evaluator(abc.ABC):
             ret = self.get_corr(plane)
             self.correspondences[plane] = ret
         
+    def get_metrics(self):
+        self.get_precision()
+        self.get_recall()
+        self.get_f1()
+        return self.precision, self.recall, self.f1
+
     @abc.abstractmethod
     def get_precision(self) -> float:
         pass
