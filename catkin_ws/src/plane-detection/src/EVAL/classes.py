@@ -16,7 +16,8 @@ class Result():
     dataset: str
     algorithm: str
 
-    def to_file(self, path: str):
+
+    def to_file(self, path: str, number_of_datasets: int = 1):
         print(f'Writing results to {path}')
         with open(path, 'w') as ofile:
             ofile.write(f'{self.algorithm} : {self.dataset} \n')
@@ -27,7 +28,7 @@ class Result():
 
     @staticmethod
     def from_file(path: str):
-        dataset, algo = np.loadtxt(
+        algo, dataset = np.loadtxt(
             path, dtype=str, usecols=(0, 2), max_rows=1)
         prec, rec, f1 = np.loadtxt(
             path, dtype=float, skiprows=1, usecols=1, max_rows=3)
