@@ -37,8 +37,8 @@ class Result():
             precision=prec,
             recall=rec,
             f1=f1,
-            detected=detected,
-            out_of=out_of,
+            detected=int(detected),
+            out_of=int(out_of),
             dataset=dataset,
             algorithm=algo
         )

@@ -1,14 +1,34 @@
+import matplotlib.pyplot as plt
 import os
 from typing import Dict, List
 from classes import Result
 from evaluate import evaluate
-
+import pandas as pd
+import numpy as np
 # TODO maybe implement some data analysis stuff using pandas and visualize it?
 
 ALGOS = {'RSPD': "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries/command_line",
          'OPS': "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries/orientedPointSampling"}
 ALGO_ext = {'RSPD': '.geo', 'OPS': ''}
 ALGO_in = {'RSPD': '.txt', 'OPS': '.pcd'}
+
+
+def get_df(results_folder: str):
+    results = [Result.from_file(os.path.join(results_folder, file))
+               for file in os.listdir(results_folder)]
+    fig, axs = plt.subplots(1, len(ALGOS))
+    for ax, algo in zip(axs,ALGOS.keys()):
+        ax.set_title(algo)
+
+        # filter results by algorithm
+        rspd = [res for res in results if res.algorithm == 'RSPD']
+        # create algo dataframe
+        rspd_df = pd.DataFrame(rspd).drop(columns=['detected', 'out_of'])
+        rspd_df = rspd_df.rename(columns={'dataset': 'Scene Types'})
+        rspd_df.plot.bar(x='Scene Types', ax=ax)#, marker='o',label='rspd')
+
+    plt.ylim([0.0, 1.0])
+    plt.show()
 
 
 def collect_results(root_folder: str):
@@ -52,7 +72,12 @@ def collect_results(root_folder: str):
             scene_type_average = Result(
                 scene_p, scene_r, scene_f1, scene_found, scene_all, f'{scene_type}_avg', algorithm)
             algo_results.append(scene_type_average)
-    return algo_results
+    for result in algo_results:
+        if 'results' not in os.listdir(rootFolder):
+            os.mkdir(os.path.join(rootFolder, 'results'))
+        filepath = os.path.join(
+            root_folder, 'results', f'{result.algorithm}-{result.dataset}.out')
+        result.to_file(filepath)
 
 
 def batch_evaluate(root_folder: str):
@@ -126,13 +151,7 @@ if __name__ == '__main__':
     # rootFolder = sys.argv[1]
     rootFolder = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST"
     algorithm_binaries = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries"
-
-    batch_detect(rootFolder, algorithm_binaries)
-    batch_evaluate(rootFolder)
-    results = collect_results(rootFolder)
-    for result in results:
-        if 'results' not in os.listdir(rootFolder):
-            os.mkdir(os.path.join(rootFolder, 'results'))
-        filepath = os.path.join(
-            rootFolder, 'results', f'{result.algorithm}-{result.dataset}.out')
-        result.to_file(filepath)
+    get_df(os.path.join(rootFolder, 'results'))
+    # batch_detect(rootFolder, algorithm_binaries)
+    # batch_evaluate(rootFolder)
+    # collect_results(rootFolder)
