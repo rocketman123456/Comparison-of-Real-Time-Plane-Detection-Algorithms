@@ -5,7 +5,10 @@ from evaluate import evaluate
 
 # TODO maybe implement some data analysis stuff using pandas and visualize it?
 
-ALGOS = {'RSPD': "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries/command_line"}
+ALGOS = {'RSPD': "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries/command_line",
+         'OPS': "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries/orientedPointSampling"}
+ALGO_ext = {'RSPD': '.geo', 'OPS': ''}
+ALGO_in = {'RSPD': '.txt', 'OPS': '.pcd'}
 
 
 def collect_results(root_folder: str):
@@ -51,16 +54,17 @@ def collect_results(root_folder: str):
             algo_results.append(scene_type_average)
     return algo_results
 
+
 def batch_evaluate(root_folder: str):
     datasets = os.listdir(root_folder)
 
     for dataset in datasets:
-        if os.path.isfile(os.path.join(rootFolder, dataset)):
+        if os.path.isfile(os.path.join(root_folder, dataset)):
             continue
         if dataset.startswith('nope_') or dataset.startswith('results'):
             # dataset has no GT, skipping
             continue
-        dataset_path = os.path.join(rootFolder, dataset)
+        dataset_path = os.path.join(root_folder, dataset)
         gt_path = os.path.join(dataset_path, "GT")
         methods = []
         cloud_filename = dataset + '.txt'
@@ -75,25 +79,47 @@ def batch_evaluate(root_folder: str):
             evaluate(cloud_path, gt_path, algo_path)
 
 
+def create_pcd(filepath: str):
+    with open(filepath, "r") as inf, open(filepath.replace('.txt', '.pcd'), "w") as of:
+        of.write("# .PCD v0.7 - Point Cloud Data file format\n")
+        of.write("VERSION 0.7\nFIELDS x y z\n")
+        of.write("SIZE 4 4 4\nTYPE F F F\n")
+        of.write("COUNT 1 1 1\n")
+        xyz = []
+        points = 0
+        for line in inf.readlines():
+            l = line.split(" ")
+            xyz.append(" ".join(l[:3]))
+            points += 1
+        of.write(f"WIDTH {points}\nHEIGHT 1\n")
+        of.write("VIEWPOINT 0 0 0 1 0 0 0\n")
+        of.write(f"POINTS {points}\nDATA ascii\n")
+        for coords in xyz:
+            of.write(f"{coords}\n")
+
+
 def batch_detect(rootfolder: str, binaries_path: str) -> None:
 
     for dataset in os.listdir(rootfolder):
         dataset_path = os.path.join(rootfolder, dataset)
         if not os.path.isdir(dataset_path):
             continue
-        if 'nope_' in dataset:
+        if 'nope_' in dataset or dataset == 'results':
             continue
-        cloud_file = os.path.join(dataset_path, f'{dataset}.txt')
-        # if 'OPS' not in os.listdir(dataset_path):
-        #     os.mkdir(os.path.join(dataset_path, 'OPS'))
-        if 'RSPD' not in os.listdir(dataset_path):
-            os.mkdir(os.path.join(dataset_path, 'RSPD'))
-        # if '3DKHT' not in os.listdir(dataset_path):
-        #     os.mkdir(os.path.join(dataset_path, '3DKHT'))
-        result_file = os.path.join(dataset_path, 'RSPD', f'{dataset}.geo')
-        print(f'Calling RSPD on {dataset}!')
-        command = f'{ALGOS["RSPD"]} {cloud_file} {result_file}'
-        os.system(command)
+        for algo, binary in ALGOS.items():
+            if algo == 'RSPD':
+                continue
+            cloud_file = os.path.join(
+                dataset_path, f'{dataset}{ALGO_in[algo]}')
+            result_file = os.path.join(
+                dataset_path, algo, f'{dataset}{ALGO_ext[algo]}')
+            if cloud_file not in os.listdir(dataset_path):
+                create_pcd(cloud_file.replace('.pcd', '.txt'))
+            if algo not in os.listdir(dataset_path):
+                os.mkdir(os.path.join(dataset_path, algo))
+            print(f'Calling {algo} on {dataset}!')
+            command = f'{binary} {cloud_file} {result_file}'
+            os.system(command)
 
 
 if __name__ == '__main__':
@@ -101,7 +127,7 @@ if __name__ == '__main__':
     rootFolder = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST"
     algorithm_binaries = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries"
 
-    # batch_detect(rootFolder, algorithm_binaries)
+    batch_detect(rootFolder, algorithm_binaries)
     batch_evaluate(rootFolder)
     results = collect_results(rootFolder)
     for result in results:
