@@ -21,6 +21,12 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
     pointcloud.points = o3d.utility.Vector3dVector(points)
     # pointcloud.colors = o3d.utility.Vector3dVector(colors)
     
+    # if 3dkht, translate algo_planes by pcd_bb center
+    if iohelper.method == 'o':
+        print('3DKHT, translating')
+        for algo_plane in test:
+            algo_plane.translate(pointcloud.get_center())
+
     if debug:
         draw_planes(test, pointcloud)
 
@@ -108,8 +114,9 @@ if __name__ == '__main__':
     # cloud_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/pointclouds/boiler_room.pcl"
     # gt_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ground_truth.geo"
     # algo_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ransac_schnabel.geo"
-    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_4/WC_1/WC_1.txt"
-    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_4/WC_1/GT"
-    algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/WC_1/RSPD"
+    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/office_4/office_4.txt"
+    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/office_4/GT"
+    algo_path = "/home/pedda/clones/3dkht_toolbox/build/o"
+    # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/WC_1/RSPD"
     # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_1//RSPD"
     evaluate(cloud_path, gt_path, algo_path)

@@ -173,7 +173,6 @@ class VoxelEvaluator(Evaluator):
                 self.all.add(h_a_v)
                 if gt != None and a_v in gt.voxels:
                     self.correct.add(h_a_v)
-        print(f'{len(self.correct)} / {len(self.all)}')
         self.precision = len(self.correct) / len(self.all)
         return len(self.correct) / len(self.all)
 

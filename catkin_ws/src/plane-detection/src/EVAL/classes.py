@@ -55,6 +55,12 @@ class Plane:
         self.normal = []
         self.leafs = set()
 
+    def translate(self, vector: np.ndarray):
+        for point in self.xyz_points:
+            point[0] += vector[0]
+            point[1] += vector[1]
+            point[2] += vector[2]
+
     def calc_voxel(self, vg: o3d.geometry.VoxelGrid, pointcloud: o3d.geometry.PointCloud):
         if self.xyz_points == []:
             self.calc_xyz(pointcloud)

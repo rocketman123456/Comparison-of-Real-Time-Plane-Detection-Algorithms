@@ -7,10 +7,9 @@ from evaluate import evaluate
 import pandas as pd
 
 # globals
-ALGOS = {'RSPD': "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries/command_line",
-         'OPS': "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries/orientedPointSampling"}
-ALGO_ext = {'RSPD': '.geo', 'OPS': ''}
-ALGO_in = {'RSPD': '.txt', 'OPS': '.pcd'}
+ALGOS = ['RSPD', 'OPS', '3DKHT']
+ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': ''}
+ALGO_in = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT' : '.txt'}
 
 
 def get_df(results_folder: str):
@@ -18,15 +17,15 @@ def get_df(results_folder: str):
     results = [Result.from_file(os.path.join(results_folder, file))
                for file in os.listdir(results_folder)]
     fig, axs = plt.subplots(1, len(ALGOS))
-    for ax, algo in zip(axs, ALGOS.keys()):
+    for ax, algo in zip(axs, ALGOS):
         ax.set_title(algo)
 
         # filter results by algorithm
-        rspd = [res for res in results if res.algorithm == 'RSPD']
+        algo_data = [res for res in results if res.algorithm == algo]
         # create algo dataframe
-        rspd_df = pd.DataFrame(rspd).drop(columns=['detected', 'out_of'])
-        rspd_df = rspd_df.rename(columns={'dataset': 'Scene Types'})
-        rspd_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')
+        algo_df = pd.DataFrame(algo_data).drop(columns=['detected', 'out_of'])
+        algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
+        algo_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')
 
     plt.ylim([0.0, 1.0])
     plt.show()
@@ -138,8 +137,9 @@ def batch_detect(rootfolder: str, binaries_path: str) -> None:
             continue
         if 'nope_' in dataset or dataset == 'results':
             continue
-        for algo, binary in ALGOS.items():
+        for algo in ALGOS:
             # get input params for given algorithm
+            binary = os.path.join(binaries_path, algo)
             cloud_file = os.path.join(
                 dataset_path, f'{dataset}{ALGO_in[algo]}')
             result_file = os.path.join(
@@ -163,8 +163,10 @@ if __name__ == '__main__':
 
     # input argument handling
     parser = argparse.ArgumentParser('BatchEvaluation')
-    parser.add_argument('-R', '--root-folder', default=fallback_root, help='Path to root directory which includes datasets to be tested')
-    parser.add_argument('-A', '--algo-binaries', default=fallback_algo_binaries)
+    parser.add_argument('-R', '--root-folder', default=fallback_root,
+                        help='Path to root directory which includes datasets to be tested')
+    parser.add_argument('-A', '--algo-binaries',
+                        default=fallback_algo_binaries)
     args = parser.parse_args()
 
     rootFolder = args.root_folder
