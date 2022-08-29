@@ -25,15 +25,17 @@ class IOHelper:
         else:
             return self.read_pc_xyz()
 
-    def read_gt(self):
+    def read_gt(self) -> List[Plane]:
         return self._read(self._path_gt)
 
-    def read_algo(self):
+    def read_algo(self) -> List[Plane]:
         return self._read(self._path_algo)
 
     def _read(self, path: str) -> List[Plane]:
         if os.path.isdir(path):
             for file in os.listdir(path):
+                if file.startswith('time'):
+                    continue
                 if file.endswith('.geo'):
                     return self.read_planes_geo(os.path.join(path, file))
                 with open(os.path.join(path, file), 'r') as f:
@@ -83,7 +85,8 @@ class IOHelper:
     def read_planes_xyz_from_folder(self, path: str) -> List[Plane]:
         planes = []
         for file in os.listdir(path):
-            planes.append(self.read_plane_xyz(os.path.join(path, file)))
+            if 'time' not in file:
+                planes.append(self.read_plane_xyz(os.path.join(path, file)))
         return planes
 
     def read_plane_i(self, filename: str) -> Plane:
@@ -129,8 +132,8 @@ class IOHelper:
             self._path_pcd, usecols=(0, 1, 2)).tolist()
         return points
 
-    def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int) -> None:
-        result = Result(p, r, f1, found_planes, all_planes, self.dataset, self.method)
+    def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int, time_total:float, time_per_plane: float, time_per_sample:float) -> None:
+        result = Result(p, r, f1, found_planes, all_planes, self.dataset, self.method, time_total, time_per_plane, time_per_sample)
 
         output_folder = os.path.join(self.dataset_path, 'results')
         if 'results' not in os.listdir(self.dataset_path):
@@ -139,3 +142,33 @@ class IOHelper:
             output_folder, f'{self.dataset}_{self.method}.out')
 
         result.to_file(output_file)
+
+    def get_times(self):
+        path = ""
+        for file in os.listdir(self._path_algo):
+            if 'time' in file:
+                path = os.path.join(self._path_algo, file)
+                break
+        else:
+            print(f'no time results found for {self.method} and {self.dataset}!')
+            return 0,0,0
+        return np.loadtxt(path, skiprows=1, dtype=float)
+
+def create_pcd(filepath: str):
+    """OPS expects PCL file format so we are quickly going to convert the .txt file"""
+    with open(filepath, "r") as inf, open(filepath.replace('.txt', '.pcd'), "w") as of:
+        of.write("# .PCD v0.7 - Point Cloud Data file format\n")
+        of.write("VERSION 0.7\nFIELDS x y z\n")
+        of.write("SIZE 4 4 4\nTYPE F F F\n")
+        of.write("COUNT 1 1 1\n")
+        xyz = []
+        points = 0
+        for line in inf.readlines():
+            l = line.split(" ")
+            xyz.append(" ".join(l[:3]))
+            points += 1
+        of.write(f"WIDTH {points}\nHEIGHT 1\n")
+        of.write("VIEWPOINT 0 0 0 1 0 0 0\n")
+        of.write(f"POINTS {points}\nDATA ascii\n")
+        for coords in xyz:
+            of.write(f"{coords}\n")

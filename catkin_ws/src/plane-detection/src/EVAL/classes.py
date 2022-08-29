@@ -1,4 +1,5 @@
 
+from copy import deepcopy
 from dataclasses import dataclass
 import os
 from typing import List
@@ -15,7 +16,9 @@ class Result():
     out_of: int
     dataset: str
     algorithm: str
-
+    time_total:float
+    time_per_plane:float
+    time_per_sample:float
 
     def to_file(self, path: str, number_of_datasets: int = 1):
         print(f'Writing results to {path}')
@@ -25,6 +28,8 @@ class Result():
             ofile.write(f'recall: {self.recall}\n')
             ofile.write(f'f1-score: {self.f1}\n')
             ofile.write(f'found: {self.detected} / {self.out_of}\n')
+            ofile.write('time per_plane per_sample\n')
+            ofile.write(f'{self.time_total} {self.time_per_plane} {self.time_per_sample}')
 
     @staticmethod
     def from_file(path: str):
@@ -32,7 +37,8 @@ class Result():
             path, dtype=str, usecols=(0, 2), max_rows=1)
         prec, rec, f1 = np.loadtxt(
             path, dtype=float, skiprows=1, usecols=1, max_rows=3)
-        detected, out_of = np.loadtxt(path, dtype=int, usecols=(1,3), skiprows=4)
+        detected, out_of = np.loadtxt(path, dtype=int, usecols=(1,3), skiprows=4, max_rows=1)
+        total, per_plane, per_sample = np.loadtxt(path,dtype=float, skiprows=6)
         return Result(
             precision=prec,
             recall=rec,
@@ -40,7 +46,10 @@ class Result():
             detected=int(detected),
             out_of=int(out_of),
             dataset=dataset,
-            algorithm=algo
+            algorithm=algo,
+            time_total=total,
+            time_per_plane=per_plane,
+            time_per_sample=per_sample
         )
     
 class Plane:
@@ -55,6 +64,14 @@ class Plane:
         self.normal = []
         self.leafs = set()
 
+    def crop(self, subcloud: o3d.geometry.PointCloud):
+        assert len(self.set_indices) > 0, "set indices cant be 0!"
+        cropped_plane = deepcopy(self)
+        for index in cropped_plane.set_indices:
+            if index > len(subcloud.points):
+                cropped_plane.set_indices.remove(index)
+        return cropped_plane
+        
     def translate(self, vector: np.ndarray):
         for point in self.xyz_points:
             point[0] += vector[0]

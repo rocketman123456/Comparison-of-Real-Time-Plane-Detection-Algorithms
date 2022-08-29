@@ -85,7 +85,10 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
     for gtp in voxel_evaluator.correspondences.values():
         if gtp != None:
             f.add(gtp)
-    iohelper.save_results(p, r, f1, len(f), len(ground_truth))
+
+    total, per_plane, per_sample = iohelper.get_times()
+    
+    iohelper.save_results(p, r, f1, len(f), len(ground_truth), total, per_plane, per_sample)
     # print(f'found: {len(f)} / {len(ground_truth)}')
     # input("press enter to continue with octree evaluation")
 
@@ -114,9 +117,11 @@ if __name__ == '__main__':
     # cloud_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/pointclouds/boiler_room.pcl"
     # gt_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ground_truth.geo"
     # algo_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ransac_schnabel.geo"
-    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/office_4/office_4.txt"
-    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/office_4/GT"
-    algo_path = "/home/pedda/clones/3dkht_toolbox/build/o"
-    # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/WC_1/RSPD"
+    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/WC_1/WC_1.txt"
+    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/WC_1/GT"
+    algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST/WC_1/3DKHT"
+    # cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3/hallway_2/hallway_2.txt"
+    # gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3/hallway_2/GT"
+    # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3/hallway_2/RSPD"
     # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_1//RSPD"
     evaluate(cloud_path, gt_path, algo_path)
