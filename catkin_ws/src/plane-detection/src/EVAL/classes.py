@@ -16,9 +16,9 @@ class Result():
     out_of: int
     dataset: str
     algorithm: str
-    time_total:float
-    time_per_plane:float
-    time_per_sample:float
+    time_total: float
+    time_per_plane: float
+    time_per_sample: float
 
     def to_file(self, path: str, number_of_datasets: int = 1):
         print(f'Writing results to {path}')
@@ -29,7 +29,8 @@ class Result():
             ofile.write(f'f1-score: {self.f1}\n')
             ofile.write(f'found: {self.detected} / {self.out_of}\n')
             ofile.write('time per_plane per_sample\n')
-            ofile.write(f'{self.time_total} {self.time_per_plane} {self.time_per_sample}')
+            ofile.write(
+                f'{self.time_total} {self.time_per_plane} {self.time_per_sample}')
 
     @staticmethod
     def from_file(path: str):
@@ -37,8 +38,10 @@ class Result():
             path, dtype=str, usecols=(0, 2), max_rows=1)
         prec, rec, f1 = np.loadtxt(
             path, dtype=float, skiprows=1, usecols=1, max_rows=3)
-        detected, out_of = np.loadtxt(path, dtype=int, usecols=(1,3), skiprows=4, max_rows=1)
-        total, per_plane, per_sample = np.loadtxt(path,dtype=float, skiprows=6)
+        detected, out_of = np.loadtxt(
+            path, dtype=int, usecols=(1, 3), skiprows=4, max_rows=1)
+        total, per_plane, per_sample = np.loadtxt(
+            path, dtype=float, skiprows=6)
         return Result(
             precision=prec,
             recall=rec,
@@ -51,7 +54,8 @@ class Result():
             time_per_plane=per_plane,
             time_per_sample=per_sample
         )
-    
+
+
 class Plane:
     def __init__(self) -> None:
         self.indices: List[int] = []
@@ -64,14 +68,19 @@ class Plane:
         self.normal = []
         self.leafs = set()
 
-    def crop(self, subcloud: o3d.geometry.PointCloud):
-        assert len(self.set_indices) > 0, "set indices cant be 0!"
+    def crop(self, subcloud: o3d.geometry.PointCloud, voxel_grid: o3d.geometry.VoxelGrid, complete_cloud: o3d.geometry.PointCloud):
+        # im worst case sind keine punkte übereinstimmend, daher auf voxel basis croppen
+        if len(self.voxels) == 0:
+            self.calc_voxel(voxel_grid, complete_cloud)
         cropped_plane = deepcopy(self)
-        for index in cropped_plane.set_indices:
-            if index > len(subcloud.points):
-                cropped_plane.set_indices.remove(index)
+        sub_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(subcloud, voxel_size=0.05)
+        sub_voxels = set([tuple(v.grid_index) for v in sub_grid.get_voxels()])
+        for voxel in cropped_plane.voxels:
+            if voxel not in sub_voxels:
+                cropped_plane.voxels.remove(voxel)
+        # FIXME remove points not included in any voxel
         return cropped_plane
-        
+
     def translate(self, vector: np.ndarray):
         for point in self.xyz_points:
             point[0] += vector[0]

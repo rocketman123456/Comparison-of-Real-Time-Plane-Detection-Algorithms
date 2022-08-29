@@ -9,7 +9,7 @@
 *.xml
 *.gz
 *.toc
-
+catkin_ws/src/plane-detection/src/EVAL/bags
 catkin_ws/build/
 catkin_ws/install/
 catkin_ws/devel/

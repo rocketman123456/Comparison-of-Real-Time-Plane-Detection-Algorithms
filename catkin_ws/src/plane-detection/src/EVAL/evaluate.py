@@ -6,23 +6,26 @@ import open3d as o3d
 import sys
 
 # TODO load cloud once, compare all algos at once?
+
+
 def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None:
     iohelper = IOHelper(cloud_path, gt_path, algo_path)
 
-    points = iohelper.read_pcd()
+    if np.any(points := iohelper.read_cloud()):
+        pointcloud = o3d.geometry.PointCloud()
+        pointcloud.points = o3d.utility.Vector3dVector(points)
+        # pointcloud.colors = o3d.utility.Vector3dVector(colors)
+    else:
+        pointcloud = iohelper.read_pcd()
     # colors  = np.loadtxt(cloud_path, dtype=int, usecols=(3,4,5))
     # colors  = colors * (1/255)
     ground_truth = iohelper.read_gt()
     test = iohelper.read_algo()
     if debug:
-        draw_compare(ground_truth,test)
+        draw_compare(ground_truth, test)
 
-    pointcloud = o3d.geometry.PointCloud()
-    pointcloud.points = o3d.utility.Vector3dVector(points)
-    # pointcloud.colors = o3d.utility.Vector3dVector(colors)
-    
     # if 3dkht, translate algo_planes by pcd_bb center
-    if iohelper.method == 'o':
+    if iohelper.method == '3DKHT':
         print('3DKHT, translating')
         for algo_plane in test:
             algo_plane.translate(pointcloud.get_center())
@@ -31,7 +34,7 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
         draw_planes(test, pointcloud)
 
     # draw_planes(test, pointcloud)
-    
+
     if debug:
         draw_planes(test, pointcloud)
 
@@ -87,8 +90,9 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
             f.add(gtp)
 
     total, per_plane, per_sample = iohelper.get_times()
-    
-    iohelper.save_results(p, r, f1, len(f), len(ground_truth), total, per_plane, per_sample)
+
+    iohelper.save_results(p, r, f1, len(f), len(
+        ground_truth), total, per_plane, per_sample)
     # print(f'found: {len(f)} / {len(ground_truth)}')
     # input("press enter to continue with octree evaluation")
 
@@ -99,7 +103,6 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
     # p, r, f1 = octree_evaluator.get_metrics()
     # iohelper.save_results(p,r,f1)
 
-
     # print(f'{octree_evaluator.precision = }')
     # print(f'{octree_evaluator.recall = }')
     # print(f'{octree_evaluator.f1 = }')
@@ -108,7 +111,8 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
     #     if k != None:
     #         f.add(k)
     # print(f'found: {len(f)} / {len(ground_truth)}')
-    
+
+
 if __name__ == '__main__':
 
     # cloud_path = sys.argv[1]

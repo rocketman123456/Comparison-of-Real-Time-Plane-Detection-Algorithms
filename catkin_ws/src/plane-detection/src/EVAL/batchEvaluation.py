@@ -39,7 +39,9 @@ def get_df(results_folder: str):
         algo_data.sort(key=lambda x: x.dataset)
         df = pd.DataFrame(algo_data).drop(
             columns=['precision', 'recall', 'f1', 'detected', 'out_of'])
-        sb.violinplot(data=df,ax=ax)
+        # sb.violinplot(data=df,ax=ax)
+        df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
+
     plt.ylim([0.0, 1.0])
     plt.show()
     # TODO save fig to /$root_folder/figures
@@ -135,8 +137,6 @@ def batch_detect(rootfolder: str, binaries_path: str) -> None:
         if 'nope_' in dataset or dataset == 'results':
             continue
         for algo in ALGOS:
-            if algo != '3DKHT':
-                continue
             # get input params for given algorithm
             binary = os.path.join(binaries_path, algo)
             cloud_file = os.path.join(
@@ -147,7 +147,6 @@ def batch_detect(rootfolder: str, binaries_path: str) -> None:
             if cloud_file not in os.listdir(dataset_path):
                 create_pcd(cloud_file.replace('.pcd', '.txt'))
             # create output folder if not already existing
-            # TODO clear directory if already exists?
             if algo not in os.listdir(dataset_path):
                 os.mkdir(os.path.join(dataset_path, algo))
             else:
