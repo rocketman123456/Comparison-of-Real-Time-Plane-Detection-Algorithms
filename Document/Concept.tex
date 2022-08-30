@@ -4,51 +4,109 @@
 
 \chapter{Concept} \label{chap:Concept}
 
-\section{Introduction}
-\paragraph*{What this chapter is about}
-This chapter covers...
-\paragraph*{Chapter Structure}
-It is Structured as follows ...
+% \section*{Introduction}
 
-\section{Used Sensors}
-\subsection*{Why these ones}
-\paragraph*{open source ros wrapper realsense-ros}
-\subsection*{Detailed Information i guess?}
+This chapter covers our procedure of analysis.
+We introduce the definition of real-time and the use case with respect to this work.
+Plane detection algorithms are selected for comparison, as well as the metrics they will be judged upon.
 
-\section{SLAM}
-\subsection*{Why SLAM is needed}
-\paragraph*{map building}
-reduces complexity for plane detection
-\subsection*{SLAM SOTA}
-RTAB-MAP, ORBSLAM etc..
-\paragraph*{bc we are using visual, stereo etc.}
-\paragraph*{We choose RTAB-MAP bc..}
-just makes sense because its already included in realsense-ros and also has a wide variety of
-options regarding output formats
-\section{Requirements}
-
-\paragraph*{Problem/Use case}
-We want to find planes quickly..
-
-\subsection*{Definition Real-time}
-Because camera runs at 30fps ..
-Daher definieren wir in dieser arbeit "echtzeit" als
-
-\subsection*{Precision}
-What does precision mean in general \\
-What is a "good" precision
-Werden wir \$später definieren
-fokus wird auf echtzeit gelegt wird und wir gucken was wir im rahmen der echtzeit im besten fall an präz raus holen können
-dazu sind allein die angegeben werte nicht 100\%ig aussagekräftig weil größtenteils verschiedene datensätze benutzt wurden
-somit werden wir in dieser arbeit einen einheitlichen vergleich von PDAs unter besonderer berücksichtigung des echtzeitkriteriums machen
+\section{Scenario / UseCase}
+Taking motivation from chapter \ref{chap:Introduction}, we focus on indoor environments during this work.
+This includes the buildings we encounter in our normal lives, wether its the home we live in, the office we work in or a stripped-down
+version of a building during construction.
 
 
-\section{PLane Detection Algorithms}
-\paragraph*{Intro?}
-\paragraph*{SOTA}
-aufgrund von \$SACHEN filtert sich die gesamte liste runter auf diese enge auswahl
-\$DARUM werden wir den fokus auf diese N algorithmen legen
-\section{Summary}
-we want to answer the question if real time plane detection is viable on OTS hardware like the intel realsense.
-to answer the q, we selected  \$SLAM which gives us \$OUTPUT which we use as input for out \$PDAs
+\subsection{Used Sensors}
+To be able to perform plane detection, we need special hardware that is able to accurately record the surroundings.
+Numerous different cameras suffice for this task, of course varying in different aspects.
+In this work, we use Intel RealSense technology, namely the T256 Tracking Camera and the D455 RGB-D Camera.
+\textcolor{red}{probably more detail on the camera right? oder eher in den background}
+
+
+In addition to the cameras, there is software that provdes a wide variety of usage. We are especially interested in detection of planes
+in complete environments. For that reason, we use the ROS \footnote{\href{https://www.ros.org/}{ROS-Robot Operating System}} wrapper of
+Intels Realsense software, \textit{realsense-ros} \footnote{\href{https://github.com/IntelRealSense/realsense-ros}{realsense-ros}}
+
+Realsense-ros internally uses a SLAM(Simultaneous Mapping and Localization) algorithm called RTAB-MAP \cite{Labbé_Michaud_2019} for map-building.
+RTAB-MAP is responsible for building a coherent map from a continuous stream of data that is being recorded and published by the two cameras.
+It is worth noting, that the success of this work does not depend on the specific SLAM algorithm being chosen. We select RTAB-MAP because
+it is already included in the realsense package and its reported performance suffices for this work, especially since we dont focus on SLAM
+algorithms in this work.
+\textcolor{red} {Furthermore noteworthy is the fact, that different algorithms eventually return different (kinds of) maps, which likely lead to different results in
+    comparison to ours.}
+
+
+
+\subsection{Real-Time}
+To precisely define real-time, we need to consider the hardware restrictions of the Intel RealSense cameras
+as well as the fps restrictions of RTAB-MAP.
+RTAB-MAP publishes a new update of the current map with a default frame rate of 1Hz.
+Thus, the plane detection algorithm needs to process a pointcloud in a similar frequency, taking up to an entire second.
+
+We can reduce complexity further by taking the depth accuracy of the D455 into account. The RMS error of the
+D455 is reported to be 2\% at 4 meters distance to the sensor, with a linear progression.
+To maintain a dense and precise representation of our environment, we limit the detection of planes to a
+radius of 4 meters from the current position.
+
+\section{Selection Plane Detection Algorithms}
+First we need to assert the comparability between the algorithms introduced in \ref{chap:Background}.
+We report necesary criteria to both shorten the list of algorithms, as well as verify comparability.
+
+\subsection*{Type of Input}
+Popular representations, which the recorded environment can take the form of, can be grouped into three main categories of input:
+\begin{itemize}
+    \item \textit{unorganized} or \textit{unstructured point cloud}
+    \item \textit{organized} or \textit{structured point cloud}
+    \item \textit{(depth-) image}
+\end{itemize}
+As stated before, we focus on the detection of planar structures in the entirety of a scene, rather than just singular segments thereof.
+In addition, only the first type of input offers a persistent view on the recorded environment.
+For that reason, we disregard all algorithms which do not expect an unorganized point cloud as input.
+
+
+
+
+\subsection*{Determinism}
+ND methoden, zb DL basierende haben grundsätzlich ein gewisses level an bias, welcher stark von der Wahl der Trainingsdaten abhängt.
+Ein weiterer grund gegen die Benutzung von Learning-basierenden methoden ist, dass wir nicht von einer (rechenstarken) GPU ausgehen können.
+
+\textcolor{red}{ransac ? OPS nutzt halt ransac}
+
+\subsection{Paremeters, additional necessitites}
+Ebenfalls wichtig ist, ob ein algorithmus zusätzlich zum input noch weiteres wissen benötigt. 3DKHT ist stark von dem Level der
+octree subdivision abhängig, welches (ohne weitere Änderungen) predefined ist.
+
+\subsection*{Availability}
+Zuletzt werden wir die verfügbarkeit als schwaches kriterium festlegen.
+Grundsätzlich muss ein algorithmus auf dem selben System, wie die anderen auch implementiert sein, damit die ausführende/underlying hardware
+als Faktor ausgeklammert werden kann. Aus dem Grund können algorithmen, welche wenig bis gar nicht beschrieben werden, nicht in diesen Vergleich
+aufgenommen werden.
+
+\subsection{RSPD - Robust Statistics Approach for Plane Detection}
+\subsection{OPS - Oriented Point Sampling}
+\subsection{3DKHT - 3-D Kernel-based Hough Transform}
+der bums braucht halt fixe parameter 
+\textcolor{red}{vielleicht kann ich den dynamisch-ish machen in abhängigkeit von der dimension der input wolke}
+\subsection{OBRG - Octree-based Region Growing}
+\subsection{PEAC - Probabilistic Agglomerative Hierarchical Clustering}
+hier ist ne tabelle:
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{|l|l|l|l|l|}
+        \hline
+                       & \textbf{Input Data} & \textbf{Determinism} & \textbf{Parameter Dependency} & \textbf{Availability} \\ \hline
+        \textbf{RSPD}  & unordered PC        & Deterministic        & independent                   & open source           \\ \hline
+        \textbf{OPS}   & unordered PC        & mostly Deterministic & independent                   & open source           \\ \hline
+        \textbf{3DKHT} & unordered PC        & mostly Deterministic & very dependent                & open source           \\ \hline
+        \textbf{OBRG}  & unordered PC        & Deterministic?       & ?                             & not available         \\ \hline
+        \textbf{PEAC}  & ordered PC          & Deterministic        & ?                             & avalable              \\ \hline
+    \end{tabular}
+    \caption{Selected Plane Detection Algorithms}
+    \label{tab:my-table}
+\end{table}
+
+\subsection*{Fazit}
+wir vergleichen RSPD, OPS und 3D-KHT. \textcolor{red}{depending on my success in implementing OBRG myself we will add OBRG to the comparison.}
+We exclude PEAC beacuse it excpects an ordered point cloud as input.  
+
 \end{document}
