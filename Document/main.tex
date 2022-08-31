@@ -1,6 +1,8 @@
 \documentclass[fontsize=12pt, paper=a4, headinclude, twoside=false, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=right, toc=listof, toc=bibliography]{scrreprt}
 \usepackage[utf8]{inputenc}
-
+\usepackage{newfloat}
+\DeclareFloatingEnvironment[placement={!ht},name=List]{mylist}
+\usepackage{interval}
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 \usepackage{biblatex}

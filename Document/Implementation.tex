@@ -2,15 +2,51 @@
 \begin{document}
 
 \chapter{Implementation}
-\paragraph*{What this chapter will cover}
-In this chapter we will cover the realization of the aforementioned concept in \autoref{chap:Concept}.
+To ensure a uniform comparison of the algorithms selected in the concept, the external circumstances 
+must be identical for each algorithm. This chapter will detail the implementation thereof.
 
-\subfile{Sections-IMPL/IMPL-US}
+\section{Hardware}
+It is necessary to perform all experiments on the same machine to ensure a consistent comparison.
+We implement all algorithms and further architecture on a Lenovo IdeaPad 5 Pro \footnote{\href{https://www.lenovo.com/de/de/laptops/ideapad/500-series/IdeaPad-5-Pro-16ACH6/p/88IPS501619}{Lenovo IdeaPad 5 Pro}},
+which runs Linux Ubuntu 20.04.5.\\
+The laptop has the following specifications.
 
-\subfile{Sections-IMPL/IMPL-ARCH}
 
+\begin{mylist}
+    \begin{itemize}
+        \item CPU : AMD Ryzen 7 5800H @ 4.4GHz
+        \item GPU : AMD RX Vega 8
+        \item RAM : 16G
+    \end{itemize}
+    \end{mylist}
+
+\section{Intel RealSense}
+As stated in \ref{chap:Concept}, we use the open source implementation of Intel RealSense. 
+
+\section{Plane Detection Algorithms}
+\subsection*{RSPD}
+An open source implementation, written in C++, is provided by the authors \citeauthor{Araújo_Oliveira_2020}\cite{Araújo_Oliveira_2020} and
+can be found on GitHub \footnote{\href{https://github.com/abnerrjo/PlaneDetection}{\citeurl{Araújo_Oliveira_2020}}}.
+We closely follow the instructions regarding the build process as described in the provided README.
+
+\subsection*{OPS}
+The authors of \textit{Oriented Point Sampling}, namely \citeauthor{Sun_Mordohai_2019}, do not provide their original implementation. 
+However, a C++ implementation can also be found, again on GitHub \footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{\citeurl{Sun_Mordohai_2019}}}
+
+\subsection*{3D-KHT}
+\citeauthor{Limberger_Oliveira_2015}, the authors of 3D-KHT, provide an implementation, in form of a Visual Studio project, of their algorithm on their website \footnote{\href{https://www.inf.ufrgs.br/~oliveira/pubs_files/HT3D/HT3D_page.html}
+{\citeurl{Limberger_Oliveira_2015}}}. Since the laptop we use does not run Windows, and therefore cannot build the project, we use a package called 
+\textit{cmake-converter}\footnote{\href{https://cmakeconverter.readthedocs.io/en/latest/use.html}{https://cmakeconverter.readthedocs.io/}} to convert the solution to a cmake project we can build using \textit{make}.
+
+\subsection*{OBRG}
+To our knowledge, no open-source implementation is available for the algorithm, which was introduced by \citeauthor{Vo_Truong-Hong_Laefer_Bertolotto_2015}\cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}.
+We therefore use our own implementation.
+
+%TODO
+\textcolor{red}{sicherlich haben wir das geschafft. Weil C++ fucky wucky ist, haben wir das in python implementiert. Dazu haben wir diese hübschen libs genutzt...} 
 \end{document}
 
  
  
+
 
