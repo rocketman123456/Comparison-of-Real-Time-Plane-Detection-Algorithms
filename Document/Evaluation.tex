@@ -6,15 +6,27 @@
 In diesem kapitel werden zuvor ausgewählte algorithmen einheitlich verglichen und die resultierenden ergebnisse ausgewertet.
 
 \section{Evaluation Protocol}
-The goal of this work is to determine wether or not real-time, precise plane detection is realistic.
-When selection an algorithm for said task a problem presents itself; Most algorithms had been tested on different, non-comparable conditions.
-We therefore select a dataset on which all plane detection algorithms will be tested on to achieve comparability.
-For the evaluation protocol itself, we took inspiration from the \textit{Results} Section of \citeauthor{Araújo_Oliveira_2020}s work on RSPD \cite{Araújo_Oliveira_2020}.  
+
+To determine the feasability of performing real-time plane detection, we need to conduct experiments with the selected algorithms.
+
+Another important factor for comparability is the data set, on which the experiments are conducted on.
+Because each publication from the presented algorithms uses a different data set for their evaluation, we cannot objectively select an algorithm to be the "best".
+Furthermore, to the best of our knowledge, there is no data set, that contains an incrementally growing and unordered point cloud with corresponding ground truth.
+
+Thus, we first evaluate the algorithms on a dataset while excluding the temporal component. We do this by performing plane detection on whole point clouds, rather than
+incrementally growing ones.
+
+We then perform experiments, this time including the temporal component, by performing calculations at each time step and evaluating them individually.
+
+Lastly, through comparison, as well as analysis of those different experiments, a statement will be given as to whether and how well plane detection is
+possible in real-time.
+
+For the evaluation of a given dataset, by comparing the test results with the ground truth, we took inspiration from \citeauthor{Araújo_Oliveira_2020},
+especially their \textit{Results} chapter.
 
 
 \subsection{Metrics}
-To quantitatively evaluate each algorithms performance, we calculate the precision, recall and the f1 score.
-For that, we took inspiration from the work of \cite{Araújo_Oliveira_2020} and their approach of evaluation. 
+To quantitatively evaluate an algorithms performance, we calculate the precision, recall and the f1 score.
 First we regularize the original point cloud to reduce complexity and furthermore to avoid proximity bias, because of the inverse relationship
 between distance to sensor and cloud density. This regularization is obtained through voxelization of the pointcloud.\\
 With this voxelgrid we can now calculate corresponding sets of voxels for each point cloud representing a plane.
@@ -22,57 +34,71 @@ In the next step, we compare our planes from the ground truth with the planes ob
 of ground truth and found planes.\\
 A grund truth plane $p_{gt_i}$ is marked as \textit{detected}, if any plane from the list of found planes achieves a voxel overlap of $\geq 50\%$.
 With this list of correspondences, we calculate precision, recall and the f1-score as explained in the following.
-For a given ground truth plane $p_{gt_j}$ and a corresponding found plane $p_{a_k}$ we sort a given voxel $v_i$ into the categories 
-\textit{True Positive(TP), False Positive(FP), False Negative(FN), True Negative(TN)} as follows.
+For a given ground truth plane $p_{gt_j}$ and a corresponding found plane $p_{a_k}$ we can sort a given voxel $v_i$ into the categories
+\textit{True Positive(TP), False Positive(FP) and False Negative(FN)} as follows.
 $$v_i \in p_{gt_j} \land v_i \in p_{a_k} \Rightarrow v_{i} \in TP$$
 $$v_i \in p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in FN$$
 $$v_i \notin p_{gt_j} \land v_i \in p_{a_k} \Rightarrow v_{i} \in FP$$
-$$v_i \notin p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in TN$$
+% TODO not needed right? $$v_i \notin p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in TN$$  , True Negative(TN)} 
 
 With those four rules, we can calculate the precision, recall and F1-score like this:
-$$Precision = \frac{|TP|}{|TP|+|FP|}$$  
-$$Recall = \frac{|TP|}{|TP|+|FN|}$$  
-$$F1 = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}$$  
+$$Precision = \frac{|TP|}{|TP|+|FP|}$$
+$$Recall = \frac{|TP|}{|TP|+|FN|}$$
+$$F1 = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}$$
 
+% FIXME imho, measuring of time seems almost too self-explanatory to even write down
 Aside from the accuracy, we also need to compare the time each algorithm needs to find its respective set of planes.
-For that, we measure the time spent in the plane detection phase, excluding any preprocessing or postprocessing steps, e.g. RSPD needs to calculate normals for each sample, 
-if normal vectors are not included in the dataset. 
+For that, we measure the time spent in the plane detection phase, excluding any preprocessing or postprocessing steps.
 To measure the detection time, we simply log the exact times before and after calculations and write the differences to a file.\\
-%TODO
-\textcolor{red}{a variation would be interesting probably right? like time per plane, time per sample etc}
-
 
 
 \subsection{Dataset}
-To evaluate each plane detection algorithm on even grounds, we select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS). The Dataset had been recorded in three different buildings, 
+To evaluate each plane detection algorithm on even grounds, we select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A}. The Dataset had been recorded in three different buildings,
 which then were divided into six distinct areas. Those six areas include a total of 270 different types of rooms, e.g. offices, hallways, WCs and two auditoriums to name a few.\\
-Each room has a complete unstructured point cloud in form of a list of XYZ values, as well as a list of annotated files representing semantically different objects that can be found in this point cloud 
-of the room. 
-Since our focus lies not on 3D semantic segmentation, we manually select planar regions using CloudCompare\footnote{https://cloudcompare.org/}, obtaining a list of sub-clouds.
+Each room has a complete unstructured point cloud in form of a list of XYZ values, as well as a list of annotated files representing semantically different objects that can be found in this point cloud
+of the room.
+Since our focus lies not on 3D semantic segmentation, we manually select planar regions using CloudCompare\footnote{\href{https://cloudcompare.org/}{https://cloudcompare.org/}}, obtaining a list of sub-clouds.
 
-%TODO
-\textcolor{red}{insert statistic here}
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c}
+        \hline
+        Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL \\ \hline
+        office           & 31      & 14      & 10      & 22      & 42      & 37      & 156   \\ \hline
+        conference room  & 2       & 1       & 1       & 3       & 3       & 1       & 11    \\ \hline
+        auditorium       & -       & 2       & -       & -       & -       & -       & 2     \\ \hline
+        lobby            & -       & -       & -       & 2       & 1       & -       & 3     \\ \hline
+        lounge           & -       & -       & 2       & -       & -       & 1       & 3     \\ \hline
+        hallway          & 8       & 12      & 6       & 14      & 15      & 6       & 61    \\ \hline
+        copy room        & 1       & -       & -       & -       & -       & 1       & 2     \\ \hline
+        pantry           & 1       & -       & -       & -       & 1       & 1       & 3     \\ \hline
+        open space       & -       & -       & -       & -       & -       & 1       & 1     \\ \hline
+        storage          & -       & 9       & 2       & 4       & 4       & -       & 19    \\ \hline
+        WC               & 1       & 2       & 2       & 4       & 2       & -       & 11    \\ \hline
+        TOTAL            & 45      & 39      & 24      & 49      & 55      & 53      & 272   \\
+    \end{tabular}
+    \caption{S3DIS Disjoint Space Statistics}
+    \label{tab:stanfordStats}
+\end{table}
 
 \subsection{Real-Life Test}
-Bei dem Live test wird im Gebäude der FIN ein Datensatz aufgenommen. Der Scan wird %TODO
-\textcolor{red}{\$STUFF} beinhalten.
-Zu diesem Scan gibt es keine Ground Truth, daher wird neben der Laufzeitanalyse lediglich eine qualitative Analyse der
-Präzision vorgenommen.
-Dafür überlagern wir die Punktwolke mit den gefundenen Ebenen.
+We record an incrementally growing data set in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
+% TODO do i have to explain how i am holding them? probably right -> concept -> used sensors
+Running \textit{realsense-ros} and holding our cameras, we walk through different parts of the building, scanning to the best of our ability.
+We save each incremental update of the map to file for later usage.
+
+We create a corresponding ground truth for only the most recent update, e.g. for the entire recording.
+
+During evaluation of a map at time $m_t$, we cut off the ground truth with respect to $m_t$
+so that we obtain a ground truth for each distinct time $gt_t$. 
+% FIXME insert beispiel grafik: complate GT, m_t, gt_t
 
 \section{Results}
 \subsection{Results Dataset}
 
-Alle %TODO
-\textcolor{red}{N} Sequenzen des Datensatzs wurde %TODO
-\textcolor{red}{X} mal von jedem Algorithmus berechnet.
-
 Hier sind die Ergebnisse:
 
 \subsection{Results Real-Life Test}
-
-Der FIN Datensatz wurde auch %TODO
-\textcolor{red}{X} mal von jedem Datensatz berechnet.
 
 Hier sind die Ergebnisse:
 
