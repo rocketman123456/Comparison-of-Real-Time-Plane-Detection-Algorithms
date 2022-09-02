@@ -1,29 +1,20 @@
 
-from genericpath import isfile
 import os
-from pydoc import ispath
 from struct import unpack
 from typing import List
 import numpy as np
-
+import open3d as o3d
 from tqdm import tqdm
 from classes import Plane, Result
 
 
 class IOHelper:
     def __init__(self, cloud_path: str, gt_path: str, algo_path: str) -> None:
-        self._path_pcd = cloud_path
+        self._path_cloud = cloud_path
         self._path_gt = gt_path
         self._path_algo = algo_path
         self.dataset_path, _ = gt_path.rsplit('/', 1)
         _, self.dataset, self.method = self._path_algo.rsplit('/', 2)
-
-    def read_pcd(self) -> np.ndarray:
-        print('Reading Point cloud')
-        if self._path_pcd.endswith('.pcl'):
-            return self.read_pc_pcl()
-        else:
-            return self.read_pc_xyz()
 
     def read_gt(self) -> List[Plane]:
         return self._read(self._path_gt)
@@ -108,7 +99,7 @@ class IOHelper:
 
     def read_pc_pcl(self) -> np.ndarray:
         points: List[List[float]] = []
-        with open(self._path_pcd, "rb") as file:
+        with open(self._path_cloud, "rb") as file:
             size = unpack('N', file.read(8))[0]
             mode = unpack('N', file.read(8))[0]
             print(f'{size = }, {mode = }')
@@ -129,11 +120,12 @@ class IOHelper:
 
     def read_pc_xyz(self) -> np.ndarray:
         points: np.ndarray = np.loadtxt(
-            self._path_pcd, usecols=(0, 1, 2)).tolist()
+            self._path_cloud, usecols=(0, 1, 2)).tolist()
         return points
 
-    def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int, time_total:float, time_per_plane: float, time_per_sample:float) -> None:
-        result = Result(p, r, f1, found_planes, all_planes, self.dataset, self.method, time_total, time_per_plane, time_per_sample)
+    def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int, time_total: float, time_per_plane: float, time_per_sample: float) -> None:
+        result = Result(p, r, f1, found_planes, all_planes, self.dataset,
+                        self.method, time_total, time_per_plane, time_per_sample)
 
         output_folder = os.path.join(self.dataset_path, 'results')
         if 'results' not in os.listdir(self.dataset_path):
@@ -150,9 +142,53 @@ class IOHelper:
                 path = os.path.join(self._path_algo, file)
                 break
         else:
-            print(f'no time results found for {self.method} and {self.dataset}!')
-            return 0,0,0
+            print(
+                f'no time results found for {self.method} and {self.dataset}!')
+            return 0, 0, 0
         return np.loadtxt(path, skiprows=1, dtype=float)
+
+    def read_cloud(self) -> np.ndarray:
+        print('Reading Point cloud')
+        if self._path_cloud.endswith('.pcl'):
+            return self.read_pc_pcl()
+        elif self._path_cloud.endswith('.txt'):
+            return self.read_pc_xyz()
+        else:  # pcd file
+            return np.empty(0)
+
+    def read_pcd(self, path=None) -> o3d.geometry.PointCloud:
+        """if path is not set, use self._path_cloud"""
+        if path == None:
+            path = self._path_cloud
+        return o3d.io.read_point_cloud(self._path_cloud)
+
+    def read_kht(self, s_level: int):
+        planes = []
+        for file in os.listdir(self._path_algo):
+            if 'plane' not in file:
+                continue
+            if len(a:=file.split('-')) > 1 and int(a[1][0]) == s_level:
+                planes.append(Plane.xyzfrom_txt(os.path.join(self._path_algo, file)))
+        return planes
+
+    def save_kht_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int, time_total: float, time_per_plane: float, time_per_sample: float, s_l):
+        result = Result(p, r, f1, found_planes, all_planes, self.dataset,
+                        self.method, time_total, time_per_plane, time_per_sample)
+
+        output_folder = os.path.join(self.dataset_path, 'results')
+        if 'results' not in os.listdir(self.dataset_path):
+            os.mkdir(output_folder)
+        output_file = os.path.join(
+            output_folder, f'{self.dataset}_{s_l}_{self.method}.out')
+
+        result.to_file(output_file)
+
+def create_txt(path: str):
+    pc = o3d.io.read_point_cloud(path)
+    with open(path.replace('.pcd', '.txt'), 'w') as file:
+        for p in pc.points:
+            file.write(f'{p[0]} {p[1]} {p[2]}\n')
+
 
 def create_pcd(filepath: str):
     """OPS expects PCL file format so we are quickly going to convert the .txt file"""
