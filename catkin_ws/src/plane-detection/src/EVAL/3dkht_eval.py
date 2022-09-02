@@ -167,10 +167,14 @@ def get_df(results_folder: str):
     axs[0].set_xlabel('(subdivision_level , max_dist2plane)')
     founds_df =  df.drop(columns=['precision','f1','recall', 'time_total','time_per_plane','time_per_sample'])
     founds_df.plot.bar(ax=axs[1])
+    axs[1].set_xticklabels(f'({a},{b})' for a,b in KHT_PARAMS)
+    axs[1].set_xlabel('(subdivision_level , max_dist2plane)')
 
     times_df = df.drop(columns=['precision','f1','recall','detected', 'out_of','time_per_plane','time_per_sample' ])
     times_df.plot.bar(ax=axs[2])
 
+    axs[2].set_xticklabels(f'({a},{b})' for a,b in KHT_PARAMS)
+    axs[2].set_xlabel('(subdivision_level , max_dist2plane)')
 
     # algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
     # algo_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')

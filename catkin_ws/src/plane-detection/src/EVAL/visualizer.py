@@ -14,6 +14,7 @@ def draw_planes(planes: List[Plane], pointcloud):
     cloud.points = o3d.utility.Vector3dVector(points)
     o3d.visualization.draw_geometries([cloud])
 
+
 def draw_compare(gt: List[Plane], test: List[Plane]):
     gtpoints  = []
     for plane in gt:

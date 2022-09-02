@@ -13,8 +13,7 @@ import numpy as np
 # globals
 ALGOS = ['RSPD', 'OPS', '3DKHT']
 ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': ''}
-ALGO_in = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt'}
-
+ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt'}
 
 def get_df(results_folder: str):
     # load results
@@ -140,7 +139,7 @@ def batch_detect(rootfolder: str, binaries_path: str) -> None:
             # get input params for given algorithm
             binary = os.path.join(binaries_path, algo)
             cloud_file = os.path.join(
-                dataset_path, f'{dataset}{ALGO_in[algo]}')
+                dataset_path, f'{dataset}{ALGO_IN[algo]}')
             result_file = os.path.join(
                 dataset_path, algo, f'{dataset}{ALGO_ext[algo]}')
             # create pcd file if needed (OPS)
@@ -158,6 +157,7 @@ def batch_detect(rootfolder: str, binaries_path: str) -> None:
             os.system(command)
 
 
+
 if __name__ == '__main__':
     fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST"
     fallback_algo_binaries = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries"
@@ -173,7 +173,8 @@ if __name__ == '__main__':
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
 
+    kht_parameter_test(rootFolder, algorithm_binaries)
     # batch_detect(rootFolder, algorithm_binaries)
     # batch_evaluate(rootFolder)
     # collect_results(rootFolder)
-    get_df(os.path.join(rootFolder, 'results'))
+    # get_df(os.path.join(rootFolder, 'results'))

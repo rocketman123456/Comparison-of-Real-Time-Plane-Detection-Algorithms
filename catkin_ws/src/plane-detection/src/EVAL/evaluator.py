@@ -27,7 +27,7 @@ class Evaluator(abc.ABC):
     def get_corr(self, plane: Plane):
         count = dict()
         count[None] = 0
-        for inlier in tqdm(plane.indices):
+        for inlier in plane.indices:
             found = False
             for g in self.ground_truth:
                 if inlier in g.set_indices:
@@ -51,7 +51,7 @@ class Evaluator(abc.ABC):
         self.test: List[Plane]
         self.ground_truth: List[Plane]
         self.correspondences: Dict[Plane, "Plane | None"] = dict()
-        for plane in self.test:
+        for plane in tqdm(self.test):
             ret = self.get_corr(plane)
             self.correspondences[plane] = ret
         
