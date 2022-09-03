@@ -118,9 +118,9 @@ class IOHelper:
                     file.read(4)
         return np.array(points)
 
-    def read_pc_xyz(self) -> np.ndarray:
+    def read_pc_xyz(self, path=None) -> np.ndarray:
         points: np.ndarray = np.loadtxt(
-            self._path_cloud, usecols=(0, 1, 2)).tolist()
+            path or self._path_cloud, dtype=float,usecols=(0, 1, 2)).tolist()
         return points
 
     def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int, time_total: float, time_per_plane: float, time_per_sample: float) -> None:
@@ -147,20 +147,19 @@ class IOHelper:
             return 0, 0, 0
         return np.loadtxt(path, skiprows=1, dtype=float)
 
-    def read_cloud(self) -> np.ndarray:
+    def read_cloud(self, path=None) -> np.ndarray:
         print('Reading Point cloud')
-        if self._path_cloud.endswith('.pcl'):
+        path = path or self._path_cloud
+        if path.endswith('.pcl'):
             return self.read_pc_pcl()
-        elif self._path_cloud.endswith('.txt'):
-            return self.read_pc_xyz()
+        elif path.endswith('.txt') or path.endswith('.asc'):
+            return self.read_pc_xyz(path)
         else:  # pcd file
             return np.empty(0)
 
     def read_pcd(self, path=None) -> o3d.geometry.PointCloud:
         """if path is not set, use self._path_cloud"""
-        if path == None:
-            path = self._path_cloud
-        return o3d.io.read_point_cloud(self._path_cloud)
+        return o3d.io.read_point_cloud(path or self._path_cloud)
 
     def read_kht(self, s_level: int):
         planes = []
@@ -182,6 +181,29 @@ class IOHelper:
             output_folder, f'{self.dataset}_{s_l}_{self.method}.out')
 
         result.to_file(output_file)
+
+    def get_frames(self, path: str):
+        self.frame_path = path
+        frames = []
+        for file in sorted(os.listdir(path)):
+            if file.endswith('.pcd'):
+                seconds, micro, _ = file.split('.')
+                frames.append(f'{seconds[-2:]}.{micro[:2]}')
+        return frames
+
+    def get_frame_data(self, frame:str, voxel_grid, pointcloud):
+        """returns the cloud, gt and test data for given frame"""
+        cloud = gt = algo = None
+        gt = self.read_gt()
+        for file in os.listdir(self.frame_path):
+            if frame in file and file.endswith('.pcd'):
+                cloud = self.read_pcd(os.path.join(self.frame_path,file))
+                break
+        for file in os.listdir(self._path_algo):
+            if frame in file:
+                algo = self._read(os.path.join(self._path_algo, file))
+        cropped_gt = list(map(lambda plane: Plane.through_crop(plane,cloud, voxel_grid,pointcloud), gt))
+        return cloud, gt, algo
 
 def create_txt(path: str):
     pc = o3d.io.read_point_cloud(path)

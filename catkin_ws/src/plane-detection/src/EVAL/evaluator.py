@@ -18,6 +18,9 @@ class Evaluator(abc.ABC):
             print("creating VoxelGridEvaluator")
             return VoxelEvaluator(points, ground_truth, test, method)
 
+    def calc_voxels(self, pointcloud):
+        pass
+
     def get_metrics(self):
         self.get_precision()
         self.get_recall()
@@ -64,8 +67,12 @@ class Evaluator(abc.ABC):
         pass
 
     def get_f1(self) -> float:
+        if self.precision == 0.0 and self.recall == 0.0:
+            self.f1 = 0.0
+            return self.f1
         self.f1 = 2*(self.precision * self.recall) / \
             (self.precision + self.recall)
+        return self.f1
 
 
 class OctreeEvaluator(Evaluator):
@@ -173,6 +180,9 @@ class VoxelEvaluator(Evaluator):
                 self.all.add(h_a_v)
                 if gt != None and a_v in gt.voxels:
                     self.correct.add(h_a_v)
+        if len(self.all) == 0:
+            self.recall = 0.0
+            return 0.0
         self.precision = len(self.correct) / len(self.all)
         return len(self.correct) / len(self.all)
 
@@ -185,5 +195,8 @@ class VoxelEvaluator(Evaluator):
                 for t, g in self.correspondences.items():
                     if g == plane and voxel in t.voxels:
                         self.correct.add(voxel)
+        if len(self.all) == 0:
+            self.recall = 0.0
+            return 0.0
         self.recall = len(self.correct) / len(self.all)
         return len(self.correct) / len(self.all)

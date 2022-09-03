@@ -15,7 +15,7 @@ def draw_planes(planes: List[Plane], pointcloud):
     o3d.visualization.draw_geometries([cloud])
 
 
-def draw_compare(gt: List[Plane], test: List[Plane]):
+def draw_compare(gt: List[Plane], test: List[Plane], pointcloud):
     gtpoints  = []
     for plane in gt:
         for pts in plane.xyz_points:
@@ -25,6 +25,8 @@ def draw_compare(gt: List[Plane], test: List[Plane]):
     gtcloud.paint_uniform_color([0, 1,0])
     points  = []
     for plane in test:
+        if len(plane.xyz_points) < 1:
+            plane.calc_xyz(pointcloud)
         for pts in plane.xyz_points:
             points.append(pts)
     cloud = o3d.geometry.PointCloud()
@@ -48,7 +50,6 @@ def draw_bb_planes(planes: List[Plane], pointcloud : o3d.geometry.PointCloud):
         aabb.color = (0, 1, 0)
         to_draw.append(aabb)
         # to_draw.append(cloud)
-
     o3d.visualization.draw_geometries(to_draw)
 
 def draw_voxel_correspondence(gt: List[Plane], test: List[Plane], pc: o3d.geometry.PointCloud):
@@ -64,16 +65,16 @@ def draw_voxel_correspondence(gt: List[Plane], test: List[Plane], pc: o3d.geomet
     fns = [i for i in gt_indices if i not in t_indices]
     fps = [i for i in t_indices if i not in gt_indices]
     colors = np.full_like(pc.points, np.array([0.8,0.8,0.8]))
-    for index in trues:
+    for index in trues: # true : Green
         colors[index] = np.array([0,1,0])
-    for index in fns:
+    for index in fns:   # FN  : Red
         colors[index] = np.array([1,0,0])
-    for index in fps:
+    for index in fps:   # FP  : B
         colors[index] = np.array([0,0,1])
-    
+                    # TN : Gray
     pc.colors = o3d.utility.Vector3dVector(colors)
     o3d.visualization.draw_geometries([pc])
 
     voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
-        pc, voxel_size=0.05)
+        pc, voxel_size=0.3)
     o3d.visualization.draw_geometries([voxel_grid])

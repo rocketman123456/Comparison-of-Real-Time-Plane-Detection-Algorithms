@@ -68,17 +68,17 @@ class Plane:
         self.normal = []
         self.leafs = set()
 
-    def crop(self, subcloud: o3d.geometry.PointCloud, voxel_grid: o3d.geometry.VoxelGrid, complete_cloud: o3d.geometry.PointCloud):
-        # im worst case sind keine punkte übereinstimmend, daher auf voxel basis croppen
-        if len(self.voxels) == 0:
-            self.calc_voxel(voxel_grid, complete_cloud)
-        cropped_plane = deepcopy(self)
-        sub_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(subcloud, voxel_size=0.05)
-        sub_voxels = set([tuple(v.grid_index) for v in sub_grid.get_voxels()])
-        for voxel in cropped_plane.voxels:
-            if voxel not in sub_voxels:
-                cropped_plane.voxels.remove(voxel)
-        # FIXME remove points not included in any voxel
+    @staticmethod
+    def through_crop(plane, subcloud: o3d.geometry.PointCloud, voxel_grid: o3d.geometry.VoxelGrid, complete_cloud: o3d.geometry.PointCloud):
+        # we crop the point cloud of the plane w.r.t the bounding box of subcloud
+        cropped_plane = Plane()
+        sub_bb = subcloud.get_oriented_bounding_box()
+        sub_bb.color = (0, 1, 0)
+        crop_pc = o3d.geometry.PointCloud()
+        crop_pc.points = o3d.utility.Vector3dVector(plane.xyz_points)
+        crop_pc = crop_pc.crop(sub_bb)
+        cropped_plane.xyz_points = np.asarray(crop_pc.points).tolist()
+        # o3d.visualization.draw_geometries([crop_pc, sub_bb])
         return cropped_plane
 
     def translate(self, vector: np.ndarray):
