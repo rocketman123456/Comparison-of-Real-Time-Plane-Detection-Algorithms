@@ -203,7 +203,8 @@ class IOHelper:
             if frame in file:
                 algo = self._read(os.path.join(self._path_algo, file))
         cropped_gt = list(map(lambda plane: Plane.through_crop(plane,cloud, voxel_grid,pointcloud), gt))
-        return cloud, gt, algo
+        cropped_gt = [plane for plane in cropped_gt if len(plane.xyz_points) > 30]
+        return cloud, cropped_gt, algo
 
 def create_txt(path: str):
     pc = o3d.io.read_point_cloud(path)

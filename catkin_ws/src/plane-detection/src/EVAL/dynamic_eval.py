@@ -8,6 +8,7 @@ from visualizer import draw_bb_planes, draw_compare, draw_planes, draw_voxel_cor
 from evaluator import Evaluator
 import numpy as np
 
+
 def dyn_eval(path_to_subclouds: str, binaries_path: str):
     subcloud_paths: List[str] = [file for file in os.listdir(
         path_to_subclouds) if file.endswith('.pcd')]
@@ -37,6 +38,7 @@ def dyn_eval(path_to_subclouds: str, binaries_path: str):
             command = f'{binary} {cloud_file} {result_file}'
             os.system(command)
 
+
 def evaluate_timeframe(subcloud, subgt, subalgo, time):
     global voxel_grid, iohelper
     if iohelper.method == '3DKHT':
@@ -62,7 +64,7 @@ def evaluate_timeframe(subcloud, subgt, subalgo, time):
     voxel_evaluator.calc_voxels(sub_cloud)
     p, r, f1 = voxel_evaluator.get_metrics()
     f = set()
-    draw_voxel_correspondence(ground_truth, sub_algo, sub_cloud)
+    # draw_voxel_correspondence(ground_truth, sub_algo, sub_cloud)
 
     for gtp in voxel_evaluator.correspondences.values():
         if gtp != None:
@@ -74,23 +76,26 @@ def evaluate_timeframe(subcloud, subgt, subalgo, time):
     #     ground_truth), total, per_plane, per_sample)
 
 
+# def get_conceptual_figure():
+
 
 if __name__ == '__main__':
-    complete_cloud='bags/1661773765.311562777.pcd'
-    cloud_path="bags"
-    gt_path="bags/.GT"
-    binaries='AlgoBinaries/'
-    algo_path="/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/bags/RSPD"
+    complete_cloud = 'bags/1661773765.311562777.pcd'
+    cloud_path = "bags"
+    gt_path = "bags/.GT"
+    binaries = 'AlgoBinaries/'
+    algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/bags/RSPD"
 
-    iohelper=IOHelper(complete_cloud, gt_path, algo_path)
-    complete_cloud=iohelper.read_pcd(complete_cloud)
-    ground_truth=iohelper.read_gt()
-    voxel_grid=o3d.geometry.VoxelGrid.create_from_point_cloud(
-        complete_cloud, voxel_size = 0.3)
+    iohelper = IOHelper(complete_cloud, gt_path, algo_path)
+    complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(complete_cloud)
+    ground_truth = iohelper.read_gt()
+    voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
+        complete_cloud, voxel_size=0.3)
 
-    # timeframes = iohelper.get_frames(cloud_path)
-    # for timeframe in timeframes[-1:]:
-    #     sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(timeframe, voxel_grid, complete_cloud)
-    #     evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
-    p = iohelper.read_planes_geo('here.geo')
-    draw_planes(p, complete_cloud)
+    timeframes = iohelper.get_frames(cloud_path)
+    for timeframe in timeframes:
+        sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(timeframe, voxel_grid, complete_cloud)
+        draw_bb_planes(sub_gt, sub_cloud)
+        evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
+    # p = iohelper.read_planes_geo('here.geo')
+    # draw_planes(p, complete_cloud)

@@ -70,16 +70,26 @@ class Plane:
 
     @staticmethod
     def through_crop(plane, subcloud: o3d.geometry.PointCloud, voxel_grid: o3d.geometry.VoxelGrid, complete_cloud: o3d.geometry.PointCloud):
-        # we crop the point cloud of the plane w.r.t the bounding box of subcloud
-        cropped_plane = Plane()
-        sub_bb = subcloud.get_oriented_bounding_box()
-        sub_bb.color = (0, 1, 0)
-        crop_pc = o3d.geometry.PointCloud()
-        crop_pc.points = o3d.utility.Vector3dVector(plane.xyz_points)
-        crop_pc = crop_pc.crop(sub_bb)
-        cropped_plane.xyz_points = np.asarray(crop_pc.points).tolist()
-        # o3d.visualization.draw_geometries([crop_pc, sub_bb])
-        return cropped_plane
+
+        # iterate over points in ground truth
+        # remove all that are not included or that have no close neighbors
+        sub_tree = o3d.geometry.KDTreeFlann(subcloud)
+
+        crop_plane = Plane()
+        for point in plane.xyz_points:
+            [k, idx, _] = sub_tree.search_radius_vector_3d(point, 0.01)
+            if k > 0:
+                crop_plane.xyz_points.append(point)
+
+        print(len(crop_plane.xyz_points))
+        if len(crop_plane.xyz_points) > 0:
+            pts = o3d.utility.Vector3dVector(crop_plane.xyz_points)
+            pc = o3d.geometry.PointCloud()
+            pc.points = pts
+            obb = pc.get_oriented_bounding_box()
+            obb.color= (0,1,0)
+
+        return crop_plane
 
     def translate(self, vector: np.ndarray):
         for point in self.xyz_points:
