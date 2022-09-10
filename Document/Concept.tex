@@ -5,41 +5,44 @@
 \chapter{Concept} \label{chap:Concept}
 
 % \section*{Introduction}
-
+%  FIXME konzeptuelles diagram (schritt zwischen use case und concept) + section (gerne mehr)  
+%  ggf verweise auf kapitel in grafik 
 This chapter deals with the realization of analysis.
 We introduce the definition of real-time and the use case with respect to this work.
 Plane detection algorithms are selected for comparison, as well as the metrics they will be judged upon.
 
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=15 cm]{images/concept.png}
+\end{figure}
+
+
 \section{Scenario / UseCase}
 Taking motivation from chapter \ref{chap:Introduction}, we focus on indoor environments during this work.
-This includes the buildings we encounter in our normal lives, wether its the home we live in, the office we work in or a stripped-down
-version of a building during construction.
+This includes the buildings we encounter in our normal lives, whether it is the home we live in, the office we work in or a stripped-down version of a building during construction.
 
 
 \subsection{Used Sensors}
-% FIXME das ganze realsense SDK geraffel schöner formulieren
 To be able to perform plane detection, we need special hardware that is able to accurately record the surroundings.
-Numerous different cameras suffice for this task, of course varying in different aspects.
+Numerous different cameras suffice for this task, each one of course varying in different aspects.
 For this work, we use the Intel RealSense T256 Tracking Camera, as well as the Intel RealSense D455 RGB-D Camera.
-Reason for this are the compatibility of the two cameras, since the T256 can be used in combination with any depth camera from the D400 series.
+The reason for this is the compatibility of the two cameras since the T256 can be used in combination with any depth camera from the D400 series.
 
-In addition to the cameras, the Intel RealSense software provides a wide variety of usage. We are especially interested in detection of planes
-in complete environments, it is therefore necessary to be able to build a map out of the data the cameras record continuously.
-
-% FIXME Überleitung: "warum nutze ich realsense ros?" 
-
+In addition to the cameras, the Intel RealSense software provides a wide variety of usage. We are especially interested in the detection of planes in complete environments.
+Therefore, it is necessary to be able to build a map out of the data the cameras record continuously.
+%  neuen absatz mit this is why anfangen ist meh
+This is why we integrate \textit{realsense-ros}, the ROS wrapper of Intel RealSense, into our plane detection.
 Realsense-ros internally uses a SLAM(Simultaneous Mapping and Localization) algorithm called RTAB-MAP \cite{Labbé_Michaud_2019} for map-building.
 RTAB-MAP is responsible for building a coherent map from a continuous stream of data that is being recorded and published by the two cameras.
 It is worth noting, that the success of this work does not depend on the specific SLAM algorithm being chosen. We select RTAB-MAP because
-it is already included in the realsense package and its reported performance suffices for this work, especially since we dont focus on SLAM
+it is already included in the RealSense package and its reported performance suffices for this work, especially since we don't focus on SLAM
 algorithms in this work.
 
 
 
-
 \section{Selection Plane Detection Algorithms}
-First we need to assert the comparability between the algorithms introduced in \ref{chap:Background}.
-We report necesary criteria to both shorten the list of algorithms, as well as verify comparability.
+First, we need to assert the comparability between the algorithms introduced in \ref{chap:Background}.
+We report necessary criteria, both to shorten the list of algorithms, as well as verify comparability.
 
 \subsection*{Type of Input}
 Popular representations, which the recorded environment can take the form of, can be grouped into three main categories of input:
@@ -50,7 +53,7 @@ Popular representations, which the recorded environment can take the form of, ca
 \end{itemize}
 
 As stated before, we focus on the detection of planar structures in the entirety of a scene, rather than just singular segments thereof.
-In addition, only the first type of input offers a persistent view on the recorded environment.\\
+In addition, only the unorganized/unstructured point clouds offer a complete view of the recorded environment.\\
 For that reason, we disregard all algorithms which do not expect an unorganized point cloud as input.
 
 
@@ -59,20 +62,20 @@ Which specific representation the detected planes take the form of is also impor
 If no uniform type of output can be determined, consequently no uniform metric for comparison can be found as well.
 Since the algorithms process point clouds, we choose to stay within the realm of points, i,e. an arbitrary plane should be
 represented by the set of points included in the plane (inliers).
-The representation being a list of points enables further processing of the detected planes.
-% TODO umformulieren:
-This can be useful for some sort of segmentation application,and different kinds of plane representations can be calculated through those points.
+The representation, being a list of points, enables further processing of the detected planes.
+Having a list of points would, in contrast to some plane equation, enable us to detect holes in planes, e.g. an open door or window, which can be useful
+for any use case involving remodeling architectural elements.
+It also enables further filtering of planes based on a density value that we can calculate over the bounding box and the number of points, e.g.
+removing planes with a density lower than a certain threshold.
 
 \subsection*{Learning based}\label{subsec_learning_based}
-Learning-based methods, e.g. Deep learning, generally have some varying level of bias, depending on the training data.
+Learning-based methods, e.g. Deep learning, generally have varying levels of bias, depending on the training data.
 Another reason against the use of learning-based methods is that we choose not to require a GPU to replicate our findings.
-% FIXME  fair? -> we choose not to require a GPU to replicate our findings.
+% FIXME  kann ich das so sagen? -> we choose not to require a GPU to replicate our findings.
 
 \subsection*{Availability}
-Lastly, we include the availability of an algorithm into our set of criteria.
+Lastly, we include the availability of an algorithm in our set of criteria.
 Each algorithm to be compared needs to run on the same system to exclude the underlying hardware from any experiments.\\
-Furthermore, writing our own implementation for methods for which no implementation is available, or for which the respective publication does not
-focus on the implementation details, would go beyond the scope of this work.
 
 
 
@@ -82,9 +85,9 @@ focus on the implementation details, would go beyond the scope of this work.
 \newpage
 \subsection*{3DKHT - 3-D Kernel-based Hough Transform}
 With 3D-KHT, as with other octree-based methods, the performance depends, to some degree, on the level of subdivision.
-In the provided implementation, the octree keeps dividing until either the amount of points in the current node is lower than a set minimum, or the
+In the provided implementation, the octree keeps dividing until either the number of points in the current node is lower than a set minimum, or the
 octree has been divided at $s_{level}$ times.\\
-A total of six different parameter presets are included with the official implementation.
+A total of six different presets of parameters are included with the official implementation.
 Since this work does not focus on the evaluation and analysis of a single method, we performed experiments with all presets on a data set, the
 results thereof can be seen in Figure ~\ref{fig:3dkht_params}
 
@@ -97,31 +100,29 @@ results thereof can be seen in Figure ~\ref{fig:3dkht_params}
 
 % FIXME speculation?
 Because the leftmost two presets, with an $s_{level}$ value of 1 and 2, respectively, seem to yield equal results, but a higher value of subdivision
-might result in better performance on larger environments,
-we henceforth perform all calculations of 3D-KHT with an $s_{level}$ value of 2.
+might result in better performance in larger environments, we henceforth perform all calculations of 3D-KHT with an $s_{level}$ value of 2.
 
 \subsection*{OBRG - Octree-based Region Growing}
 \subsection*{PEAC - Probabilistic Agglomerative Hierarchical Clustering}
 
 \subsection*{Summary}
-hier ist ne tabelle:
 \begin{table}[!h]
     \centering
     \begin{tabular}{|c|c|c|c|c|c}
         \hline
-                             & \textbf{Input Data} & \textbf{Plane format}                 & \textbf{Learning-Based} & \textbf{Availability} \\ \hline
-        \textbf{RSPD}        & UPC                 & inliers                               & N                       & Y                     \\ \hline
-        \textbf{OPS}         & UPC                 & inliers                               & N                       & Y                     \\ \hline
-        \textbf{3DKHT}       & UPC                 & inliers                               & N                       & Y                     \\ \hline
-        \textbf{OBRG}        & UPC                 & surely inliers                        & N                       & N                     \\ \hline
-        \textbf{PEAC}        & OPC                 & inliers                               & N                       & Y                     \\ \hline
-        \textbf{CAPE}        & OPC                 & normal, d                             & N                       & Y                     \\ \hline
-        \textbf{SCH RG}      & OPC                 & inliers?                              & N                       & N                     \\ \hline
-        \textbf{D-KHT}       & DI                  & inliers                               & N                       & Y                     \\ \hline
-        \textbf{DDFF}        & DI                  & \textcolor{red}{indices}              & N                       & Y                     \\ \hline
-        \textbf{PlaneNet}    & I                   & \textcolor{red}{piecewise planar sth} & Y                       & Y                     \\ \hline
-        \textbf{PLaneRecNet} & I                   & ? / -                                 & Y                       & Y                     \\ \hline
-        \textbf{PlaneRCNN}   & I                   & normal + ?                            & N                       & Y                     \\ \hline
+                                                                         & \textbf{Input Data} & \textbf{Plane format}                 & \textbf{Learning-Based} & \textbf{Availability} \\ \hline
+        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers                               & N                       & Y                     \\ \hline
+        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers                               & N                       & Y                     \\ \hline
+        \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers                               & N                       & Y                     \\ \hline
+        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & surely inliers                        & N                       & N                     \\ \hline
+        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers                               & N                       & Y                     \\ \hline
+        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & normal, d                             & N                       & Y                     \\ \hline
+        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers?                              & N                       & N                     \\ \hline
+        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers                               & N                       & Y                     \\ \hline
+        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & \textcolor{red}{indices}              & N                       & Y                     \\ \hline
+        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & \textcolor{red}{piecewise planar sth} & Y                       & Y                     \\ \hline
+        \textbf{PLaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & I                   & ? / -                                 & Y                       & Y                     \\ \hline
+        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & normal + ?                            & N                       & Y                     \\ \hline
     \end{tabular}
     \caption{Plane Detection Algorithms}
     \label{tab:my-table}
@@ -129,19 +130,21 @@ hier ist ne tabelle:
 
 \subsection*{Summary Plane Detection Algorithms}
 To effectively compare the presented algorithms, the data on which each algorithm performs the plane detection should ideally be the same. \\ \\
-If we furthermore consider algorithms that run on anything other than UPC, it would necessitate finding a data set which includes equivalent point clouds for the structured, as well as
+If we furthermore consider algorithms that run on anything other than UPC, it would necessitate finding a data set that includes equivalent point clouds for the structured, as well as
 the unstructured case.
-Since these algorithms would disregard the global structure of the point cloud, we deem them not feasable for our use-case and thus exclude them from
+Since these algorithms would disregard the global structure of the point cloud, we deem them not feasible for our use-case and thus exclude them from
 our evaluation.
 
-% FIXME seems repeating to me, having a paragraph per criterio to reference them here in one single sentence
+% FIXME seems repeating to me, having a paragraph per criteria to reference them here in one single sentence
 For the reasons previously stated in \ref{subsec_learning_based}, we also exclude learning-based methods.
 
 For an even comparison, the detected planes would have to be in the same format because, even for the same plane, representations could very well
 lead to different results, e.g. a plane in cartesian form compared to the same plane, described by its inliers.\\
 Asserting, comparability, we exclude all methods, which do not offer a plane representation by inliers.
 
-We lastly exclude all methods for which we didnt find any implementations, or necessary formulas.
+Lastly, writing our own implementation of methods for which no implementation is available, or for which the respective publication does not
+focus on the implementation details, would go beyond the scope of this work.
+
 
 Finally, we end up with, and thus include the following plane detection algorithms in our evaluation:
 
@@ -154,14 +157,14 @@ Finally, we end up with, and thus include the following plane detection algorith
 
 
 \section{How do we verify "real-time"?}
-To determine wether or not an algorithm runs in real-time, we have to define the meaning of real-time first.
+To determine whether or not an algorithm runs in real-time, we have to define the meaning of real-time first.
 
 We have to consider possible hardware limitations, data flow, and simply
-how often it is needed to perform calculations in correspondence with the given use-case.
+how often it is needed to perform calculations in correspondence with the given use case.
 
 %TODO Gar nicht mehr unbedingt nötig, wenn die obere grenze eh der SLAM ist, oder? 
 %  The D455 has a depth frame rate of up to 90, while the T256 only achieves a maximum frame rate of 30
-The recordings are not directly sent to the plane detection algorithm, but instead given to RTAB-MAP, which then performs calculations to update and publish the map.
+The recordings are not directly sent to the plane detection algorithm but instead given to RTAB-MAP, which then performs calculations to update and publish the map.
 Therefore, the upper limit is the frequency of how often RTAB-MAP publishes those updates, which by default is once per second.
 According to this upper limit, we consider an algorithm \textit{real-time applicable}, if it achieves an average frame
 rate of minimum 1, e.g. the algorithm manages to process the entire point cloud and detect all planes in $1s$.

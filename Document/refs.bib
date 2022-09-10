@@ -218,9 +218,7 @@
   year         = {2020},
   month        = {Apr},
   pages        = {107115},
-  language     = {en},
-  url          = {https://github.com/abnerrjo/PlaneDetection},
-  urldate      = {August 31st, 2022}
+  language     = {en}
 }
 
 @inproceedings{Sturm_Engelhard_Endres_Burgard_Cremers_2012,
@@ -306,3 +304,124 @@
   adsnote       = {Provided by the SAO/NASA Astrophysics Data System}
 }
 
+ @inproceedings{Feng_Taguchi_Kamat_2014,
+  address      = {Hong Kong, China},
+  title        = {Fast plane extraction in organized point clouds using agglomerative hierarchical clustering},
+  isbn         = {978-1-4799-3685-4},
+  url          = {http://ieeexplore.ieee.org/document/6907776/},
+  doi          = {10.1109/ICRA.2014.6907776},
+  abstractnote = {Real-time plane extraction in 3D point clouds is crucial to many robotics applications. We present a novel algorithm for reliably detecting multiple planes in real time in organized point clouds obtained from devices such as Kinect sensors. By uniformly dividing such a point cloud into non-overlapping groups of points in the image space, we ﬁrst construct a graph whose node and edge represent a group of points and their neighborhood respectively. We then perform an agglomerative hierarchical clustering on this graph to systematically merge nodes belonging to the same plane until the plane ﬁtting mean squared error exceeds a threshold. Finally we reﬁne the extracted planes using pixel-wise region growing. Our experiments demonstrate that the proposed algorithm can reliably detect all major planes in the scene at a frame rate of more than 35Hz for 640x480 point clouds, which to the best of our knowledge is much faster than state-of-the-art algorithms.},
+  booktitle    = {2014 IEEE International Conference on Robotics and Automation (ICRA)},
+  publisher    = {IEEE},
+  author       = {Feng, Chen and Taguchi, Yuichi and Kamat, Vineet R.},
+  year         = {2014},
+  month        = {May},
+  pages        = {6218–6225},
+  language     = {en}
+}
+ 
+@article{Proença_Gao_2018,
+  title        = {Fast Cylinder and Plane Extraction from Depth Cameras for Visual Odometry},
+  url          = {http://arxiv.org/abs/1803.02380},
+  abstractnote = {This paper presents CAPE, a method to extract planes and cylinder segments from organized point clouds, which processes 640×480 depth images on a single CPU core at an average of 300 Hz, by operating on a grid of planar cells. While, compared to state-of-the-art plane extraction, the latency of CAPE is more consistent and 4-10 times faster, depending on the scene, we also demonstrate empirically that applying CAPE to visual odometry can improve trajectory estimation on scenes made of cylindrical surfaces (e.g. tunnels), whereas using a plane extraction approach that is not curve-aware deteriorates performance on these scenes.},
+  note         = {number: arXiv:1803.02380
+                  arXiv:1803.02380 [cs]},
+  number       = {arXiv:1803.02380},
+  publisher    = {arXiv},
+  author       = {Proença, Pedro F. and Gao, Yang},
+  year         = {2018},
+  month        = {Jul},
+  language     = {en}
+}
+
+@inproceedings{Mols_Li_Hanebeck_2020,
+  address      = {Paris, France},
+  title        = {Highly Parallelizable Plane Extraction for Organized Point Clouds Using Spherical Convex Hulls},
+  isbn         = {978-1-72817-395-5},
+  url          = {https://ieeexplore.ieee.org/document/9197139/},
+  doi          = {10.1109/ICRA40945.2020.9197139},
+  abstractnote = {We present a novel region growing algorithm for plane extraction of organized point clouds using the spherical convex hull. Instead of explicit plane parameterization, our approach interprets potential underlying planes as a series of geometric constraints on the sphere that are reﬁned during region growing. Unlike existing schemes relying on downsampling for sequential execution in real time, our approach enables pixelwise plane extraction that is highly parallelizable. We further test the proposed approach with a fully parallel implementation on a GPU. Evaluation based on public data sets has shown state-of-the-art extraction accuracy and superior speed compared to existing approaches, while guaranteeing realtime processing at full input resolution of a typical RGB-D camera.},
+  booktitle    = {2020 IEEE International Conference on Robotics and Automation (ICRA)},
+  publisher    = {IEEE},
+  author       = {Mols, Hannes and Li, Kailai and Hanebeck, Uwe D.},
+  year         = {2020},
+  month        = {May},
+  pages        = {7920–7926},
+  language     = {en}
+}
+
+@article{Vera_Lucio_Fernandes_Velho_2018,
+  title        = {Hough Transform for real-time plane detection in depth images},
+  volume       = {103},
+  issn         = {01678655},
+  doi          = {10.1016/j.patrec.2017.12.027},
+  abstractnote = {The automatic detection of planes in depth images plays an important role in computer vision. Plane detection from unorganized point clouds usually require complex data structures to pre-organize the points. On the other hand, existing detection approaches tailored to depth images use the structure of the image and the 2.5-D projection of the scene to simplify the task. However, they are sensitive to noise and to discontinuities caused by occlusion. We present a real-time deterministic technique for plane detection in depth images that uses an implicit quadtree to identify clusters of approximately coplanar points in the 2.5-D space. The detection is performed by an eﬃcient Hough-transform voting scheme that models the uncertainty associated with the best-ﬁtting plane with respect to each cluster as a Gaussian distribution. Experiments shows that our approach is fast, scalable, and robust even in the presence of noise, partial occlusion, and discontinuities.},
+  journal      = {Pattern Recognition Letters},
+  author       = {Vera, Eduardo and Lucio, Djalma and Fernandes, Leandro A.F. and Velho, Luiz},
+  year         = {2018},
+  month        = {Feb},
+  pages        = {8–15},
+  language     = {en}
+}
+
+@inproceedings{Roychoudhury_Missura_Bennewitz_2021,
+  address      = {Prague, Czech Republic},
+  title        = {Plane Segmentation Using Depth-Dependent Flood Fill},
+  isbn         = {978-1-66541-714-3},
+  url          = {https://ieeexplore.ieee.org/document/9635930/},
+  doi          = {10.1109/IROS51168.2021.9635930},
+  abstractnote = {The detection of planar surfaces in a point cloud is a popular technique for the extraction of drivable or walkable surfaces and for tabletop segmentation. Unfortunately, RGB-D sensors are quite noisy and provide incomplete data, which makes the extraction of surfaces more challenging. Also, it is desirable to process the point cloud data in real time, which at a rate of approximately 30 Hz, leaves only a small amount of computation time per frame. We have already developed a real time-capable plane segmentation method [1] that exploits the organized structure of RGB-D point clouds in order to implement a computationally efﬁcient region growing algorithm. It uses the point-plane distance to assign points to their segments rather than inherently unreliable surface normals. Now we are presenting an improvement where we adapt thresholds and other parameters of our algorithm to the measured depth in order to account for an increasing scatter of the points at larger distances from the camera. We estimate a minimum detectable plane size in pixels dependent on the measured depth. This enables us to stride in pixel coordinates with larger steps that are adaptive to the measured depth and to implement more robust sanity checks of depth-dependent size. Apart from a speed-up of the runtime of our algorithm, the segmentation quality also increased. We show a comparison between our improvement, our previous version, and other state-of-the-art methods evaluated on multiple commonly available datasets.},
+  booktitle    = {2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  publisher    = {IEEE},
+  author       = {Roychoudhury, Arindam and Missura, Marceli and Bennewitz, Maren},
+  year         = {2021},
+  month        = {Sep},
+  pages        = {2210–2216},
+  language     = {en}
+}
+
+@inproceedings{Liu_Yang_Ceylan_Yumer_Furukawa_2018,
+  address      = {Salt Lake City, UT},
+  title        = {PlaneNet: Piece-Wise Planar Reconstruction from a Single RGB Image},
+  isbn         = {978-1-5386-6420-9},
+  url          = {https://ieeexplore.ieee.org/document/8578371/},
+  doi          = {10.1109/CVPR.2018.00273},
+  abstractnote = {This paper proposes a deep neural network (DNN) for piece-wise planar depthmap reconstruction from a single RGB image. While DNNs have brought remarkable progress to single-image depth prediction, piece-wise planar depthmap reconstruction requires a structured geometry representation, and has been a difﬁcult task to master even for DNNs. The proposed end-to-end DNN learns to directly infer a set of plane parameters and corresponding plane segmentation masks from a single RGB image. We have generated more than 50,000 piece-wise planar depthmaps for training and testing from ScanNet, a largescale RGBD video database. Our qualitative and quantitative evaluations demonstrate that the proposed approach outperforms baseline methods in terms of both plane segmentation and depth estimation accuracy. To the best of our knowledge, this paper presents the ﬁrst end-to-end neural architecture for piece-wise planar reconstruction from a single RGB image. Code and data are available at https: //github.com/art-programmer/PlaneNet.},
+  booktitle    = {2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  publisher    = {IEEE},
+  author       = {Liu, Chen and Yang, Jimei and Ceylan, Duygu and Yumer, Ersin and Furukawa, Yasutaka},
+  year         = {2018},
+  month        = {Jun},
+  pages        = {2579–2588},
+  language     = {en}
+}
+
+@article{Xie_Shu_Rambach_Pagani_Stricker_2022,
+  title        = {PlaneRecNet: Multi-Task Learning with Cross-Task Consistency for Piece-Wise Plane Detection and Reconstruction from a Single RGB Image},
+  url          = {http://arxiv.org/abs/2110.11219},
+  abstractnote = {Piece-wise 3D planar reconstruction provides holistic scene understanding of man-made environments, especially for indoor scenarios. Most recent approaches focused on improving the segmentation and reconstruction results by introducing advanced network architectures but overlooked the dual characteristics of piece-wise planes as objects and geometric models. Different from other existing approaches, we start from enforcing cross-task consistency for our multi-task convolutional neural network, PlaneRecNet, which integrates a single-stage instance segmentation network for piece-wise planar segmentation and a depth decoder to reconstruct the scene from a single RGB image. To achieve this, we introduce several novel loss functions (geometric constraint) that jointly improve the accuracy of piece-wise planar segmentation and depth estimation. Meanwhile, a novel Plane Prior Attention module is used to guide depth estimation with the awareness of plane instances. Exhaustive experiments are conducted in this work to validate the effectiveness and efficiency of our method.},
+  note         = {number: arXiv:2110.11219
+                  arXiv:2110.11219 [cs]},
+  number       = {arXiv:2110.11219},
+  publisher    = {arXiv},
+  author       = {Xie, Yaxu and Shu, Fangwen and Rambach, Jason and Pagani, Alain and Stricker, Didier},
+  year         = {2022},
+  month        = {Jan},
+  language     = {en}
+}
+
+@inproceedings{Liu_Kim_Gu_Furukawa_Kautz_2019,
+  address      = {Long Beach, CA, USA},
+  title        = {PlaneRCNN: 3D Plane Detection and Reconstruction From a Single Image},
+  isbn         = {978-1-72813-293-8},
+  url          = {https://ieeexplore.ieee.org/document/8953257/},
+  doi          = {10.1109/CVPR.2019.00458},
+  abstractnote = {This paper proposes a deep neural architecture, PlaneRCNN, that detects and reconstructs piecewise planar surfaces from a single RGB image. PlaneRCNN employs a variant of Mask R-CNN to detect planes with their plane parameters and segmentation masks. PlaneRCNN then jointly reﬁnes all the segmentation masks with a novel loss enforcing the consistency with a nearby view during training. The paper also presents a new benchmark with more ﬁne-grained plane segmentations in the ground-truth, in which, PlaneRCNN outperforms existing state-of-theart methods with signiﬁcant margins in the plane detection, segmentation, and reconstruction metrics. PlaneRCNN makes an important step towards robust plane extraction, which would have an immediate impact on a wide range of applications including Robotics, Augmented Reality, and Virtual Reality. Code and data are available at https://research.nvidia.com/publication/2019-06 PlaneRCNN.},
+  booktitle    = {2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  publisher    = {IEEE},
+  author       = {Liu, Chen and Kim, Kihwan and Gu, Jinwei and Furukawa, Yasutaka and Kautz, Jan},
+  year         = {2019},
+  month        = {Jun},
+  pages        = {4445–4454},
+  language     = {en}
+}

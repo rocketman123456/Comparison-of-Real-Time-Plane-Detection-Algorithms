@@ -13,24 +13,23 @@ which runs Linux Ubuntu 20.04.5. The laptop has an AMD Ryzen 7 5800H CPU and 16 
 We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}, as well as \textit{realsense-ros} with all additional dependencies.
 
 % FIXME i think those footnotes with links were a bad idea
-% TODO either add all hrefs to refs.bib or remove RSPD,OPS link bc they get different styles.
 
 \section{Plane Detection Algorithms}
-We implement RSPD and OPS using their respective open source implementations on GitHub\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{\citeurl{Araújo_Oliveira_2020}}}
-\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{\citeurl{Sun_Mordohai_2019}}}. Note that, while the implementation of RSPD is provided by the author,
+We implement RSPD and OPS using their respective open source implementations on GitHub\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{{https://github.com/abnerrjo/PlaneDetection}}}
+\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}}. Note that, while the implementation of RSPD is provided by the author,
 we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}.
-Both methods are implemented in C++ and depend on the C++ linear algebra library \textit{Eigen}\footnote{\href{https://eigen.tuxfamily.org/index.php}{https://eigen.tuxfamily.org/index.php}} 
+Both methods are implemented in C++ and depend on the C++ linear algebra library \textit{Eigen}\footnote{\href{https://eigen.tuxfamily.org/index.php}{https://eigen.tuxfamily.org/index.php}}
 and the C++ API of the  Point-Cloud Library\footnote{\href{https://pointclouds.org/}{https://pointclouds.org/}}, \textit{libpcl-dev}.
 
 The authors of 3D-KHT, provide an implementation, in form of a Visual Studio project, on their website \footnote{\href{https://www.inf.ufrgs.br/~oliveira/pubs_files/HT3D/HT3D_page.html}
-    {\citeurl{Limberger_Oliveira_2015}}}. Since the laptop we use does not run Windows, we use \textit{cmake-converter}
+    {https://www.inf.ufrgs.br/~oliveira/pubs\_files/HT3D/HT3D\_page.html}}. Since the laptop we use does not run Windows, we use \textit{cmake-converter}
 \footnote{\href{https://cmakeconverter.readthedocs.io/en/latest/use.html}{https://cmakeconverter.readthedocs.io/}} to convert
 the solution to a cmake project we can build using \textit{make}.
 
 \subsection*{OBRG}
 To our knowledge, no open-source implementation is available for the algorithm.
 We therefore use our own implementation.
-% TODO after actualy implementation of OBRG
+% TODO after actual implementation of OBRG
 We implement the method in python, heavily relying on someLib for computation of something.
 
 \end{document}

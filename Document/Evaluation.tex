@@ -7,10 +7,10 @@ In diesem kapitel werden zuvor ausgewählte algorithmen einheitlich verglichen u
 
 \section{Evaluation Protocol}
 
-To determine the feasability of performing real-time plane detection, we need to conduct experiments with the selected algorithms.
+To determine the feasibility of performing real-time plane detection, we need to conduct experiments with the selected algorithms.
 
 Another important factor for comparability is the data set, on which the experiments are conducted on.
-Because each publication from the presented algorithms uses a different data set for their evaluation, we cannot objectively select an algorithm to be the "best".
+Because each publication from the presented algorithms uses a different data set for its evaluation, we cannot objectively select an algorithm to be the "best".
 Furthermore, to the best of our knowledge, there is no data set, that contains an incrementally growing and unordered point cloud with corresponding ground truth.
 
 Thus, we first evaluate the algorithms on a dataset while excluding the temporal component. We do this by performing plane detection on whole point clouds, rather than
@@ -21,15 +21,15 @@ We then perform experiments, this time including the temporal component, by perf
 Lastly, through comparison, as well as analysis of those different experiments, a statement will be given as to whether and how well plane detection is
 possible in real-time.
 
-For the evaluation of a given dataset, by comparing the test results with the ground truth, we took inspiration from \citeauthor{Araújo_Oliveira_2020},
+For the evaluation of a given dataset, by comparing the test results with the ground truth, we took inspiration from \citeauthor{Araújo_Oliveira_2020} \citedate{Araújo_Oliveira_2020},
 especially their \textit{Results} chapter.
 
 
 \subsection{Metrics}
-To quantitatively evaluate an algorithms performance, we calculate the precision, recall and the f1 score.
-First we regularize the original point cloud to reduce complexity and furthermore to avoid proximity bias, because of the inverse relationship
+To quantitatively evaluate an algorithm's performance, we calculate the precision, recall and the f1 score.
+First, we regularize the original point cloud to reduce complexity and furthermore to avoid proximity bias, because of the inverse relationship
 between distance to sensor and cloud density. This regularization is obtained through voxelization of the pointcloud.\\
-With this voxelgrid we can now calculate corresponding sets of voxels for each point cloud representing a plane.
+With this voxel grid, we can now calculate corresponding sets of voxels for each point cloud representing a plane.
 In the next step, we compare our planes from the ground truth with the planes obtained from an algorithm to obtain a list of corresponding pairs
 of ground truth and found planes.\\
 A grund truth plane $p_{gt_i}$ is marked as \textit{detected}, if any plane from the list of found planes achieves a voxel overlap of $\geq 50\%$.
@@ -41,15 +41,14 @@ $$v_i \in p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in FN$$
 $$v_i \notin p_{gt_j} \land v_i \in p_{a_k} \Rightarrow v_{i} \in FP$$
 % TODO not needed right? $$v_i \notin p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in TN$$  , True Negative(TN)} 
 
-With those four rules, we can calculate the precision, recall and F1-score like this:
+With those four rules, we can calculate the precision, recall and F1 score like this:
 $$Precision = \frac{|TP|}{|TP|+|FP|}$$
 $$Recall = \frac{|TP|}{|TP|+|FN|}$$
 $$F1 = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}$$
 
-% FIXME imho, measuring of time seems almost too self-explanatory to even write down
 Aside from the accuracy, we also need to compare the time each algorithm needs to find its respective set of planes.
 For that, we measure the time spent in the plane detection phase, excluding any preprocessing or postprocessing steps.
-To measure the detection time, we simply log the exact times before and after calculations and write the differences to a file.\\
+To measure the detection time, we log the exact times before and after calculations and write the difference to a file.\\
 
 
 \subsection{Dataset}
@@ -83,15 +82,20 @@ Since our focus lies not on 3D semantic segmentation, we manually select planar 
 
 \subsection{Real-Life Test}
 We record an incrementally growing data set in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
-% TODO do i have to explain how i am holding them? probably right -> concept -> used sensors
 Running \textit{realsense-ros} and holding our cameras, we walk through different parts of the building, scanning to the best of our ability.
-We save each incremental update of the map to file for later usage.
+We save each incremental map update to a file for later usage.
 
-We create a corresponding ground truth for only the most recent update, e.g. for the entire recording.
+We create a set of ground truth planes $gt_{end}$for only the most recent update, e.g., for the entire recording.
 
-During evaluation of a map at time $m_t$, we cut off the ground truth with respect to $m_t$
-so that we obtain a ground truth for each distinct time $gt_t$. 
-% FIXME insert beispiel grafik: complate GT, m_t, gt_t
+To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$. 
+We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not. 
+Furthermore, we remove planes from the ground truth, if the number of included points falls short of a threshold.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=15 cm]{images/dynamic_eval.png}
+\end{figure}
+
 
 \section{Results}
 \subsection{Results Dataset}
