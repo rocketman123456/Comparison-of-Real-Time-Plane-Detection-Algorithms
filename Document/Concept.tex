@@ -14,6 +14,9 @@ Plane detection algorithms are selected for comparison, as well as the metrics t
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=15 cm]{images/concept.png}
+    \caption{A camera records an environment and passes the raw data to
+    RealSense-ROS. After RTAB-MAP updates the map, it is given to the plane detection algorithms (green). The resulting planes will 
+    then be exported as needed, given the specific use case, described in Chapter~\ref{chap:Introduction}.}
 \end{figure}
 
 
@@ -90,7 +93,7 @@ octree has been divided at $s_{level}$ times.\\
 A total of six different presets of parameters are included with the official implementation.
 Since this work does not focus on the evaluation and analysis of a single method, we performed experiments with all presets on a data set, the
 results thereof can be seen in Figure ~\ref{fig:3dkht_params}
-
+% FIXME overwork figure -> remove suptitle, remove maxd2p from xticklabels  
 \begin{figure}[!h]
     \centering
     \includegraphics[width=15 cm]{params_3dkht.png}

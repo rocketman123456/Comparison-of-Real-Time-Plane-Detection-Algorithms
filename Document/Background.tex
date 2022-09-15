@@ -1,16 +1,154 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
 \chapter{Background}\label{chap:Background}
-\paragraph*{"Summary", What is to be expected in this chapter}
-In this chapter we will present relevant literature needed to completely understand the proposed concept of \autoref{chap:Concept}.
+In this chapter, we will present relevant literature needed to completely understand the proposed concept of \autoref{chap:Concept}.
 
 
 \section{Intel Realsense}
 % TODO datasheet der D455 und T256 hier rein pasten.
 \href{https://www.intelrealsense.com/compare-depth-cameras/}{https://www.intelrealsense.com/compare-depth-cameras/}
 
+\subsection*{SLAM}
+SLAM, oder Simultaneous Localization And Mapping, ist ein Problem aus der Robotik und befasst sich damit, wie ein unbemannter roboter eine karte der umgebung aufbaut und gleichzeitig die eigene position in relation dazu korrekt erfasst.
+
+
+\paragraph*{RTAB-MAP}
+rtabmap ist der intern benutze slam algorithmus von realsense-ros. Er unterscheidet sich insbesondere \textcolor{red}{hierdurch} von HIERANDERENSLAMEINFÜGEN.
+
+Er funktioniert grundsätzlich so:
+% TODO Grafik von RTAB-MAP
+
+\section{Plane Detection}
+
+\paragraph*{introduction}
+plane detection algorithmen lassen sich im groben in 3 hauptkategorien einordnen:
+\begin{itemize}
+    \item Hough Transform (HT)
+    \item RANSAC (RC)
+    \item Region Growing (RG)
+\end{itemize}
+
+\subsection*{Hough Transform}
+\subsection*{RANSAC}
+RANSAC ist kurz für RAndom SAmple Consensus und die grundlegende idee dahinter ist das iterative schätzen eines mathematischen modells. Im kontext dieser arbeit würde dementsprechend beispielsweise eine Ebenengleichung geschätzt werden.
+Es gibt viele Varianten von RAnsac, alle haben jedoch gemeinsam, dass eine gewisse anzahl an punkten (mehr oder weniger) zufällig aus dem datensatz gewählt werden und versucht wird durch diese das jeweilige modell zu bilden.
+\citeauthor{Yang_Forstner}\cite{Yang_Forstner} samplen in jeder iteration 3 random punkte, \citeauthor{Sun_Mordohai_2019} \cite{Sun_Mordohai_2019} wählen nur einen zufälligen punkt zu einem zuvor berechneten normalenvektor um eine Ebene zu bilden.
+Dazu gibt es in den meisten fällen ein Kriterium, wie oft das ganze durchgeführt werden soll. 
+
+\subsection*{Region Growing}
+
+Regio Growing findet oft benutzung in der image segmentation, kann jedoch auch im 3d raum zum finden von ebenen benutzt werden.
+Grundsätzlich werden beim RG zunächst eine Auswahl an Seed points getroffen.
+Im anschluss werden von jedem seed point aus benachbarte Daten betrachtet, und zu der region des seed points hinzugefügt, wenn bestimmte voraussetzungen erfüllt sind.
+im kontext dieser arbeit würden diese vorraussetzungen beispielsweise einen fokus auf coplanarität legen, d.h. die normalenvektoren des seed points und des nachbarn unterscheiden sich weniger als ein
+vordefinierter Schwellwert.
+% \begin{algorithm}
+%     \caption{General Region Growing Approach}\label{alg:RG}
+%     \KwData{$n \geq 0$}
+%     \KwResult{$y = x^n$}
+%     $S \gets \text{seed points}$\;
+%     \While{$S \neq \emptyset$}{
+%         $s_i \gets S.pop()$\;
+%         $B \gets NB(s_i)$\;
+%         \ForEach{neighbor $b \in B$}{
+%             \If{$b$ satisfies condition}{
+%                 add $b$ to $s_i$\;
+%                 add $b$ to $S$\;
+%             }
+%         }
+%     }
+% \end{algorithm}
+
+\section{Plane Detection Algorithms}
+In dieser section werden die algorithmen näher erläutert, die im späteren kontext dieser arbeit im fokus stehen werden.
+
+\subsection{RSPD}
+RSPD gehört zu den region growing verfahren und besteht im grunde aus 3 Phasen; Teilen, Wachsen, Zusammenfügen.
+
+\paragraph*{Split}
+Für die spatial subdivision wird ein octree aus der ungeordneten punktwolke konstruiert. Dieser unterteilt sich immer weiter in kleinere sub-trees,
+bis die beinhalteten punkte des jeweiligen sub-trees einen Grenzwert unterschreiten.
+
+Im Anschluss wird eine planarity test durchgeführt, bis ein sub-tree einen planar patch enthält. Dieser Sub-tree schreitet voran in die nächste Phase (grow).
+
+\paragraph*{Grow}
+Für die wachstumsphase wird ein nachbarschaftsgraph (NG) über die gesamte wolke erstellt, insofern dass ein knoten des graphen einen punkt innerhalb der wolke repräsentiert. Knoten des
+nachbarschaftsgraphen werden verbunden, wenn die dazugehörigen punkte durch eine knn suche gefunden werden (die authoren benutzen k=50).
+
+Nach der NG konstruktion wird von einem planaren patch $P_i$ aus eine breitensuche gemacht und jeder punkt $s$, der die folgende kriterien erfüllen, wird zu $P_i$ hinzugefügt:
+\begin{itemize}
+    \item $s$ gehört bisher zu keinem patch
+    \item die abweichung von $s$ zu der ebene $P_i$ ist kleiner als die definierten Schwellwerte
+\end{itemize}
+
+Nun kann $s$ jedoch zu mehreren patches gehören, wodurch sich das problem ergibt, zu welcher ebene $s$ hinzugefügt werden sollte.
+Um dem vorzubeugen, werden die patches anhand deren normalen abweichung sortiert, sodass zuerst die patches mit dem geringsten noise anteil zuerst wachsen.
+
+\paragraph*{Merge}
+Die patches aus den vorherigen phasen müssen noch gemergt werden. Betrachtet man zwei planare patches $P_1$ und $P_2$, gibt es essentiell drei konditionen, unter welchen diese beiden verbunden werden dürfen:
+\begin{itemize}
+    \item die Octree nodes von $P_1$ und $P_2$ müssen benachbart sein
+    \item $P_1.n$ und $P_2.n$ sollten in ähnliche richtungen zeigen
+    \item min. ein inlier aus $P_1$ sollte die inlier condition von $P_2$ erfüllen und vice versa
+\end{itemize}
+Schlussendlich liefert die Merge phase alle maximal zusammengefügten patches zurück. 
+
+
+\subsection{OPS}
+Oriented point Sampling akzeptiert eine unorganized point cloud als input.
+Zuerst wird aus der gesamtwolke ein kleiner anteil random gewählt. Die normalvektoren dieser punkte werden mit SVD geschätzt, nachdem die k nächsten nachbarn mithilfe eines kd-trees gesucht wurden.
+Dazu wird eine inverse-distance gewichtsfunktion benutzt, sodass nahegelegene punkte einen höheren stellwert haben als weiter weg gelegene.
+
+Anschliessend wird per 1P RANSAC die ebene mit den meisten inliern gefunden. Im vergleich zu traditioneller Ransac ebenenfindung braucht OPS nicht 3 punkte, sondern nur einen punkt und den normalenvektor.
+Zuletzt wird der normalenvektor der gefundenen ebene neu geschätzt, dafür wird erneut die SVD auf alle inlier angewandt.
+Wurde erfolgreich eine Ebene gefunden, werden die beinhalteten punkte aus der gesamtwolke entfernt. Dieser prozess wird so lange wiederholt, bis die gesamtanzahl der punkte einen Schwellwert $\theta_N$ unterschreitet.
+
+Die resultierenden gefundenen ebenen werden über ihren Mittelpunkt, sowie den normalenvektor dargestellt.
+
+\subsection{3D-KHT}
+Der 3D-Kernel Hough transform gehört natürlich zu den Hough transform verfahren.
+% sample clustering
+Auch dieser Algorithmus teilt die punktwolke zunächst rekursiv in kleinere teile auf mithilfe eines octrees. Das aufteilen der Octree nodes wird erst gestoppt, wenn die enthaltenen samples
+approximately coplanar sind, oder aber die anzahl der enthaltenen samples, $s_{ms}$, einen Schwellwert unterschreitet. Die authoren empfehlen für große wolken einen minimum von $s_{ms}=30$ \cite{Limberger_Oliveira_2015}.
+Ist eine octree node approx. coplanar, werden zuerst samples entfernt, wessen distanz zur ebene größer als $\frac{octree-node-length}{10}$ ist, und im Anschluss eine ebene gefittet.
+
+% kernel calculation + cluster voting
+In dieser Phase werden zuerst gaussische trivariate kernel berechnet. Dabei wird die Ebene in spherical coordinates umgeschrieben.
+
+% TODO rest of 3dkht, explain hough transform first
+\textcolor{red}{hier noch den rest einfügen!}
+\subsection{maybe OBRG}
+
+OBRG gehört natürlich ebenfalls zu den region growing verfahren.
+
+Die unorganized point cloud wird zunächst mit einem octree rekursiv in kleinere fragmente zerteilt. eine octree node wird so lange zerteilt, bis für eine octree node $n$ eines der zwei folgenden kriterien erfüllt ist;
+\begin{itemize}
+    \item node level überschreitet max subdivision level
+    \item number of included samples unterschreitet min included schwellwert
+\end{itemize}
+
+Anschliessend werden saliency features berechnet. Für jede leaf node wird die normale, sowie ein residual wert berechnet. Die normale wird mit PCA der included samples berechnet.
+Mithilfe der Normale und dem center der samples wird eine fitting plane definert. die residual value der leaf node ist das RMS aller abweichungen der punkte von der fitting plane.
+
+Im nächsten schritt werden die leaf nodes geclustert. die Liste der blattknoten wird nach deren residual werten sortiert. Betrachte man einen beliebigen blattknoten $l$, so werden zunächst alle 26 benachbarten $B$ blattknoten von $l$ in betracht gezogen.
+ein benachbarter blattknoten $b_i \in B$ wird der zu der Region von $l$ hinzugefügt, wenn beide folgenden kriterien erfüllt sind:
+\begin{itemize}
+    \item $b_i$ gehört noch zu keiner region
+    \item angular divergence von $b_i.n$ und $l.n \leq \theta_{ang}$
+\end{itemize}
+
+Weiterhin wird die aktuelle Region für weitere berechnungen berücksichtigt, wenn die anzahl der beinhalteten punkte einen Grenzwert $M$ überschreitet.
+
+Im folgenden werden die Regionen ihrer Größe nach sortiert und im nächsten schritt verfeinert.
+Die verfeinerung wird unterteilt in zwei Arten; fast(FR) und general(GR). Welche der Arten auf eine Region angewandt werden, entscheidet sich danach, ob die Region planar($\rightarrow FR$) ist oder nicht ($\rightarrow GR$).
+Eine Region wird als planar angesehen, wenn eine mindestanzahl an samples mit einer toleranz in die best
+fitting plane der Region passen. Die authoren geben an, dass sich diese mindestanzahl zwischen 70\% und 90\% befinden sollte, je nach anteil an noise im datensatz.
+Für beide verfeinerungen werden lediglich die blattknoten berücksichtigt, welche die jeweilige region eingrenzen, also weniger als 8 nachbarn haben. Sie unterscheiden sich jedoch darin, dass beim fast refinement auf leaf basis verfeinert wird, beim general refinement
+aber auf punktbasis.
+
+In beiden fällen erhält man vollständige regionen, aus denen problemlos die best fitting plane, als auch die included samples extrahiert werden können.
 
 \end{document}
 
-  
- 
+
+
