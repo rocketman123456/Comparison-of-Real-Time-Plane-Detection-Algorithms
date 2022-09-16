@@ -28,7 +28,7 @@ especially their \textit{Results} chapter.
 \subsection{Metrics}
 To quantitatively evaluate an algorithm's performance, we calculate the precision, recall and the f1 score.
 First, we regularize the original point cloud to reduce complexity and furthermore to avoid proximity bias, because of the inverse relationship
-between distance to sensor and cloud density. This regularization is obtained through voxelization of the pointcloud.\\
+between distance to sensor and cloud density. This regularization is obtained through voxelization of the point cloud.\\
 With this voxel grid, we can now calculate corresponding sets of voxels for each point cloud representing a plane.
 In the next step, we compare our planes from the ground truth with the planes obtained from an algorithm to obtain a list of corresponding pairs
 of ground truth and found planes.\\
@@ -98,9 +98,49 @@ Furthermore, we remove planes from the ground truth, if the number of included p
 
 
 \section{Results}
+
 \subsection{Results Dataset}
 
-Hier sind die Ergebnisse:
+
+\paragraph*{Area 1}
+Hier sind die Ergebnisse von Area 1:
+
+\begin{figure}
+	\centering
+	\includegraphics[width=15 cm]{images/area_1_ohne_kht.png}
+	\label{fig:area1}
+    \caption{Results Area 1}
+\end{figure}
+
+\paragraph*{Area 2}
+Hier sind die Ergebnisse von Area 2:
+
+\begin{figure}
+	\centering
+	\includegraphics[width=15 cm]{images/area_2_ohne_kht_ohne_audi.png}
+	\label{fig:area2}
+    \caption{Results Area 2}
+\end{figure}
+
+\paragraph*{Area 3}
+Hier sind die Ergebnisse von Area 3:
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=15 cm]{images/area_3_ohne_kht.png}
+	\label{fig:area3}
+    \caption{Results Area 3}
+\end{figure}
+
+\paragraph*{Area 4}
+Hier sind die Ergebnisse von Area 4:
+
+\begin{figure}
+	\centering
+	\includegraphics[width=15 cm]{images/area_4_ohne_kht.png}
+	\label{fig:area4}
+    \caption{Results Area 4}
+\end{figure}
 
 \subsection{Results Real-Life Test}
 

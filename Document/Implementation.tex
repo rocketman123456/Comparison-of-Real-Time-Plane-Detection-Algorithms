@@ -29,11 +29,55 @@ the solution to a cmake project we can build using \textit{make}.
 \subsection*{OBRG}
 To our knowledge, no open-source implementation is available for the algorithm.
 We therefore use our own implementation.
-% TODO after actual implementation of OBRG
-We implement the method in python, heavily relying on someLib for computation of something.
+
+Wir schreiben den algorithmus in python. Wir hatten in betracht gezogen, vorgefertigte octree implementierungen zb von 
+open3d zu benutzen, aber diese haben uns im endeffekt nicht genug freiraum geboten. Daher implementieren wir unseren eigenen 
+octree für die räumliche aufteilung der punktwolke.
+Wir teilen, wie in \ref{sec:bg-obrg} beschrieben, einen octree knoten so lange in 8 gleichgroße kinder auf, bis ein predefined
+maximum erreicht ist oder die anzahl der included punkte kleiner als ein schwellwert ist.
+% FIXME globale liste ist echt langsam: O(|leafs|) vs O(log_8)
+% Dazu speichern wir alle blattknoten in einer globalen liste um 
+Um die saliency features der leaf nodes zu berechnen, speziell für die normal vektoren, benutzen wir die 
+open3d normal estimation.
+wir folgen dem pseudocode wie angegeben, mit der ausnahme, dass wir das hinzufügen in eine region angepasst haben.
+Da das wort "insert" raum für interpretation lässt, haben wir eine zweite liste geführt, die angibt, ob ein leaf schon
+benutzt wurde. Wenn ja, wird die region gesucht, bei dem das leaf schon benutzt wurde, anstatt eine neue region zu erstellen.
+Dieser Schritt kompliziert zwar das region growing ein wenig, reduziert jedoch die totale laufzeit des algorithmus, da 
+keine redundante regionen mehr vorkommen können.
+Da die residual threshold, angular threshold und dmin des papers nicht genauer spezifiziert wurden, waren wir gezwungen
+empirisch zu bestimmen, welche werte gut funktionieren:
+\begin{itemize}
+    \item res th = 0.1 
+    \item ang difference = 0.3
+    \item d min =  0.1
+\end{itemize}
+
+in deren paper wurde auch ein planarity level von 0.7 -0.9 vorgeschlagen, wir nehmen einfach pauschal 0.8.
+oder wir führen tests analog zu 3dkht durch, kann auch sein.
+
+zu guter letzt mussten wir uns das general refinement übelst aus dem ärmel leiern, scheint aber größtenteils 
+zu funzen. GR betrifft sowieso scheinbar nur die stellen, wo zwei ebenen aufeinander treffen würden, bzw winkel.
+
+Uns ist bewusst dass python eher weniger echtzeitfähig ist, aber die optimierung eines spezifischen algorithmuses 
+steht nciht im vordergrund dieser arbeit und würde dementsprechend zu future work gehören.
 
 \section{Dataset / Ground Truth}
-um eine ground trutht in form von einer liste von ebenen zu jedem datensatz zu bekommen, segmentieren wir manuell die input punktwolken des datensatzes mithilfe von cloudcompare.
+Da der benutzte Datensatz den fokus auf semantische segmentierung legt und nicht auf ebenen findung, 
+legen wir unsere eigene ground truth an. Dafür benutzen wir cloudcompare. 
+Da wir ausserdem nicht pauschal davon ausgehen können, dass "wände" immer planar sind, oder dass drei tische 
+immer verschiedene ebene sind (also zusammenstehen, eine ebene formend, aber dennoch verschiedene tische sind) 
+sind wir gezwungen jede punktwolke manuell anzusehen und zu editieren. 
+% FIXME Zeit?
+% TODO beispielbild
+
+\begin{figure} [!ht]
+	\centering
+	\includegraphics[width=10 cm]{images/tables.png}
+	\label{fig:tables}
+    \caption{Three tables = three planes?}
+\end{figure}
+
+
 \end{document}
 
 

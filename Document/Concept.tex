@@ -14,15 +14,16 @@ Plane detection algorithms are selected for comparison, as well as the metrics t
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=15 cm]{images/concept.png}
-    \caption{A camera records an environment and passes the raw data to
-    RealSense-ROS. After RTAB-MAP updates the map, it is given to the plane detection algorithms (green). The resulting planes will 
-    then be exported as needed, given the specific use case, described in Chapter~\ref{chap:Introduction}.}
+    \caption{A camera records an environment. The recorded data is either preprocessed, or passed directly to the plane detection algorithm.
+    The resulting planes are subsequently exported to an arbitrary application.}
 \end{figure}
 
 
 \section{Scenario / UseCase}
 Taking motivation from chapter \ref{chap:Introduction}, we focus on indoor environments during this work.
 This includes the buildings we encounter in our normal lives, whether it is the home we live in, the office we work in or a stripped-down version of a building during construction.
+
+
 
 
 \subsection{Used Sensors}
