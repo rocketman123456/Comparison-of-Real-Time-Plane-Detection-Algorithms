@@ -10,17 +10,27 @@ In this chapter, we will present relevant literature needed to completely unders
 
 \subsection*{SLAM}
 SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics;
-A robot finds itself in an unknown environment and attempts to build a coherent map while keeping track of its location within the map it is currently building.
+A robot finds itself in an unknown environment and attempts to build a coherent map while keeping track of its location.
 Over decades of research on this particular problem, many different methodologies have been developed, usually regarding the sensors used to aid the robot's navigation.
 Since odometry sensors like rotary encoders that measure the rotation of the robot's wheels are unreliable when it comes to uneven or slippery ground, visual sensors also needed to be involved.
 
 \paragraph*{RTAB-MAP}
-RealSense-ROS internally uses a SLAM algorithm for map building, called RTAB-MAP (Real-Time Appearance-Based MAPping).
-Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors. %FIXME quelle
+RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
+Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors, as well as an optional additional input in form of two- or three-dimensional 
+lidar scan.
+All these inputs are combined during a synchronization step, the results of which are passed to RTAB-MAP's \textit{Short-Term-Memory} (STM).
+ Das STM baut aus den neuen inputs einen neuen knoten, welcher in den map graphen eingefügt wird. Basierend auf dem hinzufügen des neuen knotens wird die loop closure 
+ berechnet. sollte eine loop closure detected werden wird der graph optimiert und minimiert. 
+Dazu wird die globale map in abhängigkeit der neuen kenntnisse reassembled. Das resultat davon wird als punktwolke veröffentlicht.
 
 
 Er funktioniert grundsätzlich so:
-% TODO Grafik von RTAB-MAP
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=15 cm]{images/rtabmap.png}
+    \caption{Block diagram, gestolen ausm rtabmap paper \cite[Figure~1]{Labbé_Michaud_2019}}
+    \label{fig:rtabmap}
+\end{figure}
 
 \section{Plane Detection}
 
