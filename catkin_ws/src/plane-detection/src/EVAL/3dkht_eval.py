@@ -153,7 +153,7 @@ def get_df(results_folder: str):
     results = [Result.from_file(os.path.join(results_folder, file))
                for file in os.listdir(results_folder) if '3DKHT' in file]
     results = [res for res in results if len(res.dataset) == 5]
-    fig, axs = plt.subplots(1, 3)
+    fig, axs = plt.subplots(1, 1)
     algo = '3DKHT'
 
     # filter results by algorithm
@@ -162,19 +162,20 @@ def get_df(results_folder: str):
     # create algo dataframe
     df = pd.DataFrame(algo_data)
     precision = df.drop(columns=['detected','out_of','time_total','time_per_plane','time_per_sample'])
-    precision.plot.bar(ax=axs[0])
-    axs[0].set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
-    axs[0].set_xlabel('subdivision_level')
-    founds_df =  df.drop(columns=['precision','f1','recall', 'time_total','time_per_plane','time_per_sample'])
-    founds_df.plot.bar(ax=axs[1])
-    axs[1].set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
-    axs[1].set_xlabel('subdivision_level')
+    precision.plot.bar(ax=axs)
+    axs.set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
+    axs.set_xlabel('Octree Subdivision Level')
+    axs.set_ylabel('Accuracy Metrics in %')
+    # founds_df =  df.drop(columns=['precision','f1','recall', 'time_total','time_per_plane','time_per_sample'])
+    # founds_df.plot.bar(ax=axs[1])
+    # axs[1].set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
+    # axs[1].set_xlabel('subdivision_level')
 
-    times_df = df.drop(columns=['precision','f1','recall','detected', 'out_of','time_per_plane','time_per_sample' ])
-    times_df.plot.bar(ax=axs[2])
+    # times_df = df.drop(columns=['precision','f1','recall','detected', 'out_of','time_per_plane','time_per_sample' ])
+    # times_df.plot.bar(ax=axs[2])
 
-    axs[2].set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
-    axs[2].set_xlabel('subdivision_level')
+    # axs[2].set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
+    # axs[2].set_xlabel('subdivision_level')
 
     # algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
     # algo_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')
@@ -219,7 +220,7 @@ def kht_parameter_test(rootfolder: str, binaries_path: str):
 
 
 if __name__ == '__main__':
-    fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3"
+    fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST"
     fallback_algo_binaries = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries"
 
     # input argument handling
