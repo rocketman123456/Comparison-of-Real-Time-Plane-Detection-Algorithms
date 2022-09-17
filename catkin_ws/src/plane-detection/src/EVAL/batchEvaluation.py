@@ -35,9 +35,9 @@ def get_df(results_folder: str):
 
     for ax, algo in zip(axs[1], ALGOS):
         algo_data = [res for res in results if res.algorithm == algo]
-        algo_data.sort(key=lambda x: x.dataset)
+        algo_data.sort(key=lambda x: x.dataset.lower())
         df = pd.DataFrame(algo_data).drop(
-            columns=['precision', 'recall', 'f1', 'detected', 'out_of'])
+            columns=['precision', 'recall', 'f1', 'detected', 'out_of', 'time_per_plane', 'time_per_sample'])
         # sb.violinplot(data=df,ax=ax)
         df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
 
@@ -57,7 +57,7 @@ def collect_results(root_folder: str):
         if os.path.isfile(os.path.join(root_folder, dataset)):
             # skip files
             continue
-        if dataset.startswith('nope_') or dataset == 'results':
+        if dataset.startswith('nope_') or dataset == 'results' or 'auditorium' in dataset:
             # skip non-datasets (without GT or results directory)
             continue
         results_per_scene[dataset] = []
@@ -113,7 +113,7 @@ def batch_evaluate(root_folder: str):
         # ignore files, results and datasets without GT
         if os.path.isfile(os.path.join(root_folder, dataset)):
             continue
-        if dataset.startswith('nope_') or dataset.startswith('results'):
+        if dataset.startswith('nope_') or dataset.startswith('results') or 'auditorium' in dataset:
             continue
         dataset_path = os.path.join(root_folder, dataset)
         gt_path = os.path.join(dataset_path, "GT")
@@ -173,8 +173,7 @@ if __name__ == '__main__':
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
 
-    kht_parameter_test(rootFolder, algorithm_binaries)
-    # batch_detect(rootFolder, algorithm_binaries)
-    # batch_evaluate(rootFolder)
-    # collect_results(rootFolder)
-    # get_df(os.path.join(rootFolder, 'results'))
+    batch_detect(rootFolder, algorithm_binaries)
+    batch_evaluate(rootFolder)
+    collect_results(rootFolder)
+    get_df(os.path.join(rootFolder, 'results'))

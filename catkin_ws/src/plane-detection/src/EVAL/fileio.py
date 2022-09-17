@@ -34,6 +34,7 @@ class IOHelper:
                         return self.read_planes_xyz_from_folder(path)
                     else:
                         return self.read_planes_i_from_folder(path)
+            return []
         elif path.endswith('.geo'):
             return self.read_planes_geo(path)
         elif path.endswith('asc'):

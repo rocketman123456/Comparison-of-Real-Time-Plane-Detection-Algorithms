@@ -163,18 +163,18 @@ def get_df(results_folder: str):
     df = pd.DataFrame(algo_data)
     precision = df.drop(columns=['detected','out_of','time_total','time_per_plane','time_per_sample'])
     precision.plot.bar(ax=axs[0])
-    axs[0].set_xticklabels(f'({a},{b})' for a,b in KHT_PARAMS)
-    axs[0].set_xlabel('(subdivision_level , max_dist2plane)')
+    axs[0].set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
+    axs[0].set_xlabel('subdivision_level')
     founds_df =  df.drop(columns=['precision','f1','recall', 'time_total','time_per_plane','time_per_sample'])
     founds_df.plot.bar(ax=axs[1])
-    axs[1].set_xticklabels(f'({a},{b})' for a,b in KHT_PARAMS)
-    axs[1].set_xlabel('(subdivision_level , max_dist2plane)')
+    axs[1].set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
+    axs[1].set_xlabel('subdivision_level')
 
     times_df = df.drop(columns=['precision','f1','recall','detected', 'out_of','time_per_plane','time_per_sample' ])
     times_df.plot.bar(ax=axs[2])
 
-    axs[2].set_xticklabels(f'({a},{b})' for a,b in KHT_PARAMS)
-    axs[2].set_xlabel('(subdivision_level , max_dist2plane)')
+    axs[2].set_xticklabels(f'{a}' for a,b in KHT_PARAMS)
+    axs[2].set_xlabel('subdivision_level')
 
     # algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
     # algo_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')
@@ -186,7 +186,7 @@ def get_df(results_folder: str):
     # # sb.violinplot(data=df,ax=ax)
     # df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
 
-    axs[0].set_ylim(0.0, 1.0)
+    # axs[0].set_ylim(0.0, 1.0)
     plt.suptitle('3DKHT')
     plt.show()
 
@@ -235,5 +235,5 @@ if __name__ == '__main__':
 
     # kht_parameter_test(rootFolder, algorithm_binaries)
     # kht_eval(rootFolder)
-    # kht_collect(rootFolder)
+    kht_collect(rootFolder)
     get_df(os.path.join(rootFolder, 'results'))

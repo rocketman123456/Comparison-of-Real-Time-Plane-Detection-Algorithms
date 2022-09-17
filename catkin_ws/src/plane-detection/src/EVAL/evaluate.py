@@ -23,7 +23,8 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
     test = iohelper.read_algo()
     if debug:
         draw_compare(ground_truth, test)
-
+    if len(test)== 0:
+        return
     # if 3dkht, translate algo_planes by pcd_bb center
     if iohelper.method == '3DKHT':
         print('3DKHT, translating')
