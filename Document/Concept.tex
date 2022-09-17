@@ -4,73 +4,95 @@
 
 \chapter{Concept} \label{chap:Concept}
 
-% \section*{Introduction}
-%  FIXME konzeptuelles diagram (schritt zwischen use case und concept) + section (gerne mehr)  
-%  ggf verweise auf kapitel in grafik 
-This chapter deals with the realization of analysis.
-We introduce the definition of real-time and the use case with respect to this work.
-Plane detection algorithms are selected for comparison, as well as the metrics they will be judged upon.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=15 cm]{images/concept.png}
     \caption{A camera records an environment. The recorded data is either preprocessed, or passed directly to the plane detection algorithm.
     The resulting planes are subsequently exported to an arbitrary application.}
+    \label{fig:concept}
 \end{figure}
 
 
-\section{Scenario / UseCase}
-Taking motivation from chapter \ref{chap:Introduction}, we focus on indoor environments during this work.
-This includes the buildings we encounter in our normal lives, whether it is the home we live in, the office we work in or a stripped-down version of a building during construction.
+% \section{Scenario / UseCase}
+
+Within a given use case or scenario, the user records the surroundings with a camera, and the raw data is either 
+directly, or after some preprocessing steps, passed to a plane detection algorithm, which then hands the detected planes to an application for further use. 
+This application could use those planes to define the playable area in an augmented reality (AR) video game or alternatively build a digital floor 
+plan, or 3-D model, of an apartment.  
+
+Especially in scenarios where the user moves through the environment, the time between recording and the planes reaching the application is crucial. 
+If an autonomous car drives through an urban environment, the delay must be as short as possible to avoid a collision with a wall the car has not yet detected.
+
+The problem can therefore be defined in such a way that planes must be detected in real-time and at the same time be sufficiently precise for the given use case.
+
+% To optimize the entire process, shown in Figure~\ref{fig:concept}, this work will aim to answer the question of to what extent precise real-time plane detection is feasible. 
+% NOTE alternative: 
+To optimize the entire process, shown in \ref{fig:concept}, this work will focus on the plane detection step (green).
+
+Furthermore, we focus on indoor environments, as motivated by Chapter~\ref{chap:Introduction}.
+This includes the buildings we encounter in our normal lives, whether it is the home we live in, the office we work in, or a stripped-down version of a building during construction.
 
 
 
 
 \subsection{Used Sensors}
-To be able to perform plane detection, we need special hardware that is able to accurately record the surroundings.
-Numerous different cameras suffice for this task, each one of course varying in different aspects.
-For this work, we use the Intel RealSense T256 Tracking Camera, as well as the Intel RealSense D455 RGB-D Camera.
-The reason for this is the compatibility of the two cameras since the T256 can be used in combination with any depth camera from the D400 series.
+% FIXME how do I reference step one
+To efficiently tackle the previously defined problem, and according to figure~\ref{fig:concept}, \textcolor{red}{phase 1}, we need a camera sensor to record the environment and obtain data to detect planes therein.
 
-In addition to the cameras, the Intel RealSense software provides a wide variety of usage. We are especially interested in the detection of planes in complete environments.
-Therefore, it is necessary to be able to build a map out of the data the cameras record continuously.
+Numerous cameras suffice for this task, each of which varies in different aspects.
+For this work, we use the Intel RealSense T256 Tracking Camera and the Intel RealSense D455 RGB-D Camera, because of their compatibility, 
+since the T256 can be used in combination with any depth camera from the D400 series.
+
+Since we are especially interested in the detection of planes in complete environments, it is necessary to be able to build a map out of the data the cameras 
+record continuously. 
+In addition to the cameras, the Intel RealSense software provides a way to perform map assembly, \textcolor{red}{siehe concept figure, step 2}.
 %  neuen absatz mit this is why anfangen ist meh
-This is why we integrate \textit{realsense-ros}, the ROS wrapper of Intel RealSense, into our plane detection.
+We integrate \textit{realsense-ros}, the ROS wrapper of Intel RealSense, into our process of plane detection.
+
 Realsense-ros internally uses a SLAM(Simultaneous Mapping and Localization) algorithm called RTAB-MAP \cite{Labbé_Michaud_2019} for map-building.
 RTAB-MAP is responsible for building a coherent map from a continuous stream of data that is being recorded and published by the two cameras.
 It is worth noting, that the success of this work does not depend on the specific SLAM algorithm being chosen. We select RTAB-MAP because
-it is already included in the RealSense package and its reported performance suffices for this work, especially since we don't focus on SLAM
-algorithms in this work.
+it is already included in the RealSense package and its reported performance suffices for this work, primarily since we don't focus on SLAM
+algorithms in this work. 
 
+Mit intel realsense und rtabmap lässt sich Figure~\ref{fig:concept} konkreter beschreiben, siehe Figure~\ref{fig:concept_spec} 
 
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=15 cm]{images/concept_specific.png}
+    \caption{Updated process with sensors and what not}
+    \label{fig:concept_spec}
+\end{figure}
 
 \section{Selection Plane Detection Algorithms}
-First, we need to assert the comparability between the algorithms introduced in \ref{chap:Background}.
-We report necessary criteria, both to shorten the list of algorithms, as well as verify comparability.
+Naturally, appropriate algorithms are needed to perform real-time plane detection, as depicted in Figure~\ref{fig:concept}, \textcolor{red}{step 3}.
+First, we define meaningful criteria to select plane detection algorithms. Then, we use these criteria to select appropriate algorithms from the list of algorithms.
 
 \subsection*{Type of Input}
-Popular representations, which the recorded environment can take the form of, can be grouped into three main categories of input:
+Usually, the data representation of the recorded environment passed to the plane detection algorithm falls under one of three categories:
 \begin{itemize}
     \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
     \item \textit{organized} or \textit{structured point cloud} (OPC)
     \item \textit{(depth-) image} (D-/I)
 \end{itemize}
 
-As stated before, we focus on the detection of planar structures in the entirety of a scene, rather than just singular segments thereof.
-In addition, only the unorganized/unstructured point clouds offer a complete view of the recorded environment.\\
-For that reason, we disregard all algorithms which do not expect an unorganized point cloud as input.
+As stated before, we focus on detecting planar structures in the entire environment rather than just distinct segments thereof.
+In addition, only the unorganized/unstructured point clouds offer a complete view of the recorded environment.
+% NOTE kommt später: Therefore, we disregard all algorithms which do not expect an unorganized point cloud as input.
 
 
 \subsection*{Detected Plane Format}
-Which specific representation the detected planes take the form of is also important.
-If no uniform type of output can be determined, consequently no uniform metric for comparison can be found as well.
-Since the algorithms process point clouds, we choose to stay within the realm of points, i,e. an arbitrary plane should be
+Which specific representation the detected planes take the form of is also essential.
+If no uniform output type can be determined, consequently, no uniform metric for comparison can also be found.
+Since the algorithms process point clouds, we choose to stay within the realm of points, i.e., an arbitrary plane should be
 represented by the set of points included in the plane (inliers).
 The representation, being a list of points, enables further processing of the detected planes.
-Having a list of points would, in contrast to some plane equation, enable us to detect holes in planes, e.g. an open door or window, which can be useful
-for any use case involving remodeling architectural elements.
-It also enables further filtering of planes based on a density value that we can calculate over the bounding box and the number of points, e.g.
-removing planes with a density lower than a certain threshold.
+A list of points would, in contrast to some plane equation, enable us to detect holes in planes, e.g., 
+an open door or window, which can be helpful in any use case involving remodeling architectural elements.
+It also allows further filtering of planes based on a density value that we can calculate over the bounding 
+box and the number of points, e.g., removing planes with a density lower than a certain threshold.
+
 
 \subsection*{Learning based}\label{subsec_learning_based}
 Learning-based methods, e.g. Deep learning, generally have varying levels of bias, depending on the training data.
@@ -79,14 +101,13 @@ Another reason against the use of learning-based methods is that we choose not t
 
 \subsection*{Availability}
 Lastly, we include the availability of an algorithm in our set of criteria.
-Each algorithm to be compared needs to run on the same system to exclude the underlying hardware from any experiments.\\
+Each algorithm to be compared needs to run on the same system to exclude the underlying hardware as a factor from any experiments.\\
 
-
-
+\section{Algorithms?}
 \subsection*{RSPD - Robust Statistics Approach for Plane Detection}
 
 \subsection*{OPS - Oriented Point Sampling}
-\newpage
+
 \subsection*{3DKHT - 3-D Kernel-based Hough Transform}
 With 3D-KHT, as with other octree-based methods, the performance depends, to some degree, on the level of subdivision.
 In the provided implementation, the octree keeps dividing until either the number of points in the current node is lower than a set minimum, or the
