@@ -38,7 +38,7 @@ This includes the buildings we encounter in our normal lives, whether it is the 
 
 \subsection{Used Sensors}
 % FIXME how do I reference step one
-To efficiently tackle the previously defined problem, and according to figure~\ref{fig:concept}, \textcolor{red}{phase 1}, we need a camera sensor to record the environment and obtain data to detect planes therein.
+To efficiently tackle the previously defined problem, and according to step one of figure~\ref{fig:concept}, we need a camera sensor to record the environment and obtain data to detect planes therein.
 
 Numerous cameras suffice for this task, each of which varies in different aspects.
 For this work, we use the Intel RealSense T256 Tracking Camera and the Intel RealSense D455 RGB-D Camera, because of their compatibility,
@@ -46,27 +46,29 @@ since the T256 can be used in combination with any depth camera from the D400 se
 
 Since we are especially interested in the detection of planes in complete environments, it is necessary to be able to build a map out of the data the cameras
 record continuously.
-In addition to the cameras, the Intel RealSense software provides a way to perform map assembly, \textcolor{red}{siehe concept figure, step 2}.
+In addition to the cameras, the Intel RealSense software provides a way to perform map assembly, see step 2 of Figure~\ref{fig:concept}.%\textcolor{red}{siehe concept figure, step 2}.
 %  neuen absatz mit this is why anfangen ist meh
 We integrate \textit{realsense-ros}, the ROS wrapper of Intel RealSense, into our process of plane detection.
 
-Realsense-ros internally uses a SLAM(Simultaneous Mapping and Localization) algorithm called RTAB-MAP \cite{Labbé_Michaud_2019} for map-building.
+Realsense-ros internally uses a SLAM algorithm called RTAB-MAP \cite{Labbé_Michaud_2019} for map-building.
 RTAB-MAP is responsible for building a coherent map from a continuous stream of data that is being recorded and published by the two cameras.
 It is worth noting, that the success of this work does not depend on the specific SLAM algorithm being chosen. We select RTAB-MAP because
 it is already included in the RealSense package and its reported performance suffices for this work, primarily since we don't focus on SLAM
 algorithms in this work.
 
-Mit intel realsense und rtabmap lässt sich Figure~\ref{fig:concept} konkreter beschreiben, siehe Figure~\ref{fig:concept_spec}
+We can further specify Figure~\ref{fig:concept} by inserting the aforementioned technology as follows:
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=15 cm]{images/concept_specific.png}
-    \caption{Updated process with sensors and what not}
+    \caption{The concrete procedure of the plane detection process. The Intel RealSense Cameras, T256 and D455, record data ([1]), which is passed to 
+    RTAB-MAP ([2]). After map assembly, an unorganized point cloud is handed to a plane detection algorithm ([3]). 
+    The detected planes are given to a use-case-specific application ([4]).}
     \label{fig:concept_spec}
 \end{figure}
 
 \section{Selection Plane Detection Algorithms}
-Naturally, appropriate algorithms are needed to perform real-time plane detection, as depicted in Figure~\ref{fig:concept}, \textcolor{red}{step 3}.
+Naturally, appropriate algorithms are needed to perform real-time plane detection.
 First, we define meaningful criteria to select plane detection algorithms. Then, we use these criteria to select appropriate algorithms from the list of algorithms.
 
 \subsection*{Type of Input}
@@ -82,7 +84,7 @@ In addition, only the unorganized/unstructured point clouds offer a complete vie
 % NOTE kommt später: Therefore, we disregard all algorithms which do not expect an unorganized point cloud as input.
 
 
-\subsection*{Detected Plane Format}
+\subsection*{Detected Plane Format} \label{subsec:planeformat}
 Which specific representation the detected planes take the form of is also essential.
 If no uniform output type can be determined, consequently, no uniform metric for comparison can also be found.
 Since the algorithms process point clouds, we choose to stay within the realm of points, i.e., an arbitrary plane should be
@@ -103,30 +105,38 @@ Another reason against the use of learning-based methods is that we choose not t
 Lastly, we include the availability of an algorithm in our set of criteria.
 Each algorithm to be compared needs to run on the same system to exclude the underlying hardware as a factor from any experiments.\\
 
-\section{Algorithms?}
+\section{Algorithms}
 \subsection*{RSPD - Robust Statistics Approach for Plane Detection}
+RSPD expects an unorganized point cloud as input. The detected planes are written to file as either a list of inliers or
+represented by a center point, a normal vector and UV extents of the plane.
+As explained above \ref{subsec:planeformat}, we select the inliers as the primary plane representation. 
 
 \subsection*{OPS - Oriented Point Sampling}
+OPS also takes an unorganized point cloud as input. Like RSPD, the default representation of a detected plane is 
+a tuple of normals vector and center coordinate, while also reporting the orientation.
+without affecting the algorithm, we modify the output format to instead include the inliers. 
 
 \subsection*{3DKHT - 3-D Kernel-based Hough Transform}
 With 3D-KHT, as with other octree-based methods, the performance depends, to some degree, on the level of subdivision.
 In the provided implementation, the octree keeps dividing until either the number of points in the current node is lower than a set minimum, or the
 level of an octree node is higher than a predefined maximum.
 
-% FIXME wahrscheinlich muss ich sagen woran ich das getestet habe oder?
 A total of six different presets of parameters are included with the official implementation.
-Since this work does not focus on the evaluation and analysis of a single method, we performed experiments with all presets on a data set, the
+Since this work does not focus on the evaluation and analysis of a single method, we performed experiments with all presets on Area 3 of the S3DIS\cite{armeni_cvpr16} dataset, the
 results thereof can be seen in Figure ~\ref{fig:3dkht_params}
-\begin{figure}[!h]
+The two leftmost values for the maximum octree subdivision seem to yield the best results compared to the other values.
+Because we expect a greater subdivision level to yield better results on scenes of larger dimensions, we choose to perform 
+all further experiments with an octree subdivision value of two.
+
+\textcolor{red}{irgendwas ergibt hier keinen sinn. zumindest passt meine erklärung nicht ganz zu der grafik}
+
+\begin{figure}[!ht]
     \centering
-    \includegraphics[width=15 cm]{params_3dkht.png}
+    \includegraphics[width=15 cm]{images/params_3dkht.png}
     \caption{Results of 3D-KHT for different pre-set subdivision values}
     \label{fig:3dkht_params}
 \end{figure}
 
-% FIXME speculation?
-Because the leftmost two presets, with an octree subdivision value of 1 and 2, respectively, seem to yield similar results, but a higher value of subdivision
-might result in better performance in larger point clouds, we will perform all calculations of 3D-KHT with an octree subdivision value of 2.
 
 \subsection*{OBRG - Octree-based Region Growing}
 \subsection*{PEAC - Probabilistic Agglomerative Hierarchical Clustering}

@@ -19,16 +19,15 @@ RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP
 Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors, as well as an optional additional input in form of two- or three-dimensional 
 lidar scan.
 All these inputs are combined during a synchronization step, the results of which are passed to RTAB-MAP's \textit{Short-Term-Memory} (STM).
- Das STM baut aus den neuen inputs einen neuen knoten, welcher in den map graphen eingefügt wird. Basierend auf dem hinzufügen des neuen knotens wird die loop closure 
- berechnet. sollte eine loop closure detected werden wird der graph optimiert und minimiert. 
-Dazu wird die globale map in abhängigkeit der neuen kenntnisse reassembled. Das resultat davon wird als punktwolke veröffentlicht.
+The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, a loop closure is calculated.
+If a loop closure is detected, the map graph is optimized and thus minimized. In addition, the global map is reassembled in correspondence with the new information.
+The resulting map is published in form of an unorganized point cloud.
 
-
-Er funktioniert grundsätzlich so:
+RTAB-MAP's general workflow is depicted in Figure~\ref{fig:rtabmap}:
 \begin{figure}[!h]
     \centering
     \includegraphics[width=15 cm]{images/rtabmap.png}
-    \caption{Block diagram, gestolen ausm rtabmap paper \cite[Figure~1]{Labbé_Michaud_2019}}
+    \caption{Block diagram of RTAB-MAP's main node. Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
     \label{fig:rtabmap}
 \end{figure}
 
