@@ -52,13 +52,15 @@ To measure the detection time, we log the exact times before and after calculati
 
 
 \subsection{Dataset}
-To evaluate each plane detection algorithm on even grounds, we select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A}. The Dataset had been recorded in three different buildings,
-which then were divided into six distinct areas. Those six areas include a total of 270 different types of rooms, e.g. offices, hallways, WCs and two auditoriums to name a few.\\
-Each room has a complete unstructured point cloud in form of a list of XYZ values, as well as a list of annotated files representing semantically different objects that can be found in this point cloud
-of the room.
-Since our focus lies not on 3D semantic segmentation, we manually select planar regions using CloudCompare\footnote{\href{https://cloudcompare.org/}{https://cloudcompare.org/}}, obtaining a list of sub-clouds.
+We select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A} to evaluate each plane detection algorithm on even grounds. 
+S3DIS was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
+An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
+Since our focus is not on 3D semantic segmentation, we manually select planar regions using CloudCompare\footnote{\href{https://cloudcompare.org/}{https://cloudcompare.org/}} to obtain a list of sub-clouds.
 
-\begin{table}[]
+Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the data set nevertheless reflects a realistic distribution of scene types since 
+it is not realistic that a building contains only lecture halls. On the other hand, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all these offices.
+
+\begin{table}[!ht]
     \centering
     \begin{tabular}{c|c|c|c|c|c|c|c}
         \hline
@@ -85,15 +87,19 @@ We record an incrementally growing data set in the Faculty of Computer Science a
 Running \textit{realsense-ros} and holding our cameras, we walk through different parts of the building, scanning to the best of our ability.
 We save each incremental map update to a file for later usage.
 
-We create a set of ground truth planes $gt_{end}$for only the most recent update, e.g., for the entire recording.
+We create a set of ground truth planes $gt_{end}$ for only the most recent update, e.g., for the entire recording.
 
-To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$. 
+To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in 
+Figure~\ref{fig:dynGT}. 
 We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not. 
 Furthermore, we remove planes from the ground truth, if the number of included points falls short of a threshold.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=15 cm]{images/dynamic_eval.png}
+    \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation. All planes that are included in \textit{Ground Truth} are cropped depending on 
+    the available point cloud at each time \textit{t} }
+    \label{fig:dynGT}
 \end{figure}
 
 

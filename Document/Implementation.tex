@@ -24,7 +24,7 @@ and the C++ API of the  Point-Cloud Library\footnote{\href{https://pointclouds.o
 The authors of 3D-KHT, provide an implementation, in form of a Visual Studio project, on their website \footnote{\href{https://www.inf.ufrgs.br/~oliveira/pubs_files/HT3D/HT3D_page.html}
     {https://www.inf.ufrgs.br/~oliveira/pubs\_files/HT3D/HT3D\_page.html}}. Since the laptop we use does not run Windows, we use \textit{cmake-converter}
 \footnote{\href{https://cmakeconverter.readthedocs.io/en/latest/use.html}{https://cmakeconverter.readthedocs.io/}} to convert
-the solution to a cmake project we can build using \textit{make}.
+the solution to a CMake project we can build using \textit{make}.
 
 \subsection*{OBRG}
 To our knowledge, no open-source implementation is available for the algorithm.
@@ -61,13 +61,12 @@ This process is very time-consuming, and to slightly reduce the time spent, we p
 given area and omit scenes that seem to inherit no noticeable differences.
 
 % FIXME Zeit?
-% TODO beispielbild
 
 \begin{figure} [!ht]
 	\centering
 	\includegraphics[width=10 cm]{images/tables.png}
 	\label{fig:tables}
-    \caption{The given ground truth considers these tables to be three distinct objects. Within the context of 
+    \caption[Ground Truth Table Example]{The given ground truth considers these tables to be three distinct objects. Within the context of 
     plane detection, the three table tops would form exactly one plane.}
 \end{figure}
 

@@ -18,16 +18,16 @@ Since odometry sensors like rotary encoders that measure the rotation of the rob
 RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
 Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors, as well as an optional additional input in form of two- or three-dimensional 
 lidar scan.
-All these inputs are combined during a synchronization step, the results of which are passed to RTAB-MAP's \textit{Short-Term-Memory} (STM).
-The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, a loop closure is calculated.
-If a loop closure is detected, the map graph is optimized and thus minimized. In addition, the global map is reassembled in correspondence with the new information.
-The resulting map is published in form of an unorganized point cloud.
+All these inputs are combined during a synchronization step, and the results thereof are passed to RTAB-MAP's \textit{Short-Term-Memory} (STM).
+The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to determine if the current location has already been visited earlier, also known as \textit{loop closure}. 
+If a loop closure is detected, i.e., RTAB-MAP detects the re-visiting of a known location, the map graph is optimized and thus minimized. In addition, the global map is reassembled in correspondence with the new information.
+The resulting map is published in the form of an unorganized point cloud.
 
-RTAB-MAP's general workflow is depicted in Figure~\ref{fig:rtabmap}:
+RTAB-MAP's general workflow is shown below in Figure~\ref{fig:rtabmap}:
 \begin{figure}[!h]
     \centering
     \includegraphics[width=15 cm]{images/rtabmap.png}
-    \caption{Block diagram of RTAB-MAP's main node. Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
+    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's main node. Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
     \label{fig:rtabmap}
 \end{figure}
 
@@ -42,12 +42,12 @@ The field of plane detection has been around for decades. Most methods of detect
 \end{itemize}
 
 \subsection*{Hough Transform}
-HT wurde ursprünglich introduced um lines in bildern zu finden. das ganze wurde aber inzwischen erweitert auf weitere 
-formen im zwei und sogar drei dimensionalen raum.
-Möchte man in 2d punktdaten eine gerade detektieren, legt man durch jeden datenpunkt für jede orientierung eine gerade in hesse normal form. Dabei werden stimmen für 
-die winkel abgegeben, welche ähnliche distanzen zum ursprung erzeugen. Am ende hat die best fitting grade den winkel, für den die meisten punkte gestimmt haben.
-Die datenstruktur, in dem die Stimmen gesammelt werden, wird auch accumulator genannt.
-
+The original motivation behind the Hough transform was the detection of lines in images. To detect the best fitting line over a set of 2d points, all points are sequentially processed via a voting procedure.
+Given a point $p$, multiple lines with different orientations are fit through $p$. Because an orientation that is parallel to the y-axis would lead to an infinite slope, the Hesse-normalform is chosen as the primary line representation. 
+Therefore, an individual line is represented as a pair $(r, \theta)$, whereas $r$ is the orthogonal distance from the origin to the plane, and $\theta$ is the angle between the x-axis and the line that connects the origin to the closest point on the line. 
+This pair is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding $\theta_i$ value, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
+votes to each $\theta$ is called an \textit{accumulator}.
+Finally, the best fitting line is determined by the number of votes that each $\theta$ received.
 
 \subsection*{RANSAC}
 RANSAC (RAndom SAmple Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{Sun_Mordohai_2019,Yang_Forstner,Ashraf_Ahmed_2017}.
@@ -122,11 +122,11 @@ In dieser Phase werden zuerst gaussische trivariate kernel berechnet. Dabei wird
 OBRG (Octree-Based Region Growing \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}) is also a method that employs region growing.
 
 First, an unorganized point cloud is recursively subdivided using an octree. 
-An octree node $n$ repeatedly subdivides itself into eight children until the level of $n$ superseded a predefined maximum subdivision value or if the
+An octree node $n$ repeatedly subdivides itself into eight children until the level of $n$ supersedes a predefined maximum subdivision value or if the
 amount of contained points in $n$ is less than a predefined minimum of included points.  
 
 Saliency features are calculated for every leaf node in preparation for the region growing step. A normal vector is obtained by performing a principle 
-component analysis (PCA) on the points inside each leaf node. The best-fitting plane of each leaf is defined by the normal vector and its center point.
+component analysis (PCA) on the points inside each leaf node. The best-fitting plane of each leaf is defined by the mean normal vector and its center point.
 A residual value is obtained by taking the RMS of the distance of all included points to the plane.
 
 All leaf nodes are selected as individual seed points. Starting from the seed with the lowest residual value, which relates to a low amount of noise, 
@@ -134,7 +134,7 @@ a neighboring leaf node $n$ is inserted into the region if $n$ does not belong t
 a predefined threshold. 
 
 Lastly, a refinement step is employed. 
-Fast refinement (FR) is performed on regions that succeed in a planarity test (70\%-90\% of included points fit the best plane). FR is leaf-based, and all previously unallocated neighboring nodes that satisfy an inlier criterion are added to the region.
+Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% of included points fit the best plane. FR is leaf-based, and all previously unallocated neighboring nodes that satisfy an inlier criterion are added to the region.
 General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore, 
 points from neighboring and previously unallocated leaf nodes are considered and inserted into the region if they, too, satisfy the inlier criterion.
 The refinement process returns a complete set of planar regions. 
