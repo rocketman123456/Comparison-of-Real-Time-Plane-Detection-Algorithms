@@ -6,21 +6,22 @@ from classes import Result
 from evaluate import evaluate
 import pandas as pd
 from fileio import create_pcd
-import seaborn as sb
-import numpy as np
-
+import sys
+sys.path.append('/home/pedda/Documents/coding/OBRG/')
+import obrg
 
 # globals
-ALGOS = ['RSPD', 'OPS', '3DKHT']
-ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': ''}
-ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt'}
+ALGOS = ['RSPD', 'OPS', '3DKHT', 'OBRG']
+ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': '', 'OBRG': ''}
+ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt', 'OBRG': '.txt'}
 
-def get_df(results_folder: str):
+
+def get_df(results_folder: str,algos = ALGOS):
     # load results
     results = [Result.from_file(os.path.join(results_folder, file))
                for file in os.listdir(results_folder) if file.endswith('.out')]
-    fig, axs = plt.subplots(2, len(ALGOS))
-    for ax, algo in zip(axs[0], ALGOS):
+    fig, axs = plt.subplots(2, len(algos))
+    for ax, algo in zip(axs[0], algos):
         ax.set_title(algo)
 
         # filter results by algorithm
@@ -31,9 +32,8 @@ def get_df(results_folder: str):
             columns=['detected', 'out_of', 'time_total', 'time_per_plane', 'time_per_sample'])
         algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
         algo_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')
-
-
-    for ax, algo in zip(axs[1], ALGOS):
+        ax.set_ylim(0.0,1.0)
+    for ax, algo in zip(axs[1], algos):
         algo_data = [res for res in results if res.algorithm == algo]
         algo_data.sort(key=lambda x: x.dataset.lower())
         df = pd.DataFrame(algo_data).drop(
@@ -41,17 +41,18 @@ def get_df(results_folder: str):
         # sb.violinplot(data=df,ax=ax)
         df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
 
-    plt.ylim([0.0, 1.0])
+    # plt.ylim([0.0, 1.0])
+
     plt.show()
     # TODO save fig to /$root_folder/figures
 
 
-def collect_results(root_folder: str):
+def collect_results(root_folder: str, algos=ALGOS):
     # scene -> [Result_RSPD, Result_OPS, ...]
     results_per_scene: Dict[str, List[Result]] = dict()
     # algo -> [scene_type -> [scene_specific_result]]
     results_per_algo: Dict[str, Dict[str, List[Result]]] = {
-        'RSPD': {}, 'OPS': {}, '3DKHT': {}}
+        algo: dict() for algo in algos}
     datasets = os.listdir(root_folder)
     for dataset in datasets:
         if os.path.isfile(os.path.join(root_folder, dataset)):
@@ -66,9 +67,12 @@ def collect_results(root_folder: str):
 
         # populate result dicts, per_scene is currently unused, might be useful later
         for algorithm_resultfile in os.listdir(result_path):
+            
             result = Result.from_file(os.path.join(
                 result_path, algorithm_resultfile))
             results_per_scene[dataset].append(result)
+            if result.algorithm not in algos:
+                continue
             if scene_type not in results_per_algo[result.algorithm].keys():
                 results_per_algo[result.algorithm][scene_type] = []
             results_per_algo[result.algorithm][scene_type].append(result)
@@ -107,7 +111,7 @@ def collect_results(root_folder: str):
         result.to_file(filepath)
 
 
-def batch_evaluate(root_folder: str):
+def batch_evaluate(root_folder: str, algos=ALGOS):
     datasets = os.listdir(root_folder)
     for dataset in datasets:
         # ignore files, results and datasets without GT
@@ -120,14 +124,14 @@ def batch_evaluate(root_folder: str):
         methods = []
         cloud_filename = dataset + '.txt'
         cloud_path = os.path.join(dataset_path, cloud_filename)
-        for algo in ALGOS:
+        for algo in algos:
             if algo in os.listdir(dataset_path):
                 methods.append(os.path.join(dataset_path, algo))
         for algo_path in methods:
             evaluate(cloud_path, gt_path, algo_path)
 
 
-def batch_detect(rootfolder: str, binaries_path: str) -> None:
+def batch_detect(rootfolder: str, binaries_path: str, algos=ALGOS) -> None:
     for dataset in os.listdir(rootfolder):
         dataset_path = os.path.join(rootfolder, dataset)
         # again, ignore files, results and datasets without GT
@@ -135,7 +139,7 @@ def batch_detect(rootfolder: str, binaries_path: str) -> None:
             continue
         if 'nope_' in dataset or dataset == 'results':
             continue
-        for algo in ALGOS:
+        for algo in algos:
             # get input params for given algorithm
             binary = os.path.join(binaries_path, algo)
             cloud_file = os.path.join(
@@ -152,14 +156,16 @@ def batch_detect(rootfolder: str, binaries_path: str) -> None:
                 for file in os.listdir(os.path.join(dataset_path, algo)):
                     os.remove(os.path.join(dataset_path, algo, file))
             # run PDA on dataset
-            print(f'Calling {algo} on {dataset}!')
-            command = f'{binary} {cloud_file} {result_file}'
-            os.system(command)
-
+            if algo == 'OBRG':
+                obrg.calculate(cloud_file, dataset_path)
+            else:
+                print(f'Calling {algo} on {dataset}!')
+                command = f'{binary} {cloud_file} {result_file}'
+                os.system(command)
 
 
 if __name__ == '__main__':
-    fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/TEST"
+    fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3"
     fallback_algo_binaries = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries"
 
     # input argument handling
@@ -173,7 +179,7 @@ if __name__ == '__main__':
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
 
-    batch_detect(rootFolder, algorithm_binaries)
-    batch_evaluate(rootFolder)
-    collect_results(rootFolder)
+    batch_detect(rootFolder, algorithm_binaries, ['OBRG'])
+    batch_evaluate(rootFolder, ['OBRG'])
+    collect_results(rootFolder, ['OBRG'])
     get_df(os.path.join(rootFolder, 'results'))

@@ -14,6 +14,7 @@ from visualizer import draw_planes
 # globals
 KHT_PARAMS = [(1, 0.025),(2, 10.0), (4, 0.2), (5, 0.2), (6, 0.3) , (7, 0.5)]
 ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt'}
+plt.rcParams.update({'font.size': 22})
 
 
 def e(cloud_path, gt_path, algo_path):
@@ -188,6 +189,7 @@ def get_df(results_folder: str):
     # df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
 
     # axs[0].set_ylim(0.0, 1.0)
+    plt.xticks(rotation=0)
     plt.suptitle('3DKHT')
     plt.show()
 
