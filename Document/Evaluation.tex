@@ -52,12 +52,12 @@ To measure the detection time, we log the exact times before and after calculati
 
 
 \subsection{Dataset}
-We select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A} to evaluate each plane detection algorithm on even grounds. 
+We select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A} to evaluate each plane detection algorithm on even grounds.
 S3DIS was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
 An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
 Since our focus is not on 3D semantic segmentation, we manually select planar regions using CloudCompare\footnote{\href{https://cloudcompare.org/}{https://cloudcompare.org/}} to obtain a list of sub-clouds.
 
-Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the data set nevertheless reflects a realistic distribution of scene types since 
+Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the data set nevertheless reflects a realistic distribution of scene types since
 it is not realistic that a building contains only lecture halls. On the other hand, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all these offices.
 
 \begin{table}[!ht]
@@ -84,73 +84,178 @@ it is not realistic that a building contains only lecture halls. On the other ha
 
 \subsection{Real-Life Test}
 We record an incrementally growing data set in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
+
+Um den vergleich zwischen statisch und dynamisch noch besser zu gestalten, nehmen wir je einen dynamischen scene zu den folgenden scene typen aus S3DIS auf:
+\begin{itemize}
+    \item hallway
+    \item office
+    \item conferenceroom
+    \item storage
+    \item auditorium
+    \item lobby
+\end{itemize}
+Wir nehmen keinen datensatz in WCs, copy rooms und storages auf, da die in der fin zu klein sind, um sich darin zu bewegen zu können. Ferner nehmen wir keinen
+datensatz zu lounge auf, da sich das im kontext der fin nicht von einer lobby unterscheiden würde, open spaces gibt es nicht.
+
 Running \textit{realsense-ros} and holding our cameras, we walk through different parts of the building, scanning to the best of our ability.
 We save each incremental map update to a file for later usage.
 
 We create a set of ground truth planes $gt_{end}$ for only the most recent update, e.g., for the entire recording.
 
-To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in 
-Figure~\ref{fig:dynGT}. 
-We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not. 
+To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
+Figure~\ref{fig:dynGT}.
+We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
 Furthermore, we remove planes from the ground truth, if the number of included points falls short of a threshold.
 
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=15 cm]{images/dynamic_eval.png}
-    \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation. All planes that are included in \textit{Ground Truth} are cropped depending on 
-    the available point cloud at each time \textit{t} }
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/dynamic_eval.png}
+    \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation. All planes that are included in \textit{Ground Truth} are cropped depending on
+        the available point cloud at each time \textit{t} }
     \label{fig:dynGT}
 \end{figure}
 
 
 \section{Results}
 
-\subsection{Results Dataset}
-
-
-\paragraph*{Area 1}
-Hier sind die Ergebnisse von Area 1:
-
-\begin{figure}
+\subsection{Area 1}
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=15 cm]{images/area_1_ohne_kht.png}
-	\label{fig:area1}
-    \caption{Results Area 1}
+	\includegraphics[width=15 cm]{images/area_1_acc.png}
+	\label{fig:area1A}
+    \caption[Accuracies Area 1]{Average Accuracy for each scene type of Area 1. The Precision 
+    is colored blue, recall is orange and the F1-score is green. }
 \end{figure}
 
-\paragraph*{Area 2}
-Hier sind die Ergebnisse von Area 2:
-
-\begin{figure}
-	\centering
-	\includegraphics[width=15 cm]{images/area_2_ohne_kht_ohne_audi.png}
-	\label{fig:area2}
-    \caption{Results Area 2}
+\begin{figure}[H]
+    \centering
+	\includegraphics[width=15 cm]{images/area_1_time.png}
+	\label{fig:area1T}
+    \caption[Times Area 1]{Average Time per scene type of Area 1}
 \end{figure}
 
-\paragraph*{Area 3}
-Hier sind die Ergebnisse von Area 3:
 
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=15 cm]{images/area_3_ohne_kht.png}
-	\label{fig:area3}
-    \caption{Results Area 3}
+\subsection{Area 2}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/area_2_acc.png}
+    \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 2. The Precision
+    is colored blue, recall is orange and the F1-score is green. }
+    \label{fig:area2A}
 \end{figure}
 
-\paragraph*{Area 4}
-Hier sind die Ergebnisse von Area 4:
-
-\begin{figure}
-	\centering
-	\includegraphics[width=15 cm]{images/area_4_ohne_kht.png}
-	\label{fig:area4}
-    \caption{Results Area 4}
+\begin{figure}[H]
+    % FIXME normalize times 
+    \centering
+    \includegraphics[width=15 cm]{images/area_2_time.png}
+    \label{fig:area2T}
+    \caption[Times Area 2]{Average Time per scene type of Area 2}
 \end{figure}
 
-\subsection{Results Real-Life Test}
+\subsection{Area 3}
 
-Hier sind die Ergebnisse:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/area_3_acc.png}
+    \label{fig:area3A}
+    \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 3. The Precision
+        is colored blue, recall is orange and the F1-score is green. }
+\end{figure}
+
+
+\begin{figure}[H]
+    % FIXME normalize times 
+    \centering
+    \includegraphics[width=15 cm]{images/area_3_time.png}
+    \label{fig:area3T}
+    \caption[Times Area 3]{Average Time per scene type of Area 3}
+\end{figure}
+
+
+\subsection{Area 4}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/area_4_acc.png}
+    \label{fig:area4A}
+    \caption[Accuracies Area 4]{Average Accuracy for each scene type of Area 4. The Precision
+        is colored blue, recall is orange and the F1-score is green. }
+\end{figure}
+
+\begin{figure}[H]
+    % FIXME normalize times 
+    \centering
+    \includegraphics[width=15 cm]{images/area_4_time.png}
+    \label{fig:area4T}
+    \caption[Times Area 4]{Average Time per scene type of Area 4}
+\end{figure}
+
+
+\subsection{Area 5}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/area_5_acc.png}
+    \label{fig:area5A}
+    \caption[Accuracies Area 4]{Average Accuracy for each scene type of Area 5. The Precision
+        is colored blue, recall is orange and the F1-score is green. }
+\end{figure}
+
+
+\begin{figure}[H]
+    % FIXME normalize times 
+    \centering
+    \includegraphics[width=15 cm]{images/area_5_time.png}
+    \label{fig:area5T}
+    \caption[Times Area 5]{Average Time per scene type of Area 5}
+\end{figure}
+
+\subsection{Area 6}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/area_6_acc.png}
+    \label{fig:area6A}
+    \caption[Accuracies Area 6]{Average Accuracy for each scene type of Area 6. The Precision
+        is colored blue, recall is orange and the F1-score is green. }
+\end{figure}
+
+
+\begin{figure}[H]
+    % FIXME normalize times 
+    \centering
+    \includegraphics[width=15 cm]{images/area_6_time.png}
+    \label{fig:area6T}
+    \caption[Times Area 6]{Average Time per scene type of Area 6}
+\end{figure}
+
+\subsection*{Results S3DIS Experiments}
+Es kristallisiert sich eindeutig heraus, dass RSPD die konsistentesten Ergebnisse hinsichtlich
+Precision, Recall und F1 liefert. Diese werte sind bei OPS auch nicht schlecht, dafür ist die
+berechnungszeit um ein vielfaches langsamer (~30x). 3DKHT liefert von allen Algorithmen die schlechtesten
+Ergebnisse, braucht dafür im Schnitt am wenigsten zeit. Die eigen implementierung von OBRG liefert teils ergebnisse,
+welche mit denen von OPS vergleichbar sind, ist dabei aber noch langsamer. Das liegt zweifelsohne an der wahl der
+programmiersprache, dazu wurde nicht viel zeit in der optimierung investiert.
+
+Statistisch gesehen sind die ergebnisse der offices und hallways am aussagekräftigsten, das liegt daran, dass davon einfach am meisten vorhanden sind.
+% TODO some kind of variance? -> violin plot
+
+
+
+\subsection{Results Real-Life Experiments}
+
+Hier sind die Ergebnisse des dynamischen experiments.:
+Es zeigt sich dass X besonders gut oder schlecht ebenen finden konnte. Wie man sich schon anhand des statischen tests denken konnte, haben OPS und OBRG zeitlich
+gesehen nicht schlecht abgeschnitten.
+
+\subsection*{Summary Experiments}
+Überleitung von statisch auf dynamisch, dh. vergleich ohne, bzw. mit temporaler komponente.
+
+Die ergebnisse der beiden experimente unterscheiden sich in folgendem punkt. Dazu sei gesagt, dass die experimente folgende übereinstimmungen haben.
+Das lässt sich so erklären. Alternative gründe davon könnten diese hier sein.
+
+Ich denke RSPD ragt heraus, da hier besonders auf noise resistenz geachtet wurde. % TODO verweis auf diverse noise tests im BG
 
 
 \end{document}
