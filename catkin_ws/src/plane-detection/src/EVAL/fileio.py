@@ -124,16 +124,19 @@ class IOHelper:
             path or self._path_cloud, dtype=float,usecols=(0, 1, 2)).tolist()
         return points
 
-    def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int, time_total: float, time_per_plane: float, time_per_sample: float) -> None:
+    def save_results(self, p: float, r: float, f1: float, found_planes: int, all_planes: int, time_total: float, time_per_plane: float, time_per_sample: float, time="") -> None:
         result = Result(p, r, f1, found_planes, all_planes, self.dataset,
                         self.method, time_total, time_per_plane, time_per_sample)
 
         output_folder = os.path.join(self.dataset_path, 'results')
         if 'results' not in os.listdir(self.dataset_path):
             os.mkdir(output_folder)
-        output_file = os.path.join(
-            output_folder, f'{self.dataset}_{self.method}.out')
-
+        if time != "":
+            output_file = os.path.join(
+                output_folder, f'{self.dataset}_{self.method}_{time}.out')
+        else:
+            output_file = os.path.join(
+                output_folder, f'{self.dataset}_{self.method}.out')
         result.to_file(output_file)
 
     def get_times(self):
@@ -187,9 +190,9 @@ class IOHelper:
         self.frame_path = path
         frames = []
         for file in sorted(os.listdir(path)):
-            if file.endswith('.pcd'):
+            if file.endswith('.pcd') and 'nope_' not in file:
                 seconds, micro, _ = file.split('.')
-                frames.append(f'{seconds[-2:]}.{micro[:2]}')
+                frames.append(f'{seconds[-4:]}.{micro[:4]}')
         return frames
 
     def get_frame_data(self, frame:str, voxel_grid, pointcloud):
@@ -201,8 +204,9 @@ class IOHelper:
                 cloud = self.read_pcd(os.path.join(self.frame_path,file))
                 break
         for file in os.listdir(self._path_algo):
-            if frame in file:
+            if frame in file and 'time' not in file:
                 algo = self._read(os.path.join(self._path_algo, file))
+                break
         cropped_gt = list(map(lambda plane: Plane.through_crop(plane,cloud, voxel_grid,pointcloud), gt))
         cropped_gt = [plane for plane in cropped_gt if len(plane.xyz_points) > 30]
         return cloud, cropped_gt, algo

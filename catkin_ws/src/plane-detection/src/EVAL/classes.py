@@ -20,7 +20,7 @@ class Result():
     time_per_plane: float
     time_per_sample: float
 
-    def to_file(self, path: str, number_of_datasets: int = 1):
+    def to_file(self, path: str):
         print(f'Writing results to {path}')
         with open(path, 'w') as ofile:
             ofile.write(f'{self.algorithm} : {self.dataset} \n')
@@ -82,7 +82,7 @@ class Plane:
                 crop_plane.xyz_points.append(point)
 
         print(len(crop_plane.xyz_points))
-        if len(crop_plane.xyz_points) > 0:
+        if len(crop_plane.xyz_points) > 2:
             pts = o3d.utility.Vector3dVector(crop_plane.xyz_points)
             pc = o3d.geometry.PointCloud()
             pc.points = pts

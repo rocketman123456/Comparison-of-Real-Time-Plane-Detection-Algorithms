@@ -9,6 +9,7 @@ from fileio import create_pcd
 import sys
 sys.path.append('/home/pedda/Documents/coding/OBRG/')
 import obrg
+plt.rcParams.update({'font.size': 22})
 
 # globals
 ALGOS = ['RSPD', 'OPS', '3DKHT', 'OBRG']
@@ -19,13 +20,16 @@ ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt', 'OBRG': '.txt'}
 def get_df(results_folder: str,algos = ALGOS):
     # load results
     results = [Result.from_file(os.path.join(results_folder, file))
-               for file in os.listdir(results_folder) if file.endswith('.out')]
-    fig, axs = plt.subplots(2, len(algos))
-    for ax, algo in zip(axs[0], algos):
+               for file in os.listdir(results_folder) if file.endswith('.out') and not 'avg' in file]
+    fig, axs = plt.subplots(1, len(algos))
+    fig.set_size_inches(20, 15)
+    for ax, algo in zip(axs, algos):
         ax.set_title(algo)
 
         # filter results by algorithm
         algo_data = [res for res in results if res.algorithm == algo]
+        if len(algo_data) == 0:
+            continue
         algo_data.sort(key=lambda x: x.dataset.lower())
         # create algo dataframe
         algo_df = pd.DataFrame(algo_data).drop(
@@ -33,16 +37,38 @@ def get_df(results_folder: str,algos = ALGOS):
         algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
         algo_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')
         ax.set_ylim(0.0,1.0)
-    for ax, algo in zip(axs[1], algos):
+        ax.set_xlabel("")
+        ax.get_xaxis().set_label("")
+        ax.legend().remove()
+
+    fig.autofmt_xdate(rotation=45)
+    fig.supxlabel('Scene Types')
+    area = results_folder.rsplit('/', 2)[1].lower()
+    fname = f'{area}_acc.png'
+
+    # plt.savefig(os.path.join('/home/pedda/Documents/uni/BA/Thesis/Document/images',fname))
+    plt.show()
+    # plt.close()
+    fig, axs = plt.subplots(1, len(algos))
+    fig.set_size_inches(20, 15)
+
+    for ax, algo in zip(axs, algos):
+        ax.set_title(algo)
+
         algo_data = [res for res in results if res.algorithm == algo]
+        if len(algo_data) == 0:
+            continue
         algo_data.sort(key=lambda x: x.dataset.lower())
         df = pd.DataFrame(algo_data).drop(
             columns=['precision', 'recall', 'f1', 'detected', 'out_of', 'time_per_plane', 'time_per_sample'])
         # sb.violinplot(data=df,ax=ax)
         df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
-
-    # plt.ylim([0.0, 1.0])
-
+        ax.set_xlabel("")
+        ax.get_xaxis().set_label("")
+        ax.legend().remove()
+    fig.autofmt_xdate(rotation=45)
+    fig.supxlabel('Scene Type')
+    fname = f'{area}_time.png'
     plt.show()
     # TODO save fig to /$root_folder/figures
 
@@ -100,7 +126,7 @@ def collect_results(root_folder: str, algos=ALGOS):
             per_plane /= len(scene)
             per_sample /= len(scene)
             scene_type_average = Result(
-                scene_p, scene_r, scene_f1, scene_found, scene_all, f'{scene_type}_avg', algorithm, total, per_plane, per_sample)
+                scene_p, scene_r, scene_f1, scene_found, scene_all, f'{scene_type}', algorithm, total, per_plane, per_sample)
             algo_results.append(scene_type_average)
     # save results to file
     for result in algo_results:
@@ -140,6 +166,8 @@ def batch_detect(rootfolder: str, binaries_path: str, algos=ALGOS) -> None:
         if 'nope_' in dataset or dataset == 'results':
             continue
         for algo in algos:
+            if algo in os.listdir(dataset_path):
+                continue
             # get input params for given algorithm
             binary = os.path.join(binaries_path, algo)
             cloud_file = os.path.join(
@@ -179,7 +207,7 @@ if __name__ == '__main__':
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
 
-    batch_detect(rootFolder, algorithm_binaries, ['OBRG'])
-    batch_evaluate(rootFolder, ['OBRG'])
-    collect_results(rootFolder, ['OBRG'])
+    batch_detect(rootFolder, algorithm_binaries)
+    batch_evaluate(rootFolder)
+    collect_results(rootFolder)
     get_df(os.path.join(rootFolder, 'results'))
