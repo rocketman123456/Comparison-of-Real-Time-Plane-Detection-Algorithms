@@ -8,6 +8,7 @@
 *.out
 *.xml
 *.gz
+*.lof
 *.toc
 catkin_ws/src/plane-detection/src/EVAL/bags
 catkin_ws/build/
