@@ -16,19 +16,18 @@
 
 % \section{Scenario / UseCase}
 
-Within a given use case or scenario, the user records the surroundings with a camera, and the raw data is either
+Within a given use case or scenario that involves the detection of planes, the user records the surroundings with a camera. The raw data is then either
 directly, or after some preprocessing steps, passed to a plane detection algorithm, which then hands the detected planes to an application for further use.
 This application could use those planes to define the playable area in an augmented reality (AR) video game or alternatively build a digital floor
-plan, or 3-D model, of an apartment.
+plan, or 3D model, of an apartment.
 
 Especially in scenarios where the user moves through the environment, the time between recording and the planes reaching the application is crucial.
-If an autonomous car drives through an urban environment, the delay must be as short as possible to avoid a collision with a wall the car has not yet detected.
-
+If an autonomous robot moves through an apartment complex, the delay must be as short as possible to avoid a collision with a wall the robot has not yet detected.
 The problem can therefore be defined in such a way that planes must be detected in real-time and at the same time be sufficiently precise for the given use case.
 
 % To optimize the entire process, shown in Figure~\ref{fig:concept}, this work will aim to answer the question of to what extent precise real-time plane detection is feasible. 
 % NOTE alternative: 
-To optimize the entire process, shown in \ref{fig:concept}, this work will focus on the plane detection step (green).
+To optimize the entire process, shown in \ref{fig:concept}, this work is focused on the plane detection step (green).
 
 Furthermore, we focus on indoor environments, as motivated by Chapter~\ref{chap:Introduction}.
 This includes the buildings we encounter in our normal lives, whether it is the home we live in, the office we work in, or a stripped-down version of a building during construction.
@@ -36,7 +35,7 @@ This includes the buildings we encounter in our normal lives, whether it is the 
 
 
 
-\subsection{Used Sensors}
+\section{Used Sensors}
 % FIXME how do I reference step one
 To efficiently tackle the previously defined problem, and according to step one of figure~\ref{fig:concept}, we need a camera sensor to record the environment and obtain data to detect planes therein.
 

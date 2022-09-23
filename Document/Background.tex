@@ -8,6 +8,7 @@ In this chapter, we will present relevant literature needed to completely unders
 % TODO datasheet der D455 und T256 hier rein pasten.
 \href{https://www.intelrealsense.com/compare-depth-cameras/}{https://www.intelrealsense.com/compare-depth-cameras/}
 
+
 \subsection*{SLAM}
 SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics;
 A robot finds itself in an unknown environment and attempts to build a coherent map while keeping track of its location.
@@ -16,10 +17,10 @@ Since odometry sensors like rotary encoders that measure the rotation of the rob
 
 \paragraph*{RTAB-MAP}
 RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
-Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors, as well as an optional additional input in form of two- or three-dimensional 
+Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors, as well as an optional additional input in form of two- or three-dimensional
 lidar scan.
 All these inputs are combined during a synchronization step, and the results thereof are passed to RTAB-MAP's \textit{Short-Term-Memory} (STM).
-The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to determine if the current location has already been visited earlier, also known as \textit{loop closure}. 
+The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to determine if the current location has already been visited earlier, also known as \textit{loop closure}.
 If a loop closure is detected, i.e., RTAB-MAP detects the re-visiting of a known location, the map graph is optimized and thus minimized. In addition, the global map is reassembled in correspondence with the new information.
 The resulting map is published in the form of an unorganized point cloud.
 
@@ -34,7 +35,7 @@ RTAB-MAP's general workflow is shown below in Figure~\ref{fig:rtabmap}:
 \section{Plane Detection}
 
 \paragraph*{introduction}
-The field of plane detection has been around for decades. Most methods of detecting planar regions can be sorted into one of three main categories:
+The field of plane detection has been around for decades. Most methods of detecting planar regions are based on one of three main categories:
 \begin{itemize}
     \item Hough Transform (HT)
     \item RANSAC (RC)
@@ -42,40 +43,44 @@ The field of plane detection has been around for decades. Most methods of detect
 \end{itemize}
 
 \subsection*{Hough Transform}
-The original motivation behind the Hough transform was the detection of lines in images. To detect the best fitting line over a set of 2d points, all points are sequentially processed via a voting procedure.
-Given a point $p$, multiple lines with different orientations are fit through $p$. Because an orientation that is parallel to the y-axis would lead to an infinite slope, the Hesse-normalform is chosen as the primary line representation. 
-Therefore, an individual line is represented as a pair $(r, \theta)$, whereas $r$ is the orthogonal distance from the origin to the plane, and $\theta$ is the angle between the x-axis and the line that connects the origin to the closest point on the line. 
-This pair is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding $\theta_i$ value, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
+The original motivation behind the Hough transform was detecting lines in images or 4. All points are sequentially processed via a voting procedure to detect the best fitting line over a set of 2d points.
+Multiple lines with different orientations are fit through each given point $p$. 
+Because a line in slope-intercept form parallel to the y-axis would lead to an infinite slope, the Hesse normal form is chosen as the primary line representation.
+In Hesse normal form, an individual line can be parameterized with a pair $(r, \theta)$, with $r$  being the orthogonal distance origin to the plane and $\theta$ being the angle between the x-axis and the line that connects the origin to the closest point on the line.
+This pair is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding value of $\theta$, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
 votes to each $\theta$ is called an \textit{accumulator}.
-Finally, the best fitting line is determined by the number of votes that each $\theta$ received.
+Finally, the best fitting line is determined by the number of votes it received.
 
 \subsection*{RANSAC}
 RANSAC (RAndom SAmple Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{Sun_Mordohai_2019,Yang_Forstner,Ashraf_Ahmed_2017}.
 RANSAC is an iterative process. Each iteration randomly samples a certain amount of data points and fits a mathematical model through them. The level of outliers determines the quality of the obtained model and preserves the best overall model.
-In the context of this work, the model parameters would be some plane equation or a combination of normal vectors and center points.
+
+Within the context of plane detection in 3D point clouds, an approach could involve random sampling of 3 points, fitting a plane through them,
+ and counting the number of points within a certain range of the plane\cite{Yang_Forstner}. The model, in that case, could be a cartesian plane equation. This 
 
 \subsection*{Region Growing}
-Region Growing methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}. 
-RG-based segmentation methods aim to obtain a set of disjoint regions by initially selecting a set of seed points and incrementally inserting neighboring points based on an inclusion criterion. 
-Therein, the quality of results depends on the choice of seed points, e.g., a very noisy seed point could decrease overall quality  \cite{Malek_Rahman_Yasiran_Jumaat_Jalil_2012}.   
-In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points. 
+Region Growing methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}.
+RG-based segmentation methods aim to grow a set of disjoint regions from an initial selection of seed points. The regions increase in size by inserting neighboring points based on an inclusion criterion.
+The quality of the resulting regions depends on the choice of seed points, e.g., a very noisy seed point could decrease overall quality  \cite{Malek_Rahman_Yasiran_Jumaat_Jalil_2012}.
+
+In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
 
 \section{Plane Detection Algorithms}
-In dieser section werden die algorithmen näher erläutert, die im späteren kontext dieser arbeit im fokus stehen werden.
+This section describes four algorithms that are used for the evaluation during this work. 
 
 \subsection{RSPD}
-RSPD (Robust Statistics approach for Plane Detection \cite{Araújo_Oliveira_2020}) is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases; 
+RSPD (Robust Statistics approach for Plane Detection \cite{Araújo_Oliveira_2020}) is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases;
 \textit{Split, Grow and Merge}.
 
 \paragraph*{Split}
-The authors use an octree to recursively subdivide the point cloud. The subdivision is repeated until every leaf node contains less than $0.1\%$ of the total amount
+The authors propose to use an octree to recursively subdivide the point cloud. The subdivision is repeated until every leaf node contains less than $0.1\%$ of the total amount
 of points.
 This is followed by a planarity test, during which the octree is traversed bottom-up. If all eight children of a node $n$ are leaf nodes and fail the planarity test, $n$ replaces its children
-by becoming a leaf node of its own. This procedure is repeated until the root of the octree is reached.
- 
+and becomes a leaf node of its own. This procedure is repeated until the root of the octree is reached.
+
 \paragraph*{Grow}
 In preparation for the growth phase, a neighborhood graph (NG) over the entire point cloud is created. Every node of NG represents one point and an edge between two nodes exists only if
-a k-nearest-neighbor search detects both points being in the same neighborhood. 
+a k-nearest-neighbor search detects both points being in the same neighborhood.
 
 The graph construction is subsequently followed by a breadth-first-search, during which a point $x$ is inserted into a planar patch $p$ if it satisfies the following conditions:
 \begin{itemize}
@@ -84,7 +89,7 @@ The graph construction is subsequently followed by a breadth-first-search, durin
 \end{itemize}
 
 \paragraph*{Merge}
-In the last phase, the previously grown patches are merged. Two planar patches $P_1$ and $P_2$ can be merged, if the following conditions are met: 
+In the last phase, the previously grown patches are merged. Two planar patches $P_1$ and $P_2$ can be merged, if the following conditions are met:
 \begin{itemize}
     \item the octree nodes of $P_1$ and $P_2$ are adjacent
     \item $P_1.n$ and $P_2.n$ have a divergence within a tolerance range
@@ -105,39 +110,72 @@ This process is repeated until the number of remaining points falls below a pred
 
 \subsection{3D-KHT}\label{sub:3dkht}
 \citeauthor{Limberger_Oliveira_2015} propose a hough transform-based plane detection method, which accepts unorganized point clouds as input \cite{Limberger_Oliveira_2015}.
-The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in terms of 
-creation and manipulation. Furthermore, the octree succeeds in capturing the shapes inside the point cloud, while the k-d tree does not.   
+The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in creation and manipulation. 
+Furthermore, the octree succeeds in capturing the shapes inside the point cloud, while the k-d tree does not.
 
-Using the octree, the point cloud is subdivided until either the points inside a leaf node are considered approximately coplanar or the number of points is less than 
-a predefined threshold. The authors recommend this threshold to value 30 for large point clouds.
-The approximately coplanar nodes are refined by removing outliers and subsequently fitting a plane through the remaining points.
+Each leaf inside the octree continues subdividing until the points inside a leaf node are considered approximately coplanar, or the number of points is less than a predefined threshold. 
+The authors recommend this threshold to value 30 for large point clouds. 
+After the approximately coplanar nodes are refined by removing outliers, a plane is fit through the remaining points.
 
-% kernel calculation + cluster voting
+This plane $\pi$ can, in polar coordinates, be uniquely described by a triple $(\rho, \theta, \phi)$, with $\rho$ being the orthogonal distance from the origin to the plane, $\theta$ being the azimuthal angle, and $\phi$ being the inclination.
+Inspired by \citeauthor{Borrmann_Elseberg_Lingemann_Nüchter_2011}\cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, an accumulator ball (Fig.~\ref{fig:accball}) is used for the voting procedure because the cells in polar regions are smaller (and therefore
+contain fewer normal vectors) in three-dimensional accumulator arrays, as portrayed in Figure~\ref{fig:accarr}.
 
-In dieser Phase werden zuerst gaussische trivariate kernel berechnet. Dabei wird die Ebene in spherical coordinates umgeschrieben.
-% TODO rest of 3dkht, explain hough transform first
-\textcolor{red}{hier noch den rest einfügen!}
+
+\begin{figure}[H]
+    \centering
+    \hspace{\fill}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/accumulatorarray.png}
+        \caption[3D-KHT Accumulator Ball]{}
+        \label{fig:accarr}
+    \end{subfigure}
+    \hspace{\fill}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/accumulatorball2.png}
+        \caption[3D-KHT Accumulator Ball]{}
+        \label{fig:accball}
+    \end{subfigure}
+    \hspace{\fill}
+    \caption[Hough Transform Accumulators]{Accumulator array (a), taken from \cite*[Figure~3]{Borrmann_Elseberg_Lingemann_Nüchter_2011}. Accumulator 
+    ball(b) used in 3D-KHT, taken from \cite*[Figure~5]{Limberger_Oliveira_2015}.}
+\end{figure}
+
+During the voting procedure, votes are not cast for each data point but rather on previously calculated approximately coplanar clusters.
+When casting a vote on a given cluster $c_i$ with its plane (represented by $(\rho, \theta, \phi)$), the corresponding entry in the accumulator ball is updated.
+With this update, its neighboring clusters also receive a vote determined by the uncertainty value of $c_i$. Due to the non-discrete 
+values of uncertainty, the votes are floating-point values as well.
+
+All Peaks within the accumulator ball are detected in the last step. Because the votes tend to be sparsely distributed \cite[Section~3.4]{Limberger_Oliveira_2015},
+an auxiliary array $A$ is used to memorize the entries inside the accumulator that are set. When an accumulator index is assigned a value for the first time, it is also added to $A$. 
+Therefore, it is only necessary to iterate the auxiliary array to find peaks inside the accumulator.
+Furthermore, an intermediary smoothing step is performed by merging adjacent peaks inside the accumulator and storing them in $A$.
+Then, $A$ is sorted in descending order.
+If a cell $c$ in the accumulator has not yet been visited during iteration, $c$ is considered a peak. In addition, $c$ and its 26 neighboring cells are tagged as \textit{visited}. 
+That way, the most dominant plane, i.e., the one with the most votes, is detected first.
+Finally, the detected planes are sorted by the number of different clusters that voted for them. 
 
 \subsection{OBRG} \label{sec:bg-obrg}
 OBRG (Octree-Based Region Growing \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}) is also a method that employs region growing.
 
-First, an unorganized point cloud is recursively subdivided using an octree. 
+First, an unorganized point cloud is recursively subdivided using an octree.
 An octree node $n$ repeatedly subdivides itself into eight children until the level of $n$ supersedes a predefined maximum subdivision value or if the
-amount of contained points in $n$ is less than a predefined minimum of included points.  
-
-Saliency features are calculated for every leaf node in preparation for the region growing step. A normal vector is obtained by performing a principle 
+amount of contained points in $n$ is less than a predefined minimum of included points.
+Saliency features are calculated for every leaf node in preparation for the region growing step. A normal vector is obtained by performing a principle
 component analysis (PCA) on the points inside each leaf node. The best-fitting plane of each leaf is defined by the mean normal vector and its center point.
 A residual value is obtained by taking the RMS of the distance of all included points to the plane.
 
-All leaf nodes are selected as individual seed points. Starting from the seed with the lowest residual value, which relates to a low amount of noise, 
-a neighboring leaf node $n$ is inserted into the region if $n$ does not belong to any region and the angular divergence between both normal vectors is smaller than 
-a predefined threshold. 
+For the region growing phase, all leaf nodes are selected as individual seed points. Starting from the seed with the lowest residual value, which relates to a low amount of noise,
+a neighboring leaf node $n$ is inserted into the region if $n$ does not belong to any region and the angular divergence between both normal vectors is smaller than
+a predefined threshold.
 
-Lastly, a refinement step is employed. 
+Lastly, a refinement step is employed.
 Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% of included points fit the best plane. FR is leaf-based, and all previously unallocated neighboring nodes that satisfy an inlier criterion are added to the region.
-General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore, 
+General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore,
 points from neighboring and previously unallocated leaf nodes are considered and inserted into the region if they, too, satisfy the inlier criterion.
-The refinement process returns a complete set of planar regions. 
+The refinement process returns a complete set of planar regions.
 
 \end{document}
 
