@@ -1,3 +1,4 @@
+from logging import root
 import argparse
 import matplotlib.pyplot as plt
 import os
@@ -17,7 +18,49 @@ ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': '', 'OBRG': ''}
 ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt', 'OBRG': '.txt'}
 
 
-def get_df(results_folder: str,algos = ALGOS):
+def combine_area_results(root_path: str, algos=ALGOS):
+    # gather results per area
+    results_per_area: Dict[str, List[Result]] = {
+        f'Area_{i}': [] for i in range(1, 7)}
+    if 'results' not in os.listdir(root_path):
+        os.mkdir(os.path.join(root_path, 'results'))
+    for i in range(1, 7):
+        area = f'Area_{i}'
+        results = os.path.join(root_path, area, 'results')
+        for res in os.listdir(results):
+            r = Result.from_file(os.path.join(results, res))
+            results_per_area[area].append(r)
+    # gather algorithm results
+    results_algos_scenetypes: Dict[str, Dict[str, List[Result]]] = {
+        algo: dict() for algo in algos}
+    for area, results in results_per_area.items():
+        for result in results:
+            if result.dataset not in results_algos_scenetypes[result.algorithm].keys():
+                results_algos_scenetypes[result.algorithm][result.dataset] = []
+            results_algos_scenetypes[result.algorithm][result.dataset].append(
+                result)
+    # average results and write to file
+    for algo, sceneresults in results_algos_scenetypes.items():
+        for scenetype, results in sceneresults.items():
+            p = r = f1 = 0.0
+            found = outof = 0
+            time = 0.0
+            for result in results:
+                p += result.precision
+                r += result.recall
+                f1 += result.f1
+                found += result.detected
+                outof += result.out_of
+                time += result.time_total
+            p /= len(results)
+            r /= len(results)
+            f1 /= len(results)
+            time /= len(results)
+            avg = Result(p,r,f1,found,outof,scenetype,algo,time,-1,-1)
+            Result.to_file(avg,os.path.join(root_path,'results',f'{algo}-{scenetype}.out'))
+
+
+def get_df(results_folder: str, algos=ALGOS):
     # load results
     results = [Result.from_file(os.path.join(results_folder, file))
                for file in os.listdir(results_folder) if file.endswith('.out') and not 'avg' in file]
@@ -36,7 +79,7 @@ def get_df(results_folder: str,algos = ALGOS):
             columns=['detected', 'out_of', 'time_total', 'time_per_plane', 'time_per_sample'])
         algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
         algo_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')
-        ax.set_ylim(0.0,1.0)
+        ax.set_ylim(0.0, 1.0)
         ax.set_xlabel("")
         ax.get_xaxis().set_label("")
         ax.legend().remove()
@@ -93,7 +136,7 @@ def collect_results(root_folder: str, algos=ALGOS):
 
         # populate result dicts, per_scene is currently unused, might be useful later
         for algorithm_resultfile in os.listdir(result_path):
-            
+
             result = Result.from_file(os.path.join(
                 result_path, algorithm_resultfile))
             results_per_scene[dataset].append(result)
@@ -207,7 +250,8 @@ if __name__ == '__main__':
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
 
-    batch_detect(rootFolder, algorithm_binaries)
-    batch_evaluate(rootFolder)
-    collect_results(rootFolder)
-    get_df(os.path.join(rootFolder, 'results'))
+    # batch_detect(rootFolder, algorithm_binaries)
+    # batch_evaluate(rootFolder)
+    # collect_results(rootFolder)
+    # get_df(os.path.join(rootFolder, 'results'))
+    combine_area_results('Stanford3dDataset_v1.2_Aligned_Version')
