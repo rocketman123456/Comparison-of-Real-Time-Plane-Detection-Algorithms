@@ -84,28 +84,55 @@ it is not realistic that a building contains only lecture halls. On the other ha
 
 \subsection{Real-Life Test}
 We record an incrementally growing data set in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
-
-Um den vergleich zwischen statisch und dynamisch noch besser zu gestalten, nehmen wir je einen dynamischen scene zu den folgenden scene typen aus S3DIS auf:
+To perform a thorough comparison between the static and the dynamic experiment, we record a scene for each of the following scene types of S3DIS:
 \begin{itemize}
-    \item hallway
     \item office
-    \item conferenceroom
-    \item storage
+    \item conference room
     \item auditorium
-    \item lobby
+    \item hallway
 \end{itemize}
-Wir nehmen keinen datensatz in WCs, copy rooms und storages auf, da die in der fin zu klein sind, um sich darin zu bewegen zu können. Ferner nehmen wir keinen
-datensatz zu lounge auf, da sich das im kontext der fin nicht von einer lobby unterscheiden würde, open spaces gibt es nicht.
+
+We disregard scene types where the number of occurrences in S3DIS is negligible(see Table~\ref{tab:stanfordStats}).
+Furthermore, we do not create a recording for the storage type because the spatial extents are too small to introduce a temporal component effectively.
 
 Running \textit{realsense-ros} and holding our cameras, we walk through different parts of the building, scanning to the best of our ability.
 We save each incremental map update to a file for later usage.
 
-We create a set of ground truth planes $gt_{end}$ for only the most recent update, e.g., for the entire recording.
+\begin{figure}[H]
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=.9\linewidth]{images/307.png}
+        \caption[Dynamic Dataset - auditorium]{}
+        \label{fig:fin307}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=.9\linewidth]{images/333.png}
+        \caption[Dynamic Dataset - conference room]{}
+        \label{fig:fin333}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{images/425.png}
+        \caption[Dynamic Dataset office]{}
+        \label{fig:fin425}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{images/hallway.png}
+        \caption[Dynamic Dataset office]{}
+        \label{fig:finhw}
+    \end{subfigure}
+    \caption[Dynamic Datasets]{The recordings for each scene type: (a)auditorium, (b) conference room, (c) office and (d) hallway.}
+\end{figure}
 
+
+We create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
+The datasets for 
 To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
 Figure~\ref{fig:dynGT}.
 We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
-Furthermore, we remove planes from the ground truth, if the number of included points falls short of a threshold.
+Furthermore, we remove planes from the ground truth if the number of included points falls short of a threshold.
 
 \begin{figure}[H]
     \centering
@@ -120,17 +147,17 @@ Furthermore, we remove planes from the ground truth, if the number of included p
 
 \subsection{Area 1}
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=15 cm]{images/area_1_acc.png}
-	\label{fig:area1A}
-    \caption[Accuracies Area 1]{Average Accuracy for each scene type of Area 1. The Precision 
-    is colored blue, recall is orange and the F1-score is green. }
+    \centering
+    \includegraphics[width=15 cm]{images/area_1_acc.png}
+    \label{fig:area1A}
+    \caption[Accuracies Area 1]{Average Accuracy for each scene type of Area 1. The Precision
+        is colored blue, recall is orange and the F1-score is green. }
 \end{figure}
 
 \begin{figure}[H]
     \centering
-	\includegraphics[width=15 cm]{images/area_1_time.png}
-	\label{fig:area1T}
+    \includegraphics[width=15 cm]{images/area_1_time.png}
+    \label{fig:area1T}
     \caption[Times Area 1]{Average Time per scene type of Area 1}
 \end{figure}
 
@@ -141,7 +168,7 @@ Furthermore, we remove planes from the ground truth, if the number of included p
     \centering
     \includegraphics[width=15 cm]{images/area_2_acc.png}
     \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 2. The Precision
-    is colored blue, recall is orange and the F1-score is green. }
+        is colored blue, recall is orange and the F1-score is green. }
     \label{fig:area2A}
 \end{figure}
 
