@@ -181,7 +181,7 @@ class VoxelEvaluator(Evaluator):
                 if gt != None and a_v in gt.voxels:
                     self.correct.add(h_a_v)
         if len(self.all) == 0:
-            self.recall = 0.0
+            self.precision = 0.0
             return 0.0
         self.precision = len(self.correct) / len(self.all)
         return len(self.correct) / len(self.all)

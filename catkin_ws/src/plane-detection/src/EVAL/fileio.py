@@ -203,10 +203,15 @@ class IOHelper:
             if frame in file and file.endswith('.pcd'):
                 cloud = self.read_pcd(os.path.join(self.frame_path,file))
                 break
+        algo = []
         for file in os.listdir(self._path_algo):
             if frame in file and 'time' not in file:
-                algo = self._read(os.path.join(self._path_algo, file))
-                break
+                if self.method == 'RSPD':
+                    algo = self._read(os.path.join(self._path_algo, file))
+                    break
+                else:
+                    for p in self._read(os.path.join(self._path_algo, file)):
+                        algo.append(p)
         cropped_gt = list(map(lambda plane: Plane.through_crop(plane,cloud, voxel_grid,pointcloud), gt))
         cropped_gt = [plane for plane in cropped_gt if len(plane.xyz_points) > 30]
         return cloud, cropped_gt, algo

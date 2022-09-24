@@ -47,6 +47,11 @@ def dyn_eval(path_to_subclouds: str, binaries_path: str):
 
 def evaluate_timeframe(subcloud, subgt, subalgo, time):
     global voxel_grid, iohelper
+    if subalgo == []:
+        total, per_plane, per_sample = iohelper.get_times()
+        iohelper.save_results(0, 0, 0, 0, len(
+        sub_gt), total, per_plane, per_sample, time=time)
+        return
     if iohelper.method == '3DKHT':
         print('3DKHT, translating')
         for algo_plane in subalgo:
@@ -79,7 +84,7 @@ def evaluate_timeframe(subcloud, subgt, subalgo, time):
     total, per_plane, per_sample = iohelper.get_times()
 
     iohelper.save_results(p, r, f1, len(f), len(
-        ground_truth), total, per_plane, per_sample, time=time)
+        sub_gt), total, per_plane, per_sample, time=time)
 
 
 def dynamic_detection(dataset_path: str, binaries_path: str, algos=ALGOS):
@@ -209,23 +214,23 @@ if __name__ == '__main__':
     last_cloud = args.last_cloud
     gt_path = f"{dataset}/GT"
 
-    # dynamic_detection(dataset, binaries, ['RSPD'])
+    dynamic_detection(dataset, binaries)
     # dynamic_evaluation()
-    # for algo in ['RSPD']:
-    #     algo_path = os.path.join(dataset, algo)
+    for algo in ALGOS:
+        algo_path = os.path.join(dataset, algo)
 
-    #     iohelper = IOHelper(last_cloud, gt_path, algo_path)
-    #     complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(last_cloud)
-    #     ground_truth = iohelper.read_gt()
-    #     voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
-    #         complete_cloud, voxel_size=0.3)
+        iohelper = IOHelper(last_cloud, gt_path, algo_path)
+        complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(last_cloud)
+        ground_truth = iohelper.read_gt()
+        voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
+            complete_cloud, voxel_size=0.3)
 
-    #     timeframes = iohelper.get_frames(dataset)
-    #     for timeframe in timeframes:
-    #         sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(
-    #             timeframe, voxel_grid, complete_cloud)
-    #         # draw_bb_planes(sub_gt, sub_cloud)
-    #         evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
-    dynamic_collection(dataset,['RSPD'])
+        timeframes = iohelper.get_frames(dataset)
+        for timeframe in timeframes:
+            sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(
+                timeframe, voxel_grid, complete_cloud)
+            # draw_bb_planes(sub_gt, sub_cloud)
+            evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
+    dynamic_collection(dataset)
     # get_dynamic_results()
     get_dyn_df(os.path.join(dataset, 'results'))
