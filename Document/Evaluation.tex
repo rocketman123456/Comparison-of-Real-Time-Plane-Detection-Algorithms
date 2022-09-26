@@ -128,7 +128,7 @@ We save each incremental map update to a file for later usage.
 
 
 We create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
-The datasets for 
+The datasets for
 To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
 Figure~\ref{fig:dynGT}.
 We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
@@ -145,117 +145,133 @@ Furthermore, we remove planes from the ground truth if the number of included po
 
 \section{Results}
 
-\subsection{Area 1}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=15 cm]{images/area_1_acc.png}
-    \label{fig:area1A}
-    \caption[Accuracies Area 1]{Average Accuracy for each scene type of Area 1. The Precision
-        is colored blue, recall is orange and the F1-score is green. }
+    \includegraphics[width=15 cm]{images/accuracy_total.png}
+    \label{fig:accuracy_s3dis}
+    \caption[Accuracy Results S3DIS]{Average Accuracy for each scene type. The Precision
+        is colored blue, recall is orange and the F1-score is green.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=15 cm]{images/area_1_time.png}
-    \label{fig:area1T}
-    \caption[Times Area 1]{Average Time per scene type of Area 1}
+    \includegraphics[width=15 cm]{images/time_total.png}
+    \label{fig:time_s3dis}
+    \caption[Time Results S3DIS]{Average Time per scene type. Note, that the plots
+    do not share the same y-axis.}
 \end{figure}
 
+% \subsection{Area 1}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_1_acc.png}
+%     \label{fig:area1A}
+%     \caption[Accuracies Area 1]{Average Accuracy for each scene type of Area 1. The Precision
+%         is colored blue, recall is orange and the F1-score is green. }
+% \end{figure}
 
-\subsection{Area 2}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/area_2_acc.png}
-    \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 2. The Precision
-        is colored blue, recall is orange and the F1-score is green. }
-    \label{fig:area2A}
-\end{figure}
-
-\begin{figure}[H]
-    % FIXME normalize times 
-    \centering
-    \includegraphics[width=15 cm]{images/area_2_time.png}
-    \label{fig:area2T}
-    \caption[Times Area 2]{Average Time per scene type of Area 2}
-\end{figure}
-
-\subsection{Area 3}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/area_3_acc.png}
-    \label{fig:area3A}
-    \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 3. The Precision
-        is colored blue, recall is orange and the F1-score is green. }
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_1_time.png}
+%     \label{fig:area1T}
+%     \caption[Times Area 1]{Average Time per scene type of Area 1}
+% \end{figure}
 
 
-\begin{figure}[H]
-    % FIXME normalize times 
-    \centering
-    \includegraphics[width=15 cm]{images/area_3_time.png}
-    \label{fig:area3T}
-    \caption[Times Area 3]{Average Time per scene type of Area 3}
-\end{figure}
+% \subsection{Area 2}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_2_acc.png}
+%     \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 2. The Precision
+%         is colored blue, recall is orange and the F1-score is green. }
+%     \label{fig:area2A}
+% \end{figure}
+
+% \begin{figure}[H]
+%     % FIXME normalize times 
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_2_time.png}
+%     \label{fig:area2T}
+%     \caption[Times Area 2]{Average Time per scene type of Area 2}
+% \end{figure}
+
+% \subsection{Area 3}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_3_acc.png}
+%     \label{fig:area3A}
+%     \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 3. The Precision
+%         is colored blue, recall is orange and the F1-score is green. }
+% \end{figure}
 
 
-\subsection{Area 4}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/area_4_acc.png}
-    \label{fig:area4A}
-    \caption[Accuracies Area 4]{Average Accuracy for each scene type of Area 4. The Precision
-        is colored blue, recall is orange and the F1-score is green. }
-\end{figure}
-
-\begin{figure}[H]
-    % FIXME normalize times 
-    \centering
-    \includegraphics[width=15 cm]{images/area_4_time.png}
-    \label{fig:area4T}
-    \caption[Times Area 4]{Average Time per scene type of Area 4}
-\end{figure}
+% \begin{figure}[H]
+%     % FIXME normalize times 
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_3_time.png}
+%     \label{fig:area3T}
+%     \caption[Times Area 3]{Average Time per scene type of Area 3}
+% \end{figure}
 
 
-\subsection{Area 5}
+% \subsection{Area 4}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/area_5_acc.png}
-    \label{fig:area5A}
-    \caption[Accuracies Area 4]{Average Accuracy for each scene type of Area 5. The Precision
-        is colored blue, recall is orange and the F1-score is green. }
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_4_acc.png}
+%     \label{fig:area4A}
+%     \caption[Accuracies Area 4]{Average Accuracy for each scene type of Area 4. The Precision
+%         is colored blue, recall is orange and the F1-score is green. }
+% \end{figure}
 
-
-\begin{figure}[H]
-    % FIXME normalize times 
-    \centering
-    \includegraphics[width=15 cm]{images/area_5_time.png}
-    \label{fig:area5T}
-    \caption[Times Area 5]{Average Time per scene type of Area 5}
-\end{figure}
-
-\subsection{Area 6}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/area_6_acc.png}
-    \label{fig:area6A}
-    \caption[Accuracies Area 6]{Average Accuracy for each scene type of Area 6. The Precision
-        is colored blue, recall is orange and the F1-score is green. }
-\end{figure}
+% \begin{figure}[H]
+%     % FIXME normalize times 
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_4_time.png}
+%     \label{fig:area4T}
+%     \caption[Times Area 4]{Average Time per scene type of Area 4}
+% \end{figure}
 
 
-\begin{figure}[H]
-    % FIXME normalize times 
-    \centering
-    \includegraphics[width=15 cm]{images/area_6_time.png}
-    \label{fig:area6T}
-    \caption[Times Area 6]{Average Time per scene type of Area 6}
-\end{figure}
+% \subsection{Area 5}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_5_acc.png}
+%     \label{fig:area5A}
+%     \caption[Accuracies Area 4]{Average Accuracy for each scene type of Area 5. The Precision
+%         is colored blue, recall is orange and the F1-score is green. }
+% \end{figure}
+
+
+% \begin{figure}[H]
+%     % FIXME normalize times 
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_5_time.png}
+%     \label{fig:area5T}
+%     \caption[Times Area 5]{Average Time per scene type of Area 5}
+% \end{figure}
+
+% \subsection{Area 6}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_6_acc.png}
+%     \label{fig:area6A}
+%     \caption[Accuracies Area 6]{Average Accuracy for each scene type of Area 6. The Precision
+%         is colored blue, recall is orange and the F1-score is green. }
+% \end{figure}
+
+
+% \begin{figure}[H]
+%     % FIXME normalize times 
+%     \centering
+%     \includegraphics[width=15 cm]{images/area_6_time.png}
+%     \label{fig:area6T}
+%     \caption[Times Area 6]{Average Time per scene type of Area 6}
+% \end{figure}
 
 \subsection*{Results S3DIS Experiments}
 Es kristallisiert sich eindeutig heraus, dass RSPD die konsistentesten Ergebnisse hinsichtlich
