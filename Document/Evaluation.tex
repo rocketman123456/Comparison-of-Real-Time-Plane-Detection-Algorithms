@@ -142,158 +142,71 @@ Furthermore, we remove planes from the ground truth if the number of included po
     \label{fig:dynGT}
 \end{figure}
 
-
 \section{Results}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/accuracy_total.png}
-    \label{fig:accuracy_s3dis}
-    \caption[Accuracy Results S3DIS]{Average Accuracy for each scene type. The Precision
-        is colored blue, recall is orange and the F1-score is green.}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/time_total.png}
-    \label{fig:time_s3dis}
-    \caption[Time Results S3DIS]{Average Time per scene type. Note, that the plots
-    do not share the same y-axis.}
-\end{figure}
-
-% \subsection{Area 1}
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_1_acc.png}
-%     \label{fig:area1A}
-%     \caption[Accuracies Area 1]{Average Accuracy for each scene type of Area 1. The Precision
-%         is colored blue, recall is orange and the F1-score is green. }
-% \end{figure}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_1_time.png}
-%     \label{fig:area1T}
-%     \caption[Times Area 1]{Average Time per scene type of Area 1}
-% \end{figure}
-
-
-% \subsection{Area 2}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_2_acc.png}
-%     \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 2. The Precision
-%         is colored blue, recall is orange and the F1-score is green. }
-%     \label{fig:area2A}
-% \end{figure}
-
-% \begin{figure}[H]
-%     % FIXME normalize times 
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_2_time.png}
-%     \label{fig:area2T}
-%     \caption[Times Area 2]{Average Time per scene type of Area 2}
-% \end{figure}
-
-% \subsection{Area 3}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_3_acc.png}
-%     \label{fig:area3A}
-%     \caption[Accuracies Area 3]{Average Accuracy for each scene type of Area 3. The Precision
-%         is colored blue, recall is orange and the F1-score is green. }
-% \end{figure}
-
-
-% \begin{figure}[H]
-%     % FIXME normalize times 
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_3_time.png}
-%     \label{fig:area3T}
-%     \caption[Times Area 3]{Average Time per scene type of Area 3}
-% \end{figure}
-
-
-% \subsection{Area 4}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_4_acc.png}
-%     \label{fig:area4A}
-%     \caption[Accuracies Area 4]{Average Accuracy for each scene type of Area 4. The Precision
-%         is colored blue, recall is orange and the F1-score is green. }
-% \end{figure}
-
-% \begin{figure}[H]
-%     % FIXME normalize times 
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_4_time.png}
-%     \label{fig:area4T}
-%     \caption[Times Area 4]{Average Time per scene type of Area 4}
-% \end{figure}
-
-
-% \subsection{Area 5}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_5_acc.png}
-%     \label{fig:area5A}
-%     \caption[Accuracies Area 4]{Average Accuracy for each scene type of Area 5. The Precision
-%         is colored blue, recall is orange and the F1-score is green. }
-% \end{figure}
-
-
-% \begin{figure}[H]
-%     % FIXME normalize times 
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_5_time.png}
-%     \label{fig:area5T}
-%     \caption[Times Area 5]{Average Time per scene type of Area 5}
-% \end{figure}
-
-% \subsection{Area 6}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_6_acc.png}
-%     \label{fig:area6A}
-%     \caption[Accuracies Area 6]{Average Accuracy for each scene type of Area 6. The Precision
-%         is colored blue, recall is orange and the F1-score is green. }
-% \end{figure}
-
-
-% \begin{figure}[H]
-%     % FIXME normalize times 
-%     \centering
-%     \includegraphics[width=15 cm]{images/area_6_time.png}
-%     \label{fig:area6T}
-%     \caption[Times Area 6]{Average Time per scene type of Area 6}
-% \end{figure}
+This section deals with the results of the experiments. The individual results of both experiments are presented and analized.   
 
 \subsection*{Results S3DIS Experiments}
-Es kristallisiert sich eindeutig heraus, dass RSPD die konsistentesten Ergebnisse hinsichtlich
-Precision, Recall und F1 liefert. Diese werte sind bei OPS auch nicht schlecht, dafür ist die
-berechnungszeit um ein vielfaches langsamer (~30x). 3DKHT liefert von allen Algorithmen die schlechtesten
-Ergebnisse, braucht dafür im Schnitt am wenigsten zeit. Die eigen implementierung von OBRG liefert teils ergebnisse,
-welche mit denen von OPS vergleichbar sind, ist dabei aber noch langsamer. Das liegt zweifelsohne an der wahl der
-programmiersprache, dazu wurde nicht viel zeit in der optimierung investiert.
 
-Statistisch gesehen sind die ergebnisse der offices und hallways am aussagekräftigsten, das liegt daran, dass davon einfach am meisten vorhanden sind.
-% TODO some kind of variance? -> violin plot
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|cccc}
+              & Precision & Recall & F1   & Time(s)  \\ \hline
+        RSPD  & 0.85      & 0.89   & 0.86 & 0.90  \\
+        OPS   & 0.87      & 0.70   & 0.77 & 16.75 \\
+        3DKHT & 0.75      & 0.43   & 0.53 & 0.91  \\
+        OBRG  & 0.77      & 0.69   & 0.72 & 44.66
+    \end{tabular}
+    \caption[Overall S3DIS Results]{Average results of each algorithm over the S3DIS dataset.}
+    \label{tab:algo-acc}
+\end{table}
+
+Every algorithm performs calculations on every scene included in S3DIS.
+The results of each algorithm on an individual scene type are reported in Figure~\ref{fig:stanfordaccuracy} and Figure~\ref{fig:violintime}. As shown in Table~\ref{tab:algo-acc},
+RSPD produces the overall best results with an average of 85\% precision, 89\% recall and an F1-score of 86\%, as well as an average of 0.9 seconds of calculation time.
+The only other algorithm that achieves similar calculation times is 3D-KHT, which takes 0.91 seconds on average. Considering our definition of \textit{real-time} in Section~\ref{sec:realtime}, 
+RSPD and 3D-KHT are able to perform plane detecion in real-time. Still, 3D-KHT produces the worst overall accuracy results with an average precision of 75\%, recall of 43\%, and an F1-score of 53\%.
+
+With an average of about 17 seconds(OPS) and about 44 seconds(OBRG), both algorithms do not achieve real-time plane detection (see Table~\ref{tab:algo-acc}).
 
 
+\begin{figure}[]
+    \centering
+    \includegraphics[width=15 cm]{images/accuracy_total.png}
+    \caption[Accuracy Results S3DIS]{Average Accuracy for each scene type. The Precision
+        is colored blue, recall is orange and the F1-score is green.}
+    \label{fig:stanfordaccuracy}
+\end{figure}
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=15 cm]{images/times_violin.png}
+    \caption[Time Results S3DIS]{Average Time per scene type. Note, that the plots
+        do not share the same y-axis.}
+    \label{fig:violintime}
+\end{figure}
 
 \subsection{Results Real-Life Experiments}
+\textit{So far:}
 
-Hier sind die Ergebnisse des dynamischen experiments.:
-Es zeigt sich dass X besonders gut oder schlecht ebenen finden konnte. Wie man sich schon anhand des statischen tests denken konnte, haben OPS und OBRG zeitlich
-gesehen nicht schlecht abgeschnitten.
+\begin{figure}[]
+    \centering
+    \includegraphics[width=\textwidth]{images/dyn_time-hallway.png}
+    \caption[Time Results Hallway]{Calculation times(blue) of the hallway scene and cloud size(red) of each time step.}
+    \label{fig:dynhallway}
+\end{figure}
+
+The calculation times of all algorithms except OBRG seem to be proportional to the size of the point cloud.
+% TODO similar figure for S3DIS
+The quality of plane detection, however, decraeses dramatically in comparison to the Stanford Datasets. RSPD is the only dataset that 
+is able to detect planes. %(see Figure~\ref{fig:}). 
+
 
 \subsection*{Summary Experiments}
-Überleitung von statisch auf dynamisch, dh. vergleich ohne, bzw. mit temporaler komponente.
+This section combines the preceding results of both experiments.
+RSPD is the only algorithm that produces comparable results to the Stanford experiment in the dynamic experiment.
+The remaining algorithms cannot reliably detect planes in an incrementally growing environment inheriting varying degrees of noise.
+
+The reason for RSPD's dominance is likely caused by the inherent robustness against noise, as described in Section~ 
 
 Die ergebnisse der beiden experimente unterscheiden sich in folgendem punkt. Dazu sei gesagt, dass die experimente folgende übereinstimmungen haben.
 Das lässt sich so erklären. Alternative gründe davon könnten diese hier sein.

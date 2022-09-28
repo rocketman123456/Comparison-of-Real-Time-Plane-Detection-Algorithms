@@ -2,23 +2,19 @@
 \begin{document}
 \chapter{Introduction}\label{chap:Introduction}
 
-Planare Flächen sind in einer Vielzahl von Menschen gemachten Umgebungen zu finden. 
-Sie sind ein zentraler Bestandteil in zahlreichen Anwendungsfällen aus den Bereichen der 
-Augmented und Virtual Reality, sowie der Robotik.
+Man-made environments usually contain planar structures to a large extent.
+They are a central component in numerous use cases in the fields of Augmented and Virtual Reality, as well as robotics.
 
 
 \section{Real-Time Plane Detection}
-\paragraph*{Was ist RTPD}
+\paragraph*{What is Real-Time Plane Detection (RTPD)}
+Some use cases are subject to temporal restriction of some degree. If the temporal constraint is minimal or a task must be executed as quickly as possible, the term \textit{real-time} is often used. 
+In the context of plane detection, real-time performance is often necessary when the subject is in motion. 
+A possible scenario could involve an autonomous robot moving through a building. Here, the process of detecting planar surfaces in the vicinity is necessary as, otherwise, the robot could crash into a nearby wall or Door.
 
-Es gibt anwendungsfälle, welche einer temporalen einschränkung unterliegen. Ist diese temporale einschränkung sehr klein, oder grob gesagt "so schnell wie möglich", 
-wird auch oft von "echtzeit" gesprochen. Im kontext der ebenenfindung kommt oft ein echtzeit anspruch dazu, wenn der anwender sich in bewegung befindet.
-Bewegt sich also ein autonomer roboter durch ein gebäude, ist es wichtig, dass schnell genug alle ebenen im sichtfeld gefunden werden, damit eine kollision mit der wand vermieden wird.
-
-
-\paragraph*{problem an RTPD}
-
-Echtzeit ebenenfindung ist bisher möglich, jedoch teils unter einer dicken paywall verborgen, siehe die
-microsoft hololens. 
+\paragraph*{Problem of RTPD}
+The technology for plane detection in real-time already exists. The Microsoft HoloLens is able to detect planes by processing meshes of the environment. 
+The downside
 Ausserdem ist bisher kein einheitlicher vergleich angestellt worden, daher ist es nicht direkt möglich einen eindeutig besten algorithmen anhand einer literaturrecherche auszuwählen.
 
 
@@ -31,10 +27,10 @@ Dies wird angegangen, indem verschiedene PDA in einer strukturierten literaturre
 
 \section{Structure of this work}
 
-Im folgenden kapitel werden die grundlagen erklärt. Im concept wird das problem etwas genauer definiert,
-sowie der lösungsansatz berichtet. 
-Das darauf folgende kapitel fokussiert sich auf die realisierung des konzepts.
-Im 5. kapitel werden die PDAs verglichen und evaluiert.
-Zu guter letzt werden die ergebnisse und future work präsentiert. 
+
+In the following chapter, the basics are explained. In the concept\ref{chap:Concept}, the problem is defined in more detail and a solution is proposed. 
+The fourth chapter focuses on the implementation details of the previous chapter.
+The proceding chapter deals with the comparison of plane detection algorithms and the evaluation thereof.
+Finally, the results and future work are presented. 
 
 \end{document}

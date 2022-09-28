@@ -41,7 +41,8 @@ To efficiently tackle the previously defined problem, and according to step one 
 
 Numerous cameras suffice for this task, each of which varies in different aspects.
 For this work, we use the Intel RealSense T256 Tracking Camera and the Intel RealSense D455 RGB-D Camera, because of their compatibility,
-since the T256 can be used in combination with any depth camera from the D400 series.
+since the T256 can be used in combination with any depth camera from the D400 series. Furthermore, both cameras can perform all position calculations which
+reduces the load on the hosting device, e.g., laptop or microcontrollers like Raspberry PI's.
 
 Since we are especially interested in the detection of planes in complete environments, it is necessary to be able to build a map out of the data the cameras
 record continuously.
@@ -186,7 +187,7 @@ Finally, we end up with, and thus include, the following plane detection algorit
 \end{itemize}
 
 
-\section{Real-Time}
+\section{Real-Time}\label{sec:realtime}
 To determine whether or not an algorithm runs in real-time, we must first define the meaning of real-time.
 
 We have to consider possible hardware limitations, data flow, and simply

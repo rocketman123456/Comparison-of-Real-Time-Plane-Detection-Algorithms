@@ -3,19 +3,38 @@
 \chapter{Background}\label{chap:Background}
 In this chapter, we will present relevant literature needed to completely understand the proposed concept of \autoref{chap:Concept}.
 
-
-\section{Intel Realsense}
-% TODO datasheet der D455 und T256 hier rein pasten.
-\href{https://www.intelrealsense.com/compare-depth-cameras/}{https://www.intelrealsense.com/compare-depth-cameras/}
-
-
-\subsection*{SLAM}
+\section{SLAM}
 SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics;
 A robot finds itself in an unknown environment and attempts to build a coherent map while keeping track of its location.
-Over decades of research on this particular problem, many different methodologies have been developed, usually regarding the sensors used to aid the robot's navigation.
-Since odometry sensors like rotary encoders that measure the rotation of the robot's wheels are unreliable when it comes to uneven or slippery ground, visual sensors also needed to be involved.
+The robot uses use-case-specific sensors to obtain a snapshot of its current surroundings, which it then uses to update and enhance its known map (Mapping).
+The robot then attempts to accurately estimate its position based on the updated map. The new information about its position is processed during the next map update.
+Over decades of research, varieties of different (combinations of) sensors have been employed to solve this problem more accurately and efficiently.
+Internal odometry sensors alone can be unreliable if the robot moves over uneven or slippery surfaces. For that reason, visual SLAM(V-SLAM) methods like \textit{MonoSLAM}\cite{1238654} or 
+\textit{Dense Visual SLAM}\cite{Kerl_Sturm_Cremers_2013} integrate additional visual input of camera sensors into their algorithm. 
 
-\paragraph*{RTAB-MAP}
+% Diagram?
+
+\section{Intel Realsense}
+In this work, we use the Intel RealSense tracking camera T256 and the RGB-Depth camera D455. An excerpt of the camera 
+specifications can be found in Table~\ref{tab:cameraspecs}.
+Furthermore, both cameras have an integrated Inertial Measurement Unit (IMU) which is used to compute its position in combination with visual input.
+
+Furthermore, Intel provides a software development kit, namely RealSense SDK, which allows easy and efficient use of the cameras.
+The SDK runs on both Windows and Ubuntu, and a ROS adaptation is also provided in Intel's Github repository \footnote{\href{https://github.com/IntelRealSense/realsense-ros}{https://github.com/IntelRealSense/realsense-ros}}. 
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|ccccccc}
+             & Image  & Type     & Resolution & Diag. FOV & Shutter& Price & max. FPS \\ \hline
+        D455 & Stereo & RGB-D    & 1280x720   & 111°      & global & 419\$ & 90       \\ \hline
+        T265 & Stereo & Tracking & 848 x 800  & 163°      & global & 199\$ & 30
+    \end{tabular}
+    \caption[Intel RealSense T256 & D455 Specification]{Intel RealSense T256 and D455 camera specifications. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
+    \label{tab:cameraspecs}
+\end{table}
+
+
+\subsection*{RTAB-MAP}
 RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
 Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors, as well as an optional additional input in form of two- or three-dimensional
 lidar scan.
@@ -44,7 +63,7 @@ The field of plane detection has been around for decades. Most methods of detect
 
 \subsection*{Hough Transform}
 The original motivation behind the Hough transform was detecting lines in images or 4. All points are sequentially processed via a voting procedure to detect the best fitting line over a set of 2d points.
-Multiple lines with different orientations are fit through each given point $p$. 
+Multiple lines with different orientations are fit through each given point $p$.
 Because a line in slope-intercept form parallel to the y-axis would lead to an infinite slope, the Hesse normal form is chosen as the primary line representation.
 In Hesse normal form, an individual line can be parameterized with a pair $(r, \theta)$, with $r$  being the orthogonal distance origin to the plane and $\theta$ being the angle between the x-axis and the line that connects the origin to the closest point on the line.
 This pair is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding value of $\theta$, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
@@ -56,7 +75,7 @@ RANSAC (RAndom SAmple Consensus) has been researched for decades. While many use
 RANSAC is an iterative process. Each iteration randomly samples a certain amount of data points and fits a mathematical model through them. The level of outliers determines the quality of the obtained model and preserves the best overall model.
 
 Within the context of plane detection in 3D point clouds, an approach could involve random sampling of 3 points, fitting a plane through them,
- and counting the number of points within a certain range of the plane\cite{Yang_Forstner}. The model, in that case, could be a cartesian plane equation. This 
+and counting the number of points within a certain range of the plane\cite{Yang_Forstner}. The model, in that case, could be a cartesian plane equation. This
 
 \subsection*{Region Growing}
 Region Growing methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}.
@@ -66,7 +85,7 @@ The quality of the resulting regions depends on the choice of seed points, e.g.,
 In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
 
 \section{Plane Detection Algorithms}
-This section describes four algorithms that are used for the evaluation during this work. 
+This section describes four algorithms that are used for the evaluation during this work.
 
 \subsection{RSPD}
 RSPD (Robust Statistics approach for Plane Detection \cite{Araújo_Oliveira_2020}) is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases;
@@ -110,11 +129,11 @@ This process is repeated until the number of remaining points falls below a pred
 
 \subsection{3D-KHT}\label{sub:3dkht}
 \citeauthor{Limberger_Oliveira_2015} propose a hough transform-based plane detection method, which accepts unorganized point clouds as input \cite{Limberger_Oliveira_2015}.
-The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in creation and manipulation. 
+The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in creation and manipulation.
 Furthermore, the octree succeeds in capturing the shapes inside the point cloud, while the k-d tree does not.
 
-Each leaf inside the octree continues subdividing until the points inside a leaf node are considered approximately coplanar, or the number of points is less than a predefined threshold. 
-The authors recommend this threshold to value 30 for large point clouds. 
+Each leaf inside the octree continues subdividing until the points inside a leaf node are considered approximately coplanar, or the number of points is less than a predefined threshold.
+The authors recommend this threshold to value 30 for large point clouds.
 After the approximately coplanar nodes are refined by removing outliers, a plane is fit through the remaining points.
 
 This plane $\pi$ can, in polar coordinates, be uniquely described by a triple $(\rho, \theta, \phi)$, with $\rho$ being the orthogonal distance from the origin to the plane, $\theta$ being the azimuthal angle, and $\phi$ being the inclination.
@@ -139,23 +158,23 @@ contain fewer normal vectors) in three-dimensional accumulator arrays, as portra
         \label{fig:accball}
     \end{subfigure}
     \hspace{\fill}
-    \caption[Hough Transform Accumulators]{Accumulator array (a), taken from \cite*[Figure~3]{Borrmann_Elseberg_Lingemann_Nüchter_2011}. Accumulator 
-    ball(b) used in 3D-KHT, taken from \cite*[Figure~5]{Limberger_Oliveira_2015}.}
+    \caption[Hough Transform Accumulators]{Accumulator array (a), taken from \cite*[Figure~3]{Borrmann_Elseberg_Lingemann_Nüchter_2011}. Accumulator
+        ball(b) used in 3D-KHT, taken from \cite*[Figure~5]{Limberger_Oliveira_2015}.}
 \end{figure}
 
 During the voting procedure, votes are not cast for each data point but rather on previously calculated approximately coplanar clusters.
 When casting a vote on a given cluster $c_i$ with its plane (represented by $(\rho, \theta, \phi)$), the corresponding entry in the accumulator ball is updated.
-With this update, its neighboring clusters also receive a vote determined by the uncertainty value of $c_i$. Due to the non-discrete 
+With this update, its neighboring clusters also receive a vote determined by the uncertainty value of $c_i$. Due to the non-discrete
 values of uncertainty, the votes are floating-point values as well.
 
 All Peaks within the accumulator ball are detected in the last step. Because the votes tend to be sparsely distributed \cite[Section~3.4]{Limberger_Oliveira_2015},
-an auxiliary array $A$ is used to memorize the entries inside the accumulator that are set. When an accumulator index is assigned a value for the first time, it is also added to $A$. 
+an auxiliary array $A$ is used to memorize the entries inside the accumulator that are set. When an accumulator index is assigned a value for the first time, it is also added to $A$.
 Therefore, it is only necessary to iterate the auxiliary array to find peaks inside the accumulator.
 Furthermore, an intermediary smoothing step is performed by merging adjacent peaks inside the accumulator and storing them in $A$.
 Then, $A$ is sorted in descending order.
-If a cell $c$ in the accumulator has not yet been visited during iteration, $c$ is considered a peak. In addition, $c$ and its 26 neighboring cells are tagged as \textit{visited}. 
+If a cell $c$ in the accumulator has not yet been visited during iteration, $c$ is considered a peak. In addition, $c$ and its 26 neighboring cells are tagged as \textit{visited}.
 That way, the most dominant plane, i.e., the one with the most votes, is detected first.
-Finally, the detected planes are sorted by the number of different clusters that voted for them. 
+Finally, the detected planes are sorted by the number of different clusters that voted for them.
 
 \subsection{OBRG} \label{sec:bg-obrg}
 OBRG (Octree-Based Region Growing \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}) is also a method that employs region growing.
