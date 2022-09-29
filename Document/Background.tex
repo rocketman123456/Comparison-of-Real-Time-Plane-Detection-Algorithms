@@ -62,9 +62,10 @@ The field of plane detection has been around for decades. Most methods of detect
 \end{itemize}
 
 \subsection*{Hough Transform}
-The original motivation behind the Hough transform was detecting lines in images or 4. All points are sequentially processed via a voting procedure to detect the best fitting line over a set of 2d points.
+The original motivation behind the Hough transform was detecting lines in images\cite{osti_4746348}. All points are sequentially processed via a voting procedure to detect the best fitting line over a set of 2d points.
 Multiple lines with different orientations are fit through each given point $p$.
-Because a line in slope-intercept form parallel to the y-axis would lead to an infinite slope, the Hesse normal form is chosen as the primary line representation.
+Because a line in slope-intercept form parallel to the y-axis would lead to an infinite slope, the Hesse normal form is chosen as the primary line representation\cite{10.1145/361237.361242}.
+
 In Hesse normal form, an individual line can be parameterized with a pair $(r, \theta)$, with $r$  being the orthogonal distance origin to the plane and $\theta$ being the angle between the x-axis and the line that connects the origin to the closest point on the line.
 This pair is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding value of $\theta$, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
 votes to each $\theta$ is called an \textit{accumulator}.

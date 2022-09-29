@@ -5,15 +5,18 @@
 \chapter{Concept} \label{chap:Concept}
 
 
-\begin{figure}[!ht]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=15 cm]{images/concept.png}
-    \caption[Concept Graphic]{A camera records an environment. The recorded data is either preprocessed, or passed directly to the plane detection algorithm.
-        The resulting planes are subsequently exported to an arbitrary application.}
-    \label{fig:concept}
+    \includegraphics[width=15 cm]{images/concept_specific.png}
+    \caption[Concrete Concept Graphic]{The concrete procedure of the plane detection process. The Intel RealSense Cameras, T256 and D455, record data ([1]), which is passed to
+        RTAB-MAP ([2]). After map assembly, an unorganized point cloud is handed to a plane detection algorithm ([3]).
+        The detected planes are given to a use-case-specific application ([4]).}
+    \label{fig:concept_spec}
 \end{figure}
 
-
+% FIXME direkt die spezifische nehmen und im folgenden erklären wie ich dazu komme
+% FIXME ebenen zurück in die scene / transformation / tracking oder so 
+% FIXME formale korrektheit der grafik: 
 % \section{Scenario / UseCase}
 
 Within a given use case or scenario that involves the detection of planes, the user records the surroundings with a camera. The raw data is then either
@@ -58,20 +61,15 @@ algorithms in this work.
 
 We can further specify Figure~\ref{fig:concept} by inserting the aforementioned technology as follows:
 
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=15 cm]{images/concept_specific.png}
-    \caption[Concrete Concept Graphic]{The concrete procedure of the plane detection process. The Intel RealSense Cameras, T256 and D455, record data ([1]), which is passed to 
-    RTAB-MAP ([2]). After map assembly, an unorganized point cloud is handed to a plane detection algorithm ([3]). 
-    The detected planes are given to a use-case-specific application ([4]).}
-    \label{fig:concept_spec}
-\end{figure}
 
-\section{Selection Plane Detection Algorithms}
-Naturally, appropriate algorithms are needed to perform real-time plane detection.
-First, we define meaningful criteria to select plane detection algorithms. Then, we use these criteria to select appropriate algorithms from the list of algorithms.
+\section{Selection of Plane Detection Algorithms}\label{sec:pdaselection}
+Naturally, appropriate algorithms are needed to perform real-time plane detection. First, we define meaningful criteria to 
+allow objective comparison of plane detection algorithms.  
 
-\subsection*{Type of Input}
+\subsection{Criteria}
+
+% \subsection{Type of Input}
+\paragraph{Type of Input}\label{par:input}
 Usually, the data representation of the recorded environment passed to the plane detection algorithm falls under one of three categories:
 \begin{itemize}
     \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
@@ -84,7 +82,8 @@ In addition, only the unorganized/unstructured point clouds offer a complete vie
 % NOTE kommt später: Therefore, we disregard all algorithms which do not expect an unorganized point cloud as input.
 
 
-\subsection*{Detected Plane Format} \label{subsec:planeformat}
+% \subsection{Detected Plane Format} \label{subsec:planeformat}
+\paragraph{Detected Plane Format} \label{subsec:planeformat}
 Which specific representation the detected planes take the form of is also essential.
 If no uniform output type can be determined, consequently, no uniform metric for comparison can also be found.
 Since the algorithms process point clouds, we choose to stay within the realm of points, i.e., an arbitrary plane should be
@@ -96,27 +95,37 @@ It also allows further filtering of planes based on a density value that we can 
 box and the number of points, e.g., removing planes with a density lower than a certain threshold.
 
 
-\subsection*{Learning based}\label{subsec_learning_based}
-Learning-based methods, e.g. Deep learning, generally have varying levels of bias, depending on the training data. 
+% \subsection{Learning based}\label{subsec_learning_based}
+\paragraph{Learning based}\label{subsec_learning_based}
+% FIXME erklären was learning based methods machen, unterschieden zu non-learning based!!
+Learning-based methods, e.g. Deep learning, generally have varying levels of bias, depending on the training data.
 Another reason against the use of learning-based methods is that we choose not to require a GPU to replicate our findings.
-% FIXME  kann ich das so sagen? -> we choose not to require a GPU to replicate our findings.
+%  FIXME Gründe dagegen in selection schieben !!
 
-\subsection*{Availability}
+% \subsection{Availability}
+\paragraph{Availability}
+% FIXME Gründe und erklärung! zb, müssen alle auf dem selben system laufen, keine patente oä, das wissen dahinter ist frei zugänglich 
+%  sodass man die im zweifel zumindest selber implementieren könnte
 Lastly, we include the availability of an algorithm in our set of criteria.
 Each algorithm to be compared needs to run on the same system to exclude the underlying hardware as a factor from any experiments.\\
 
-\section{Algorithms}
-\subsection*{RSPD - Robust Statistics Approach for Plane Detection}
+\subsection{Plane Detection Algorithms}
+Diese section befässt sich mit der auswahl der plane detection algorithmen. Eine umfassende Literaturrecherche des Gebiets der plane detection 
+ergibt eine Liste (vgl. Table~\ref{tab:algos}) von algorithmen. Diese werden hier zunächst in dedizierten paragraphen umrissen. 
+Im folgenden werden aus dieser Liste, basierend auf den zuvor ausgewählten kriterien, algorithmen für den weiteren Verlauf dieser Arbeit ausgewählt.
+
+
+\paragraph{RSPD - Robust Statistics Approach for Plane Detection}
 RSPD expects an unorganized point cloud as input. The detected planes are written to file as either a list of inliers or
 represented by a center point, a normal vector and UV extents of the plane.
-As explained above \ref{subsec:planeformat}, we select the inliers as the primary plane representation. 
+As explained above \ref{subsec:planeformat}, we select the inliers as the primary plane representation.
 
-\subsection*{OPS - Oriented Point Sampling}
-OPS also takes an unorganized point cloud as input. Like RSPD, the default representation of a detected plane is 
+\paragraph{OPS - Oriented Point Sampling}
+OPS also takes an unorganized point cloud as input. Like RSPD, the default representation of a detected plane is
 a tuple of normals vector and center coordinate, while also reporting the orientation.
-without affecting the algorithm, we modify the output format to instead include the inliers. 
+without affecting the algorithm, we modify the output format to instead include the inliers.
 
-\subsection*{3DKHT - 3-D Kernel-based Hough Transform}
+\paragraph{3DKHT - 3-D Kernel-based Hough Transform}
 With 3D-KHT, as with other octree-based methods, the performance depends, to some degree, on the level of subdivision.
 In the provided implementation, the octree keeps dividing until either the number of points in the current node is lower than a set minimum, or the
 level of an octree node is higher than a predefined maximum.
@@ -125,7 +134,7 @@ A total of six different presets of parameters are included with the official im
 Since this work does not focus on the evaluation and analysis of a single method, we performed experiments with all presets on Area 3 of the S3DIS\cite{armeni_cvpr16} dataset, the
 results thereof can be seen in Figure ~\ref{fig:3dkht_params}
 The two leftmost values for the maximum octree subdivision seem to yield the best results compared to the other values.
-Because we expect a greater subdivision level to yield better results on scenes of larger dimensions, we choose to perform 
+Because we expect a greater subdivision level to yield better results on scenes of larger dimensions, we choose to perform
 all further experiments with an octree subdivision value of two.
 
 \textcolor{red}{irgendwas ergibt hier keinen sinn. zumindest passt meine erklärung nicht ganz zu der grafik}
@@ -138,34 +147,40 @@ all further experiments with an octree subdivision value of two.
 \end{figure}
 
 
-\subsection*{OBRG - Octree-based Region Growing}
-\subsection*{PEAC - Probabilistic Agglomerative Hierarchical Clustering}
+\paragraph{OBRG - Octree-based Region Growing}
+\paragraph{PEAC - Probabilistic Agglomerative Hierarchical Clustering}
+\paragraph{CAPE - Fast Cylinder and Plane Extraction}
+\paragraph{SCH-RG - Plane Extraction using Spherical Convex Hulls}
+\paragraph{D-KHT - Hough Transform for Real-Time Plane Detection}
+\paragraph{DDFF - Depth Dependent Flood Fill}
+\paragraph{PlaneNet}
+\paragraph{PlaneRecNet}
+\paragraph{PlaneRCNN}
 
-\subsection{Summary: Plane Detection Algorithms}
 
-\begin{table}[!ht]
+\subsection{Conclusion: Plane Detection Algorithms}
+\begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|c|c}
         \hline
-                                                                         & \textbf{Input Data} & \textbf{Plane format}                 & \textbf{Learning-Based} & \textbf{Availability} \\ \hline
-        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers                               & N                       & Y                     \\ \hline
-        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers                               & N                       & Y                     \\ \hline
-        \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers                               & N                       & Y                     \\ \hline
-        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers                        & N                       & N                     \\ \hline
-        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers                               & N                       & Y                     \\ \hline
-        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & normal, d                             & N                       & Y                     \\ \hline
-        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers?                              & N                       & N                     \\ \hline
-        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers                               & N                       & Y                     \\ \hline
-        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & \textcolor{red}{indices}              & N                       & Y                     \\ \hline
-        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & normal, d & Y                       & Y                     \\ \hline
-        \textbf{PLaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & I                   & ? / -                                 & Y                       & Y                     \\ \hline
-        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & normal + ?                            & N                       & Y                     \\ \hline
+                                                                         & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Learning-Based} & \textbf{Availability} \\ \hline
+        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               & N                       & Y                     \\ \hline
+        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               & N                       & Y                     \\ \hline
+        \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers               & N                       & Y                     \\ \hline
+        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               & N                       & N                     \\ \hline
+        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               & N                       & Y                     \\ \hline
+        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & normal, d             & N                       & Y                     \\ \hline
+        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers?              & N                       & N                     \\ \hline
+        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               & N                       & Y                     \\ \hline
+        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & N                       & Y                     \\ \hline
+        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & normal, d             & Y                       & Y                     \\ \hline
+        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & I                   & ? / -                 & Y                       & Y                     \\ \hline
+        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & normal + ?            & N                       & Y                     \\ \hline
     \end{tabular}
     \caption{Plane Detection Algorithms}
-    \label{tab:my-table}
+    \label{tab:algos}
 \end{table}
 
-\subsection*{Summary Plane Detection Algorithms}
 To effectively compare the presented algorithms, the data on which each algorithm performs the plane detection should ideally be the same.
 Considering algorithms that run on anything other than UPC, would necessitate finding a data set that includes equivalent point clouds for both the structured and the unstructured case.
 Since these algorithms would disregard the global structure of the point cloud, we deem them not feasible for our use case and thus exclude them from our evaluation.
@@ -187,7 +202,7 @@ Finally, we end up with, and thus include, the following plane detection algorit
 \end{itemize}
 
 
-\section{Real-Time}\label{sec:realtime}
+\section{Definition Real-Time}\label{sec:realtime}
 To determine whether or not an algorithm runs in real-time, we must first define the meaning of real-time.
 
 We have to consider possible hardware limitations, data flow, and simply

@@ -14,7 +14,7 @@ Because each publication from the presented algorithms uses a different data set
 Furthermore, to the best of our knowledge, there is no data set, that contains an incrementally growing and unordered point cloud with corresponding ground truth.
 
 Thus, we first evaluate the algorithms on a dataset while excluding the temporal component. We do this by performing plane detection on whole point clouds, rather than
-incrementally growing ones.
+incrementally growing ones. 
 
 We then perform experiments, this time including the temporal component, by performing calculations at each time step and evaluating them individually.
 
@@ -50,17 +50,39 @@ Aside from the accuracy, we also need to compare the time each algorithm needs t
 For that, we measure the time spent in the plane detection phase, excluding any preprocessing or postprocessing steps.
 To measure the detection time, we log the exact times before and after calculations and write the difference to a file.\\
 
-
 \subsection{Dataset}
-We select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A} to evaluate each plane detection algorithm on even grounds.
+To evenly compare algorithms, an appropriate dataset is needed. Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}). 
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|cccc}
+        Dataset                                                                                                          & Input Format & Real & Indoor & GT         \\ \hline
+        SegComp      \cite{article}                                                                                      & DI  & N    & /      & planes     \\
+        S3DIS   \cite{armeni_cvpr16}                                                                                     & UPC    & Y    & Y      & objects    \\
+        NYU V2  \cite{10.1007/978-3-642-33715-4_54}                                                                      & DI  & Y    & Y      & classes    \\
+        Kinect  \cite{Oehler_efficientmulti-resolution}                                                                  & OPC    & Y    & Y      & planes     \\
+        ICL-NUIM       \cite{handa:etal:ICRA2014}                                                                        & DI  & Y    & Y      & trajectory \\
+        SYNBEP         \cite{schaefer19icra}                                                                             & OPC    & N    & /      & planes     \\
+        ARCO          \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                           & OPC    & Y    & Y      & /          \\
+        SUN                    \cite{7298655}                                                                            & DI  & Y    & Y      & objects    \\
+        Leica          \cite{leica}   & UPC    & Y    & N      & planes     \\
+        TUM              \cite{sturm12iros}                                                                              & DI  & Y    & Y      & trajectory
+    \end{tabular}
+    \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.}
+    \label{tab:datasets}
+\end{table}
+
+In Section~\ref{sec:pdaselection}, we select unorganized point clouds (UPC) as input for the selected algorithms. Furthermore, this work focuses on real, indoor environments.
+Additionally, a ground truth is necessary for the evaluation.
+We select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A} from the list of datasets to evaluate each plane detection algorithm on even grounds.
+Since our focus is not on 3D semantic segmentation and the provided ground truth is focused on semantic segmentation rather than planes, we manually select planar regions using CloudCompare\footnote{\href{https://cloudcompare.org/}{https://cloudcompare.org/}}.
 S3DIS was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
 An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
-Since our focus is not on 3D semantic segmentation, we manually select planar regions using CloudCompare\footnote{\href{https://cloudcompare.org/}{https://cloudcompare.org/}} to obtain a list of sub-clouds.
 
 Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the data set nevertheless reflects a realistic distribution of scene types since
 it is not realistic that a building contains only lecture halls. On the other hand, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all these offices.
 
-\begin{table}[!ht]
+\begin{table}[H]
     \centering
     \begin{tabular}{c|c|c|c|c|c|c|c}
         \hline
@@ -92,8 +114,10 @@ To perform a thorough comparison between the static and the dynamic experiment, 
     \item hallway
 \end{itemize}
 
-We disregard scene types where the number of occurrences in S3DIS is negligible(see Table~\ref{tab:stanfordStats}).
-Furthermore, we do not create a recording for the storage type because the spatial extents are too small to introduce a temporal component effectively.
+\textcolor{red}{why only them right}
+
+The recorded point clouds can be seen in Figure~\ref{fig:fin}.
+
 
 Running \textit{realsense-ros} and holding our cameras, we walk through different parts of the building, scanning to the best of our ability.
 We save each incremental map update to a file for later usage.
@@ -124,6 +148,7 @@ We save each incremental map update to a file for later usage.
         \label{fig:finhw}
     \end{subfigure}
     \caption[Dynamic Datasets]{The recordings for each scene type: (a)auditorium, (b) conference room, (c) office and (d) hallway.}
+    \label{fig:fin}
 \end{figure}
 
 
@@ -143,17 +168,17 @@ Furthermore, we remove planes from the ground truth if the number of included po
 \end{figure}
 
 \section{Results}
-This section deals with the results of the experiments. The individual results of both experiments are presented and analized.   
+This section deals with the results of the experiments. The individual results of both experiments are presented and analized.
 
-\subsection*{Results S3DIS Experiments}
+\subsection{Results S3DIS Experiments}
 
 \begin{table}[H]
     \centering
     \begin{tabular}{c|cccc}
-              & Precision & Recall & F1   & Time(s)  \\ \hline
-        RSPD  & 0.85      & 0.89   & 0.86 & 0.90  \\
-        OPS   & 0.87      & 0.70   & 0.77 & 16.75 \\
-        3DKHT & 0.75      & 0.43   & 0.53 & 0.91  \\
+              & Precision & Recall & F1   & Time(s) \\ \hline
+        RSPD  & 0.85      & 0.89   & 0.86 & 0.90    \\
+        OPS   & 0.87      & 0.70   & 0.77 & 16.75   \\
+        3DKHT & 0.75      & 0.43   & 0.53 & 0.91    \\
         OBRG  & 0.77      & 0.69   & 0.72 & 44.66
     \end{tabular}
     \caption[Overall S3DIS Results]{Average results of each algorithm over the S3DIS dataset.}
@@ -163,7 +188,7 @@ This section deals with the results of the experiments. The individual results o
 Every algorithm performs calculations on every scene included in S3DIS.
 The results of each algorithm on an individual scene type are reported in Figure~\ref{fig:stanfordaccuracy} and Figure~\ref{fig:violintime}. As shown in Table~\ref{tab:algo-acc},
 RSPD produces the overall best results with an average of 85\% precision, 89\% recall and an F1-score of 86\%, as well as an average of 0.9 seconds of calculation time.
-The only other algorithm that achieves similar calculation times is 3D-KHT, which takes 0.91 seconds on average. Considering our definition of \textit{real-time} in Section~\ref{sec:realtime}, 
+The only other algorithm that achieves similar calculation times is 3D-KHT, which takes 0.91 seconds on average. Considering our definition of \textit{real-time} in Section~\ref{sec:realtime},
 RSPD and 3D-KHT are able to perform plane detecion in real-time. Still, 3D-KHT produces the worst overall accuracy results with an average precision of 75\%, recall of 43\%, and an F1-score of 53\%.
 
 With an average of about 17 seconds(OPS) and about 44 seconds(OBRG), both algorithms do not achieve real-time plane detection (see Table~\ref{tab:algo-acc}).
@@ -197,7 +222,7 @@ With an average of about 17 seconds(OPS) and about 44 seconds(OBRG), both algori
 
 The calculation times of all algorithms except OBRG seem to be proportional to the size of the point cloud.
 % TODO similar figure for S3DIS
-The quality of plane detection, however, decraeses dramatically in comparison to the Stanford Datasets. RSPD is the only dataset that 
+The quality of plane detection, however, decraeses dramatically in comparison to the Stanford Datasets. RSPD is the only dataset that
 is able to detect planes. %(see Figure~\ref{fig:}). 
 
 
@@ -206,7 +231,7 @@ This section combines the preceding results of both experiments.
 RSPD is the only algorithm that produces comparable results to the Stanford experiment in the dynamic experiment.
 The remaining algorithms cannot reliably detect planes in an incrementally growing environment inheriting varying degrees of noise.
 
-The reason for RSPD's dominance is likely caused by the inherent robustness against noise, as described in Section~ 
+The reason for RSPD's dominance is likely caused by the inherent robustness against noise, as described in Section~
 
 Die ergebnisse der beiden experimente unterscheiden sich in folgendem punkt. Dazu sei gesagt, dass die experimente folgende übereinstimmungen haben.
 Das lässt sich so erklären. Alternative gründe davon könnten diese hier sein.

@@ -536,3 +536,133 @@
   pages     = {1403-1410 vol.2},
   doi       = {10.1109/ICCV.2003.1238654}
 }
+
+@article{10.1145/361237.361242,
+  author     = {Duda, Richard O. and Hart, Peter E.},
+  title      = {Use of the Hough Transformation to Detect Lines and Curves in Pictures},
+  year       = {1972},
+  issue_date = {Jan. 1972},
+  publisher  = {Association for Computing Machinery},
+  address    = {New York, NY, USA},
+  volume     = {15},
+  number     = {1},
+  issn       = {0001-0782},
+  url        = {https://doi.org/10.1145/361237.361242},
+  doi        = {10.1145/361237.361242},
+  abstract   = {Hough has proposed an interesting and computationally efficient procedure for detecting lines in pictures. This paper points out that the use of angle-radius rather than slope-intercept parameters simplifies the computation further. It also shows how the method can be used for more general curve fitting, and gives alternative interpretations that explain the source of its efficiency.},
+  journal    = {Commun. ACM},
+  month      = {jan},
+  pages      = {11–15},
+  numpages   = {5},
+  keywords   = {curve detection, line detection, pattern recognition, Hough transformation, picture processing, point-line transformation, colinear points}
+}
+
+ @article{osti_4746348,
+  title        = {METHOD AND MEANS FOR RECOGNIZING COMPLEX PATTERNS},
+  author       = {Hough, P V.C.},
+  abstractnote = {This patent relates to a method and means for recognizing a complex pattern in a picture. The picture is divided into framelets, each framelet being sized so that any segment of the complex pattern therewithin is essentially a straight line. Each framelet is scanned to produce an electrical pulse for each point scanned on the segment therewithin. Each of the electrical pulses of each segment is then transformed into a separate strnight line to form a plane transform in a pictorial display. Each line in the plane transform of a segment is positioned laterally so that a point on the line midway between the top and the bottom of the pictorial display occurs at a distance from the left edge of the pictorial display equal to the distance of the generating point in the segment from the left edge of the framelet. Each line in the plane transform of a segment is inclined in the pictorial display at an angle to the vertical whose tangent is proportional to the vertical displacement of the generating point in the segment from the center of the framelet. The coordinate position of the point of intersection of the lines in the pictorial display for each segment is determined and recorded. The sum total of said recorded coordinate positions being representative of the complex pattern. (AEC)},
+  doi          = {},
+  journal      = {},
+  number       = {},
+  volume       = {},
+  place        = {United States},
+  year         = {1962},
+  month        = {12}
+} 
+
+@inproceedings{schaefer19icra,
+  author       = {Alexander Schaefer and Johan Vertens and Daniel B{\"u}scher and Wolfram Burgard},
+  booktitle    = {2019 IEEE/RSJ International Conference on Robotics and Automation (ICRA)},
+  title        = {A Maximum Likelihood Approach to Extract Finite Planes from 3-{D} Laser Scans},
+  year         = {2019},
+  month        = {May},
+  organization = {IEEE},
+  url          = {http://ais.informatik.uni-freiburg.de/publications/papers/schaefer19icra.pdf}
+}
+
+@inproceedings{10.1007/978-3-642-33715-4_54,
+  author    = {Silberman, Nathan
+               and Hoiem, Derek
+               and Kohli, Pushmeet
+               and Fergus, Rob},
+  editor    = {Fitzgibbon, Andrew
+               and Lazebnik, Svetlana
+               and Perona, Pietro
+               and Sato, Yoichi
+               and Schmid, Cordelia},
+  title     = {Indoor Segmentation and Support Inference from RGBD Images},
+  booktitle = {Computer Vision -- ECCV 2012},
+  year      = {2012},
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  pages     = {746--760},
+  abstract  = {We present an approach to interpret the major surfaces, objects, and support relations of an indoor scene from an RGBD image. Most existing work ignores physical interactions or is applied only to tidy rooms and hallways. Our goal is to parse typical, often messy, indoor scenes into floor, walls, supporting surfaces, and object regions, and to recover support relationships. One of our main interests is to better understand how 3D cues can best inform a structured 3D interpretation. We also contribute a novel integer programming formulation to infer physical support relations. We offer a new dataset of 1449 RGBD images, capturing 464 diverse indoor scenes, with detailed annotations. Our experiments demonstrate our ability to infer support relations in complex scenes and verify that our 3D scene cues and inferred support lead to better object segmentation.},
+  isbn      = {978-3-642-33715-4}
+}
+
+@misc{Oehler_efficientmulti-resolution,
+  author = {Bastian Oehler and Joerg Stueckler and Jochen Welle and Dirk Schulz and Sven Behnke},
+  title  = {Efficient Multi-Resolution Plane Segmentation of 3D Point Clouds},
+  year   = {}
+}
+@inproceedings{handa:etal:ICRA2014,
+  author    = {A. Handa and T. Whelan and J.B. McDonald and A.J. Davison},
+  title     = {A Benchmark for {RGB-D} Visual Odometry, {3D} Reconstruction and {SLAM}},
+  booktitle = {IEEE Intl. Conf. on Robotics and Automation, ICRA},
+  address   = {Hong Kong, China},
+  month     = {May},
+  year      = {2014}
+}
+@article{article,
+  author  = {Hoover, Adam and Jean-Baptiste, Gillian and Flynn, Patrick and Bunke, Horst and Goldgof, Dmitry and Bowyer, Kevin and Eggert, David and Fitzgibbon, Andrew and Fisher, Robert},
+  year    = {1996},
+  month   = {07},
+  pages   = {673-689},
+  title   = {An Experimental Comparison of Range Image Segmentation Algorithms},
+  volume  = {18},
+  journal = {IEEE Trans. Pattern Anal. Mach. Intell.},
+  doi     = {10.1109/34.506791}
+}
+
+ @article{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015,
+  title        = {A Comparative Study of Parallel RANSAC Implementations in 3D Space},
+  volume       = {43},
+  issn         = {0885-7458, 1573-7640},
+  doi          = {10.1007/s10766-014-0316-7},
+  abstractnote = {RANSAC (RAndom SAmple Consensus) is an iterative method for estimating the parameters of a certain mathematical model from a set of data which may contain a large number of outliers (noisy points). The main problem of the RANSAC algorithm is that it is too expensive in terms of execution time when real-time processing is needed (30 fps). In view of the importance of this algorithm and the rise of parallelism-based technologies, we analyze and compare in this work various parallel implementations based on different techniques (OpenMP, POSIX Threads, and CUDA). To the best of our knowledge, no other articles have attempted a similar study. In order to make this ﬁrst study, we have used some standard metrics in parallelism (Runtime and Speedup) and some speciﬁc metrics used in evaluating search strategies (Precision, Recall, and F-Score). Furthermore, the experiments have been executed in different hardware alternatives in order to present a more complete study. The conclusions of our study show the advantages and disadvantages of the different parallel implementations.},
+  number       = {5},
+  journal      = {International Journal of Parallel Programming},
+  author       = {Hidalgo-Paniagua, Alejandro and Vega-Rodríguez, Miguel A. and Pavón, Nieves and Ferruz, Joaquín},
+  year         = {2015},
+  month        = {Oct},
+  pages        = {703–720},
+  language     = {en}
+}
+
+@inproceedings{7298655,
+  author    = {Song, Shuran and Lichtenberg, Samuel P. and Xiao, Jianxiong},
+  booktitle = {2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  title     = {SUN RGB-D: A RGB-D scene understanding benchmark suite},
+  year      = {2015},
+  volume    = {},
+  number    = {},
+  pages     = {567-576},
+  doi       = {10.1109/CVPR.2015.7298655}
+}
+
+@inproceedings{sturm12iros,
+  author    = {J. Sturm and N. Engelhard and F. Endres and W. Burgard and D. Cremers},
+  title     = {A Benchmark for the Evaluation of RGB-D SLAM Systems},
+  booktitle = {Proc. of the International Conference on Intelligent Robot Systems (IROS)},
+  year      = {2012},
+  month     = {Oct.}
+}
+
+@misc{leica,
+  author       = {},
+  howpublished = {},
+  title        = {},
+  year         = {},
+  url = {https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads},
+  urldate      = {29.9.2022},
+}

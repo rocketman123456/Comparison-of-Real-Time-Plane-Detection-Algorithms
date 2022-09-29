@@ -50,24 +50,24 @@ If that number supersedes the proposed 70\%-90\%, depending on the expected nois
 It is worth noting that the choice of implementation using python is inferior considering calculation time when compared with an equivalent implementation in C++. Writing an optimized implementation in C++ would, therefore, go beyond the scope of this work, as the optimization of
 a single method is not our focus. 
 
-\section{Dataset / Ground Truth}
+\section{Ground Truth Segmentation}
 
 Since the selected data set focuses on semantic segmentation rather than detection of planar regions, we manually create a ground truth.
 We use the open-source 3D point cloud and mesh processing software CloudCompare.
-Since we cannot assume all walls to be planar or that, e.g., the tops or three adjacent tables always form the same number of planes (see Figure~\ref{fig:tables}), we 
+Because we cannot assume all walls to be planar or that, e.g., the tops or three adjacent tables always form the same number of planes (see Figure~\ref{fig:tables}), we 
 have to view each point cloud and segment the included planes manually.
 
 This process is very time-consuming, and to slightly reduce the time spent, we perform an initial analysis of all scenes within a 
 given area and omit scenes that seem to inherit no noticeable differences.
 
-% FIXME Zeit?
 
-\begin{figure} [!ht]
+
+\begin{figure} [H]
 	\centering
-	\includegraphics[width=10 cm]{images/tables.png}
-	\label{fig:tables}
+	\includegraphics[width=0.5\textwidth]{images/tables.png}
     \caption[Ground Truth Table Example]{The given ground truth considers these tables to be three distinct objects. Within the context of 
     plane detection, the three table tops would form exactly one plane.}
+	\label{fig:tables}
 \end{figure}
 
 
