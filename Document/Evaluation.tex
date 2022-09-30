@@ -5,24 +5,36 @@
 
 In diesem kapitel werden zuvor ausgewählte algorithmen einheitlich verglichen und die resultierenden ergebnisse ausgewertet.
 
-\section{Evaluation Protocol}
+\section{Protocol}
 
-To determine the feasibility of performing real-time plane detection, we need to conduct experiments with the selected algorithms.
+% To determine the feasibility of performing real-time plane detection on relatively inexpensive hardware, we need to conduct experiments with the selected algorithms.
+\begin{itemize}
+    \item wie im konzept gesagt vergleichen wir algorithmen um \$FRAGE zu beantworten
+    \item zunächst definieren wir, wie und woran wir die performanz der algos vergleichen
+    \item da die algos verschiedene datensätze nutzen sind sie nicht direkt vergleichbar
+    \item daher führen wir einheitliche vergleiche durch
+    \item es gibt keinen passenden dynamischen datensatz (inkr. aufbau + punktwolke+ GT) daher machen wir zwei experimente:
+    \begin{itemize}
+        \item statisch: direkt ganze wolke da
+        \item dynamisch: inkrementell aufbauend
+    \end{itemize}
+    \item schlussendlich werden wir die resultate beider experimente vergleichen und hinsichtlich der \$FRAGE auswerten
+\end{itemize}
 
-Another important factor for comparability is the data set, on which the experiments are conducted on.
-Because each publication from the presented algorithms uses a different data set for its evaluation, we cannot objectively select an algorithm to be the "best".
-Furthermore, to the best of our knowledge, there is no data set, that contains an incrementally growing and unordered point cloud with corresponding ground truth.
 
-Thus, we first evaluate the algorithms on a dataset while excluding the temporal component. We do this by performing plane detection on whole point clouds, rather than
+% Another important factor for comparability is the dataset, on which the experiments are conducted.
+Because most publications of the selected algorithms use a different dataset during evaluation, they are not objectively comparable.
+Furthermore, to the best of our knowledge, there is no dataset, that contains an incrementally growing and unordered point cloud with corresponding ground truth.
+
+Thus, we first evaluate the algorithms on a dataset while excluding the temporal component(static dataset). We do this by performing plane detection on whole point clouds, rather than
 incrementally growing ones. 
 
-We then perform experiments, this time including the temporal component, by performing calculations at each time step and evaluating them individually.
+We then perform experiments, this time including the temporal component(dynamic dataset), by performing calculations at each time step and evaluating them individually.
 
 Lastly, through comparison, as well as analysis of those different experiments, a statement will be given as to whether and how well plane detection is
 possible in real-time.
 
-For the evaluation of a given dataset, by comparing the test results with the ground truth, we took inspiration from \citeauthor{Araújo_Oliveira_2020} \citedate{Araújo_Oliveira_2020},
-especially their \textit{Results} chapter.
+For the evaluation of a given dataset, by comparing the test results with the ground truth, we took inspiration from \citeauthor{Araújo_Oliveira_2020} \cite[Section~4]{Araújo_Oliveira_2020}.
 
 
 \subsection{Metrics}
@@ -50,8 +62,10 @@ Aside from the accuracy, we also need to compare the time each algorithm needs t
 For that, we measure the time spent in the plane detection phase, excluding any preprocessing or postprocessing steps.
 To measure the detection time, we log the exact times before and after calculations and write the difference to a file.\\
 
-\subsection{Dataset}
-To evenly compare algorithms, an appropriate dataset is needed. Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}). 
+\subsection{Static Dataset}
+% To evenly compare algorithms, an appropriate dataset is needed. 
+This subsection deals with the selection of the dataset without temporal component.
+Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}). 
 
 \begin{table}[]
     \centering
@@ -72,15 +86,15 @@ To evenly compare algorithms, an appropriate dataset is needed. Through extensiv
     \label{tab:datasets}
 \end{table}
 
-In Section~\ref{sec:pdaselection}, we select unorganized point clouds (UPC) as input for the selected algorithms. Furthermore, this work focuses on real, indoor environments.
+In Section~\ref{sec:pdaselection}, we determine unorganized point clouds (UPC) as input for the selected algorithms. Furthermore, this work focuses on real, indoor environments.
 Additionally, a ground truth is necessary for the evaluation.
 We select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A} from the list of datasets to evaluate each plane detection algorithm on even grounds.
 Since our focus is not on 3D semantic segmentation and the provided ground truth is focused on semantic segmentation rather than planes, we manually select planar regions using CloudCompare\footnote{\href{https://cloudcompare.org/}{https://cloudcompare.org/}}.
 S3DIS was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
 An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
 
-Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the data set nevertheless reflects a realistic distribution of scene types since
-it is not realistic that a building contains only lecture halls. On the other hand, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all these offices.
+Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the dataset nevertheless reflects a realistic distribution of scene types since
+it is not realistic that, e.g., a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
 
 \begin{table}[H]
     \centering
@@ -104,8 +118,8 @@ it is not realistic that a building contains only lecture halls. On the other ha
     \label{tab:stanfordStats}
 \end{table}
 
-\subsection{Real-Life Test}
-We record an incrementally growing data set in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
+\subsection{Dynamic Dataset}
+We record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
 To perform a thorough comparison between the static and the dynamic experiment, we record a scene for each of the following scene types of S3DIS:
 \begin{itemize}
     \item office
@@ -114,12 +128,12 @@ To perform a thorough comparison between the static and the dynamic experiment, 
     \item hallway
 \end{itemize}
 
-\textcolor{red}{why only them right}
+\textcolor{red}{why only them, right?}
 
 The recorded point clouds can be seen in Figure~\ref{fig:fin}.
 
 
-Running \textit{realsense-ros} and holding our cameras, we walk through different parts of the building, scanning to the best of our ability.
+Running \textit{realsense-ros} and holding our cameras, we walk through the aforementioned parts of the building while scanning to the best of our ability.
 We save each incremental map update to a file for later usage.
 
 \begin{figure}[H]
@@ -151,14 +165,11 @@ We save each incremental map update to a file for later usage.
     \label{fig:fin}
 \end{figure}
 
-
-We create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
-The datasets for
+Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
 To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
 Figure~\ref{fig:dynGT}.
 We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
-Furthermore, we remove planes from the ground truth if the number of included points falls short of a threshold.
-
+% Furthermore, we remove planes from the ground truth if the number of included points falls short of a threshold. 
 \begin{figure}[H]
     \centering
     \includegraphics[width=15 cm]{images/dynamic_eval.png}
@@ -168,7 +179,7 @@ Furthermore, we remove planes from the ground truth if the number of included po
 \end{figure}
 
 \section{Results}
-This section deals with the results of the experiments. The individual results of both experiments are presented and analized.
+This section deals with the results of the experiments. The individual results of both experiments are presented and analyzed. 
 
 \subsection{Results S3DIS Experiments}
 

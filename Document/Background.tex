@@ -15,7 +15,7 @@ Internal odometry sensors alone can be unreliable if the robot moves over uneven
 % Diagram?
 
 \section{Intel Realsense}
-In this work, we use the Intel RealSense tracking camera T256 and the RGB-Depth camera D455. An excerpt of the camera 
+In this work, we use the Intel RealSense tracking camera T265 and the RGB-Depth camera D455. An excerpt of the camera 
 specifications can be found in Table~\ref{tab:cameraspecs}.
 Furthermore, both cameras have an integrated Inertial Measurement Unit (IMU) which is used to compute its position in combination with visual input.
 
@@ -29,7 +29,7 @@ The SDK runs on both Windows and Ubuntu, and a ROS adaptation is also provided i
         D455 & Stereo & RGB-D    & 1280x720   & 111°      & global & 419\$ & 90       \\ \hline
         T265 & Stereo & Tracking & 848 x 800  & 163°      & global & 199\$ & 30
     \end{tabular}
-    \caption[Intel RealSense T256 & D455 Specification]{Intel RealSense T256 and D455 camera specifications. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
+    \caption[Intel RealSense T265 & D455 Specification]{Intel RealSense T265 and D455 camera specifications. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
     \label{tab:cameraspecs}
 \end{table}
 
@@ -196,6 +196,9 @@ Fast refinement (FR) is performed on regions that succeed in a planarity test, i
 General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore,
 points from neighboring and previously unallocated leaf nodes are considered and inserted into the region if they, too, satisfy the inlier criterion.
 The refinement process returns a complete set of planar regions.
+
+\section{Evaluation Metrics}
+\textcolor{red}{hier werde ich noch Precision, Recall und F1 erklären.}
 
 \end{document}
 
