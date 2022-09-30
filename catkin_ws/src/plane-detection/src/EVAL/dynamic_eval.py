@@ -46,17 +46,21 @@ def dyn_eval(path_to_subclouds: str, binaries_path: str):
 
 
 def evaluate_timeframe(subcloud, subgt, subalgo, time):
-    global voxel_grid, iohelper
+    global iohelper
     if subalgo == []:
         total, per_plane, per_sample = iohelper.get_times()
         iohelper.save_results(0, 0, 0, 0, len(
         sub_gt), total, per_plane, per_sample, time=time)
         return
+    if subgt == []:
+        total, per_plane, per_sample = iohelper.get_times()
+        iohelper.save_results(-1, -1, -1, 0, 0, total, per_plane, per_sample, time=time)
+        return
     if iohelper.method == '3DKHT':
         print('3DKHT, translating')
         for algo_plane in subalgo:
             algo_plane.translate(subcloud.get_center())
-
+    voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(sub_cloud, voxel_size=0.4)
     kdtree = o3d.geometry.KDTreeFlann(subcloud)
 
     if subgt[0].indices == []:
@@ -88,7 +92,7 @@ def evaluate_timeframe(subcloud, subgt, subalgo, time):
 
 
 def dynamic_detection(dataset_path: str, binaries_path: str, algos=ALGOS):
-    files = os.listdir(dataset_path)
+    files = sorted(os.listdir(dataset_path), key=lambda x:os.path.getsize(os.path.join(dataset_path,x)))
     calculated = []
     for file in files:
         if file.endswith('.bag') or 'nope' in file or os.path.isdir(os.path.join(dataset_path, file)):
@@ -137,11 +141,59 @@ def dynamic_collection(dataset_path: str, algos=ALGOS):
         avg_r /= len(results)
         avg_f1 /= len(results)
         avg_t /= len(results)
-        avg = Result(avg_p, avg_r, avg_f1,0,0,dataset_path.rsplit("/")[-1], algo, avg_t,-1,-1)
+        avg = Result(avg_p, avg_r, avg_f1,0,0,'auditorium', algo, avg_t,-1,-1)
         filepath = os.path.join(
             dataset_path, 'results', f'{algo}-{dataset_path.rsplit("/")[-1]}_avg.out')
         avg.to_file(filepath)
 
+def results_over_time(path: str, algos=ALGOS):
+    fig = plt.figure()
+    for i, algo in enumerate(algos):
+        ax = fig.add_subplot(len(algos), 1, i+1)
+        files = [file for file in os.listdir(path) if 'avg' not in file and algo in file]    
+        files = sorted(files, key=lambda x :int(x.split('.')[0][-4:] ))
+        times = sorted([int(file.split('.')[0][-4:]) for file in os.listdir(path) if 'avg' not in file and algo in file])
+        m = times[0]-1
+        results = [Result.from_file(os.path.join(path, f)) for f in files]
+        precisions = [res.precision for res in results if res.algorithm ==algo]# and res.precision > 0.4]
+        # times = [x-m for x in times]
+        # times = list(range(len(precisions)))
+        times = np.arange(len(precisions))
+        f1s = [res.f1 for res in results if res.algorithm ==algo]# and res.recall > 0.4]
+        recalls = [res.recall for res in results if res.algorithm == algo]# and res.f1 > 0.4]
+        ax.plot(times,precisions , label ='precision')
+        ax.plot(times,recalls, label='recall' )
+        ax.plot(times,f1s ,label='f1')
+        ax.set_ylim([0,1])
+    plt.legend()
+    plt.show()
+
+def whatevs(path: str, algos=ALGOS):
+    sizes = []
+    for cfile in os.listdir(path):
+        if not cfile.endswith('.pcd'):
+            continue
+        sizes.append(os.path.getsize(os.path.join(path,cfile))/1000000)
+    fig = plt.figure(figsize=[20, 15])
+    sizes.sort()
+    for i, algo in enumerate(algos):
+        times = []
+        
+        for file in os.listdir(os.path.join(path,algo)):
+            if 'time' not in file :
+                continue
+            time = np.loadtxt(os.path.join(path,algo,file), skiprows=1,usecols=(0), dtype=float)
+            times.append(time)        
+        ax = fig.add_subplot(len(ALGOS),1, i+1)
+        ax.set_title(algo)
+        ax2 = ax.twinx()
+        times = np.array(list(sorted(times)))
+        # frames = np.array(list(range(len(times))))
+        frames = np.arange(len(times))
+        frames2 = np.arange(len(sizes))
+        ax.plot(frames, times)
+        ax2.plot(frames2, sizes,color='red' )
+    plt.show()
 def get_dyn_df(results_folder: str, algos=ALGOS):
     # load results
     results = [Result.from_file(os.path.join(results_folder, file))
@@ -213,24 +265,27 @@ if __name__ == '__main__':
     dataset = args.dataset
     last_cloud = args.last_cloud
     gt_path = f"{dataset}/GT"
+    
+    # dynamic_detection(dataset, binaries, ['OPS','3DKHT', 'OBRG', 'RSPD'])
+    # for algo in ['OPS','3DKHT', 'OBRG','RSPD']:
+    #     algo_path = os.path.join(dataset, algo)
 
-    dynamic_detection(dataset, binaries)
-    # dynamic_evaluation()
-    for algo in ALGOS:
-        algo_path = os.path.join(dataset, algo)
+    #     iohelper = IOHelper(last_cloud, gt_path, algo_path)
+    #     complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(last_cloud)
+    #     ground_truth = iohelper.read_gt()
+    #     voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
+    #         complete_cloud, voxel_size=0.3)
 
-        iohelper = IOHelper(last_cloud, gt_path, algo_path)
-        complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(last_cloud)
-        ground_truth = iohelper.read_gt()
-        voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
-            complete_cloud, voxel_size=0.3)
-
-        timeframes = iohelper.get_frames(dataset)
-        for timeframe in timeframes:
-            sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(
-                timeframe, voxel_grid, complete_cloud)
-            # draw_bb_planes(sub_gt, sub_cloud)
-            evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
+    #     timeframes = iohelper.get_frames(dataset)
+    #     for timeframe in timeframes:
+            
+    #         sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(
+    #             timeframe, voxel_grid, complete_cloud)
+    #         # if len(sub_gt) < 5:
+    #         #     draw_bb_planes(sub_gt, sub_cloud, sub_algo)
+    #         # draw_voxel_correspondence(sub_gt, sub_algo, sub_cloud)
+    #         evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
     dynamic_collection(dataset)
-    # get_dynamic_results()
     get_dyn_df(os.path.join(dataset, 'results'))
+    results_over_time(os.path.join(dataset,'results'))
+    whatevs(dataset)

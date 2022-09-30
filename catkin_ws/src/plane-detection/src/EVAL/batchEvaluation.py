@@ -1,21 +1,171 @@
 from logging import root
 import argparse
+from socketserver import ForkingTCPServer
 import matplotlib.pyplot as plt
 import os
 from typing import Dict, List
 from classes import Result
 from evaluate import evaluate
 import pandas as pd
+import numpy as np
 from fileio import create_pcd
 import sys
 sys.path.append('/home/pedda/Documents/coding/OBRG/')
 import obrg
-plt.rcParams.update({'font.size': 22})
+plt.rcParams.update({'font.size': 19})
 
 # globals
 ALGOS = ['RSPD', 'OPS', '3DKHT', 'OBRG']
 ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': '', 'OBRG': ''}
 ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt', 'OBRG': '.txt'}
+
+
+def get_file_sizes_time_pairs(root_folder: str):
+    results_algo_scenetypes: Dict[str, Dict[str, List]] = {
+        algo: dict() for algo in ALGOS}
+    sizes = []
+    for i in range(1, 7):
+        area = os.path.join(root_folder, f'Area_{i}')
+        for dataset in os.listdir(area):
+            if 'nope_' in dataset or 'result' in dataset or 'DS' in dataset:
+                continue
+            dataset_path = os.path.join(area, dataset)
+            if 'results' not in os.listdir(dataset_path):
+                continue
+            result_path = os.path.join(dataset_path, 'results')
+            size = os.path.getsize(os.path.join(dataset_path, dataset+'.txt'))
+            sizes.append(size)
+            for algo_result in os.listdir(result_path):
+                result = Result.from_file(
+                    os.path.join(result_path, algo_result))
+                dataset = result.dataset.split('_')[0]
+                if dataset not in results_algo_scenetypes[result.algorithm].keys():
+                    results_algo_scenetypes[result.algorithm][dataset] = []
+                results_algo_scenetypes[result.algorithm][dataset].append(
+                    [size, result.time_total])
+    print(sum(sizes)/len(sizes)/1000000)
+    print(1)
+    # fig = plt.figure(figsize=[20, 15])
+    # # for i, algo in enumerate(ALGOS):
+    # ax = fig.add_subplot(111)
+    # ax.set_title('RSPD')
+    # colors = np.random.rand(len(results_algo_scenetypes['RSPD'].keys()), 3)
+    # for i, (scenetype, size_time) in enumerate(results_algo_scenetypes['RSPD'].items()):
+    #     if scenetype == 'auditorium':
+    #         continue
+    #     times = sizes = []
+    #     for s_t in size_time:
+    #         size, time = s_t
+    #         times.append(time)
+    #         sizes.append(size/1000000)
+    #     plt.scatter(times, sizes, label=scenetype)
+    # ax.legend()
+    # plt.show()
+
+    fig = plt.figure(figsize=[20, 15])
+    for i, algo in enumerate(ALGOS):
+        ax = fig.add_subplot(1,len(ALGOS), i+1)
+        ax.set_title(algo)
+        alltimes=  []
+        allsizes = []
+        times = []
+        scenetypes = sorted(list(results_algo_scenetypes[algo].keys()), key=lambda x : x.lower())
+        sizes = []
+        for i, st in enumerate(scenetypes):
+            times.append([])
+            sizes.append([])
+            if 'audi' in st:
+                times[i].append(-1)
+                sizes[i].append(-1)
+                continue
+            for s_t in results_algo_scenetypes[algo][st]:
+                size, time = s_t
+                times[i].append(time)
+                alltimes.append(time)
+                allsizes.append(size/1000000)
+                sizes[i].append(size/1000000)
+        ax.violinplot(times, showmedians=True)
+        print(f'avg time for {algo}: {sum(alltimes)/len(alltimes)}')
+        print(f'avg size: {sum(allsizes)/len(allsizes)}')
+        if algo == "RSPD":
+            ax.set_ylabel("time in s",fontsize=22)
+        ax.set_xticks([i+1 for i in range(len(scenetypes))])
+        ax.set_xticklabels(scenetypes)
+        fig.autofmt_xdate(rotation=45)
+    # for i, algo in enumerate(ALGOS):
+    #     ax = fig.add_subplot(2, len(ALGOS), len(ALGOS) +i+1)
+    #     ax.set_title(algo)
+    #     times = []
+    #     scenetypes = sorted(list(results_algo_scenetypes[algo].keys()), key=lambda x : x.lower())
+    #     sizes = []
+    #     for i, st in enumerate(scenetypes):
+    #         times.append([])
+    #         sizes.append([])
+    #         if 'audi' in st:
+    #             times[i].append(-1)
+    #             sizes[i].append(-1)
+    #             continue
+    #         for s_t in results_algo_scenetypes[algo][st]:
+    #             size, time = s_t
+    #             times[i].append(time)
+    #             sizes[i].append(size/1000000)
+        # ax.violinplot(sizes, showmedians=True)
+        # if algo == "RSPD":
+        #     ax.set_ylabel("size in mb",fontsize=22)
+        # ax.set_xticks([i+1 for i in range(len(scenetypes))])
+        # ax.set_xticklabels(scenetypes)
+        # fig.autofmt_xdate(rotation=45)
+    plt.show()
+
+
+def vis_total_results(root_path: str, algos=ALGOS):
+    results_folder = os.path.join(root_path, 'results')
+    results = [Result.from_file(os.path.join(results_folder, file))
+               for file in os.listdir(results_folder) if file.endswith('.out') and not 'avg' in file]
+    max_time = max(results, key=lambda x: x.time_total)
+    fig = plt.figure(figsize=[20, 15])
+    for i, algo in enumerate(algos):
+        ax = fig.add_subplot(1, len(algos), i+1)
+        ax.set_title(algo)
+
+        # # filter results by algorithm
+        algo_data = [res for res in results if res.algorithm == algo]
+        if len(algo_data) == 0:
+            continue
+        algo_data.sort(key=lambda x: x.dataset.lower())
+        # create algo dataframe
+        algo_df = pd.DataFrame(algo_data).drop(
+            columns=['detected', 'out_of', 'time_total', 'time_per_plane', 'time_per_sample'])
+        algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
+        algo_df.plot.bar(x='Scene Types', ax=ax)  # , marker='o',label='rspd')
+        ax.set_ylim(0.0, 1.0)
+        ax.set_xlabel("")
+        ax.get_xaxis().set_label("")
+        ax.legend().remove()
+    fig.autofmt_xdate(rotation=45)
+    fig.supxlabel('Scene Types')
+    plt.show()
+
+    fig = plt.figure(figsize=[20, 15])
+    for i, algo in enumerate(algos):
+        ax = fig.add_subplot(1, len(algos), i+1)
+        ax.set_title(algo)
+
+        algo_data = [res for res in results if res.algorithm == algo]
+        if len(algo_data) == 0:
+            continue
+        algo_data.sort(key=lambda x: x.dataset.lower())
+        df = pd.DataFrame(algo_data).drop(
+            columns=['precision', 'recall', 'f1', 'detected', 'out_of', 'time_per_plane', 'time_per_sample'])
+        # sb.violinplot(data=df,ax=ax)
+        df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
+
+        ax.set_xlabel("")
+        ax.get_xaxis().set_label("")
+        ax.legend().remove()
+    fig.autofmt_xdate(rotation=45)
+    fig.supxlabel('Scene Type')
+    plt.show()
 
 
 def combine_area_results(root_path: str, algos=ALGOS):
@@ -28,6 +178,8 @@ def combine_area_results(root_path: str, algos=ALGOS):
         area = f'Area_{i}'
         results = os.path.join(root_path, area, 'results')
         for res in os.listdir(results):
+            if 'avg' in res:
+                continue
             r = Result.from_file(os.path.join(results, res))
             results_per_area[area].append(r)
     # gather algorithm results
@@ -56,8 +208,9 @@ def combine_area_results(root_path: str, algos=ALGOS):
             r /= len(results)
             f1 /= len(results)
             time /= len(results)
-            avg = Result(p,r,f1,found,outof,scenetype,algo,time,-1,-1)
-            Result.to_file(avg,os.path.join(root_path,'results',f'{algo}-{scenetype}.out'))
+            avg = Result(p, r, f1, found, outof, scenetype, algo, time, -1, -1)
+            Result.to_file(avg, os.path.join(
+                root_path, 'results', f'{algo}-{scenetype}.out'))
 
 
 def get_df(results_folder: str, algos=ALGOS):
@@ -209,8 +362,8 @@ def batch_detect(rootfolder: str, binaries_path: str, algos=ALGOS) -> None:
         if 'nope_' in dataset or dataset == 'results':
             continue
         for algo in algos:
-            if algo in os.listdir(dataset_path):
-                continue
+            # if algo in os.listdir(dataset_path):
+            #     continue
             # get input params for given algorithm
             binary = os.path.join(binaries_path, algo)
             cloud_file = os.path.join(
@@ -236,7 +389,7 @@ def batch_detect(rootfolder: str, binaries_path: str, algos=ALGOS) -> None:
 
 
 if __name__ == '__main__':
-    fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3"
+    fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2"
     fallback_algo_binaries = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries"
 
     # input argument handling
@@ -250,8 +403,10 @@ if __name__ == '__main__':
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
 
-    # batch_detect(rootFolder, algorithm_binaries)
-    # batch_evaluate(rootFolder)
-    # collect_results(rootFolder)
-    # get_df(os.path.join(rootFolder, 'results'))
-    combine_area_results('Stanford3dDataset_v1.2_Aligned_Version')
+    # batch_detect(rootFolder, algorithm_binaries, ['OPS'])
+    # batch_evaluate(rootFolder, ['OPS'])
+    # collect_results(fallback_root, ['OPS'])
+    # combine_area_results('Stanford3dDataset_v1.2_Aligned_Version')
+    # get_df(rootFolder)
+    # vis_total_results('Stanford3dDataset_v1.2_Aligned_Version')
+    get_file_sizes_time_pairs(rootFolder)

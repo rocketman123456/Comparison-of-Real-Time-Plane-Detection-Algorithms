@@ -72,3 +72,10 @@ catkin_ws/src/plane-detection/src/EVAL/__pycache__/visualizer.cpython-38.pyc
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/evaluate.cpython-38.pyc
 catkin_ws/src/plane-detection/src/EVAL/home/home.ply
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/batchEvaluation.cpython-38.pyc
+catkin_ws/src/plane-detection/src/EVAL/__pycache__/dynamic_eval.cpython-38.pyc
+catkin_ws/src/plane-detection/src/EVAL/test.geo
+catkin_ws/src/plane-detection/src/EVAL/RSPD/test.geo
+.gitignore
+.gitignore
+catkin_ws/src/plane-detection/src/EVAL/test.py
+catkin_ws/src/plane-detection/src/EVAL/test_dyn.py

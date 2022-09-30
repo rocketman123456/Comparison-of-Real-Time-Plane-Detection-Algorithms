@@ -56,6 +56,35 @@ class Result():
         )
 
 
+def through_crop(plane, subcloud: o3d.geometry.PointCloud, voxel_grid: o3d.geometry.VoxelGrid, complete_cloud: o3d.geometry.PointCloud):
+
+    # iterate over points in ground truth
+    # remove all that are not included or that have no close neighbors
+    sub_tree = o3d.geometry.KDTreeFlann(subcloud)
+
+    crop_plane = Plane()
+    for point in plane.xyz_points:
+        [k, idx, A] = sub_tree.search_radius_vector_3d(point, 0.05)
+        if k > 0:
+            crop_plane.xyz_points.append(point)
+            for i in idx:
+                crop_plane.set_indices.add(i)
+                crop_plane.indices.append(i)
+    print(len(crop_plane.xyz_points))
+    print(len(crop_plane.set_indices))
+    # if len(crop_plane.xyz_points) > 3:
+    #     pts = o3d.utility.Vector3dVector(crop_plane.xyz_points)
+    #     pc = o3d.geometry.PointCloud()
+    #     pc.points = pts
+    #     obb = pc.get_oriented_bounding_box()
+    #     vgdense = o3d.geometry.VoxelGrid.create_dense(obb.center,np.random.rand(3),0.4,  obb.extent[0], obb.extent[1],obb.extent[2] )
+    #     dvoxels = vgdense.get_voxels()
+    #     vg = o3d.geometry.VoxelGrid.create_from_point_cloud(pc, 0.4)
+    #     voxel = vg.get_voxels()
+    #     if len(dvoxels) == 0 or len(voxel) / len(dvoxels) < 0.50:
+    #         return None
+    return crop_plane
+
 class Plane:
     def __init__(self) -> None:
         self.indices: List[int] = []
@@ -67,29 +96,6 @@ class Plane:
         self.voxels = set()
         self.normal = []
         self.leafs = set()
-
-    @staticmethod
-    def through_crop(plane, subcloud: o3d.geometry.PointCloud, voxel_grid: o3d.geometry.VoxelGrid, complete_cloud: o3d.geometry.PointCloud):
-
-        # iterate over points in ground truth
-        # remove all that are not included or that have no close neighbors
-        sub_tree = o3d.geometry.KDTreeFlann(subcloud)
-
-        crop_plane = Plane()
-        for point in plane.xyz_points:
-            [k, idx, _] = sub_tree.search_radius_vector_3d(point, 0.01)
-            if k > 0:
-                crop_plane.xyz_points.append(point)
-
-        print(len(crop_plane.xyz_points))
-        if len(crop_plane.xyz_points) > 2:
-            pts = o3d.utility.Vector3dVector(crop_plane.xyz_points)
-            pc = o3d.geometry.PointCloud()
-            pc.points = pts
-            obb = pc.get_oriented_bounding_box()
-            obb.color= (0,1,0)
-
-        return crop_plane
 
     def translate(self, vector: np.ndarray):
         for point in self.xyz_points:

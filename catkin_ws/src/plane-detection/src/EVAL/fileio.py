@@ -5,7 +5,7 @@ from typing import List
 import numpy as np
 import open3d as o3d
 from tqdm import tqdm
-from classes import Plane, Result
+from classes import Plane, Result, through_crop
 
 
 class IOHelper:
@@ -189,7 +189,7 @@ class IOHelper:
     def get_frames(self, path: str):
         self.frame_path = path
         frames = []
-        for file in sorted(os.listdir(path)):
+        for file in reversed(sorted(os.listdir(path))):
             if file.endswith('.pcd') and 'nope_' not in file:
                 seconds, micro, _ = file.split('.')
                 frames.append(f'{seconds[-4:]}.{micro[:4]}')
@@ -212,8 +212,8 @@ class IOHelper:
                 else:
                     for p in self._read(os.path.join(self._path_algo, file)):
                         algo.append(p)
-        cropped_gt = list(map(lambda plane: Plane.through_crop(plane,cloud, voxel_grid,pointcloud), gt))
-        cropped_gt = [plane for plane in cropped_gt if len(plane.xyz_points) > 30]
+        cropped_gt = list(map(lambda plane: through_crop(plane,cloud, voxel_grid,pointcloud), gt))
+        cropped_gt = [plane for plane in cropped_gt if plane is not None]
         return cloud, cropped_gt, algo
 
 def create_txt(path: str):
@@ -241,3 +241,7 @@ def create_pcd(filepath: str):
         of.write(f"POINTS {points}\nDATA ascii\n")
         for coords in xyz:
             of.write(f"{coords}\n")
+
+if __name__ == '__main__':
+    path = "FIN-Dataset/auditorium/1664003770.004746437.pcd"
+    create_txt(path)
