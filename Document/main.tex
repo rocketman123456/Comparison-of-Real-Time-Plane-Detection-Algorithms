@@ -4,6 +4,7 @@
 \usepackage{interval}
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{graphics}
 \graphicspath{ {images/} }
 \usepackage{biblatex}
 \usepackage{caption}
@@ -18,12 +19,16 @@
 \usepackage{blindtext}
 
 \usepackage{subfiles}
-
+\usepackage{multirow}
+\usepackage{pgfplotstable}
+\usepackage{booktabs}
 \usepackage{hyperref}
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
 \begin{document}
 \subfile{Title}
-
 \subfile{TOC}
+\subfile{Figures}
 \subfile{Introduction}
 \subfile{Background}
 
@@ -34,9 +39,38 @@
 
 \subfile{Conclusion}
 
-\subfile{Figures}
 
 \subfile{References}
+
+
+\newpage
+\thispagestyle{empty}
+\begin{center}
+	\vspace*{5em}
+	\huge\textbf{Declaration of Academic Integrity}\\
+\end{center}
+\vspace{2em}
+I hereby declare that I have written the present work myself and did not use any sources
+or tools other than the ones indicated.
+
+\vspace{4em}
+\begin{minipage}{\linewidth}
+    \centering
+	\begin{tabular}{p{11.5em}C{20em}}
+		Datum: &  ...................................................................\\
+		& \centering (Signature)\\
+	\end{tabular}
+\end{minipage}
+
 \end{document}
 
 
+% SECTION FRAGEN
+% NOTE marco hat im BG angemerkt, dass zwischen images[13] ein leerzeichen soll (-> images [13]). Soll also vor allen [X, Y] ein leerzeichen hin?
+% NOTE "aka some vanilla plane detection" -> was willst du mir damit sagen, ist meine ausdrucksweise schlecht/unvollständig?
+% NOTE OPS: whats wrong with "prioritize" ?
+% NOTE Level of Detail unterscheidet sich dezent; Andere nach oben ziehen oder 3dkht runter? (wahrscheinlich ersteres)
+% NOTE ich kann mich auf die realsense beschränken - also einfach sagen dass wir die realsense in dieser arbeit nehmen und gut is'?
+% NOTE 5.1.2: "BILD?" - wovon genau, von der GUI von Cloudcompare während der segmentierung?
+% NOTE leica quelle, wie/wo? -> lieber als footnote?
+% !SECTION

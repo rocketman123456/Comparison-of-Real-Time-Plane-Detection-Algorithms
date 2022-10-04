@@ -15,18 +15,17 @@ We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}, as we
 % FIXME I think those footnotes with links were a bad idea
 
 \section{Plane Detection Algorithms}
-We implement RSPD and OPS using their respective open source implementations on GitHub\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{{https://github.com/abnerrjo/PlaneDetection}}}
-\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}}. Note that, while the implementation of RSPD is provided by the author,
-we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}.
+We implement RSPD\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} and OPS\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}} using their respective open source implementations on GitHub. 
+Note that, while the implementation of RSPD is provided by the author, we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}.
 Both methods are implemented in C++ and depend on the C++ linear algebra library \textit{Eigen}\footnote{\href{https://eigen.tuxfamily.org/index.php}{https://eigen.tuxfamily.org/index.php}}
 and the C++ API of the  Point-Cloud Library\footnote{\href{https://pointclouds.org/}{https://pointclouds.org/}}, \textit{libpcl-dev}.
 
-The authors of 3D-KHT, provide an implementation, in form of a Visual Studio project, on their website \footnote{\href{https://www.inf.ufrgs.br/~oliveira/pubs_files/HT3D/HT3D_page.html}
-    {https://www.inf.ufrgs.br/~oliveira/pubs\_files/HT3D/HT3D\_page.html}}. Since the laptop we use does not run Windows, we use \textit{cmake-converter}
-\footnote{\href{https://cmakeconverter.readthedocs.io/en/latest/use.html}{https://cmakeconverter.readthedocs.io/}} to convert
+The authors of 3D-KHT, provide an implementation, in form of a Visual Studio project, on their website\footnote{\href{https://www.inf.ufrgs.br/~oliveira/pubs_files/HT3D/HT3D_page.html}
+    {https://www.inf.ufrgs.br/~oliveira/pubs\_files/HT3D/HT3D\_page.html}}. Since the laptop we use does not run Windows, we use \textit{cmake-converter}\footnote{\href{https://cmakeconverter.readthedocs.io/en/latest/use.html}{https://cmakeconverter.readthedocs.io/}} to convert
 the solution to a CMake project we can build using \textit{make}.
 
-\subsection*{OBRG}
+\subsection{OBRG}
+% FIXME widerspricht der availability
 To our knowledge, no open-source implementation is available for the algorithm.
 We, therefore, use our own implementation.
 
@@ -52,6 +51,7 @@ a single method is not our focus.
 
 \section{Ground Truth Segmentation}
 
+% FIXME "hier bräuchte der Leser noch etwas roten faden"
 Since the selected data set focuses on semantic segmentation rather than detection of planar regions, we manually create a ground truth.
 We use the open-source 3D point cloud and mesh processing software CloudCompare.
 Because we cannot assume all walls to be planar or that, e.g., the tops or three adjacent tables always form the same number of planes (see Figure~\ref{fig:tables}), we 

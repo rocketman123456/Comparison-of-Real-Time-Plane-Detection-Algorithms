@@ -35,64 +35,34 @@
 % Furthermore, we focus on indoor environments, as motivated by Chapter~\ref{chap:Introduction}.
 % This includes the buildings we encounter in our normal lives, whether it is the home we live in, the office we work in, or a stripped-down version of a building during construction.
 
-\paragraph*{introduction}
-\begin{enumerate}
-    \item aktueller stand: gute und schnelle ebenenfindung wird oft gebraucht, gibt es auch schon/ist möglich
-    \item problem: oft sind die speziellen sensoren sehr kostenspielig
-    \item Daher die frage: (wie gut) ist das ganze auf bezahlbarer hardware möglich?
-    \item Nötig, um die Frage zu beantworten: 
-        \begin{itemize}
-            \item Welche Kamera(s)?
-            \item Welcher algorithmus?
-            \item Was heisst "real-time" überhaupt?
-        \end{itemize} 
-    \item Problem an letzterem: nicht möglich einen einheitlich besten algorithmus auszuwählen, da \dots{}
-    \item Lösung: wir wählen algorithmen aus und vergleichen diese einheitlich um die frage aus 3. zu beantworten
-\end{enumerate}
+
 
 % Viele Anwendungsfälle bauen auf das finden von ebenen in realen strukturen auf. Es werden spezielle sensoren entwickelt, welche extrem präzise daten der aufgenommenen umgebung liefern können.
 % Mit dieser präzision steigt natürlich auch der preis, was sich natürlich nicht jeder leisten kann. Ein Nutzer möchte und kann sich wahrscheinlich nicht einen 4000 Sensor leisten, nur um AR spiele in seinem Wohnzimmer zu spielen.
 % Dazu kommt oft eine zeitliche komponente. Wenn sich der nutzer durch die umgebung bewegt möchte dieser nicht 
 
+% FIXME vertiefen: (aus INTRO) "Problem an letzterem: nicht möglich einen einheitlich besten algorithmus auszuwählen"  
 
-
-
-
-
-\section{Intel RealSense}
+Roter Faden:
 \begin{itemize}
-    \item Wir müssen zuerst sensoren auswählen, mit denen wir die umgebung aufnehmen
-    \item Da, wie vorher angesprochen, der preis des sensors oft ein problem ist, wählen wir eine relativ billige (im vergleich)
-    \item die intel sensoren sind vergleichsweise bezahlbar. 
-    \item genauer gesagt nutzen wir \dots{}
-    \item Zu den sensoren wird eine kostenfreie software bereit gestellt
-    \item Über diese software lassen sich die kameras ansteuern. dazu ist in dieser software ein slam algorithmus namens rtabmap implementiert
-    \item mit rtabmap können wir den strom aus rohdaten zu einer bestehenden karte verarbeiten, was uns ermöglicht ebenen der kompletten umgebung zu finden anstatt nur von dem aktuellen blickwinkel
+    \item generic view on AR + VR system
+    \item Describe the building blocks in there
+    \item Point out that the decision on the "best" PDA is not clear
+    \item Tell my why that is not clear!
+    \item Get me going on those PDA
+          \begin{itemize}
+              \item describe my view on the world
+              \item show marco that table
+              \item describe what these values mean and why they are important
+          \end{itemize}
 \end{itemize}
 
-% We need specialized sensors, namely cameras, to record the environment and obtain data to detect planes therein (see [1] in Figure~\ref{fig:concept}).
-
-
-% In this work, we use the Intel RealSense T265 Tracking Camera and the Intel RealSense D455 RGB-D Camera, because of their compatibility.
-% The T265 can be used in combination with any depth camera from the D400 series, thus combining the advantages of both; The depth perception of the D455 and the wide FOV of the T265.
-% Furthermore, due to built-in IMUs, both cameras can perform all position calculations which reduces the load on the hosting device, e.g., laptop or microcontrollers like Raspberry PI's.
-
-% Since we are especially interested in the detection of planes in complete environments, it is necessary to be able to build a map out of the data the cameras
-% record continuously. For that purpose, we use a SLAM algorithm ([2] in Figure~\ref{fig:concept}).
-% In addition to the cameras, the Intel RealSense software provides a way to perform map assembly, see step 2 of Figure~\ref{fig:concept}.%\textcolor{red}{siehe concept figure, step 2}.
-% We integrate \textit{realsense-ros}, the ROS wrapper of Intel RealSense, into our process of plane detection.
-
-% Realsense-ros internally uses a SLAM algorithm called RTAB-MAP \cite{Labbé_Michaud_2019} for map-building.
-% RTAB-MAP is responsible for building a coherent map from a continuous stream of data that is being recorded and published by the two cameras.
-% It is worth noting, that the success of this work does not depend on the specific SLAM algorithm being chosen. We select RTAB-MAP because
-% it is already included in the RealSense package and its reported performance suffices for this work, primarily since we don't focus on SLAM
-% algorithms in this work.
-
 \section{Selection of Plane Detection Algorithms}\label{sec:pdaselection}
-This section deals with the selection of appropriate plane detection algorithms. 
+This section deals with the selection of appropriate plane detection algorithms.
 First, we define meaningful criteria against which the algorithms are compared to allow objective selection.
 
 \subsection{Criteria}
+% FIXME why are these important?
 \textcolor{red}{disclaimer: die gründe für oder gegen bestimmte sachen in dieser section werden noch nach hinten verschoben und durch eine erklärung ersetzt ist grade nur nicht die haupt baustelle}
 % \subsection{Type of Input}
 \paragraph{Type of Input}\label{par:input}
@@ -131,6 +101,7 @@ Another reason against the use of learning-based methods is that we choose not t
 
 % \subsection{Availability}
 \paragraph{Availability}
+% FIXME "imho ist das nicht availability"
 % FIXME Gründe und erklärung! zb, müssen alle auf dem selben system laufen, keine patente oä, das wissen dahinter ist frei zugänglich 
 %  sodass man die im zweifel zumindest selber implementieren könnte
 Lastly, we include the availability of an algorithm in our set of criteria.
@@ -144,6 +115,12 @@ Each algorithm to be compared needs to run on the same system to exclude the und
 
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
 Each algorithm is outlined in the following dedicated paragraphs. In the following, these algorithms are compared and then selected based on the previously selected criteria for the further course of this work.
+
+% FIXME hier muss relativ schnell tabelle folgen
+% FIXME danach aussieben. dafür muss nicht jeder algo so im detail erklärt werden (ich mach das ja schon im BG)
+% TODO zb "muss available sein -> XYZ fliegt raus"
+
+
 
 \paragraph{RSPD - Robust Statistics Approach for Plane Detection}
 RSPD expects an unorganized point cloud as input. The detected planes are written to file as either a list of inliers or
@@ -165,12 +142,12 @@ level of an octree node is higher than a predefined maximum.
 
 A total of six different presets of parameters are included with the official implementation.
 Since this work does not focus on the evaluation and analysis of a single method, we performed experiments with all presets on Area 3 of the S3DIS\cite{armeni_cvpr16} dataset, the
-results thereof can be seen in Figure ~\ref{fig:3dkht_params}
+results thereof can be seen in Figure~\ref{fig:3dkht_params}
 The two leftmost values for the maximum octree subdivision seem to yield the best results compared to the other values.
 Because we expect a greater subdivision level to yield better results on scenes of larger dimensions, we choose to perform
 all further experiments with an octree subdivision value of two.
 
-
+% FIXME this figure is utter shite
 \begin{figure}[H]
     \centering
     \includegraphics[width=15 cm]{images/params_3dkht.png}
@@ -178,7 +155,7 @@ all further experiments with an octree subdivision value of two.
     \label{fig:3dkht_params}
 \end{figure}
 
-
+% SECTION - Diese Algos in den BackGround
 \paragraph{OBRG - Octree-based Region Growing}
 \paragraph{PEAC - Probabilistic Agglomerative Hierarchical Clustering}
 \paragraph{CAPE - Fast Cylinder and Plane Extraction}
@@ -188,7 +165,7 @@ all further experiments with an octree subdivision value of two.
 \paragraph{PlaneNet}
 \paragraph{PlaneRecNet}
 \paragraph{PlaneRCNN}
-
+% !SECTION 
 
 \subsection{Conclusion: Plane Detection Algorithms}
 \begin{table}[H]
@@ -214,7 +191,7 @@ all further experiments with an octree subdivision value of two.
 \end{table}
 
 To effectively compare the presented algorithms, the data on which each algorithm performs the plane detection should ideally be the same.
-Considering algorithms that run on anything other than UPC, would necessitate finding a data set that includes equivalent point clouds for both the structured and the unstructured case.
+Considering algorithms that run on anything other than UPC, would necessitate finding a data set that includes equivalent point clouds for both the structured and the unstructured case. % FIXME or calculate
 Since these algorithms would disregard the global structure of the point cloud, we deem them not feasible for our use case and thus exclude them from our evaluation.
 
 % FIXME seems repeating to me, having a paragraph per criteria to reference them here in one single sentence
@@ -228,14 +205,133 @@ Furthermore, writing our own implementation of methods for which no implementati
 Finally, we end up with, and thus include, the following plane detection algorithms in our evaluation:
 
 \begin{itemize}
-    \item RSPD
-    \item OPS
-    \item 3D-KHT
-    \item OBRG
+    \item \textbf{RSPD}
+    \item \textbf{OPS}
+    \item \textbf{3D-KHT}
+    \item \textbf{OBRG}
 \end{itemize}
+
+\section{Datasets}
+
+\subsection{S3DIS Experiment}
+% To evenly compare algorithms, an appropriate dataset is needed. 
+This subsection deals with the selection of the dataset without temporal component.
+Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}).
+% FIXME Tabelle in BG verschieben + erläutern!
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|cccc}
+        Dataset                                                                & Input Format & Real & Indoor & GT         \\ \hline
+        SegComp      \cite{article}                                            & DI           & N    & /      & planes     \\
+        S3DIS   \cite{armeni_cvpr16}                                           & UPC          & Y    & Y      & objects    \\
+        NYU V2  \cite{10.1007/978-3-642-33715-4_54}                            & DI           & Y    & Y      & classes    \\
+        Kinect  \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}               & OPC          & Y    & Y      & planes     \\
+        ICL-NUIM       \cite{handa:etal:ICRA2014}                              & DI           & Y    & Y      & trajectory \\
+        SYNBEP         \cite{schaefer19icra}                                   & OPC          & N    & /      & planes     \\
+        ARCO          \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015} & OPC          & Y    & Y      & /          \\
+        SUN                    \cite{7298655}                                  & DI           & Y    & Y      & objects    \\
+        Leica          \cite{leica}                                            & UPC          & Y    & N      & planes     \\
+        TUM              \cite{sturm12iros}                                    & DI           & Y    & Y      & trajectory
+    \end{tabular}
+    \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.}
+    \label{tab:datasets}
+\end{table}
+
+In Section~\ref{sec:pdaselection}, we determine unorganized point clouds (UPC) as input for the selected algorithms. Furthermore, this work focuses on real, indoor environments.
+Additionally, a ground truth is necessary for the evaluation.
+We select the Stanford Large-Scale Indoor Spaces 3D Dataset(S3DIS)\cite{2017arXiv170201105A} from the list of datasets to evaluate each plane detection algorithm on even grounds.
+Since our focus is not on 3D semantic segmentation and the provided ground truth is focused on semantic segmentation rather than planes, we manually select planar regions using CloudCompare\footnote{\href{https://cloudcompare.org/}{https://cloudcompare.org/}}.
+S3DIS was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
+An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
+
+Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the dataset nevertheless reflects a realistic distribution of scene types since
+it is not realistic that, e.g., a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c}
+        \hline
+        Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL \\ \hline
+        office           & 31      & 14      & 10      & 22      & 42      & 37      & 156   \\ \hline
+        conference room  & 2       & 1       & 1       & 3       & 3       & 1       & 11    \\ \hline
+        auditorium       & -       & 2       & -       & -       & -       & -       & 2     \\ \hline
+        lobby            & -       & -       & -       & 2       & 1       & -       & 3     \\ \hline
+        lounge           & -       & -       & 2       & -       & -       & 1       & 3     \\ \hline
+        hallway          & 8       & 12      & 6       & 14      & 15      & 6       & 61    \\ \hline
+        copy room        & 1       & -       & -       & -       & -       & 1       & 2     \\ \hline
+        pantry           & 1       & -       & -       & -       & 1       & 1       & 3     \\ \hline
+        open space       & -       & -       & -       & -       & -       & 1       & 1     \\ \hline
+        storage          & -       & 9       & 2       & 4       & 4       & -       & 19    \\ \hline
+        WC               & 1       & 2       & 2       & 4       & 2       & -       & 11    \\ \hline
+        TOTAL            & 45      & 39      & 24      & 49      & 55      & 53      & 272   \\
+    \end{tabular}
+    \caption{S3DIS Disjoint Space Statistics}
+    \label{tab:stanfordStats}
+\end{table}
+
+\subsection{FIN Experiment}
+We record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
+To perform a thorough comparison between the static and the dynamic experiment, we record a scene for each of the following scene types of S3DIS:
+\begin{itemize}
+    \item office
+    \item conference room
+    \item auditorium
+    \item hallway
+\end{itemize}
+
+\textcolor{red}{why only them, right?} % FIXME "because they are the most common"
+
+The recorded point clouds can be seen in Figure~\ref{fig:fin}.
+
+
+Running \textit{realsense-ros} and holding our cameras, we walk through the aforementioned parts of the building while scanning to the best of our ability.
+We save each incremental map update to a file for later usage.
+
+\begin{figure}[H]
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=.9\linewidth]{images/307.png}
+        \caption[Dynamic Dataset - auditorium]{}
+        \label{fig:fin307}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=.9\linewidth]{images/333.png}
+        \caption[Dynamic Dataset - conference room]{}
+        \label{fig:fin333}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{images/425.png}
+        \caption[Dynamic Dataset office]{}
+        \label{fig:fin425}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{images/hallway.png}
+        \caption[Dynamic Dataset office]{}
+        \label{fig:finhw}
+    \end{subfigure}
+    \caption[Dynamic Datasets]{The recordings for each scene type: (a)auditorium, (b) conference room, (c) office and (d) hallway.}
+    \label{fig:fin}
+\end{figure}
+
+Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
+To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
+Figure~\ref{fig:dynGT}.
+We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
+% Furthermore, we remove planes from the ground truth if the number of included points falls short of a threshold. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/dynamic_eval.png}
+    \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation. All planes that are included in \textit{Ground Truth} are cropped depending on
+        the available point cloud at each time \textit{t} }
+    \label{fig:dynGT}
+\end{figure}
 
 
 \section{Definition Real-Time}\label{sec:realtime}
+% FIXME "wirkt etwas komisch hier. bin mir noch unsicher." 
 To determine whether or not an algorithm runs in real-time, we must first define the meaning of real-time.
 
 We have to consider possible hardware limitations, data flow, and simply

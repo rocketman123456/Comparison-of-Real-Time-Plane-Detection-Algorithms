@@ -1,7 +1,10 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
+% FIXME FORMELN!
 \chapter{Background}\label{chap:Background}
-In this chapter, we will present relevant literature needed to completely understand the proposed concept of \autoref{chap:Concept}.
+In this chapter, we present relevant literature needed to completely understand the proposed concept of \autoref{chap:Concept}.
+
+\section{ROS?}
 
 \section{SLAM}
 SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics;
@@ -11,14 +14,40 @@ The robot then attempts to accurately estimate its position based on the updated
 Over decades of research, varieties of different (combinations of) sensors have been employed to solve this problem more accurately and efficiently.
 Internal odometry sensors alone can be unreliable if the robot moves over uneven or slippery surfaces. For that reason, visual SLAM(V-SLAM) methods like \textit{MonoSLAM}\cite{1238654} or 
 \textit{Dense Visual SLAM}\cite{Kerl_Sturm_Cremers_2013} integrate additional visual input of camera sensors into their algorithm. 
+% FIXME elaborate
+% FIXME Localization
+% FIXME top-level Diagram!
+% FIXME surveys!
 
-% Diagram?
+\subsection*{RTAB-MAP}
+RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
+Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors, as well as an optional additional input in form of two- or three-dimensional
+lidar scan.
+% SECTION 
+% FIXME "schon eher grob"
+All these inputs are combined during a synchronization step, and the results thereof are passed to RTAB-MAP's \textit{Short-Term-Memory} (STM).
+The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to determine if the current location has already been visited earlier, also known as \textit{loop closure}.
+If a loop closure is detected, i.e., RTAB-MAP detects the re-visiting of a known location, the map graph is optimized and thus minimized. In addition, the global map is reassembled in correspondence with the new information.
+The resulting map is published in the form of an unorganized point cloud.
+% FIXME was ist der unterscheid zwischen OPC und UPC
+% !SECTION
+RTAB-MAP's general workflow is shown below in Figure~\ref{fig:rtabmap}:
+% FIXME integrate figure into previous stanza
+% FIXME why is the figure important
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=15 cm]{images/rtabmap.png}
+    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's main node. Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
+    \label{fig:rtabmap}
+\end{figure}
 
 \section{Intel Realsense}
 In this work, we use the Intel RealSense tracking camera T265 and the RGB-Depth camera D455. An excerpt of the camera 
 specifications can be found in Table~\ref{tab:cameraspecs}.
 Furthermore, both cameras have an integrated Inertial Measurement Unit (IMU) which is used to compute its position in combination with visual input.
-
+% FIXME unterschied zwischen T265 und D455!
+%  <=>
+% FIXME explain tracking and RGB-D
 Furthermore, Intel provides a software development kit, namely RealSense SDK, which allows easy and efficient use of the cameras.
 The SDK runs on both Windows and Ubuntu, and a ROS adaptation is also provided in Intel's Github repository \footnote{\href{https://github.com/IntelRealSense/realsense-ros}{https://github.com/IntelRealSense/realsense-ros}}. 
 
@@ -33,28 +62,11 @@ The SDK runs on both Windows and Ubuntu, and a ROS adaptation is also provided i
     \label{tab:cameraspecs}
 \end{table}
 
-
-\subsection*{RTAB-MAP}
-RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
-Unlike purely visual-based SLAM algorithms, RTAB-MAP also takes input from odometry sensors, as well as an optional additional input in form of two- or three-dimensional
-lidar scan.
-All these inputs are combined during a synchronization step, and the results thereof are passed to RTAB-MAP's \textit{Short-Term-Memory} (STM).
-The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to determine if the current location has already been visited earlier, also known as \textit{loop closure}.
-If a loop closure is detected, i.e., RTAB-MAP detects the re-visiting of a known location, the map graph is optimized and thus minimized. In addition, the global map is reassembled in correspondence with the new information.
-The resulting map is published in the form of an unorganized point cloud.
-
-RTAB-MAP's general workflow is shown below in Figure~\ref{fig:rtabmap}:
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15 cm]{images/rtabmap.png}
-    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's main node. Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
-    \label{fig:rtabmap}
-\end{figure}
-
 \section{Plane Detection}
 
 \paragraph*{introduction}
 The field of plane detection has been around for decades. Most methods of detecting planar regions are based on one of three main categories:
+% FIXME Verweis auf survey oä für die klassifikation
 \begin{itemize}
     \item Hough Transform (HT)
     \item RANSAC (RC)
@@ -62,7 +74,7 @@ The field of plane detection has been around for decades. Most methods of detect
 \end{itemize}
 
 \subsection*{Hough Transform}
-The original motivation behind the Hough transform was detecting lines in images\cite{osti_4746348}. All points are sequentially processed via a voting procedure to detect the best fitting line over a set of 2d points.
+The original motivation behind the Hough transform was detecting lines in images~\cite{5230799}. All points are sequentially processed via a voting procedure to detect the best fitting line over a set of 2d points.
 Multiple lines with different orientations are fit through each given point $p$.
 Because a line in slope-intercept form parallel to the y-axis would lead to an infinite slope, the Hesse normal form is chosen as the primary line representation\cite{10.1145/361237.361242}.
 
@@ -70,26 +82,27 @@ In Hesse normal form, an individual line can be parameterized with a pair $(r, \
 This pair is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding value of $\theta$, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
 votes to each $\theta$ is called an \textit{accumulator}.
 Finally, the best fitting line is determined by the number of votes it received.
+% FIXME wie würde Hough transform im kontext dieser arbeit aussehen? ~ analog zu letztem absatz von ransac und RG
 
 \subsection*{RANSAC}
-RANSAC (RAndom SAmple Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{Sun_Mordohai_2019,Yang_Forstner,Ashraf_Ahmed_2017}.
+RANSAC (RAndom SAmple Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{Sun_Mordohai_2019, Yang_Forstner, Ashraf_Ahmed_2017}.
 RANSAC is an iterative process. Each iteration randomly samples a certain amount of data points and fits a mathematical model through them. The level of outliers determines the quality of the obtained model and preserves the best overall model.
 
 Within the context of plane detection in 3D point clouds, an approach could involve random sampling of 3 points, fitting a plane through them,
-and counting the number of points within a certain range of the plane\cite{Yang_Forstner}. The model, in that case, could be a cartesian plane equation. This
+and counting the number of points within a certain range of the plane\cite{Yang_Forstner}. The model, in that case, could be a cartesian plane equation.
 
 \subsection*{Region Growing}
 Region Growing methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}.
 RG-based segmentation methods aim to grow a set of disjoint regions from an initial selection of seed points. The regions increase in size by inserting neighboring points based on an inclusion criterion.
 The quality of the resulting regions depends on the choice of seed points, e.g., a very noisy seed point could decrease overall quality  \cite{Malek_Rahman_Yasiran_Jumaat_Jalil_2012}.
-
+% FIXME "neighboring points ist zu PC spezifisch"
 In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
 
 \section{Plane Detection Algorithms}
 This section describes four algorithms that are used for the evaluation during this work.
 
-\subsection{RSPD}
-RSPD (Robust Statistics approach for Plane Detection \cite{Araújo_Oliveira_2020}) is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases;
+\subsection{Robust Statistics approach for Plane Detection}
+Robust Statistics approach for Plane Detection (RSPD)~\cite{Araújo_Oliveira_2020} is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases;
 \textit{Split, Grow and Merge}.
 
 \paragraph*{Split}
@@ -104,22 +117,22 @@ a k-nearest-neighbor search detects both points being in the same neighborhood.
 
 The graph construction is subsequently followed by a breadth-first-search, during which a point $x$ is inserted into a planar patch $p$ if it satisfies the following conditions:
 \begin{itemize}
-    \item $x$ is not included in any patch
-    \item $x$ satisfies the inlier conditions for $p$ % TODO prob explain them right
+    \item $x$ is not included in any patch \textit{and}
+    \item $x$ satisfies the inlier conditions for $p$ % FIXME explain them !
 \end{itemize}
 
 \paragraph*{Merge}
 In the last phase, the previously grown patches are merged. Two planar patches $P_1$ and $P_2$ can be merged, if the following conditions are met:
 \begin{itemize}
-    \item the octree nodes of $P_1$ and $P_2$ are adjacent
-    \item $P_1.n$ and $P_2.n$ have a divergence within a tolerance range
+    \item The octree nodes of $P_1$ and $P_2$ are adjacent, 
+    \item $P_1.n$ and $P_2.n$ have a divergence within a tolerance range \textit{and}
     \item at least one inlier of $P_1$ satisfies the inlier condition from $P_2$ and vice versa
 \end{itemize}
 
 This phase returns all maximally merged planar patches, i.e. the final planes.
 
-\subsection{OPS}
-OPS (Oriented Point Sampling for plane detection \cite{Sun_Mordohai_2019}) accepts an unorganized point cloud as input.
+\subsection{Oriented Point Sampling}
+Oriented Point Sampling (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized point cloud as input.
 First, a sample of points is uniformly selected. The normal vectors of these points are estimated using SVD and the k nearest neighbors, which had been obtained by the use of a k-d tree.
 An inverse distance weight function is employed to prioritize neighboring points that are closer to the sample of which the normal vector is currently being estimated.
 
@@ -197,8 +210,33 @@ General refinement (GR) is performed on regions that are considered non-planar. 
 points from neighboring and previously unallocated leaf nodes are considered and inserted into the region if they, too, satisfy the inlier criterion.
 The refinement process returns a complete set of planar regions.
 
+\section{Datasets}
+
 \section{Evaluation Metrics}
 \textcolor{red}{hier werde ich noch Precision, Recall und F1 erklären.}
+To quantitatively evaluate an algorithm's performance, we calculate the precision, recall and the f1 score.
+First, we regularize the original point cloud to reduce complexity and furthermore to avoid proximity bias, because of the inverse relationship
+between distance to sensor and cloud density. This regularization is obtained through voxelization of the point cloud.\\
+With this voxel grid, we can now calculate corresponding sets of voxels for each point cloud representing a plane.
+In the next step, we compare our planes from the ground truth with the planes obtained from an algorithm to obtain a list of corresponding pairs
+of ground truth and found planes.\\
+A grund truth plane $p_{gt_i}$ is marked as \textit{detected}, if any plane from the list of found planes achieves a voxel overlap of $\geq 50\%$.
+With this list of correspondences, we calculate precision, recall and the f1-score as explained in the following.
+For a given ground truth plane $p_{gt_j}$ and a corresponding found plane $p_{a_k}$ we can sort a given voxel $v_i$ into the categories
+\textit{True Positive(TP), False Positive(FP) and False Negative(FN)} as follows.
+$$v_i \in p_{gt_j} \land v_i \in p_{a_k} \Rightarrow v_{i} \in TP$$
+$$v_i \in p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in FN$$
+$$v_i \notin p_{gt_j} \land v_i \in p_{a_k} \Rightarrow v_{i} \in FP$$
+% TODO not needed right? $$v_i \notin p_{gt_j} \land v_i \notin p_{a_k} \Rightarrow v_{i} \in TN$$  , True Negative(TN)} 
+
+With those four rules, we can calculate the precision, recall and F1 score like this:
+$$Precision = \frac{|TP|}{|TP|+|FP|}$$
+$$Recall = \frac{|TP|}{|TP|+|FN|}$$
+$$F1 = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}$$
+
+Aside from the accuracy, we also need to compare the time each algorithm needs to find its respective set of planes.
+For that, we measure the time spent in the plane detection phase, excluding any preprocessing or postprocessing steps.
+To measure the detection time, we log the exact times before and after calculations and write the difference to a file.\\
 
 \end{document}
 
