@@ -48,7 +48,7 @@ Roter Faden:
     \item generic view on AR + VR system
     \item Describe the building blocks in there
     \item Point out that the decision on the "best" PDA is not clear
-    \item Tell my why that is not clear!
+    \item Tell me why that is not clear!
     \item Get me going on those PDA
           \begin{itemize}
               \item describe my view on the world
@@ -73,9 +73,20 @@ Usually, the data representation of the recorded environment passed to the plane
     \item \textit{(depth-) image} (D-/I)
 \end{itemize}
 
-As stated before, we focus on detecting planar structures in the entire environment rather than just distinct segments thereof.
+The fundamental difference between UPC and OPC is their format. Each point cloud has a \textit{width} and a \textit{height} parameter.
+An unorganized point cloud $c$ is generally equal to an unordered 1D array of points, i.e., $width = |c|$ and $height=1$.
+In contrast, the memory layout of an organized point cloud is a 2D array, where the width and height depend on the resolution of the used sensor.
+Taking the maximum resolution of the T265(see Table~\ref{tab:cameraspecs}) as an example, the OPC would have a \textit{width} and \textit{height} of
+1280 and 720, respectively.
+Intuitively, the value at index (0,0) would be in the top-left corner, and the value at index (\textit{width,height}) would be in the bottom-right corner.
+
+Depth images are inherently similar to organized point clouds, given their resolution and two-dimensional structure. The primary difference is that the values
+stored in the array are distances to the sensor instead of 3D coordinates.
+
+Consequently, since unorganized point clouds are not limited in their dimension, they are more suitable for capturing entire environments.
+
+As stated before, we focus on detecting planar structures in the entire environment rather than just distinct segments.
 In addition, only the unorganized/unstructured point clouds offer a complete view of the recorded environment.
-% NOTE kommt später: Therefore, we disregard all algorithms which do not expect an unorganized point cloud as input.
 
 
 % \subsection{Detected Plane Format} \label{subsec:planeformat}
@@ -91,21 +102,23 @@ It also allows further filtering of planes based on a density value that we can 
 box and the number of points, e.g., removing planes with a density lower than a certain threshold.
 
 
-% \subsection{Learning based}\label{subsec_learning_based}
 \paragraph{Learning based}\label{subsec_learning_based}
-% FIXME erklären was learning based methods machen, unterschieden zu non-learning based!!
-Learning-based methods, e.g. Deep learning, generally have varying levels of bias, depending on the training data.
-Another reason against the use of learning-based methods is that we choose not to require a GPU to replicate our findings.
+Some methods are learning-based, e.g., they use deep learning to detect planes in point clouds or images.
+These methods introduce bias to a certain degree, which depends on the choice of training data. If an algorithm is perfectly trained on
+a dataset that consists of only tables, the algorithm would find all table tops but might fail to detect planes that do not have a certain number
+of legs attached to them.
 
-%  FIXME Gründe dagegen in selection schieben !!
+% FIXME elaborate
 
 % \subsection{Availability}
-\paragraph{Availability}
-% FIXME "imho ist das nicht availability"
-% FIXME Gründe und erklärung! zb, müssen alle auf dem selben system laufen, keine patente oä, das wissen dahinter ist frei zugänglich 
-%  sodass man die im zweifel zumindest selber implementieren könnte
-Lastly, we include the availability of an algorithm in our set of criteria.
-Each algorithm to be compared needs to run on the same system to exclude the underlying hardware as a factor from any experiments.\\
+% \paragraph{Availability / Reproducability?}
+% Lastly, we include the availability of an algorithm in our set of criteria.
+% Since we need to conduct our experiments on the same machine, it is necessary that we obtain an implementation of a given method.
+% We generally consider a method as \textit{available} if one of the following conditions is met:
+% \begin{itemize}
+%     \item A corresponding implementation is publicly available \textit{or}
+%     \item the paper outlines the method in a way that enables self-implementation, i.e., by providing pseudocode, elaborate figures and/or thorough description.
+% \end{itemize}
 
 \subsection{Plane Detection Algorithms}
 
@@ -114,93 +127,40 @@ Each algorithm to be compared needs to run on the same system to exclude the und
 % Im folgenden werden diese algorithmen verglichen und anschliessend eine auswahl, basierend auf den zuvor ausgewählten kriterien, für den weiteren Verlauf dieser Arbeit getroffen.
 
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
-Each algorithm is outlined in the following dedicated paragraphs. In the following, these algorithms are compared and then selected based on the previously selected criteria for the further course of this work.
-
-% FIXME hier muss relativ schnell tabelle folgen
-% FIXME danach aussieben. dafür muss nicht jeder algo so im detail erklärt werden (ich mach das ja schon im BG)
-% TODO zb "muss available sein -> XYZ fliegt raus"
+In the following, we select suitable algorithms for the further course of this work based on the previously selected criteria.
 
 
-
-\paragraph{RSPD - Robust Statistics Approach for Plane Detection}
-RSPD expects an unorganized point cloud as input. The detected planes are written to file as either a list of inliers or
-represented by a center point, a normal vector and UV extents of the plane.
-As explained above \ref{subsec:planeformat}, we select the inliers as the primary plane representation.
-
-\paragraph{OPS - Oriented Point Sampling}
-OPS also takes an unorganized point cloud as input. Like RSPD, the default representation of a detected plane is
-a tuple of normals vector and center coordinate, while also reporting the orientation.
-without affecting the algorithm, we modify the output format to instead include the inliers.
-
-\paragraph{3DKHT - 3-D Kernel-based Hough Transform}
-
-\textcolor{red}{das hier wird sich noch ändern - habe das hier vor dem deepdive zwecks BG geschrieben}
-
-With 3D-KHT, as with other octree-based methods, the performance depends, to some degree, on the level of subdivision.
-In the provided implementation, the octree keeps dividing until either the number of points in the current node is lower than a set minimum, or the
-level of an octree node is higher than a predefined maximum.
-
-A total of six different presets of parameters are included with the official implementation.
-Since this work does not focus on the evaluation and analysis of a single method, we performed experiments with all presets on Area 3 of the S3DIS\cite{armeni_cvpr16} dataset, the
-results thereof can be seen in Figure~\ref{fig:3dkht_params}
-The two leftmost values for the maximum octree subdivision seem to yield the best results compared to the other values.
-Because we expect a greater subdivision level to yield better results on scenes of larger dimensions, we choose to perform
-all further experiments with an octree subdivision value of two.
-
-% FIXME this figure is utter shite
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/params_3dkht.png}
-    \caption[3D-KHT Parameter Benchmark Results]{Results of 3D-KHT for different pre-set subdivision values}
-    \label{fig:3dkht_params}
-\end{figure}
-
-% SECTION - Diese Algos in den BackGround
-\paragraph{OBRG - Octree-based Region Growing}
-\paragraph{PEAC - Probabilistic Agglomerative Hierarchical Clustering}
-\paragraph{CAPE - Fast Cylinder and Plane Extraction}
-\paragraph{SCH-RG - Plane Extraction using Spherical Convex Hulls}
-\paragraph{D-KHT - Hough Transform for Real-Time Plane Detection}
-\paragraph{DDFF - Depth Dependent Flood Fill}
-\paragraph{PlaneNet}
-\paragraph{PlaneRecNet}
-\paragraph{PlaneRCNN}
-% !SECTION 
-
-\subsection{Conclusion: Plane Detection Algorithms}
 \begin{table}[H]
     \centering
-    \begin{tabular}{|c|c|c|c|c|c}
-        \hline
-                                                                         & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Learning-Based} & \textbf{Availability} \\ \hline
-        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               & N                       & Y                     \\ \hline
-        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               & N                       & Y                     \\ \hline
-        \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers               & N                       & Y                     \\ \hline
-        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               & N                       & N                     \\ \hline
-        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               & N                       & Y                     \\ \hline
-        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & normal, d             & N                       & Y                     \\ \hline
-        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers?              & N                       & N                     \\ \hline
-        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               & N                       & Y                     \\ \hline
-        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & N                       & Y                     \\ \hline
-        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & normal, d             & Y                       & Y                     \\ \hline
-        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & I                   & ? / -                 & Y                       & Y                     \\ \hline
-        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & normal + ?            & N                       & Y                     \\ \hline
+    \begin{tabular}{c|c|c|c}
+        \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Learning-Based} \\ \hline%& \textbf{Availability} \\ \hline
+        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               & N                       \\ %& Y                     \\ \hline
+        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               & N                       \\ %& Y                     \\ \hline
+        \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers               & N                       \\ %& Y                     \\ \hline
+        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               & N                       \\ %& Y                   \\ \hline
+        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               & N                       \\ %& Y                     \\ \hline
+        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & normal, d             & N                       \\ %& Y                     \\ \hline
+        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers              & N                       \\ %& N                     \\ \hline
+        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               & N                       \\ %& Y                     \\ \hline
+        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & N                       \\ %& Y                     \\ \hline
+        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & normal, d             & Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & I                   & reconstructed scene   & Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & normal + ?            & N                       \\ %& Y                     \\ \hline
     \end{tabular}
     \caption{Plane Detection Algorithms}
     \label{tab:algos}
 \end{table}
 
+
 To effectively compare the presented algorithms, the data on which each algorithm performs the plane detection should ideally be the same.
 Considering algorithms that run on anything other than UPC, would necessitate finding a data set that includes equivalent point clouds for both the structured and the unstructured case. % FIXME or calculate
+Alternatively, it would require calculating equivalent UPCs for each OPC which is beyond the scope of this work, due to the dramatic increase in complexity.
 Since these algorithms would disregard the global structure of the point cloud, we deem them not feasible for our use case and thus exclude them from our evaluation.
-
-% FIXME seems repeating to me, having a paragraph per criteria to reference them here in one single sentence
-We exclude learning-based methods for the reasons previously stated in Subsection~\ref{subsec_learning_based}.
+We hereby exclude  \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
 
 For an even comparison, the detected planes would have to be in the same format because, even for the same plane, representations could very well lead to different results, e.g., a plane in cartesian form compared to the same plane, described by its inliers.
-Asserting comparability, we exclude all methods which do not offer a plane representation by inliers.
+Asserting comparability, we exclude all methods which do not offer a plane representation by inliers, namely \textit{CAPE, PlaneNet} and \textit{PlaneRecNet}.
 
-Furthermore, writing our own implementation of methods for which no implementation is available or for which the respective publication does not focus on the implementation details would go beyond the scope of this work.
 
 Finally, we end up with, and thus include, the following plane detection algorithms in our evaluation:
 
@@ -215,27 +175,7 @@ Finally, we end up with, and thus include, the following plane detection algorit
 
 \subsection{S3DIS Experiment}
 % To evenly compare algorithms, an appropriate dataset is needed. 
-This subsection deals with the selection of the dataset without temporal component.
-Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}).
-% FIXME Tabelle in BG verschieben + erläutern!
-\begin{table}[]
-    \centering
-    \begin{tabular}{c|cccc}
-        Dataset                                                                & Input Format & Real & Indoor & GT         \\ \hline
-        SegComp      \cite{article}                                            & DI           & N    & /      & planes     \\
-        S3DIS   \cite{armeni_cvpr16}                                           & UPC          & Y    & Y      & objects    \\
-        NYU V2  \cite{10.1007/978-3-642-33715-4_54}                            & DI           & Y    & Y      & classes    \\
-        Kinect  \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}               & OPC          & Y    & Y      & planes     \\
-        ICL-NUIM       \cite{handa:etal:ICRA2014}                              & DI           & Y    & Y      & trajectory \\
-        SYNBEP         \cite{schaefer19icra}                                   & OPC          & N    & /      & planes     \\
-        ARCO          \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015} & OPC          & Y    & Y      & /          \\
-        SUN                    \cite{7298655}                                  & DI           & Y    & Y      & objects    \\
-        Leica          \cite{leica}                                            & UPC          & Y    & N      & planes     \\
-        TUM              \cite{sturm12iros}                                    & DI           & Y    & Y      & trajectory
-    \end{tabular}
-    \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.}
-    \label{tab:datasets}
-\end{table}
+This subsection deals with the selection of the dataset without the temporal component.
 
 In Section~\ref{sec:pdaselection}, we determine unorganized point clouds (UPC) as input for the selected algorithms. Furthermore, this work focuses on real, indoor environments.
 Additionally, a ground truth is necessary for the evaluation.
@@ -245,7 +185,7 @@ S3DIS was recorded in three different buildings and divided into six distinct ar
 An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
 
 Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the dataset nevertheless reflects a realistic distribution of scene types since
-it is not realistic that, e.g., a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
+it is not realistic if a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
 
 \begin{table}[H]
     \centering
@@ -279,7 +219,7 @@ To perform a thorough comparison between the static and the dynamic experiment, 
     \item hallway
 \end{itemize}
 
-\textcolor{red}{why only them, right?} % FIXME "because they are the most common"
+We focus on these four scene types because they are the most common in a real environment.
 
 The recorded point clouds can be seen in Figure~\ref{fig:fin}.
 
