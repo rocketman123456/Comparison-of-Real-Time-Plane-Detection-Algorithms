@@ -15,35 +15,33 @@
 \end{figure}
 
 \paragraph*{Internal Introduction}
-% SECTION - CONCEPT INTRO
-% FIXME generic view on AR + VR system
-AR and VR Systems often integrate plane detection into their software.  
-AR und VR Applikationen nehmen oft gebrauch von plane detection. \textcolor{red}{To provide examples,} \cite{Carranza_Estrella_Zaidi_Carranza_2021} use AR technology and plane detection 
-to aid the movement of visually impaired people. % FIXME beispiele
+Many AR and VR Systems integrate plane detection into their software, some use it only to calculate the ground floor while others use plane detection to
+build a smaller model of the environment. Die genauen Anwengunsmöglicheiten sind hierbei jedoch endlos.
 Figure~\ref{fig:concept} shows a generic block diagram of such a VR/AR system including plane detection.
-First, the environment is recorded by a specialized sensor which is usually a camera([1]). A SLAM algorithm then integrates the new data into its already existing map([2]). The map, in form of a point cloud,
+% FIXME REALTIME NOW MISSING FROM INTRODUCTION
+In general, the environment is continuously recorded by a specialized sensor which is usually a camera([1]). A SLAM algorithm then integrates the new data into its already existing map([2]). The map, in form of a point cloud,
 is subsequently passed to a plane detection algorithm([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application([4]).
-The application itself could, e.g., then visualize the detected planes or guide a visually impaired person by providing voice commands.
+The application would then further process those planes, e.g., by creating a live visualization of them or by assisting the movement of visually impaired people~\cite{Carranza_Estrella_Zaidi_Carranza_2021}.
 
-% FIXME Describe the building blocks in there
-% SECTION Point out that the decision on the "best" PDA is not clear
-As previously stated in Chapter~\ref{chap:Introduction}, most published algorithms are inherently incomparable. The incomparability could stem from the method of evaluation,
-i.e., the metrics, the chosen dataset and even how the metrics are calculated. Additionally, the algorithms themself are a possible reason for incomparability, as they often differ
-in aspects like type of input, the format of detected planes and the amount of necesary pre- and postprocessing.
+Beim erstellen eines solchen systems ist die wahl des PDA natürlich von großer bedeutung. Das Problem daran ist, dass die meisten veröffentlichten algorithmen nicht von natur aus
+vergleichbar sind. Oft werden verschiedene Datensätze oder metriken benutzt, was einen vergleich durch quantifizierung ausschliesst. Alternativ sind algorithmen auf der internen funktionsweise nicht vergleichbar,
+da viele methoden verschiedene inputs voraussetzen und sich dementsprechend das format der ebenen genauso unterscheidet. Alles in allem ist es nicht möglich einen eindeutig "besten" algorithmus allein
+basierend auf den präsentierten Metriken auszuwählen.
 
-An algorithm that has lower reported runtimes than another might in reality run slower because some variables like the amount of noise changed.
-Therefore, the "best" plane detection algorithm selection is non-trivial, impossible even, as previously mentioned in Chapter~\ref{chap:Introduction}.
-% FIXME vertiefen: (aus INTRO) "Problem an letzterem: nicht möglich einen einheitlich besten algorithmus auszuwählen"  
-% FIXME Tell me why that is not clear!
+Um die frage zu beantworten, welche algorithmus am besten geeignet ist, und ob dieser echtzeitfähig ist, machen wir einen einheitlichen vergleich von PDAs.
+Um diese evaluierung durchführen zu können brauchen wir die folgenden dinge:
+\begin{enumerate}
+    \item \label{enum:pda}Appropriate plane detection algorithms,
+    \item \label{enum:ds} a useful dataset \textit{and}
+    \item \label{enum:rt} a definition of \textit{real-time}.
+\end{enumerate}
+Die folgenden sections kümmern sich darum.
+% As previously stated in Chapter~\ref{chap:Introduction}, most published algorithms are inherently incomparable. The incomparability could stem from the method of evaluation, i.e., the metrics, 
+% the chosen dataset, and even how the metrics are calculated. Additionally, the algorithms themself are a possible reason for incomparability, as they often differ
+% in aspects like the expected input type, the format of detected planes, and the amount of necessary pre-and/or postprocessing.
+% Therefore, selecting the "best" plane detection algorithm from the reported metrics alone is not possible. 
 
 
-%!SECTION 
-% !!SECTION -
-% SECTION - CONCEPT PDA: get me going on those PDA 
-% FIXME describe my view on the world
-% FIXME show marco that table
-% FIXME describe what these values mean and why they are important
-%!SECTION - 
 % Roter Faden:
 % \begin{itemize}
 %     \item generic view on AR + VR system
@@ -59,15 +57,25 @@ Therefore, the "best" plane detection algorithm selection is non-trivial, imposs
 % \end{itemize}
 
 \section{Selection of Plane Detection Algorithms}\label{sec:pdaselection}
-This section deals with the selection of appropriate plane detection algorithms.
-As mentioned at the beginning of this chapter, the algorithms differ in certain aspects. 
+% SECTION get me going on those PDA 
+% FIXME describe my view on the world
+% FIXME show marco that table
+% FIXME describe what these values mean and why they are important
+%!SECTION - 
+
+Da, wie schon angemerkt die meisten algorithmen sich in bestimmten aspekten unterscheiden, ist es nicht möglich alle einheitlich zu vergleichen.
+Ferner sind nicht alle algorithmen aus der selben motivation entstanden und legen daher den fokus auf verschiedene dinge. Es wäre beispielsweise sinnlos einen algorithmus wie
+\textit{Underwater SLAM}~\cite{6913908} auf die performanz in kleinen indoor umgebungen zu testen.
+Es ist somit nötig, zuerst objektive kriterien zu definieren woran oberflächlich beurteilt werden kann, welcher algorithmus in dem kontext dieser arbeit von nutzen sein könnte.
+
 
 \subsection{Criteria}
-We outline these aspects in the following paragraphs. Furthermore, we declare the most appropriate values of each criterion for the context of this work.
+In den folgenden paragraphen definieren und umreissen wir angemessene kriterien für die objektive beurteilung von PDAs.
 
 % \subsection{Type of Input}
 \paragraph{Type of Input}\label{par:input}
-Usually, the data representation of the recorded environment passed to the plane detection algorithm falls under one of three categories:
+The first criterion is the type of input expected by a plane detection algorithm.
+Usually, the data representation of the recorded environment falls into one of three categories:
 \begin{itemize}
     \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
     \item \textit{organized} or \textit{structured point cloud} (OPC)
@@ -105,7 +113,7 @@ box and the number of points, e.g., removing planes with a density lower than a 
 
 \paragraph{Learning based}\label{subsec_learning_based}
 Some methods are learning-based, e.g., they use deep learning to detect planes in point clouds or images.
-These methods introduce bias to a certain degree, which depends on the choice of training data. If an algorithm is perfectly trained on
+Their ability to generalize depends on the choice of training data. If an algorithm is perfectly trained on
 a dataset that consists of only tables, the algorithm would find all table tops but might fail to detect planes that do not have a certain number
 of legs attached to them.
 
@@ -126,9 +134,12 @@ of legs attached to them.
 % Diese section befässt sich mit der auswahl der plane detection algorithmen. Eine umfassende Literaturrecherche des Gebiets der plane detection 
 % ergibt eine Liste (vgl. Table~\ref{tab:algos}) von algorithmen. Diese werden hier zunächst in dedizierten paragraphen umrissen. 
 % Im folgenden werden diese algorithmen verglichen und anschliessend eine auswahl, basierend auf den zuvor ausgewählten kriterien, für den weiteren Verlauf dieser Arbeit getroffen.
+% Addressing \ref{enum:pda}, we first present a list of the current state-of-the-art plane detection algorithms, which can be seen in Table~\ref{tab:algos}. 
 
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
+\textcolor{red}{explanation of table}
 
+Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit sinnvollsten werte(?\textcolor{red}{"ich nehme UPC aus {UPC, OPC, DI}... idk wie ich das nennen soll})2 ausgewählt und anhand dessen unpassende algorithmen von der evaluierung ausgeschlossen.
 
 \begin{table}[H]
     \centering
@@ -145,21 +156,24 @@ A list of state-of-the-art algorithms is compiled through comprehensive research
         \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & N                       \\ %& Y                     \\ \hline
         \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & normal, d             & Y                       \\ %& Y                     \\ \hline
         \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & I                   & reconstructed scene   & Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & normal + ?            & N                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & normal, d             & Y                       \\ %& Y                     \\ \hline
     \end{tabular}
     \caption{Plane Detection Algorithms}
     \label{tab:algos}
 \end{table}
 
-
-To effectively compare the presented algorithms, the data on which each algorithm performs the plane detection should ideally be the same.
-Considering algorithms that run on anything other than UPC, would necessitate finding a data set that includes equivalent point clouds for both the structured and the unstructured case. % FIXME or calculate
-Alternatively, it would require calculating equivalent UPCs for each OPC which is beyond the scope of this work, due to the dramatic increase in complexity.
-Since these algorithms would disregard the global structure of the point cloud, we deem them not feasible for our use case and thus exclude them from our evaluation.
+Addressing the criterion of input type, we are only interested in performing plane detection in complete environments. We hereby consider organized point clouds or images inappropriate because they do not offer a complete view
+on a scene.\\
 We hereby exclude  \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
 
-For an even comparison, the detected planes would have to be in the same format because, even for the same plane, representations could very well lead to different results, e.g., a plane in cartesian form compared to the same plane, described by its inliers.
-Asserting comparability, we exclude all methods which do not offer a plane representation by inliers, namely \textit{CAPE, PlaneNet} and \textit{PlaneRecNet}.
+% Considering algorithms that run on anything other than UPC, would necessitate finding a data set that includes equivalent point clouds for both the structured and the unstructured case. % FIXME or calculate
+% Alternatively, it would require calculating equivalent UPCs for each OPC which is beyond the scope of this work, due to the dramatic increase in complexity.
+% Since these algorithms would disregard the global structure of the point cloud, we deem them not feasible for our use case and thus exclude them from our evaluation.
+
+Secondly, the detected planes need to be in the same format because, even for the same plane, different representations could very well lead to different results.
+Assume a plane in cartesian form and a plane represented by its inliers. The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
+In contrast, the plane described by its inliers allows for holes and non-rectangular shapes, e.g., doorways or a round table.
+We thereby determine \textit{inliers} as the preferred plane format and exclude all methods which do not comply, namely \textit{CAPE, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
 
 
 Finally, we end up with, and thus include, the following plane detection algorithms in our evaluation:
@@ -173,8 +187,9 @@ Finally, we end up with, and thus include, the following plane detection algorit
 
 \section{Datasets}
 
+\textcolor{red}{@marco Sollte hier dann nicht der anfang der evaluation hin? also bzgl warum wir das aufteilen in temporal und nicht temporal? dann wäre aber halt die intro der eval quasi leer}
+
 \subsection{S3DIS Experiment}
-% To evenly compare algorithms, an appropriate dataset is needed. 
 This subsection deals with the selection of the dataset without the temporal component.
 
 In Section~\ref{sec:pdaselection}, we determine unorganized point clouds (UPC) as input for the selected algorithms. Furthermore, this work focuses on real, indoor environments.
@@ -211,7 +226,7 @@ it is not realistic if a building contains only lecture halls. Inversely, it is 
 
 \subsection{FIN Experiment}
 We record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
-To perform a thorough comparison between the static and the dynamic experiment, we record a scene for each of the following scene types of S3DIS:
+To perform a thorough comparison between the FIN and S3DIS, we record a scene for each of the following scene types:
 \begin{itemize}
     \item office
     \item conference room
@@ -294,9 +309,9 @@ rate of minimum 1, e.g., the algorithm manages to process the entire point cloud
 % radius of 6 meters from the current position.
 
 \section{Summary}
-Many applications have constraints in the form of a temporal component. Applications that include plane detection
+Many applications have constraints in the form of a temporal component. Augmented or Virtual Reality applications that include plane detection
 are no exception. In addition to time constraints, good quality is usually tightly coupled to expensive sensors.
-To evaluate to what extent it is possible to perform precise plane detection with a real-time constraint on off-the shelf hardware,
+To evaluate to what extent it is possible to perform precise plane detection with a real-time constraint on off the shelf hardware,
 we compare selected algorithms.
 
 \end{document}
