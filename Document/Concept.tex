@@ -14,56 +14,57 @@
     \label{fig:concept}
 \end{figure}
 
-% FIXME direkt die spezifische nehmen und im folgenden erklären wie ich dazu komme
-% FIXME ebenen zurück in die scene / transformation / tracking oder so 
-% FIXME formale korrektheit der grafik: 
-% \section{Scenario / UseCase}
+\paragraph*{Internal Introduction}
+% SECTION - CONCEPT INTRO
+% FIXME generic view on AR + VR system
+AR and VR Systems often integrate plane detection into their software.  
+AR und VR Applikationen nehmen oft gebrauch von plane detection. \textcolor{red}{To provide examples,} \cite{Carranza_Estrella_Zaidi_Carranza_2021} use AR technology and plane detection 
+to aid the movement of visually impaired people. % FIXME beispiele
+Figure~\ref{fig:concept} shows a generic block diagram of such a VR/AR system including plane detection.
+First, the environment is recorded by a specialized sensor which is usually a camera([1]). A SLAM algorithm then integrates the new data into its already existing map([2]). The map, in form of a point cloud,
+is subsequently passed to a plane detection algorithm([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application([4]).
+The application itself could, e.g., then visualize the detected planes or guide a visually impaired person by providing voice commands.
 
-% Within a given use case or scenario that involves the detection of planes, the user records the surroundings with a camera. The raw data is then either
-% directly, or after some preprocessing steps, passed to a plane detection algorithm, which then hands the detected planes to an application for further use.
-% This application could use those planes to define the playable area in an augmented reality (AR) video game or alternatively build a digital floor
-% plan, or 3D model, of an apartment.
+% FIXME Describe the building blocks in there
+% SECTION Point out that the decision on the "best" PDA is not clear
+As previously stated in Chapter~\ref{chap:Introduction}, most published algorithms are inherently incomparable. The incomparability could stem from the method of evaluation,
+i.e., the metrics, the chosen dataset and even how the metrics are calculated. Additionally, the algorithms themself are a possible reason for incomparability, as they often differ
+in aspects like type of input, the format of detected planes and the amount of necesary pre- and postprocessing.
 
-% Especially in scenarios where the user moves through the environment, the time between recording and the planes reaching the application is crucial.
-% If an autonomous robot moves through an apartment complex, the delay must be as short as possible to avoid a collision with a wall the robot has not yet detected.
-% The problem can therefore be defined in such a way that planes must be detected in real-time and at the same time be sufficiently precise for the given use case.
-
-% % To optimize the entire process, shown in Figure~\ref{fig:concept}, this work will aim to answer the question of to what extent precise real-time plane detection is feasible. 
-% % NOTE alternative: 
-% To optimize the entire process, shown in \ref{fig:concept}, this work is focused on the plane detection step (green).
-
-% Furthermore, we focus on indoor environments, as motivated by Chapter~\ref{chap:Introduction}.
-% This includes the buildings we encounter in our normal lives, whether it is the home we live in, the office we work in, or a stripped-down version of a building during construction.
-
-
-
-% Viele Anwendungsfälle bauen auf das finden von ebenen in realen strukturen auf. Es werden spezielle sensoren entwickelt, welche extrem präzise daten der aufgenommenen umgebung liefern können.
-% Mit dieser präzision steigt natürlich auch der preis, was sich natürlich nicht jeder leisten kann. Ein Nutzer möchte und kann sich wahrscheinlich nicht einen 4000 Sensor leisten, nur um AR spiele in seinem Wohnzimmer zu spielen.
-% Dazu kommt oft eine zeitliche komponente. Wenn sich der nutzer durch die umgebung bewegt möchte dieser nicht 
-
+An algorithm that has lower reported runtimes than another might in reality run slower because some variables like the amount of noise changed.
+Therefore, the "best" plane detection algorithm selection is non-trivial, impossible even, as previously mentioned in Chapter~\ref{chap:Introduction}.
 % FIXME vertiefen: (aus INTRO) "Problem an letzterem: nicht möglich einen einheitlich besten algorithmus auszuwählen"  
+% FIXME Tell me why that is not clear!
 
-Roter Faden:
-\begin{itemize}
-    \item generic view on AR + VR system
-    \item Describe the building blocks in there
-    \item Point out that the decision on the "best" PDA is not clear
-    \item Tell me why that is not clear!
-    \item Get me going on those PDA
-          \begin{itemize}
-              \item describe my view on the world
-              \item show marco that table
-              \item describe what these values mean and why they are important
-          \end{itemize}
-\end{itemize}
+
+%!SECTION 
+% !!SECTION -
+% SECTION - CONCEPT PDA: get me going on those PDA 
+% FIXME describe my view on the world
+% FIXME show marco that table
+% FIXME describe what these values mean and why they are important
+%!SECTION - 
+% Roter Faden:
+% \begin{itemize}
+%     \item generic view on AR + VR system
+%     \item Describe the building blocks in there
+%     \item Point out that the decision on the "best" PDA is not clear
+%     \item Tell me why that is not clear!
+%     \item Get me going on those PDA
+%           \begin{itemize}
+%               \item describe my view on the world
+%               \item show marco that table
+%               \item describe what these values mean and why they are important
+%           \end{itemize}
+% \end{itemize}
 
 \section{Selection of Plane Detection Algorithms}\label{sec:pdaselection}
 This section deals with the selection of appropriate plane detection algorithms.
-First, we define meaningful criteria against which the algorithms are compared to allow objective selection.
+As mentioned at the beginning of this chapter, the algorithms differ in certain aspects. 
 
 \subsection{Criteria}
-% FIXME why are these important?
-\textcolor{red}{disclaimer: die gründe für oder gegen bestimmte sachen in dieser section werden noch nach hinten verschoben und durch eine erklärung ersetzt ist grade nur nicht die haupt baustelle}
+We outline these aspects in the following paragraphs. Furthermore, we declare the most appropriate values of each criterion for the context of this work.
+
 % \subsection{Type of Input}
 \paragraph{Type of Input}\label{par:input}
 Usually, the data representation of the recorded environment passed to the plane detection algorithm falls under one of three categories:
@@ -127,7 +128,6 @@ of legs attached to them.
 % Im folgenden werden diese algorithmen verglichen und anschliessend eine auswahl, basierend auf den zuvor ausgewählten kriterien, für den weiteren Verlauf dieser Arbeit getroffen.
 
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
-In the following, we select suitable algorithms for the further course of this work based on the previously selected criteria.
 
 
 \begin{table}[H]
@@ -140,7 +140,7 @@ In the following, we select suitable algorithms for the further course of this w
         \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               & N                       \\ %& Y                   \\ \hline
         \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               & N                       \\ %& Y                     \\ \hline
         \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & normal, d             & N                       \\ %& Y                     \\ \hline
-        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers              & N                       \\ %& N                     \\ \hline
+        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers               & N                       \\ %& N                     \\ \hline
         \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               & N                       \\ %& Y                     \\ \hline
         \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & N                       \\ %& Y                     \\ \hline
         \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & normal, d             & Y                       \\ %& Y                     \\ \hline
