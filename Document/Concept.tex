@@ -23,23 +23,20 @@ In general, the environment is continuously recorded by a specialized sensor whi
 is subsequently passed to a plane detection algorithm([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application([4]).
 The application would then further process those planes, e.g., by creating a live visualization of them or by assisting the movement of visually impaired people~\cite{Carranza_Estrella_Zaidi_Carranza_2021}.
 
-Beim erstellen eines solchen systems ist die wahl des PDA natürlich von großer bedeutung. Das Problem daran ist, dass die meisten veröffentlichten algorithmen nicht von natur aus
-vergleichbar sind. Oft werden verschiedene Datensätze oder metriken benutzt, was einen vergleich durch quantifizierung ausschliesst. Alternativ sind algorithmen auf der internen funktionsweise nicht vergleichbar,
-da viele methoden verschiedene inputs voraussetzen und sich dementsprechend das format der ebenen genauso unterscheidet. Alles in allem ist es nicht möglich einen eindeutig "besten" algorithmus allein
-basierend auf den präsentierten Metriken auszuwählen.
+When creating such a system, the choice of PDA is naturally of great importance. The problem is that most published algorithms are not inherently comparable.
+Often different datasets or metrics are used, which precludes comparison by quantification. Alternatively, algorithms are not comparable by internal functionality 
+because many methods require different inputs, and the format of the planes differs accordingly. All in all, selecting a single "best" algorithm is impossible solely based on the metrics presented in their
+respective work.
 
-Um die frage zu beantworten, welche algorithmus am besten geeignet ist, und ob dieser echtzeitfähig ist, machen wir einen einheitlichen vergleich von PDAs.
-Um diese evaluierung durchführen zu können brauchen wir die folgenden dinge:
+To answer the question of which algorithm is best and whether it is real-time capable, we make a unified comparison of PDAs.
+To perform this evaluation, we need the following things:
+
 \begin{enumerate}
     \item \label{enum:pda}Appropriate plane detection algorithms,
     \item \label{enum:ds} a useful dataset \textit{and}
     \item \label{enum:rt} a definition of \textit{real-time}.
 \end{enumerate}
-Die folgenden sections kümmern sich darum.
-% As previously stated in Chapter~\ref{chap:Introduction}, most published algorithms are inherently incomparable. The incomparability could stem from the method of evaluation, i.e., the metrics, 
-% the chosen dataset, and even how the metrics are calculated. Additionally, the algorithms themself are a possible reason for incomparability, as they often differ
-% in aspects like the expected input type, the format of detected planes, and the amount of necessary pre-and/or postprocessing.
-% Therefore, selecting the "best" plane detection algorithm from the reported metrics alone is not possible. 
+The following sections are dedicated to them.
 
 
 % Roter Faden:
@@ -63,14 +60,13 @@ Die folgenden sections kümmern sich darum.
 % FIXME describe what these values mean and why they are important
 %!SECTION - 
 
-Da, wie schon angemerkt die meisten algorithmen sich in bestimmten aspekten unterscheiden, ist es nicht möglich alle einheitlich zu vergleichen.
-Ferner sind nicht alle algorithmen aus der selben motivation entstanden und legen daher den fokus auf verschiedene dinge. Es wäre beispielsweise sinnlos einen algorithmus wie
-\textit{Underwater SLAM}~\cite{6913908} auf die performanz in kleinen indoor umgebungen zu testen.
-Es ist somit nötig, zuerst objektive kriterien zu definieren woran oberflächlich beurteilt werden kann, welcher algorithmus in dem kontext dieser arbeit von nutzen sein könnte.
+Since, as already noted, most algorithms differ in certain aspects, it is not possible to compare them all uniformly. Furthermore, not all algorithms have the same motivation and therefore focus on different things. 
+For example, testing an algorithm like \textit{Underwater SLAM}~\cite{6913908} for performance in small indoor environments would be pointless. 
+It is, therefore, necessary to first define objective criteria to superficially determine which algorithm seems to be relevant for the context of this work.
 
 
 \subsection{Criteria}
-In den folgenden paragraphen definieren und umreissen wir angemessene kriterien für die objektive beurteilung von PDAs.
+In the following paragraphs, we define and outline appropriate criteria for the objective assessment of plane detection algorithms.
 
 % \subsection{Type of Input}
 \paragraph{Type of Input}\label{par:input}
@@ -83,7 +79,7 @@ Usually, the data representation of the recorded environment falls into one of t
 \end{itemize}
 
 The fundamental difference between UPC and OPC is their format. Each point cloud has a \textit{width} and a \textit{height} parameter.
-An unorganized point cloud $c$ is generally equal to an unordered 1D array of points, i.e., $width = |c|$ and $height=1$.
+An unorganized point cloud $c$ is generally equal to an unordered 1D array of 3D coordinates, i.e., $width = |c|$ and $height=1$.
 In contrast, the memory layout of an organized point cloud is a 2D array, where the width and height depend on the resolution of the used sensor.
 Taking the maximum resolution of the T265(see Table~\ref{tab:cameraspecs}) as an example, the OPC would have a \textit{width} and \textit{height} of
 1280 and 720, respectively.
@@ -116,7 +112,7 @@ Some methods are learning-based, e.g., they use deep learning to detect planes i
 Their ability to generalize depends on the choice of training data. If an algorithm is perfectly trained on
 a dataset that consists of only tables, the algorithm would find all table tops but might fail to detect planes that do not have a certain number
 of legs attached to them.
-
+\textcolor{red}{todo:elaborate}
 % FIXME elaborate
 
 % \subsection{Availability}
@@ -131,15 +127,10 @@ of legs attached to them.
 
 \subsection{Plane Detection Algorithms}
 
-% Diese section befässt sich mit der auswahl der plane detection algorithmen. Eine umfassende Literaturrecherche des Gebiets der plane detection 
-% ergibt eine Liste (vgl. Table~\ref{tab:algos}) von algorithmen. Diese werden hier zunächst in dedizierten paragraphen umrissen. 
-% Im folgenden werden diese algorithmen verglichen und anschliessend eine auswahl, basierend auf den zuvor ausgewählten kriterien, für den weiteren Verlauf dieser Arbeit getroffen.
-% Addressing \ref{enum:pda}, we first present a list of the current state-of-the-art plane detection algorithms, which can be seen in Table~\ref{tab:algos}. 
-
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
 \textcolor{red}{explanation of table}
 
-Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit sinnvollsten werte(?\textcolor{red}{"ich nehme UPC aus {UPC, OPC, DI}... idk wie ich das nennen soll})2 ausgewählt und anhand dessen unpassende algorithmen von der evaluierung ausgeschlossen.
+Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit sinnvollsten werte(?\textcolor{red}{"ich nehme UPC aus {UPC, OPC, DI}... idk wie ich das nennen soll}) ausgewählt und anhand dessen unpassende algorithmen von der evaluierung ausgeschlossen.
 
 \begin{table}[H]
     \centering
@@ -163,7 +154,7 @@ Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit 
 \end{table}
 
 Addressing the criterion of input type, we are only interested in performing plane detection in complete environments. We hereby consider organized point clouds or images inappropriate because they do not offer a complete view
-on a scene.\\
+on a scene.
 We hereby exclude  \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
 
 % Considering algorithms that run on anything other than UPC, would necessitate finding a data set that includes equivalent point clouds for both the structured and the unstructured case. % FIXME or calculate
