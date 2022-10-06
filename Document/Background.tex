@@ -235,15 +235,27 @@ The refinement process returns a complete set of planar regions.
 \subsection{PlaneRecNet}
 \subsection{PlaneRCNN}
 
+\section{Data Formats}
+\subsection{Common Input Types}
+The fundamental difference between UPC and OPC is their format. Each point cloud has a \textit{width} and a \textit{height} parameter.
+An unorganized point cloud $c$ is generally equal to an unordered 1D array of 3D coordinates, i.e., $width = |c|$ and $height=1$.
+In contrast, the memory layout of an organized point cloud is a 2D array, where the width and height depend on the resolution of the used sensor.
+% T265 kann keine OPC liefern
+Taking the maximum resolution of the T265(see Table~\ref{tab:cameraspecs}) as an example, the OPC would have a \textit{width} and \textit{height} of
+1280 and 720, respectively.
+Intuitively, the value at index (0,0) would be in the top-left corner, and the value at index (\textit{width,height}) would be in the bottom-right corner.
+% FIXME bild selber machen: 2xmatrix mit eintrag, einmal (0,0)=XYZ, einmal (0,0) = d_0,0 
+Depth images are inherently similar to organized point clouds, given their resolution and two-dimensional structure. The primary difference is that the values
+stored in the array are distances to the sensor instead of 3D coordinates.
 
 
 \section{Datasets}
+% FIXME Datensätze erklären
 % FIXME Tabelle erläutern!
-Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}).
 \begin{table}[]
     \centering
     \begin{tabular}{c|c|c|c|c}
-        \textbf{Dataset}                                                                              & \textbf{Input Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
+        \textbf{Dataset}                                                              & \textbf{Input Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
         \textbf{SegComp}     \cite{article}                                           & DI                    & N             & /               & planes      \\
         \textbf{S3DIS}       \cite{armeni_cvpr16}                                     & UPC                   & Y             & Y               & objects     \\
         \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                      & DI                    & Y             & Y               & classes     \\
@@ -259,6 +271,14 @@ Through extensive research of current literature, we compiled a list of popular 
     \label{tab:datasets}
 \end{table}
 
+\subsection{S3DIS}
+\subsection{S3DIS Experiment}
+S3DIS was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
+An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
+
+\textcolor{red}{diese 2 sätze sind dann jetzt wahrscheinlich misplaced}
+Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the dataset nevertheless reflects a realistic distribution of scene types since
+it is not realistic if a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
 
 \section{Evaluation Metrics}
 Wenn man sachen segmentiert oder muster erkennen möchte usw. benutzt man oft zur evaluierung metriken, die die qualität der benutzten methode beschreiben.

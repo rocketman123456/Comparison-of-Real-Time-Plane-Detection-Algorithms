@@ -49,7 +49,53 @@ If that number supersedes the proposed 70\%-90\%, depending on the expected nois
 It is worth noting that the choice of implementation using python is inferior considering calculation time when compared with an equivalent implementation in C++. Writing an optimized implementation in C++ would, therefore, go beyond the scope of this work, as the optimization of
 a single method is not our focus. 
 
+% FIXME hier aufnehmen des FIN DS!
+\section{Creation FIN Dataset}
+\label{sec:finimpl}
+
+Running \textit{realsense-ros} and holding our cameras, we walk through the aforementioned parts of the building while scanning to the best of our ability.
+We save each incremental map update to a file for later usage.
+
+Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
+To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
+Figure~\ref{fig:dynGT}.
+We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
+% Furthermore, we remove planes from the ground truth if the number of included points falls short of a threshold. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/dynamic_eval.png}
+    \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation. All planes that are included in \textit{Ground Truth} are cropped depending on
+        the available point cloud at each time \textit{t} }
+    \label{fig:dynGT}
+\end{figure}
+
+
+
 \section{Ground Truth Segmentation}
+\label{sec:gtseg}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c|c}
+        \hline
+        Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL   \\ \hline
+        office           & 16/31   & 5/14    & 10/10   & 9/22    & 4/42    & 3/37    & 48/156  \\ \hline
+        conference room  & 2/2     & 1/1     & 1 /1    & 3/3     & 3/3     & 1/1     & 11/11   \\ \hline
+        auditorium       & -       & 2/2     & -       & -       & -       & -       & 2/2     \\ \hline
+        lobby            & -       & -       & -       & 2 /2    & 1/1     & -       & 3/3     \\ \hline
+        lounge           & -       & -       & 2/2     & -       & -       & 1/1     & 3/3     \\ \hline
+        hallway          & 8/8     & 12/12   & 6/6     & 14/14   & 1/15    & 6/6     & 48/61   \\ \hline
+        copy room        & 1/1     & -       & -       & -       & -       & 1/1     & 2/2     \\ \hline
+        pantry           & 1/1     & -       & -       & -       & /1      & 1/1     & 3/3     \\ \hline
+        open space       & -       & -       & -       & -       & -       & 1 /1    & 1/1     \\ \hline
+        storage          & -       & 9/9     & 2 /2    & 4/4     & 4/4     & -       & 19/19   \\ \hline
+        WC               & 1/1     & 2/2     & 2/2     & 4/4     & 4/2     & -       & 11/11   \\ \hline
+        TOTAL            & 27/45   & 31/39   & 23/24   & 36/49   & 16 /55  & 14/53   & 139/272 \\ \hline
+        TOTAL Planes     & 792     & 667     & 513     & 813     & 286     & 339     & 3410    \\
+    \end{tabular}
+    \caption{S3DIS Disjoint Space Statistics. \textcolor{red}{WAS SAGT DIE TABELLE AUS}}
+    \label{tab:stanfordStats}
+\end{table}
 
 % FIXME "hier bräuchte der Leser noch etwas roten faden"
 Since the selected data set focuses on semantic segmentation rather than detection of planar regions, we manually create a ground truth.
@@ -60,7 +106,7 @@ have to view each point cloud and segment the included planes manually.
 This process is very time-consuming, and to slightly reduce the time spent, we perform an initial analysis of all scenes within a 
 given area and omit scenes that seem to inherit no noticeable differences.
 
-
+% FIXME elaborate
 
 \begin{figure} [H]
 	\centering
