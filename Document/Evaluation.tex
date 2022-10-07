@@ -40,7 +40,7 @@ For the evaluation of a given dataset, by comparing the test results with the gr
 \section{Results}
 This section deals with the results of the experiments. The individual results of both experiments are presented and analyzed. 
 
-\subsection{Results S3DIS Experiments}
+\subsection{Results 2D-3D-S Experiments}
 
 \begin{table}[H]
     \centering
@@ -51,11 +51,11 @@ This section deals with the results of the experiments. The individual results o
         3DKHT & 0.75      & 0.43   & 0.53 & 0.91    \\
         OBRG  & 0.77      & 0.69   & 0.72 & 44.66
     \end{tabular}
-    \caption[Overall S3DIS Results]{Average results of each algorithm over the S3DIS dataset.}
+    \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the 2D-3D-S dataset.}
     \label{tab:algo-acc}
 \end{table}
 
-Every algorithm performs calculations on every scene included in S3DIS.
+Every algorithm performs calculations on every scene included in 2D-3D-S.
 The results of each algorithm on an individual scene type are reported in Figure~\ref{fig:stanfordaccuracy} and Figure~\ref{fig:violintime}. As shown in Table~\ref{tab:algo-acc},
 RSPD produces the overall best results with an average of 85\% precision, 89\% recall and an F1-score of 86\%, as well as an average of 0.9 seconds of calculation time.
 The only other algorithm that achieves similar calculation times is 3D-KHT, which takes 0.91 seconds on average. Considering our definition of \textit{real-time} in Section~\ref{sec:realtime},
@@ -67,7 +67,7 @@ With an average of about 17 seconds(OPS) and about 44 seconds(OBRG), both algori
 \begin{figure}[]
     \centering
     \includegraphics[width=15 cm]{images/accuracy_total.png}
-    \caption[Accuracy Results S3DIS]{Average Accuracy for each scene type. The Precision
+    \caption[Accuracy Results 2D-3D-S]{Average Accuracy for each scene type. The Precision
         is colored blue, recall is orange and the F1-score is green.}
     \label{fig:stanfordaccuracy}
 \end{figure}
@@ -75,7 +75,7 @@ With an average of about 17 seconds(OPS) and about 44 seconds(OBRG), both algori
 \begin{figure}[]
     \centering
     \includegraphics[width=15 cm]{images/times_violin.png}
-    \caption[Time Results S3DIS]{Average Time per scene type. Note, that the plots
+    \caption[Time Results 2D-3D-S]{Average Time per scene type. Note, that the plots
         do not share the same y-axis.}
     \label{fig:violintime}
 \end{figure}
@@ -91,7 +91,7 @@ With an average of about 17 seconds(OPS) and about 44 seconds(OBRG), both algori
 \end{figure}
 
 The calculation times of all algorithms except OBRG seem to be proportional to the size of the point cloud.
-% TODO similar figure for S3DIS
+% TODO similar figure for 2D-3D-S
 The quality of plane detection, however, decraeses dramatically in comparison to the Stanford Datasets. RSPD is the only dataset that
 is able to detect planes. %(see Figure~\ref{fig:}). 
 

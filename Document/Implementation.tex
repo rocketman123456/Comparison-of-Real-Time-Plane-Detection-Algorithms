@@ -15,7 +15,7 @@ We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}, as we
 % FIXME I think those footnotes with links were a bad idea
 
 \section{Plane Detection Algorithms}
-We implement RSPD\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} and OPS\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}} using their respective open source implementations on GitHub. 
+We implement RSPD\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} and OPS\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}} using their respective open source implementations on GitHub.
 Note that, while the implementation of RSPD is provided by the author, we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}.
 Both methods are implemented in C++ and depend on the C++ linear algebra library \textit{Eigen}\footnote{\href{https://eigen.tuxfamily.org/index.php}{https://eigen.tuxfamily.org/index.php}}
 and the C++ API of the  Point-Cloud Library\footnote{\href{https://pointclouds.org/}{https://pointclouds.org/}}, \textit{libpcl-dev}.
@@ -38,19 +38,88 @@ reduce the total calculation time.
 Since the exact values of all thresholds have not been specified, we empirically select as follows:
 
 \begin{itemize}
-    \item $r_{th}$ = 0.1 
+    \item $r_{th}$ = 0.1
     \item $\theta_{th}$ = 0.3
     \item $d_{min}$ =  0.1
 \end{itemize}
 
-To determine a region's planarity, we calculate the number of points that fit the best fitting plane within a predefined threshold. 
+To determine a region's planarity, we calculate the number of points that fit the best fitting plane within a predefined threshold.
 If that number supersedes the proposed 70\%-90\%, depending on the expected noise, the region is considered planar \cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.
 
 It is worth noting that the choice of implementation using python is inferior considering calculation time when compared with an equivalent implementation in C++. Writing an optimized implementation in C++ would, therefore, go beyond the scope of this work, as the optimization of
-a single method is not our focus. 
+a single method is not our focus.
 
-% FIXME hier aufnehmen des FIN DS!
-\section{Creation FIN Dataset}
+
+
+\section{2D-3D-S}
+\label{sec:gtseg}
+% FIXME "hier bräuchte der Leser noch etwas roten faden"
+The 2D-3D-S dataset provides a ground truth in form of annotated point clouds corresponding to 13 object classes. Since these annotated objects are not
+always planar, we cannot use them for the evaluation of plane detection algorithms. Thus, we create a ground truth that focuses on planar structures.
+We use the open-source 3D point cloud and mesh processing software \textit{CloudCompare} to visualize a scene and manually segment included planes.
+
+Because we cannot assume all walls to be planar or that, e.g., the tops or three adjacent tables always form the same number of planes (see Figure~\ref{fig:tables}), we
+have to view each point cloud and segment the included planes manually. An exemplary before-and after-segmentation is shown below in Figure~\ref{fig:gtseg}.
+
+\begin{figure} [H]
+    \centering
+    \includegraphics[width=\textwidth]{images/gtseg.png}
+    \caption[Ground Truth Segmentation]{Ground Truth Segmentation of a hallway in CloudCompare. Shown is the input cloud on the left and segmented planes on the right. 
+    Both are cropped and without ceilings for visualization purposes.}
+    \label{fig:gtseg}
+\end{figure}
+
+
+The manual segmentation process is very time consuming, not only because of the large amount of data but also due 
+to the following recurring questions. 
+
+\begin{enumerate}
+    \item "Which level of curvature separates planar from non-planar?",
+    \item "How sparse can a cloud be to still be considered a plane?" \textit{and}
+    \item "When does a plane need splitting(or multiple planes merging)?"
+\end{enumerate}
+All these questions slow down the segmentation process. On average, the segmentation of a scene took 8-10 minutes, which, for all 272 scenes, 
+would equate to a total of 36-45 hours. To reduce the time spent in segmentation, we perform an initial analysis of the scenes in a given area 
+and omit scenes that show no noticeable difference compared to others. This analysis reduces the number of segmented scenes to slightly more than half 
+of the total, reducing the time to 18-23 hours. 
+
+The results of the manual segmentation process are documented in Table~\ref{tab:stanfordStats}. 
+
+
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{c|c|c|c|c|c|c|c|c}
+            Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL            & Planes        \\ \hline
+            office           & 16/31   & 5/14    & 10/10   & 9/22    & 4/42    & 3/37    & 48/156           & 1116          \\ \hline
+            conference room  & 2/2     & 1/1     & 1 /1    & 3/3     & 3/3     & 1/1     & 11/11            & 375           \\ \hline
+            auditorium       & -       & 2/2     & -       & -       & -       & -       & 2/2              & 70            \\ \hline
+            lobby            & -       & -       & -       & 2 /2    & 1/1     & -       & 3/3              & 207           \\ \hline
+            lounge           & -       & -       & 2/2     & -       & -       & 1/1     & 3/3              & 101           \\ \hline
+            hallway          & 8/8     & 12/12   & 6/6     & 14/14   & 1/15    & 6/6     & 48/61            & 977           \\ \hline
+            copy room        & 1/1     & -       & -       & -       & -       & 1/1     & 2/2              & 45            \\ \hline
+            pantry           & 1/1     & -       & -       & -       & /1      & 1/1     & 3/3              & 73            \\ \hline
+            open space       & -       & -       & -       & -       & -       & 1 /1    & 1/1              & 10            \\ \hline
+            storage          & -       & 9/9     & 2 /2    & 4/4     & 4/4     & -       & 19/19            & 222           \\ \hline
+            WC               & 1/1     & 2/2     & 2/2     & 4/4     & 4/2     & -       & 11/11            & 214           \\ \hline
+                             &         &         &         &         &         &         & \textbf{139/272} & \textbf{3410}
+        \end{tabular}
+    }
+    \caption[2S-3D-S Statistics]{2D-3D-S statistics. Shown are the number of scenes per category and for how many we created a ground truth ($\#GT/\#Total$).
+    Furthermore, the rightmost column reports the number of segmented planes per scene category.  }
+    \label{tab:stanfordStats}
+\end{table}
+
+
+\begin{figure} []
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/tables.png}
+    \caption[Ground Truth Table Example]{The provided ground truth considers these tables to be three separate objects. Within the context of
+        plane detection, the three table tops would form exactly one plane.}
+    \label{fig:tables}
+\end{figure}
+
+\section{FIN Dataset}
 \label{sec:finimpl}
 
 Running \textit{realsense-ros} and holding our cameras, we walk through the aforementioned parts of the building while scanning to the best of our ability.
@@ -68,53 +137,5 @@ We speed up this expensive process by employing a KD-Tree neighbor search with a
         the available point cloud at each time \textit{t} }
     \label{fig:dynGT}
 \end{figure}
-
-
-
-\section{Ground Truth Segmentation}
-\label{sec:gtseg}
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{c|c|c|c|c|c|c|c}
-        \hline
-        Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL   \\ \hline
-        office           & 16/31   & 5/14    & 10/10   & 9/22    & 4/42    & 3/37    & 48/156  \\ \hline
-        conference room  & 2/2     & 1/1     & 1 /1    & 3/3     & 3/3     & 1/1     & 11/11   \\ \hline
-        auditorium       & -       & 2/2     & -       & -       & -       & -       & 2/2     \\ \hline
-        lobby            & -       & -       & -       & 2 /2    & 1/1     & -       & 3/3     \\ \hline
-        lounge           & -       & -       & 2/2     & -       & -       & 1/1     & 3/3     \\ \hline
-        hallway          & 8/8     & 12/12   & 6/6     & 14/14   & 1/15    & 6/6     & 48/61   \\ \hline
-        copy room        & 1/1     & -       & -       & -       & -       & 1/1     & 2/2     \\ \hline
-        pantry           & 1/1     & -       & -       & -       & /1      & 1/1     & 3/3     \\ \hline
-        open space       & -       & -       & -       & -       & -       & 1 /1    & 1/1     \\ \hline
-        storage          & -       & 9/9     & 2 /2    & 4/4     & 4/4     & -       & 19/19   \\ \hline
-        WC               & 1/1     & 2/2     & 2/2     & 4/4     & 4/2     & -       & 11/11   \\ \hline
-        TOTAL            & 27/45   & 31/39   & 23/24   & 36/49   & 16 /55  & 14/53   & 139/272 \\ \hline
-        TOTAL Planes     & 792     & 667     & 513     & 813     & 286     & 339     & 3410    \\
-    \end{tabular}
-    \caption{S3DIS Disjoint Space Statistics. \textcolor{red}{WAS SAGT DIE TABELLE AUS}}
-    \label{tab:stanfordStats}
-\end{table}
-
-% FIXME "hier bräuchte der Leser noch etwas roten faden"
-Since the selected data set focuses on semantic segmentation rather than detection of planar regions, we manually create a ground truth.
-We use the open-source 3D point cloud and mesh processing software CloudCompare.
-Because we cannot assume all walls to be planar or that, e.g., the tops or three adjacent tables always form the same number of planes (see Figure~\ref{fig:tables}), we 
-have to view each point cloud and segment the included planes manually.
-
-This process is very time-consuming, and to slightly reduce the time spent, we perform an initial analysis of all scenes within a 
-given area and omit scenes that seem to inherit no noticeable differences.
-
-% FIXME elaborate
-
-\begin{figure} [H]
-	\centering
-	\includegraphics[width=0.5\textwidth]{images/tables.png}
-    \caption[Ground Truth Table Example]{The given ground truth considers these tables to be three distinct objects. Within the context of 
-    plane detection, the three table tops would form exactly one plane.}
-	\label{fig:tables}
-\end{figure}
-
 
 \end{document}
