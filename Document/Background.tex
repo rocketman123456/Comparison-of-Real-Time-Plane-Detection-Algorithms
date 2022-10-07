@@ -55,9 +55,9 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System \footn
 \begin{table}[H]
     \centering
     \begin{tabular}{c|ccccccc}
-             & Image  & Type     & max. Resolution & D-FOV & Shutter & Price & max. FPS      \\ \hline
-        D455 & Stereo & RGB-D    & 1280x720        & 111°      & global  & 419\$ & 90              \\ \hline
-        T265 & Stereo & Tracking & 848 x 800       & 163°      & global  & 199\$ & 30       
+             & Image  & Type     & max. Resolution & D-FOV & Shutter & Price & max. FPS \\ \hline
+        D455 & Stereo & RGB-D    & 1280x720        & 111°  & global  & 419\$ & 90       \\ \hline
+        T265 & Stereo & Tracking & 848 x 800       & 163°  & global  & 199\$ & 30
     \end{tabular}
     \caption[Intel RealSense T265 & D455 Specification]{Intel RealSense T265 and D455 camera specifications. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
     \label{tab:cameraspecs}
@@ -255,17 +255,17 @@ stored in the array are distances to the sensor instead of 3D coordinates.
 \begin{table}[]
     \centering
     \begin{tabular}{c|c|c|c|c}
-        \textbf{Dataset}                                                              & \textbf{Input Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
-        \textbf{SegComp}     \cite{article}                                           & DI                    & N             & /               & planes      \\
-        \textbf{2D-3D-S}       \cite{armeni_cvpr16}                                     & UPC                   & Y             & Y               & objects     \\
-        \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                      & DI                    & Y             & Y               & classes     \\
-        \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}         & OPC                   & Y             & Y               & planes      \\
-        \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                               & DI                    & Y             & Y               & trajectory  \\
-        \textbf{SYNBEP}      \cite{schaefer19icra}                                    & OPC                   & N             & /               & planes      \\
-        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015} & OPC                   & Y             & Y               & /           \\
-        \textbf{SUN}         \cite{7298655}                                           & DI                    & Y             & Y               & objects     \\
-        \textbf{Leica}       \cite{leica}                                             & UPC                   & Y             & N               & planes      \\
-        \textbf{TUM}         \cite{sturm12iros}                                       & DI                    & Y             & Y               & trajectory
+        \textbf{Dataset}                                                                                                                                                                      & \textbf{Input Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
+        \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      \\
+        \textbf{2D-3D-S}       \cite{armeni_cvpr16}                                                                                                                                           & UPC                   & Y             & Y               & objects     \\
+        \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     \\
+        \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      \\
+        \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  \\
+        \textbf{SYNBEP}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      \\
+        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           \\
+        \textbf{SUN}         \cite{7298655}                                                                                                                                                   & DI                    & Y             & Y               & objects     \\
+        \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      \\
+        \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory
     \end{tabular}
     \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.}
     \label{tab:datasets}
@@ -304,7 +304,7 @@ the likelihood of a result being relevant(see Eq.~\ref{eq:rec}). Lastly, the \te
 
 
 In the context of this work, we calculate \textit{precision, recall} and the \textit{f1-score} as follows.
-Required are the original point cloud $PC$, the corresponding list of ground truth planes $GT$ and the planes obtained from a plane detection algorithm $A$. 
+Required are the original point cloud $PC$, the corresponding list of ground truth planes $GT$ and the planes obtained from a plane detection algorithm $A$.
 First, we regularize the $PC$ to reduce complexity and to avoid proximity bias, because of the inverse relationship
 between distance to sensor and cloud density. This regularization is obtained through voxelization of the point cloud.
 With this voxel grid, we can now calculate corresponding sets of voxels for each list of points that represent a plane.
