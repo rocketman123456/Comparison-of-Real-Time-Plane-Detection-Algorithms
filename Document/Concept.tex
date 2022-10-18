@@ -15,20 +15,22 @@
 \end{figure}
 
 Many AR and VR Systems integrate plane detection into their software, some use it only to calculate the ground floor while others use plane detection to
-build a smaller model of the environment. Die genauen Anwengunsmöglicheiten sind hierbei jedoch endlos.
+build a smaller model of the environment.
 Figure~\ref{fig:concept} shows a generic block diagram of such a VR/AR system including plane detection.
-% FIXME REALTIME NOW MISSING FROM INTRODUCTION
 In general, the environment is continuously recorded by a specialized sensor which is usually a camera([1]). A SLAM algorithm then integrates the new data into its already existing map([2]). The map, in form of a point cloud,
 is subsequently passed to a plane detection algorithm([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application([4]).
 The application would then further process those planes, e.g., by creating a live visualization of them or by assisting the movement of visually impaired people~\cite{Carranza_Estrella_Zaidi_Carranza_2021}.
 
-When creating such a system, the choice of PDA is naturally of great importance. The problem is that most published algorithms are not inherently comparable.
+To remove any noticeable lag in the application, the plane detection step has to run under a temporal restriction, henceforth referred to as \textit{real-time}.
+We state a more precise definition in Section~\ref{sec:realtime}.
+
+When creating such a AR/VR system, the choice of plane detection algorithm is naturally of great importance. The problem is that most published algorithms are not inherently comparable.
 Often different datasets or metrics are used, which precludes comparison by quantification. Alternatively, algorithms are not comparable by internal functionality
-because many methods require different inputs, and the format of the planes differs accordingly. All in all, selecting a single "best" algorithm is impossible solely based on the metrics presented in their
+because many methods require different inputs, and the format of the planes differs accordingly. All in all, selecting a single 'best' algorithm is impossible solely based on the metrics presented in their
 respective work.
 
-To answer the question of which algorithm is best and whether it is real-time capable, we make a unified comparison of PDAs.
-To perform this evaluation, we need the following things:
+To answer the question of which algorithm is best and whether it is real-time capable, we make a unified comparison of plane detection algorithms.
+To perform this evaluation, we need the following:
 
 \begin{enumerate}
     \item \label{enum:pda}Appropriate plane detection algorithms,
@@ -59,8 +61,8 @@ The following sections are dedicated to them.
 % FIXME describe what these values mean and why they are important
 %!SECTION - 
 
-Since, as already noted, most algorithms differ in certain aspects, it is not possible to compare them all uniformly. Furthermore, not all algorithms have the same motivation and therefore focus on different things.
-For example, judging an algorithm that focuses on indoor plane detection based on its ability to detect moving cars in an urban environment would be pointless.
+Since most algorithms differ in certain aspects, it is not possible to compare them all uniformly. Furthermore, not all algorithms have the same motivation and therefore focus on different things.
+For example, evaluating an algorithm in a scenario it has not been designed for would not yield meaningful results.
 It is, therefore, necessary to first define objective criteria to superficially determine which algorithm seems to be relevant for the context of this work.
 
 
@@ -93,46 +95,24 @@ Usually, the data representation of the recorded environment falls into one of t
 % FIXME in den Background verschieben ,hier nur kurz den unterschied umreissen 
 
 OPC and UPC both describe point clouds in the cartesian coordinate system. The primary difference is that the 3D coordinates inside
-an organized point cloud are saved in a 2D Grid, while the unorganized cloud resembles an unsorted 1D array.
+an organized point cloud are saved in a 2D grid, while the unorganized cloud resembles an unsorted 1D array.
 Like OPC, depth images are a 2D grid of values. However, in contrast to the 3D coordinates of an OPC, the data points of depth images
 are the distances to the sensor.
 
 
-% As stated before, we focus on detecting planar structures in the entire environment rather than just distinct segments.
-% In addition, only the unorganized/unstructured point clouds offer a complete view of the recorded environment.
 
-
-% \subsection{Detected Plane Format} \label{subsec:planeformat}
 \paragraph{Detected Plane Format} \label{subsec:planeformat}
 Which specific representation the detected planes take the form of is also essential.
 If no uniform output type can be determined, consequently, no uniform metric for comparison can also be found.
 
-Since the algorithms process point clouds, we choose to stay within the realm of points, i.e., an arbitrary plane should be
-represented by the set of points included in the plane (inliers).
-The representation, being a list of points, enables further processing of the detected planes.
-A list of points would, in contrast to some plane equation, enable us to detect holes in planes, e.g.,
-an open door or window, which can be helpful in any use case involving remodeling architectural elements.
-It also allows further filtering of planes based on a density value that we can calculate over the bounding
-box and the number of points, e.g., removing planes with a density lower than a certain threshold.
 
+Often the found planes are saved as a list of 3D points, henceforth referred to as inliers, which were assigned to a plane.
+Another often-plane output format is the cartesian equation of a plane described by a normal vector $n$ and a vector $d$.
 
-% \paragraph{Learning based}\label{subsec_learning_based}
-% Some methods are learning-based, e.g., they use deep learning to detect planes in point clouds or images.
-% Their ability to generalize depends on the choice of training data. If an algorithm is perfectly trained on
-% a dataset that consists of only tables, the algorithm would find all table tops but might fail to detect planes that do not have a certain number
-% of legs attached to them.
-% \textcolor{red}{todo:elaborate}
-% % FIXME elaborate
+In methods that work on image data, found planes are often described by an image mask or pixels that belong together.
 
-% \subsection{Availability}
-% \paragraph{Availability / Reproducability?}
-% Lastly, we include the availability of an algorithm in our set of criteria.
-% Since we need to conduct our experiments on the same machine, it is necessary that we obtain an implementation of a given method.
-% We generally consider a method as \textit{available} if one of the following conditions is met:
-% \begin{itemize}
-%     \item A corresponding implementation is publicly available \textit{or}
-%     \item the paper outlines the method in a way that enables self-implementation, i.e., by providing pseudocode, elaborate figures and/or thorough description.
-% \end{itemize}
+Finally, some methods use plane detection as a means to an end, e.g., for reconstructing a scene.
+% FIXME FIX table sodass maske oder da steht
 
 \subsection{Plane Detection Algorithms}
 \label{subsec:pdaselect}
@@ -150,13 +130,13 @@ Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit 
         \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers              \\  %& N                       \\ %& Y                     \\ \hline
         \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers              \\  %& N                       \\ %& Y                   \\ \hline
         \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers              \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & normal, d            \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & n, d            \\  %& N                       \\ %& Y                     \\ \hline
         \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers              \\  %& N                       \\ %& N                     \\ \hline
         \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers              \\  %& N                       \\ %& Y                     \\ \hline
         \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers              \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & normal, d            \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & I                   & n, d            \\  %& Y                       \\ %& Y                     \\ \hline
         \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & I                   & reconstructed scene  \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & normal, d            \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & I                   & n, d            \\  %& Y                       \\ %& Y                     \\ \hline
     \end{tabular}
     \caption{Plane Detection Algorithms}
     \label{tab:algos}
@@ -167,10 +147,6 @@ Because unorganized point clouds are not limited in their dimension, they are mo
 We hereby consider organized point clouds or images inappropriate because they do not offer a complete view
 on a scene.
 We, therefore, exclude  \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
-
-% Considering algorithms that run on anything other than UPC, would necessitate finding a data set that includes equivalent point clouds for both the structured and the unstructured case. % FIXME or calculate
-% Alternatively, it would require calculating equivalent UPCs for each OPC which is beyond the scope of this work, due to the dramatic increase in complexity.
-% Since these algorithms would disregard the global structure of the point cloud, we deem them not feasible for our use case and thus exclude them from our evaluation.
 
 Secondly, the detected planes need to be in the same format because, even for the same plane, different representations could very well lead to different results.
 Assume a plane in cartesian form and a plane represented by its inliers. The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
@@ -193,20 +169,19 @@ Finally, we end up with, and thus include, the following plane detection algorit
 % datensätze kurz umreissen
 % analog zu PDA section
 % "aber keiner hat eine temporale komponente, daher müssen wir einen eigenen aufnehmen" 
-As mentioned at the bigging of this chapter, we also need an appropriate dataset for the evaluation.
+As mentioned at the beginning of this chapter, we also need an appropriate dataset for the evaluation.
 Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}).
-% FIXME irgendwo muss hier noch hin, dass ich ebenen als ground truth gerne hätte
 
 In Subsection~\ref{subsec:pdaselect}, we determined unorganized point clouds as the type of input. Furthermore, we focus on plane detection in real environments in this work.
 Because most datasets do not conform to these two requirements, only \textit{2D-3D-S} and \textit{Leica} remain. Since we, additionally, want to detect planes in indoor environments, 
 \textit{Leica} also ceases to be an option. Thus, we choose 2D-3D-S as the dataset for the evaluation.
 
 Nonetheless, we cannot use the provided ground truth of 2D-3D-S because it represents the segmented scene on the level of objects, rather than planes in the scene.
-Consequently, we create a ground truth that aligns with the aim of this work. We outline the details thereof in Section~\ref{sec:gtseg}.  
+Consequently, we create a ground truth that aligns with the aim of this work, i.e., planes. We outline the details thereof in Section~\ref{sec:gtseg}.  
 
 Lastly, 2D-3D-S does not inherit any temporal component, i.e., the unorganized point clouds do not grow incrementally over time. 
 To the best of our knowledge, there exists no dataset that meets the above criteria and, additionally, provides a plane-focused ground truth. 
-Thus, we record an incrementally growing dataset in the Faculty of Computer Science(FIN) at Otto-von-Guericke University Magdeburg.
+Thus, we record an incrementally growing dataset in the Faculty of Computer Science (FIN) at Otto-von-Guericke University Magdeburg.
 
 % \subsection{FIN Experiment}
 % We record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
@@ -218,7 +193,7 @@ To perform a thorough comparison between the FIN and 2D-3D-S, and, subsequently,
     \item hallway
 \end{itemize}
 
-We focus on these four scene types because they are the most common in a real environment.
+We focus on these four scene types because they are the most common in a real indoor environment.
 The recorded point clouds can be seen in Figure~\ref{fig:fin}.
 
 
@@ -247,7 +222,7 @@ The recorded point clouds can be seen in Figure~\ref{fig:fin}.
         \caption[Dynamic Dataset office]{}
         \label{fig:finhw}
     \end{subfigure}
-    \caption[Dynamic Datasets]{The recordings for each scene type: (a)auditorium, (b) conference room, (c) office and (d) hallway.}
+    \caption[Dynamic Datasets]{The recordings for each scene type: (a) auditorium, (b) conference room, (c) office and (d) hallway.}
     \label{fig:fin}
 \end{figure}
 Lastly, since this is a novel dataset, we create a ground truth. The details thereof are explained in Section~\ref{sec:finimpl}.
@@ -293,6 +268,7 @@ rate of minimum 1, e.g., the algorithm manages to process the entire point cloud
 \section{Summary}
 Many applications have constraints in the form of a temporal component. Augmented or Virtual Reality applications that include plane detection
 are no exception. In addition to time constraints, good quality is usually tightly coupled to expensive sensors.
+% FIXME sprung zu groß
 To evaluate to what extent it is possible to perform precise plane detection with a real-time constraint on off-the-shelf hardware,
 we compare selected algorithms on the 2D-3D-S and a self-recorded dataset.
 

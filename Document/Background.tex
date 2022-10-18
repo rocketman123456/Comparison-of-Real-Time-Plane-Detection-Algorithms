@@ -248,6 +248,7 @@ Intuitively, the value at index (0,0) would be in the top-left corner, and the v
 Depth images are inherently similar to organized point clouds, given their resolution and two-dimensional structure. The primary difference is that the values
 stored in the array are distances to the sensor instead of 3D coordinates.
 
+\subsection{Common Plane Formats}
 
 \section{Datasets}
 % FIXME Datensätze erklären
@@ -281,6 +282,7 @@ Furthermore, one could argue that an uneven distribution of scene types introduc
 it is not realistic if a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
 
 \section{Evaluation Metrics}
+\label{sec:metrics}
 Wenn man sachen segmentiert oder muster erkennen möchte usw. benutzt man oft zur evaluierung metriken, die die qualität der benutzten methode beschreiben.
 Usual metrics are \textit{precision, recall} and the \textit{f1-score}.
 In general, \textit{precision} describes how many of the results are relevant, i.e., the percentage of correctly calculated values(see Eq.~\ref{eq:prec}). \textit{Recall} describes the ratio of relevant results to all relevant data, i.e.
@@ -322,11 +324,6 @@ $$v_i \notin gt_j \land v_i \in a_k \Rightarrow v_{i} \in FP$$
 With those four rules, we can calculate the precision, recall and F1 score like this:
 $$Precision = \frac{|TP|}{|TP|+|FP|}$$
 $$Recall = \frac{|TP|}{|TP|+|FN|}$$
-
-% FIXME ist das hier noch richtig?
-Aside from the accuracy, we also need to compare the time each algorithm needs to find its respective set of planes.
-For that, we measure the time spent in the plane detection phase, excluding any preprocessing or postprocessing steps.
-To measure the detection time, we log the exact times before and after calculations and write the difference to a file.
 
 \end{document}
 

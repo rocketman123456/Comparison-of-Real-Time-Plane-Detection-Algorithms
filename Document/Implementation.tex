@@ -2,9 +2,7 @@
 \begin{document}
 
 \chapter{Implementation}
-To ensure a uniform comparison of the algorithms selected in the concept, the external circumstances
-must be identical for each algorithm. This chapter will detail the implementation thereof.
-
+This chapter provides the implementation details of the outlined concept of the previous chapter.
 \section{System Setup}
 It is necessary to perform all experiments on the same machine to ensure a consistent comparison.
 We implement all algorithms and further architecture on a Lenovo IdeaPad 5 Pro,
@@ -12,20 +10,23 @@ which runs Linux Ubuntu 20.04.5. The laptop has an AMD Ryzen 7 5800H CPU and 16 
 
 We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}, as well as \textit{realsense-ros} with all additional dependencies.
 
+
 % FIXME I think those footnotes with links were a bad idea
 
 \section{Plane Detection Algorithms}
+\subsection{RSPD \& OPS}
 We implement RSPD\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} and OPS\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}} using their respective open source implementations on GitHub.
 Note that, while the implementation of RSPD is provided by the author, we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}.
 Both methods are implemented in C++ and depend on the C++ linear algebra library \textit{Eigen}\footnote{\href{https://eigen.tuxfamily.org/index.php}{https://eigen.tuxfamily.org/index.php}}
 and the C++ API of the  Point-Cloud Library\footnote{\href{https://pointclouds.org/}{https://pointclouds.org/}}, \textit{libpcl-dev}.
+
+\subsection{3D-KHT}
 
 The authors of 3D-KHT, provide an implementation, in form of a Visual Studio project, on their website\footnote{\href{https://www.inf.ufrgs.br/~oliveira/pubs_files/HT3D/HT3D_page.html}
     {https://www.inf.ufrgs.br/~oliveira/pubs\_files/HT3D/HT3D\_page.html}}. Since the laptop we use does not run Windows, we use \textit{cmake-converter}\footnote{\href{https://cmakeconverter.readthedocs.io/en/latest/use.html}{https://cmakeconverter.readthedocs.io/}} to convert
 the solution to a CMake project we can build using \textit{make}.
 
 \subsection{OBRG}
-% FIXME widerspricht der availability
 To our knowledge, no open-source implementation is available for the algorithm.
 We, therefore, use our own implementation.
 
@@ -53,37 +54,44 @@ a single method is not our focus.
 
 \section{2D-3D-S}
 \label{sec:gtseg}
-% FIXME "hier bräuchte der Leser noch etwas roten faden"
 The 2D-3D-S dataset provides a ground truth in form of annotated point clouds corresponding to 13 object classes. Since these annotated objects are not
 always planar, we cannot use them for the evaluation of plane detection algorithms. Thus, we create a ground truth that focuses on planar structures.
 We use the open-source 3D point cloud and mesh processing software \textit{CloudCompare} to visualize a scene and manually segment included planes.
-
 Because we cannot assume all walls to be planar or that, e.g., the tops or three adjacent tables always form the same number of planes (see Figure~\ref{fig:tables}), we
 have to view each point cloud and segment the included planes manually. An exemplary before-and after-segmentation is shown below in Figure~\ref{fig:gtseg}.
 
 \begin{figure} [H]
-    \centering
-    \includegraphics[width=\textwidth]{images/gtseg.png}
-    \caption[Ground Truth Segmentation]{Ground Truth Segmentation of a hallway in CloudCompare. Shown is the input cloud on the left and segmented planes on the right. 
-    Both are cropped and without ceilings for visualization purposes.}
-    \label{fig:gtseg}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=.9\linewidth]{images/gtseg.png}
+        \caption[Ground Truth Segmentation]{Ground Truth Segmentation of a hallway in CloudCompare. Shown is the input cloud on the left and segmented planes on the right.
+            Both are cropped and without ceilings for visualization purposes.}
+        \label{fig:gtseg}
+    \end{subfigure}
+    \begin{subfigure} {0.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{images/tables.png}
+        \caption[Ground Truth Table Example]{The provided ground truth considers these tables to be three separate objects. Within the context of
+            plane detection, the three table tops would form exactly one plane.}
+        \label{fig:tables}
+    \end{subfigure}
 \end{figure}
 
 
-The manual segmentation process is very time consuming, not only because of the large amount of data but also due 
-to the following recurring questions. 
+The manual segmentation process is very time consuming, not only because of the large amount of data but also due
+to the following recurring questions.
 
 \begin{enumerate}
     \item "Which level of curvature separates planar from non-planar?",
     \item "How sparse can a cloud be to still be considered a plane?" \textit{and}
     \item "When does a plane need splitting(or multiple planes merging)?"
 \end{enumerate}
-All these questions slow down the segmentation process. On average, the segmentation of a scene took 8-10 minutes, which, for all 272 scenes, 
-would equate to a total of 36-45 hours. To reduce the time spent in segmentation, we perform an initial analysis of the scenes in a given area 
-and omit scenes that show no noticeable difference compared to others. This analysis reduces the number of segmented scenes to slightly more than half 
-of the total, reducing the time to 18-23 hours. 
+All these questions slow down the segmentation process. On average, the segmentation of a scene took 8-10 minutes, which, for all 272 scenes,
+would equate to a total of 36-45 hours. To reduce the time spent in segmentation, we perform an initial analysis of the scenes in a given area
+and omit scenes that show no noticeable difference compared to others. This analysis reduces the number of segmented scenes to slightly more than half
+of the total, reducing the time to 18-23 hours.
 
-The results of the manual segmentation process are documented in Table~\ref{tab:stanfordStats}. 
+The results of the manual segmentation process are documented in Table~\ref{tab:stanfordStats}.
 
 
 \begin{table}[H]
@@ -106,18 +114,11 @@ The results of the manual segmentation process are documented in Table~\ref{tab:
         \end{tabular}
     }
     \caption[2S-3D-S Statistics]{2D-3D-S statistics. Shown are the number of scenes per category and for how many we created a ground truth ($\#GT/\#Total$).
-    Furthermore, the rightmost column reports the number of segmented planes per scene category.  }
+        Furthermore, the rightmost column reports the number of segmented planes per scene category.  }
     \label{tab:stanfordStats}
 \end{table}
 
 
-\begin{figure} []
-    \centering
-    \includegraphics[width=0.5\textwidth]{images/tables.png}
-    \caption[Ground Truth Table Example]{The provided ground truth considers these tables to be three separate objects. Within the context of
-        plane detection, the three table tops would form exactly one plane.}
-    \label{fig:tables}
-\end{figure}
 
 \section{FIN Dataset}
 \label{sec:finimpl}
