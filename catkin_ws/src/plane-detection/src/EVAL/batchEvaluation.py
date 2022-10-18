@@ -16,8 +16,8 @@ plt.rcParams.update({'font.size': 19})
 
 # globals
 ALGOS = ['RSPD', 'OPS', '3DKHT', 'OBRG']
-ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': '', 'OBRG': ''}
-ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt', 'OBRG': '.txt'}
+ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': '', 'OBRG': '', 'Application':''}
+ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt', 'OBRG': '.txt', 'Application':'.txt'}
 
 
 def get_file_sizes_time_pairs(root_folder: str):
@@ -402,11 +402,13 @@ if __name__ == '__main__':
 
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
-
-    # batch_detect(rootFolder, algorithm_binaries, ['OPS'])
-    # batch_evaluate(rootFolder, ['OPS'])
-    # collect_results(fallback_root, ['OPS'])
+    # batch_detect(rootFolder, algorithm_binaries, ['3DKHT'])
+    # for i in range(1,7):
+    #     batch_evaluate(os.path.join(rootFolder, f'Area_{i}'), ['3DKHT'])
+    # print("hi")
+    # for i in range(1,7):
+    #     collect_results(os.path.join(rootFolder, f'Area_{i}'))
     # combine_area_results('Stanford3dDataset_v1.2_Aligned_Version')
-    # get_df(rootFolder)
-    # vis_total_results('Stanford3dDataset_v1.2_Aligned_Version')
-    get_file_sizes_time_pairs(rootFolder)
+    # get_df(os.path.join(rootFolder,"results"))
+    vis_total_results('Stanford3dDataset_v1.2_Aligned_Version')
+    # # get_file_sizes_time_pairs(rootFolder)

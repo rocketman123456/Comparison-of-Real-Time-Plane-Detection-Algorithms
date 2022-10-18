@@ -25,7 +25,7 @@ class IOHelper:
     def _read(self, path: str) -> List[Plane]:
         if os.path.isdir(path):
             for file in os.listdir(path):
-                if file.startswith('time'):
+                if 'time' in file:
                     continue
                 if file.endswith('.geo'):
                     return self.read_planes_geo(os.path.join(path, file))
@@ -39,6 +39,9 @@ class IOHelper:
             return self.read_planes_geo(path)
         elif path.endswith('asc'):
             return [Plane.xyzfrom_txt(path)]
+        with open(path, 'r') as f:
+            if len(f.readline().split(' ')) > 1:
+                return [Plane.xyzfrom_txt(path)]
 
         l: List[Plane] = [self.read_plane_i(path)]
         return l
@@ -88,6 +91,8 @@ class IOHelper:
     def read_planes_i_from_folder(self, path: str) -> List[Plane]:
         planes = []
         for file in os.listdir(path):
+            if 'time' in file: 
+                continue
             planes.append(self.read_plane_i(os.path.join(path, file)))
         return planes
 

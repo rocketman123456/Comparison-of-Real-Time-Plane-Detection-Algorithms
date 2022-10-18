@@ -98,6 +98,10 @@ class Plane:
         self.leafs = set()
 
     def translate(self, vector: np.ndarray):
+        if len(self.xyz_points) == 0:
+            return
+        if isinstance(self.xyz_points[0], float):
+            self.xyz_points = [self.xyz_points]
         for point in self.xyz_points:
             point[0] += vector[0]
             point[1] += vector[1]

@@ -90,7 +90,6 @@ def evaluate_timeframe(subcloud, subgt, subalgo, time):
     iohelper.save_results(p, r, f1, len(f), len(
         sub_gt), total, per_plane, per_sample, time=time)
 
-
 def dynamic_detection(dataset_path: str, binaries_path: str, algos=ALGOS):
     files = sorted(os.listdir(dataset_path), key=lambda x:os.path.getsize(os.path.join(dataset_path,x)))
     calculated = []
@@ -266,8 +265,9 @@ if __name__ == '__main__':
     last_cloud = args.last_cloud
     gt_path = f"{dataset}/GT"
     
-    # dynamic_detection(dataset, binaries, ['OPS','3DKHT', 'OBRG', 'RSPD'])
-    # for algo in ['OPS','3DKHT', 'OBRG','RSPD']:
+    # dynamic_detection(dataset, binaries, ['OPS'])
+    # # os.rename(os.path.join(dataset,'Application'), os.path.join(dataset, '3DKHT'))
+    # for algo in ['OPS']:
     #     algo_path = os.path.join(dataset, algo)
 
     #     iohelper = IOHelper(last_cloud, gt_path, algo_path)
@@ -285,7 +285,7 @@ if __name__ == '__main__':
     #         #     draw_bb_planes(sub_gt, sub_cloud, sub_algo)
     #         # draw_voxel_correspondence(sub_gt, sub_algo, sub_cloud)
     #         evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
-    dynamic_collection(dataset)
-    get_dyn_df(os.path.join(dataset, 'results'))
-    results_over_time(os.path.join(dataset,'results'))
+    # dynamic_collection(dataset)
+    # get_dyn_df(os.path.join(dataset, 'results'))
+    # results_over_time(os.path.join(dataset,'results'), ['OPS'])
     whatevs(dataset)
