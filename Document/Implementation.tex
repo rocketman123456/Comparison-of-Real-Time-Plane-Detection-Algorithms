@@ -16,7 +16,7 @@ We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}, as we
 \section{Plane Detection Algorithms}
 \subsection{RSPD \& OPS}
 We implement RSPD\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} and OPS\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}} using their respective open source implementations on GitHub.
-Note that, while the implementation of RSPD is provided by the author, we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}.
+Note that, while the implementation of RSPD is provided by the author, we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}\cite{Sun_Mordohai_2019}.
 Both methods are implemented in C++ and depend on the C++ linear algebra library \textit{Eigen}\footnote{\href{https://eigen.tuxfamily.org/index.php}{https://eigen.tuxfamily.org/index.php}}
 and the C++ API of the  Point-Cloud Library\footnote{\href{https://pointclouds.org/}{https://pointclouds.org/}}, \textit{libpcl-dev}.
 
@@ -27,6 +27,7 @@ The authors of 3D-KHT, provide an implementation, in form of a Visual Studio pro
 the solution to a CMake project we can build using \textit{make}.
 
 \subsection{OBRG}
+\label{sec:impl-obrg}
 To our knowledge, no open-source implementation is available for the algorithm.
 We, therefore, use our own implementation.
 
@@ -39,9 +40,10 @@ reduce the total calculation time.
 Since the exact values of all thresholds have not been specified, we empirically select as follows:
 
 \begin{itemize}
-    \item $r_{th}$ = 0.1
-    \item $\theta_{th}$ = 0.3
-    \item $d_{min}$ =  0.1
+    \item $\theta_r$ = 0.08
+    \item $\theta_{ang}$ = 0.3
+    \item $\theta_d$ =  0.08
+    \item $\theta_M = 5000$
 \end{itemize}
 
 To determine a region's planarity, we calculate the number of points that fit the best fitting plane within a predefined threshold.
