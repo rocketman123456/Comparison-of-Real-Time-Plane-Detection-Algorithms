@@ -75,20 +75,19 @@ All deviations from this default configuration necessary for the FIN experiment 
 
 
 \subsubsection{RSPD}
-
-% FIXME maybe test RSPD with other params and ggf rerun
+\textbf{\textcolor{red}{die abkürzungen werden sicherlich im BG erklärt.}}
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|ccccc}
-        Experiment & $l_O$ & $\varepsilon$ & $\theta_{outlier}$ & $k$ \\ \hline
-        2D-3D-S    & 10    & 30            & 25\%               & 30  \\
-        FIN        & 10    & 30            & 25\%               & 30
+    \begin{tabular}{c|cccccc}
+        Experiment & $l_O$ & $\varepsilon$ & MOR  & $k$ & MND & MDP   \\ \hline
+        2D-3D-S    & 10    & 30            & 25\% & 30  & 60° & 0.258 \\
+        FIN        & 10    & 30            & 25\% & 30  & 60° & 0.258
     \end{tabular}%
     \caption{Parameter configuration of RSPD used for the experiments.}
     \label{tab:rspd-param}
 \end{table}
 
-
+% FIXME overwork this paragraph given the newly obtained knowledge.
 \paragraph{2D-3D-S}
 For the 2D-3D-S experiment, we use the parameters of the provided implementation. These parameters include the maximum octree level $l_O$,
 the minimum number of samples per leaf node $\varepsilon$, the maximum percentage of outliers per plane $\theta_{outlier}$, and
@@ -96,9 +95,9 @@ the size of the nearest neighborhood $k$. Note that while $k=50$ is used in the 
 we use $k=30$ because, in our experience, it produces sufficient results while reducing the pre-processing time.
 
 \paragraph{FIN}
-\textcolor{red}{ggf kommt hier eine begründung warum parameter angepasst wurden. TODO: parameter testen, ggf experiment neu
-    laufen lassen, dann tabelle updaten und das hier schrieben.}
-
+\textbf{\textcolor{red}{Da bei der erstellung von rspd besonders auf noise resistenz geachtet wurde, passen wir keinen parameter für
+        das FIN experiment an.
+        Es wurden diverse anpassungen getestet, keine davon haben jedoch die ergebnisse verbessert.}}
 \subsubsection{OPS}
 
 \textcolor{red}{ja, die parameter werden im background \textit{sicherlich} erklärt}
@@ -286,11 +285,11 @@ is able to detect planes. %(see Figure~\ref{fig:}).
 \begin{table}[]
     \centering
     \begin{tabular}{c|cccccc}
-               & Precision & Recall & F1-Score & $t_{pre}$             & $t_{calc}$            & $t_{post}$            \\ \hline
-        RSPD   & 58.2\%    & \textbf{63.2\%} & \textbf{60.5\%}   & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
-        OPS    & \textbf{69.9\%}    & 28.8\% & 39.9\%   & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
-        3D-KHT & 47.4\%    & 45.9\% & 46.2\%   & 0.21                  & 0.42                  & /                     \\
-        OBRG   & 38.8\%    & 28.5\% & 32.7\%   & 8.13                  & 117.72                & 0.65
+               & Precision       & Recall          & F1-Score        & $t_{pre}$             & $t_{calc}$            & $t_{post}$            \\ \hline
+        RSPD   & 58.2\%          & \textbf{63.2\%} & \textbf{60.5\%} & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
+        OPS    & \textbf{69.9\%} & 28.8\%          & 39.9\%          & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
+        3D-KHT & 47.4\%          & 45.9\%          & 46.2\%          & 0.21                  & 0.42                  & /                     \\
+        OBRG   & 38.8\%          & 28.5\%          & 32.7\%          & 8.13                  & 117.72                & 0.65
     \end{tabular}%
     \caption{Average Results for the conferenceRoom scene of the FIN dataset.}
     \label{tab:res-fin-conf}
@@ -312,11 +311,11 @@ is able to detect planes. %(see Figure~\ref{fig:}).
 \begin{table}[]
     \centering
     \begin{tabular}{c|ccc}
-               & Precision & Recall & F1-Score \\ \hline
-        RSPD   & 71.1\%    & \textbf{69.9\%} & \textbf{70.4\%}   \\
-        OPS    & \textbf{74.7\%}    & 37.1\% & 49.2\%   \\
-        3D-KHT & 62.3\%    & 54.9\% & 58.2\%   \\
-        OBRG   & 46.8\%    & 27.3\% & 34.0\%
+               & Precision       & Recall          & F1-Score        \\ \hline
+        RSPD   & 71.1\%          & \textbf{69.9\%} & \textbf{70.4\%} \\
+        OPS    & \textbf{74.7\%} & 37.1\%          & 49.2\%          \\
+        3D-KHT & 62.3\%          & 54.9\%          & 58.2\%          \\
+        OBRG   & 46.8\%          & 27.3\%          & 34.0\%
     \end{tabular}
     \caption{Average Results for the office scene of the FIN dataset.}
     \label{tab:res-fin-off}
