@@ -180,21 +180,21 @@ The used parameters for the FIN experiment are summarized in the second row of T
 
 \section{Results}
 This section deals with the results of the experiments. The individual results of both experiments are presented and analyzed.
-% FIXME RE-RUN OBRG and RSPD 
+% FIXME RE-RUN OPS on a1,2,3
 \subsection{Results 2D-3D-S Experiments}
 
 \begin{table}[H]
     \centering
     \begin{tabular}{c|cccccc}
         Algorithm & Precision        & Recall           & F1               & $t_{pre}$ & $t_{calc}$ & $t_{post}$ \\ \hline
-        RSPD      & 86.95\%          & \textbf{90.42\%} & \textbf{88.33\%} & 0.08      & 1.46       & /          \\
-        OPS       & \textbf{89.59\%} & 68.54\%          & 74.9\%           & 16.78     & 4.05       & 0.26       \\
-        3DKHT     & 70.9\%           & 73.69\%          & 71.75\%          & 2.62      & 1.61       & /          \\
-        OBRG      & 83.15\%          & 62.77\%          & 69.46\%          & 39.85     & 47.25      & 2.89
+        RSPD      & 86.12\%          & \textbf{89.40\%} & \textbf{87.40\%} & 105.31    & 1.75       & /          \\
+        OPS       & \textbf{90.66\%} & 71.21\%          & 97.09\%          & 16.90     & 8.99       & 0.35       \\
+        3DKHT     & 71.41\%          & 75.26\%          & 72.87\%          & 1.2       & 1.71       & /          \\
+        OBRG      & 83.15\%          & 62.77\%          & 69.46\%          & 47.25     & 39.85      & 2.89
     \end{tabular}
     \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the 2D-3D-S dataset. The right half of the columns shows the average time spent in
         pre-processing ($t_{pre}$), the average time spent in the plane detection ($t_{calc}$), and the average time spent in post-processing steps ($t_{post}$).
-        Note, that the absence of post-processing steps is denoted as "/".}
+        Note, that the absence of post-processing steps is denoted as "/". All times are measured in seconds (s).}
     \label{tab:res-3d2ds-total}
 \end{table}
 
@@ -248,16 +248,14 @@ The calculation times of all algorithms except OBRG seem to be proportional to t
 The quality of plane detection, however, decreases dramatically in comparison to the Stanford Datasets. RSPD is the only dataset that
 is able to detect planes. %(see Figure~\ref{fig:}). 
 
-% FIXME RERUN RSPD, OPS for time
-% FIXME RERUN OBRG on all except office, conferenceroom 
 \begin{table}[H]
     \centering
     \begin{tabular}{c|cccccc}
-        Results FIN & Precision & Recall & F1-Score & $t_{pre}$ & $t_{calc}$ & $t_{post}$ \\ \hline
-        RSPD        & 0.51      & 0.56   & 0.54     &           &            & /          \\
-        OPS         & 0.69      & 0.29   & 0.39     & 1.14      & 21.23      & $<0.1$     \\
-        3DKHT       & 0.49      & 0.44   & 0.46     & 0.14      & 0.29       & /          \\
-        OBRG        & 0.492     & 0.274  & 0.339    & 4.91      & 37.50      & 0.10
+        Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$ & $t_{calc}$ & $t_{post}$ \\ \hline
+        RSPD      & 57.30\%          & \textbf{60.75\%} & \textbf{58.70\%} & 14.36     & 0.19       & /          \\
+        OPS       & \textbf{69.38\%} & 29.23\%          & 39.43\%          & 4.61      & 0.89       & 0.13       \\
+        3DKHT     & 49.76\%          & 44.40\%          & 46.48\%          & 0.14      & 0.29       & /          \\
+        OBRG      & 49.23\%          & 27.42\%          & 33.94\%          & 6.03      & 14.70      & 0.35
     \end{tabular}
     \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the FIN dataset. The right half of the columns shows the average time spent in
         pre-processing ($t_{pre}$), the average time spent in the plane detection itself ($t_{calc}$), and the average time spent in post-processing steps ($t_{post}$).
@@ -272,11 +270,11 @@ is able to detect planes. %(see Figure~\ref{fig:}).
 \begin{table}[]
     \centering
     \begin{tabular}{c|cccccc}
-               & Precision       & Recall          & F1-Score        \\ \hline
-        RSPD   & 38.9\%          & \textbf{50.4\%} & \textbf{43.8\%} \\
-        OPS    & 47.1\%          & 30.5\%          & 36.8\%          \\
-        3D-KHT & 32.0\%          & 32.4\%          & 31.9\%          \\
-        OBRG   & \textbf{50.8\%} & 34.5\%          & 40.6\%
+        Algorithm & Precision       & Recall          & F1-Score        \\ \hline
+        RSPD      & 38.9\%          & \textbf{50.4\%} & \textbf{43.8\%} \\
+        OPS       & 47.1\%          & 30.5\%          & 36.8\%          \\
+        3D-KHT    & 32.0\%          & 32.4\%          & 31.9\%          \\
+        OBRG      & \textbf{50.8\%} & 34.5\%          & 40.6\%
     \end{tabular}%
     \caption{Average Results for the auditorium scene of the FIN dataset.}
     \label{tab:res-fin-audi}
@@ -285,11 +283,11 @@ is able to detect planes. %(see Figure~\ref{fig:}).
 \begin{table}[]
     \centering
     \begin{tabular}{c|cccccc}
-               & Precision       & Recall          & F1-Score        & $t_{pre}$             & $t_{calc}$            & $t_{post}$            \\ \hline
-        RSPD   & 58.2\%          & \textbf{63.2\%} & \textbf{60.5\%} & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
-        OPS    & \textbf{69.9\%} & 28.8\%          & 39.9\%          & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
-        3D-KHT & 47.4\%          & 45.9\%          & 46.2\%          & 0.21                  & 0.42                  & /                     \\
-        OBRG   & 38.8\%          & 28.5\%          & 32.7\%          & 8.13                  & 117.72                & 0.65
+        Algorithm & Precision       & Recall          & F1-Score        & $t_{pre}$             & $t_{calc}$            & $t_{post}$            \\ \hline
+        RSPD      & 58.2\%          & \textbf{63.2\%} & \textbf{60.5\%} & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
+        OPS       & \textbf{69.9\%} & 28.8\%          & 39.9\%          & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
+        3D-KHT    & 47.4\%          & 45.9\%          & 46.2\%          & 0.21                  & 0.42                  & /                     \\
+        OBRG      & 38.8\%          & 28.5\%          & 32.7\%          & 8.13                  & 117.72                & 0.65
     \end{tabular}%
     \caption{Average Results for the conferenceRoom scene of the FIN dataset.}
     \label{tab:res-fin-conf}
@@ -298,11 +296,11 @@ is able to detect planes. %(see Figure~\ref{fig:}).
 \begin{table}[]
     \centering
     \begin{tabular}{c|ccc}
-               & Precision & Recall & F1-Score \\ \hline
-        RSPD   & 0.50      & 0.51   & 0.51     \\
-        OPS    & 0.87      & 0.20   & 0.32     \\
-        3D-KHT & 0.57      & 0.44   & 0.49     \\
-        OBRG   & 0.604     & 0.192  & 0.284
+        Algorithm & Precision & Recall & F1-Score \\ \hline
+        RSPD      & 0.50      & 0.51   & 0.51     \\
+        OPS       & 0.87      & 0.20   & 0.32     \\
+        3D-KHT    & 0.57      & 0.44   & 0.49     \\
+        OBRG      & 0.604     & 0.192  & 0.284
     \end{tabular}%
     \caption{Average Results for the hallway scene of the FIN dataset.}
     \label{tab:res-fin-hall}
@@ -311,11 +309,11 @@ is able to detect planes. %(see Figure~\ref{fig:}).
 \begin{table}[]
     \centering
     \begin{tabular}{c|ccc}
-               & Precision       & Recall          & F1-Score        \\ \hline
-        RSPD   & 71.1\%          & \textbf{69.9\%} & \textbf{70.4\%} \\
-        OPS    & \textbf{74.7\%} & 37.1\%          & 49.2\%          \\
-        3D-KHT & 62.3\%          & 54.9\%          & 58.2\%          \\
-        OBRG   & 46.8\%          & 27.3\%          & 34.0\%
+        Algorithm & Precision       & Recall          & F1-Score        \\ \hline
+        RSPD      & 71.1\%          & \textbf{69.9\%} & \textbf{70.4\%} \\
+        OPS       & \textbf{74.7\%} & 37.1\%          & 49.2\%          \\
+        3D-KHT    & 62.3\%          & 54.9\%          & 58.2\%          \\
+        OBRG      & 46.8\%          & 27.3\%          & 34.0\%
     \end{tabular}
     \caption{Average Results for the office scene of the FIN dataset.}
     \label{tab:res-fin-off}

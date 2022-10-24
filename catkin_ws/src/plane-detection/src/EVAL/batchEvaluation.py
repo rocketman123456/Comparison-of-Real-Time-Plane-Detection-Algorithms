@@ -9,6 +9,7 @@ from evaluate import evaluate
 import pandas as pd
 import numpy as np
 from fileio import create_pcd
+import seaborn as sb
 import sys
 sys.path.append('/home/pedda/Documents/coding/OBRG/')
 import obrg
@@ -34,7 +35,7 @@ def get_file_sizes_time_pairs(root_folder: str):
                 continue
             result_path = os.path.join(dataset_path, 'results')
             size = os.path.getsize(os.path.join(dataset_path, dataset+'.txt'))
-            sizes.append(size)
+            sizes.append((size,f'{area}/{dataset}'))
             for algo_result in os.listdir(result_path):
                 result = Result.from_file(
                     os.path.join(result_path, algo_result))
@@ -42,8 +43,14 @@ def get_file_sizes_time_pairs(root_folder: str):
                 if dataset not in results_algo_scenetypes[result.algorithm].keys():
                     results_algo_scenetypes[result.algorithm][dataset] = []
                 results_algo_scenetypes[result.algorithm][dataset].append(
-                    [size, result.time_total])
-    print(sum(sizes)/len(sizes)/1000000)
+                    [size, result.time_per_plane])
+    # print(sum(sizes)/len(sizes)/1000000)
+    print(f'{min(sizes,key=lambda x: x[0])[0]/1000000}')
+    print(f'{min(sizes,key=lambda x: x[0])[1]}')
+    print(f'{max(sizes,key=lambda x: x[0])[0]/1000000}')
+    print(f'{max(sizes,key=lambda x: x[0])[1]}')
+
+    return
     print(1)
     # fig = plt.figure(figsize=[20, 15])
     # # for i, algo in enumerate(ALGOS):
@@ -74,10 +81,6 @@ def get_file_sizes_time_pairs(root_folder: str):
         for i, st in enumerate(scenetypes):
             times.append([])
             sizes.append([])
-            if 'audi' in st:
-                times[i].append(-1)
-                sizes[i].append(-1)
-                continue
             for s_t in results_algo_scenetypes[algo][st]:
                 size, time = s_t
                 times[i].append(time)
@@ -156,9 +159,9 @@ def vis_total_results(root_path: str, algos=ALGOS):
             continue
         algo_data.sort(key=lambda x: x.dataset.lower())
         df = pd.DataFrame(algo_data).drop(
-            columns=['precision', 'recall', 'f1', 'detected', 'out_of', 'time_per_plane', 'time_per_sample'])
+            columns=['precision', 'recall', 'f1', 'detected', 'out_of', 'time_total', 'time_per_sample'])
         # sb.violinplot(data=df,ax=ax)
-        df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
+        # df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
 
         ax.set_xlabel("")
         ax.get_xaxis().set_label("")
@@ -196,19 +199,24 @@ def combine_area_results(root_path: str, algos=ALGOS):
         for scenetype, results in sceneresults.items():
             p = r = f1 = 0.0
             found = outof = 0
-            time = 0.0
+            pre = time = post = 0.0
+            
             for result in results:
                 p += result.precision
                 r += result.recall
                 f1 += result.f1
                 found += result.detected
                 outof += result.out_of
-                time += result.time_total
+                pre += result.time_total
+                time += result.time_per_plane
+                post += result.time_per_sample
             p /= len(results)
             r /= len(results)
             f1 /= len(results)
             time /= len(results)
-            avg = Result(p, r, f1, found, outof, scenetype, algo, time, -1, -1)
+            pre /= len(results)
+            post /= len(results)
+            avg = Result(p, r, f1, found, outof, scenetype, algo, pre,time,post)
             Result.to_file(avg, os.path.join(
                 root_path, 'results', f'{algo}-{scenetype}.out'))
 
@@ -256,7 +264,7 @@ def get_df(results_folder: str, algos=ALGOS):
             continue
         algo_data.sort(key=lambda x: x.dataset.lower())
         df = pd.DataFrame(algo_data).drop(
-            columns=['precision', 'recall', 'f1', 'detected', 'out_of', 'time_per_plane', 'time_per_sample'])
+            columns=['precision', 'recall', 'f1', 'detected', 'out_of', 'time_total', 'time_per_sample'])
         # sb.violinplot(data=df,ax=ax)
         df.plot.bar(x='dataset', ax=ax)  # , marker='o',label='rspd')
         ax.set_xlabel("")
@@ -280,7 +288,7 @@ def collect_results(root_folder: str, algos=ALGOS):
         if os.path.isfile(os.path.join(root_folder, dataset)):
             # skip files
             continue
-        if dataset.startswith('nope_') or dataset == 'results' or 'auditorium' in dataset:
+        if dataset.startswith('nope_') or dataset == 'results':
             # skip non-datasets (without GT or results directory)
             continue
         results_per_scene[dataset] = []
@@ -339,7 +347,7 @@ def batch_evaluate(root_folder: str, algos=ALGOS):
         # ignore files, results and datasets without GT
         if os.path.isfile(os.path.join(root_folder, dataset)):
             continue
-        if dataset.startswith('nope_') or dataset.startswith('results') or 'auditorium' in dataset:
+        if dataset.startswith('nope_') or dataset.startswith('results'):
             continue
         dataset_path = os.path.join(root_folder, dataset)
         gt_path = os.path.join(dataset_path, "GT")
@@ -361,37 +369,76 @@ def batch_detect(rootfolder: str, binaries_path: str, algos=ALGOS) -> None:
             continue
         if 'nope_' in dataset or dataset == 'results':
             continue
-        for algo in algos:
-            # if algo in os.listdir(dataset_path):
-            #     continue
-            # get input params for given algorithm
-            binary = os.path.join(binaries_path, algo)
-            cloud_file = os.path.join(
-                dataset_path, f'{dataset}{ALGO_IN[algo]}')
-            result_file = os.path.join(
-                dataset_path, algo, f'{dataset}{ALGO_ext[algo]}')
-            # create pcd file if needed (OPS)
-            if cloud_file not in os.listdir(dataset_path):
-                create_pcd(cloud_file.replace('.pcd', '.txt'))
-            # create output folder if not already existing
-            if algo not in os.listdir(dataset_path):
-                os.mkdir(os.path.join(dataset_path, algo))
-            else:
-                for file in os.listdir(os.path.join(dataset_path, algo)):
-                    os.remove(os.path.join(dataset_path, algo, file))
-            # run PDA on dataset
-            if algo == 'OBRG':
-                obrg.calculate(cloud_file, dataset_path)
-            else:
-                print(f'Calling {algo} on {dataset}!')
-                command = f'{binary} {cloud_file} {result_file}'
-                os.system(command)
+        run_specific(dataset_path, binaries_path, algos)
+
+def run_specific(dataset_path, binaries_path, algos=ALGOS):
+    dataset = dataset_path.rsplit('/',1)[-1]
+    for algo in algos:
+        # if algo in os.listdir(dataset_path):
+        #     continue
+        # get input params for given algorithm
+        binary = os.path.join(binaries_path, algo)
+        cloud_file = os.path.join(
+            dataset_path, f'{dataset}{ALGO_IN[algo]}')
+        result_file = os.path.join(
+            dataset_path, algo, f'{dataset}{ALGO_ext[algo]}')
+        # create pcd file if needed (OPS)
+        if cloud_file not in os.listdir(dataset_path):
+            create_pcd(cloud_file.replace('.pcd', '.txt'))
+        # create output folder if not already existing
+        if algo not in os.listdir(dataset_path):
+            os.mkdir(os.path.join(dataset_path, algo))
+        else:
+            for file in os.listdir(os.path.join(dataset_path, algo)):
+                os.remove(os.path.join(dataset_path, algo, file))
+        # run PDA on dataset
+        if algo == 'OBRG':
+            obrg.calculate(cloud_file, dataset_path)
+        else:
+            print(f'Calling {algo} on {dataset}!')
+            command = f'{binary} {cloud_file} {result_file}'
+            os.system(command)
+
+def get_df2(results_folder: str, algos=ALGOS):
+    # load results
+    results = [Result.from_file(os.path.join(results_folder, file))
+               for file in os.listdir(results_folder) if file.endswith('.out') and not 'avg' in file]
+    fig, axs = plt.subplots(1, len(algos))
+    fig.set_size_inches(20, 15)
+    i = 0
+    for ax, algo in zip(axs, algos):
+        ax.set_title(algo)
+        ax.set_xlim(0.0,1.0)
+        # filter results by algorithm
+        algo_data = [res for res in results if res.algorithm == algo]
+        if len(algo_data) == 0:
+            continue
+        algo_data.sort(key=lambda x: x.dataset.lower(), reverse=True)
+        # create algo dataframe
+        algo_df = pd.DataFrame(algo_data).drop(
+            columns=['detected', 'out_of', 'time_total', 'time_per_plane', 'time_per_sample'])
+        algo_df = algo_df.rename(columns={'dataset': 'Scene Types'})
+        # algo_df.plot.barh(x='Scene Types',y=['precision','recall','f1'], ax=ax)  # , marker='o',label='rspd')
+        algo_df.plot.barh(ax=ax)
+        if i == 0:
+            ax.set_yticklabels(algo_df['Scene Types'])
+            i += 1
+        else:
+            ax.set_yticklabels([])
+        ax.set_xticks([0,0.25,0.5,0.75,1.0])
+        ax.set_xticklabels([0,25,50,75,100])
+        ax.legend().remove()
+    # lines_labels = [axs.flat[0].get_legend_handles_labels()]
+    # lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
+    # fig.legend(lines, labels)
+    plt.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
+    plt.suptitle('Accuracy Metrics in %',va='bottom', y=0.05)
+    plt.show()
 
 
 if __name__ == '__main__':
-    fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2"
+    fallback_root = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/"
     fallback_algo_binaries = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/AlgoBinaries"
-
     # input argument handling
     parser = argparse.ArgumentParser('BatchEvaluation')
     parser.add_argument('-R', '--root-folder', default=fallback_root,
@@ -402,13 +449,13 @@ if __name__ == '__main__':
 
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
-    # batch_detect(rootFolder, algorithm_binaries, ['3DKHT'])
-    # for i in range(1,7):
-    #     batch_evaluate(os.path.join(rootFolder, f'Area_{i}'), ['3DKHT'])
-    # print("hi")
-    # for i in range(1,7):
-    #     collect_results(os.path.join(rootFolder, f'Area_{i}'))
-    # combine_area_results('Stanford3dDataset_v1.2_Aligned_Version')
+    # run_specific("/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/hallway_11",algorithm_binaries, ['RSPD'])
+    for i in range(1,4):
+        batch_detect(os.path.join(rootFolder, f'Area_{i}'), algorithm_binaries, ['OPS'])
+        batch_evaluate(os.path.join(rootFolder, f'Area_{i}'), ['OPS'])
+        collect_results(os.path.join(rootFolder, f'Area_{i}'))
+    combine_area_results('Stanford3dDataset_v1.2_Aligned_Version')
     # get_df(os.path.join(rootFolder,"results"))
-    vis_total_results('Stanford3dDataset_v1.2_Aligned_Version')
-    # # get_file_sizes_time_pairs(rootFolder)
+    # get_df2(os.path.join(rootFolder,"results"))
+    # vis_total_results('Stanford3dDataset_v1.2_Aligned_Version')
+    # get_file_sizes_time_pairs(rootFolder)

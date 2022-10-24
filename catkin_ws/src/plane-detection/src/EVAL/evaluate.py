@@ -8,7 +8,7 @@ import sys
 # TODO load cloud once, compare all algos at once?
 
 
-def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None:
+def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False, voxelsize = 0.13) -> None:
     iohelper = IOHelper(cloud_path, gt_path, algo_path)
 
     if np.any(points := iohelper.read_cloud()):
@@ -56,7 +56,7 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
     octree.convert_from_point_cloud(pointcloud)
 
     voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
-        pointcloud, voxel_size=2)
+        pointcloud, voxel_size=voxelsize)
 
     if debug:
         o3d.visualization.draw_geometries([octree])
@@ -80,7 +80,7 @@ def evaluate(cloud_path: str, gt_path: str, algo_path: str, debug=False) -> None
     voxel_evaluator = Evaluator.create(points, ground_truth, test, voxel_grid)
     print('calculating correspondence')
     voxel_evaluator.correspondence()
-    if True:
+    if debug:
         draw_voxel_correspondence(ground_truth, test, pointcloud)
     print('done calculating correspondence')
     voxel_evaluator.calc_voxels(pointcloud)
@@ -123,11 +123,11 @@ if __name__ == '__main__':
     # cloud_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/pointclouds/boiler_room.pcl"
     # gt_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ground_truth.geo"
     # algo_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ransac_schnabel.geo"
-    cloud_path = "FIN-Dataset/hallway/1664012989.030196428.txt"
-    gt_path = "FIN-Dataset/hallway/GT"
-    algo_path = "FIN-Dataset/hallway/RSPD/1664012989.030196428.geo"
-    # cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3/hallway_2/hallway_2.txt"
-    # gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3/hallway_2/GT"
-    # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_3/hallway_2/RSPD"
+    # cloud_path = "FIN-Dataset/hallway/1664012989.030196428.txt"
+    # gt_path = "FIN-Dataset/hallway/GT"
+    # algo_path = "FIN-Dataset/hallway/RSPD/1664012989.030196428.geo"
+    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/FIN-Dataset/auditorium/1664003770.004746437.txt"
+    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/FIN-Dataset/auditorium/GT"
+    algo_path = "/home/pedda/Documents/uni/BA/clones/PlaneDetection/CommandLineOption/test/"
     # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_1//RSPD"
-    evaluate(cloud_path, gt_path, algo_path)
+    evaluate(cloud_path, gt_path, algo_path, False,0.4)

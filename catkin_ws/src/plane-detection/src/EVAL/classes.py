@@ -28,7 +28,7 @@ class Result():
             ofile.write(f'recall: {self.recall}\n')
             ofile.write(f'f1-score: {self.f1}\n')
             ofile.write(f'found: {self.detected} / {self.out_of}\n')
-            ofile.write('time per_plane per_sample\n')
+            ofile.write('pre calc post\n')
             ofile.write(
                 f'{self.time_total} {self.time_per_plane} {self.time_per_sample}')
 

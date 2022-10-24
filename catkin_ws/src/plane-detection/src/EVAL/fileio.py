@@ -144,8 +144,9 @@ class IOHelper:
                 output_folder, f'{self.dataset}_{self.method}.out')
         result.to_file(output_file)
 
-    def get_times(self):
-        path = ""
+    def get_times(self, path=""):
+        if path != "":
+            return np.loadtxt(path, skiprows=1, dtype=float)
         for file in os.listdir(self._path_algo):
             if 'time' in file:
                 path = os.path.join(self._path_algo, file)

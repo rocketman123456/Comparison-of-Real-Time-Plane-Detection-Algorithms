@@ -1,5 +1,6 @@
 import argparse
 import os
+from tqdm import tqdm
 from typing import List
 import pandas as pd
 import open3d as o3d
@@ -44,6 +45,25 @@ def dyn_eval(path_to_subclouds: str, binaries_path: str):
             command = f'{binary} {cloud_file} {result_file}'
             os.system(command)
 
+def find_timefile(time, folder):
+    for file in os.listdir(folder):
+        if time in file and 'time' in file:
+            return os.path.join(folder,file)
+    return ""
+
+def evaluate_without_acc(time, algo, dataset_path):
+    results_path = os.path.join(dataset_path, 'results')
+    algo_path = os.path.join(dataset_path, algo)
+    dataset = dataset_path.rsplit('/', 1)[-1]
+    to_edit_fname = f'{dataset}_{algo}_{time}.out'
+    to_edit_path = os.path.join(results_path,to_edit_fname)
+    to_read_path = find_timefile(time, algo_path)
+    pre,calc,post = iohelper.get_times(to_read_path)
+    result = Result.from_file(to_edit_path)
+    result.time_total = pre
+    result.time_per_plane = calc
+    result.time_per_sample = post
+    result.to_file(to_edit_path)
 
 def evaluate_timeframe(subcloud, subgt, subalgo, time):
     global iohelper
@@ -93,7 +113,7 @@ def evaluate_timeframe(subcloud, subgt, subalgo, time):
 def dynamic_detection(dataset_path: str, binaries_path: str, algos=ALGOS):
     files = sorted(os.listdir(dataset_path), key=lambda x:os.path.getsize(os.path.join(dataset_path,x)))
     calculated = []
-    for file in files:
+    for file in tqdm(files):
         if file.endswith('.bag') or 'nope' in file or os.path.isdir(os.path.join(dataset_path, file)):
             continue
         if file.split('.')[0] in calculated:
@@ -129,18 +149,26 @@ def dynamic_collection(dataset_path: str, algos=ALGOS):
                    for file in os.listdir(results_folder) if file.endswith('.out') and not 'avg' in file and algo in file]
         if len(results) == 0:
             continue
+        num_valid = 0
         avg_p = avg_r = avg_f1 = 0.0
-        avg_t = 0
+        avg_pre = avg_t  = avg_post = 0.0
         for res in results:
+            if res.precision == -1:
+                continue
             avg_p += res.precision
             avg_r += res.recall
             avg_f1 += res.f1
-            avg_t += res.time_total
-        avg_p /= len(results)
-        avg_r /= len(results)
-        avg_f1 /= len(results)
-        avg_t /= len(results)
-        avg = Result(avg_p, avg_r, avg_f1,0,0,'auditorium', algo, avg_t,-1,-1)
+            avg_pre += res.time_total
+            avg_t += res.time_per_plane
+            avg_post += res.time_per_sample
+            num_valid += 1
+        avg_p /= num_valid
+        avg_r /= num_valid
+        avg_f1 /= num_valid
+        avg_t /= num_valid
+        avg_pre /= num_valid
+        avg_post /= num_valid
+        avg = Result(avg_p, avg_r, avg_f1,0,0,results[0].dataset , algo, avg_pre, avg_t, avg_post)
         filepath = os.path.join(
             dataset_path, 'results', f'{algo}-{dataset_path.rsplit("/")[-1]}_avg.out')
         avg.to_file(filepath)
@@ -172,26 +200,43 @@ def whatevs(path: str, algos=ALGOS):
     for cfile in os.listdir(path):
         if not cfile.endswith('.pcd'):
             continue
-        sizes.append(os.path.getsize(os.path.join(path,cfile))/1000000)
+        sizes.append([os.path.getsize(os.path.join(path,cfile))/1000000, int(cfile[6:10])])
     fig = plt.figure(figsize=[20, 15])
-    sizes.sort()
+    sizes.sort(key= lambda x: x[1])
+    sizes = np.array(sizes)
     for i, algo in enumerate(algos):
         times = []
-        
+        pres = []
+        post = []
+        data = []
         for file in os.listdir(os.path.join(path,algo)):
             if 'time' not in file :
                 continue
-            time = np.loadtxt(os.path.join(path,algo,file), skiprows=1,usecols=(0), dtype=float)
-            times.append(time)        
+            pr = np.loadtxt(os.path.join(path,algo,file), skiprows=1,usecols=(0), dtype=float)
+            time = np.loadtxt(os.path.join(path,algo,file), skiprows=1,usecols=(1), dtype=float)
+            po = np.loadtxt(os.path.join(path,algo,file), skiprows=1,usecols=(2), dtype=float)
+            if not algo == 'OBRG':
+                data.append([time,pr,po, int(file[12:16])])
+            else:
+                data.append([time,pr,po, int(file[6:10])])
+
         ax = fig.add_subplot(len(ALGOS),1, i+1)
         ax.set_title(algo)
         ax2 = ax.twinx()
         times = np.array(list(sorted(times)))
+        data.sort(key = lambda x : x[3])
+        data = np.array(data)
         # frames = np.array(list(range(len(times))))
-        frames = np.arange(len(times))
+        frames = np.arange(len(data))
         frames2 = np.arange(len(sizes))
-        ax.plot(frames, times)
-        ax2.plot(frames2, sizes,color='red' )
+
+        ax.plot(frames, data[:,0], label="calc")
+        ax.plot(frames, data[:,1], label = "pre")
+        ax.plot(frames, data[:,2], label ="post")
+        ax.set_ylim(0,np.nanmax(data[:,:3]))
+        if i == 0:
+            ax.legend()
+        ax2.plot(frames2, sizes[:,0],color='red' )
     plt.show()
 def get_dyn_df(results_folder: str, algos=ALGOS):
     # load results
@@ -252,6 +297,7 @@ def get_dyn_df(results_folder: str, algos=ALGOS):
 if __name__ == '__main__':
     fallback_cloud = "FIN-Dataset/TEST/1663834492.251202345.pcd"
     fallback_clouds_path = "FIN-Dataset/TEST"
+    fallback_vg = 2.0
     binaries = 'AlgoBinaries/'
 
     parser = argparse.ArgumentParser('Dynamic Evaluation')
@@ -265,27 +311,28 @@ if __name__ == '__main__':
     last_cloud = args.last_cloud
     gt_path = f"{dataset}/GT"
     
-    # dynamic_detection(dataset, binaries, ['OPS'])
+    dynamic_detection(dataset, binaries, ['RSPD'])
     # # os.rename(os.path.join(dataset,'Application'), os.path.join(dataset, '3DKHT'))
-    # for algo in ['OPS']:
-    #     algo_path = os.path.join(dataset, algo)
+    for algo in ['RSPD']:
+        algo_path = os.path.join(dataset, algo)
 
-    #     iohelper = IOHelper(last_cloud, gt_path, algo_path)
-    #     complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(last_cloud)
-    #     ground_truth = iohelper.read_gt()
-    #     voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
-    #         complete_cloud, voxel_size=0.3)
+        iohelper = IOHelper(last_cloud, gt_path, algo_path)
+        complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(last_cloud)
+        ground_truth = iohelper.read_gt()
+        voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
+            complete_cloud, voxel_size=0.3)
 
-    #     timeframes = iohelper.get_frames(dataset)
-    #     for timeframe in timeframes:
+        timeframes = iohelper.get_frames(dataset)
+        for timeframe in tqdm(timeframes):
             
-    #         sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(
-    #             timeframe, voxel_grid, complete_cloud)
+            sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(
+                timeframe, voxel_grid, complete_cloud)
     #         # if len(sub_gt) < 5:
     #         #     draw_bb_planes(sub_gt, sub_cloud, sub_algo)
     #         # draw_voxel_correspondence(sub_gt, sub_algo, sub_cloud)
-    #         evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
-    # dynamic_collection(dataset)
+            evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
+            # evaluate_without_acc(timeframe, 'OPS', dataset)
+    dynamic_collection(dataset, ['RSPD'])
     # get_dyn_df(os.path.join(dataset, 'results'))
-    # results_over_time(os.path.join(dataset,'results'), ['OPS'])
-    whatevs(dataset)
+    # results_over_time(os.path.join(dataset,'results'), ['RSPD'])
+    # whatevs(dataset)
