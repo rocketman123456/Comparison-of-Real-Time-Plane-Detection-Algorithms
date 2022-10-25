@@ -37,6 +37,7 @@ First, we present the metrics used for comparison, followed by an outline of the
 % Finally, by evaluating the results of both experiments, we determine the most suitable plane detection algorithm for real-time, indoor environments. 
 
 \subsection{Metrics}
+\label{subsec:metrics}
 To quantify the accuracy of the plane detection algorithms, we use the detected planes and the created ground truth to calculate the three following
 metrics: Precision, Recall, and the F1-score. The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed
 in Section~\ref{sec:metrics}.
@@ -53,6 +54,8 @@ leaf level. OPS merges smaller planes if they pass a coplanarity test and then r
 resulting plane. In the post-processing step, OBRG refines the borders of detected planes by inserting
 previously unallocated regions.
 The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
+
+\textbf{\textcolor{red}{\#detected planes als metrik einführen? ist imho wenig aussagekräftig da die GT erstellung so subjektiv ist}}
 
 \begin{table}[H]
     \centering
@@ -180,73 +183,68 @@ The used parameters for the FIN experiment are summarized in the second row of T
 
 \section{Results}
 This section deals with the results of the experiments. The individual results of both experiments are presented and analyzed.
-% FIXME RE-RUN OPS on a1,2,3
-\subsection{Results 2D-3D-S Experiments}
+
+was ich sagen möchte:
+\begin{itemize}
+    \item bei p,r,f1 zeigt sich ein muster
+          \begin{itemize}
+              \item OPS hat die beste präzision, RSPD dominiert bei recall und F1
+              \item RSPD und 3D-KHT haben die besten $t_{calc}$ werte
+          \end{itemize}
+    \item \textbf{\textcolor{red}{das folgende in die Conclusion:}}
+    \item bei FIN ist aufgrund der preproc zeit von rspd nur 3dkht echtzeitfähig.
+          \begin{itemize}
+              \item manche kameras, beispielsweise die intel realsense, können mittlerweile normalen mitliefern
+              \item daher sehen wir rspd als echtzeitfähig an, unter der voraussetzung dass die normalen spätestens beim SLAM schritt vorhanden
+                    sind (siehe~\ref{fig:concept})
+          \end{itemize}
+\end{itemize}
+
+\subsection{2D-3D-S}
+
+Wir haben RSPD, OPS, 3D-KHT und OBRG auf 139 Scenen des 2D-3D-S Datensatzes laufen lassen. Im Anschluss wurden zu jeder Scene die Präzision,
+der Recall und der F1-Score von jedem Algorithmus berechnet. Dazu wurden die Berechnungszeiten gemessen und in pre-processing, plane detection und
+post-processing aufgeteilt. Table~\ref{tab:res-3d2ds-total} zeigt die average der berechneten Ergebnisse zu jedem Algorithmus. Durch dicke Schrift
+werden die besten durchschnittswerte hervor gehoben. Dazu sei anzumerken, dass kein bester wert von $t_{post}$ angedeutet wird, da zwei der algorithmen
+keine post-processing schritte haben und daher "per default" weniger zeit in diesem Schritt verbringen.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{c|cccccc}
-        Algorithm & Precision        & Recall           & F1               & $t_{pre}$ & $t_{calc}$ & $t_{post}$ \\ \hline
-        RSPD      & 86.12\%          & \textbf{89.40\%} & \textbf{87.40\%} & 105.31    & 1.75       & /          \\
-        OPS       & \textbf{90.66\%} & 71.21\%          & 97.09\%          & 16.90     & 8.99       & 0.35       \\
-        3DKHT     & 71.41\%          & 75.26\%          & 72.87\%          & 1.2       & 1.71       & /          \\
-        OBRG      & 83.15\%          & 62.77\%          & 69.46\%          & 47.25     & 39.85      & 2.89
+        Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$    & $t_{calc}$    & $t_{post}$ \\ \hline
+        RSPD      & 86.22\%          & \textbf{89.31\%} & \textbf{87.40\%} & 109.94       & \textbf{1.63} & /          \\
+        OPS       & \textbf{90.66\%} & 71.21\%          & 79.09\%          & 16.90        & 8.99          & 0.35       \\
+        3DKHT     & 71.41\%          & 75.26\%          & 72.87\%          & \textbf{1.2} & 1.71          & /          \\
+        OBRG      & 83.15\%          & 62.77\%          & 69.46\%          & 47.25        & 39.85         & 2.89
     \end{tabular}
     \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the 2D-3D-S dataset. The right half of the columns shows the average time spent in
         pre-processing ($t_{pre}$), the average time spent in the plane detection ($t_{calc}$), and the average time spent in post-processing steps ($t_{post}$).
-        Note, that the absence of post-processing steps is denoted as "/". All times are measured in seconds (s).}
+        Note, that the absence of post-processing steps is denoted as "/". All times are measured in seconds.}
     \label{tab:res-3d2ds-total}
 \end{table}
 
-\textcolor{red}{das hier stimmt jetzt obv nicht mehr da neue ergebnisse}
+\textbf{\textcolor{red}{das aufteilen macht zwar semantisch sinn, ist aber uncool für den leseflow glaube ich }}
 
-The results of each algorithm on the 2D-3D-S dataset are shown in Table~\ref{tab:res-3d2ds-total}.
-RSPD produces the overall best results with an average of 85\% precision, 89\% recall and an F1-score of 86\%, as well as an average of 0.9 seconds of calculation time.
-The only other algorithm that achieves similar calculation times is 3D-KHT, which takes 0.91 seconds on average. Considering our definition of \textit{real-time} in Section~\ref{sec:realtime},
-RSPD and 3D-KHT are able to perform plane detecion in real-time. Still, 3D-KHT produces the worst overall accuracy results with an average precision of 75\%, recall of 43\%, and an F1-score of 53\%.
+\paragraph{Accuracy}
+Mit einer Präzision von 86\%, einem Recall von 89\% und einem F1-Score von 87\% ist RSPD der insgesamt präziseste algorithmus. OPS übertrifft RSPD zwar
+in der Precision mit einem Wert von ca. 90\%, erzielt dafür aber deutlich schlechtere Recall und F1-Score ergebnisse.
+3D-KHT erzielt durchschnittliche Ergebnisse mit einer Precision, Recall und F1-Score im unteren Bereich der 70\%.
+Mit einer guten Präzision von ca. 83\% aber dafür vergleichsweise schlechten Recall und F1-Score Werten liefert OBRG die insgesamt schlechtesten
+Accuracy Ergebnisse im 2D-3D-S Experiment.
 
-With an average of about 17 seconds(OPS) and about 44 seconds(OBRG), both algorithms do not achieve real-time plane detection (see Table~\ref{tab:res-3d2ds-total}).
+\paragraph{Time}
+While RSPD takes the longest during pre-processing, it also spends the shortest amount of time in the plane detection phase.
+The algorithm that takes the total shortest average time is 3D-KHT with a cumulated average of just under 3 seconds.
+Both OPS and OBRG spend multiple seconds during pre-processing, plane detection, and, in the case of OBRG, also during post-processing steps.
+The average post-processing time of OBRG takes, on average, about as long as 3D-KHT takes in total.
 
+\subsection{FIN}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/accuracy_total.png}
-    \caption[Accuracy Results 2D-3D-S]{Average Accuracy for each scene type. The Precision
-        is colored blue, recall is orange and the F1-score is green.}
-    \label{fig:stanfordaccuracy}
-\end{figure}
+\paragraph{Accuracy}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=15 cm]{images/times_violin.png}
-    \caption[Time Results 2D-3D-S]{Times per scene type. The lowest tick denotes the minimum time, the highest
-        denotes the maximum time spent in the calculation. The middle tick shows the mean time.
-        Note, that the plots
-        do not share the same y-axis.}
-    \label{fig:violintime}
-\end{figure}
+\paragraph{Time}
 
-\subsection{Results FIN Experiment}
-\textit{So far:}
-% FIXME lesbarkeit der figures!!!!
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/dyn_time-hallway.png}
-    \caption[Time Results Hallway]{Time spent in pre-processing (yellow), plane detection (blue), and post-processing (green) of the hallway scene and cloud sizes (red) of each time step.}
-    \label{fig:dynhallway}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/dyn_time-office.png}
-    \caption[Time Results office]{Time spent in pre-processing (yellow), plane detection (blue), and post-processing (green) of the office scene and cloud sizes (red) of each time step.}
-    \label{fig:dynoffice}
-\end{figure}
-
-The calculation times of all algorithms except OBRG seem to be proportional to the size of the point cloud.
-% TODO similar figure for 2D-3D-S
-The quality of plane detection, however, decreases dramatically in comparison to the Stanford Datasets. RSPD is the only dataset that
-is able to detect planes. %(see Figure~\ref{fig:}). 
+Die ergebnisse des FIN Experiments sind in Table~\ref{tab:res-fin-total} zu sehen.
 
 \begin{table}[H]
     \centering
@@ -263,63 +261,31 @@ is able to detect planes. %(see Figure~\ref{fig:}).
     \label{tab:res-fin-total}
 \end{table}
 
-\textcolor{red}{Average zeiten bei einem wachsenden datensatz sind sinnlos.. oder? da finde ich macht die korrelation zwischen größe
-    der punktwolke und dauer der berechnung mehr sinn}
+\subsection{Comparison}
+When comparing Table~\ref{tab:res-3d2ds-total} and Table~\ref{tab:res-fin-total}, a pattern emerges:
+OPS has the highest precision with ca. 90\% and ca. 69\%, RSPD scores the best Recall and F1-Score values, and 3D-KHT has the lowest total
+processing time.
+
+Reiterating our definition of real-time, we consider an algorithm to be real-time-applicable if its calculation time is below one second.
+Given the results of the 2D-3D-S experiment, none of the algorithms is real-time applicable, as even the quickest algorithm, 3D-KHT, takes 
+an average of ca. 3 seconds per calculation. 
+However, the entire environment would not be available from the start in a real-life scenario. The FIN experiment represents a more realistic 
+view on the processing times due to the incrementally growing point cloud. \textbf{\textcolor{red}{in Grafik N kann man den zusammenhang
+von größe der punktwolke und berechnungszeit ablesen. (TODO)}}
+
+\subsection{Summary}
+
+\textbf{\textcolor{red}{im not sure where exactly to put this}}
+\begin{itemize}
+    \item bei 2D-3D-S ist kein algorithmus echtzeitfähig
+          \begin{itemize}
+              \item Da aber niemals die komplette wolke direkt vorhanden ist sagt das nicht viel aus
+              \item aussagekräftiger ist daher der zusammenhang zwischen zeit und größe der punktwolke
+              \item daher sind p,r,f1 von größerem interesse für den vergleich zwischen 2D-3D-S und FIN
+          \end{itemize}
+\end{itemize}
 
 
-\begin{table}[]
-    \centering
-    \begin{tabular}{c|cccccc}
-        Algorithm & Precision       & Recall          & F1-Score        \\ \hline
-        RSPD      & 38.9\%          & \textbf{50.4\%} & \textbf{43.8\%} \\
-        OPS       & 47.1\%          & 30.5\%          & 36.8\%          \\
-        3D-KHT    & 32.0\%          & 32.4\%          & 31.9\%          \\
-        OBRG      & \textbf{50.8\%} & 34.5\%          & 40.6\%
-    \end{tabular}%
-    \caption{Average Results for the auditorium scene of the FIN dataset.}
-    \label{tab:res-fin-audi}
-\end{table}
-
-\begin{table}[]
-    \centering
-    \begin{tabular}{c|cccccc}
-        Algorithm & Precision       & Recall          & F1-Score        & $t_{pre}$             & $t_{calc}$            & $t_{post}$            \\ \hline
-        RSPD      & 58.2\%          & \textbf{63.2\%} & \textbf{60.5\%} & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
-        OPS       & \textbf{69.9\%} & 28.8\%          & 39.9\%          & \textcolor{red}{todo} & \textcolor{red}{todo} & \textcolor{red}{todo} \\
-        3D-KHT    & 47.4\%          & 45.9\%          & 46.2\%          & 0.21                  & 0.42                  & /                     \\
-        OBRG      & 38.8\%          & 28.5\%          & 32.7\%          & 8.13                  & 117.72                & 0.65
-    \end{tabular}%
-    \caption{Average Results for the conferenceRoom scene of the FIN dataset.}
-    \label{tab:res-fin-conf}
-\end{table}
-
-\begin{table}[]
-    \centering
-    \begin{tabular}{c|ccc}
-        Algorithm & Precision & Recall & F1-Score \\ \hline
-        RSPD      & 0.50      & 0.51   & 0.51     \\
-        OPS       & 0.87      & 0.20   & 0.32     \\
-        3D-KHT    & 0.57      & 0.44   & 0.49     \\
-        OBRG      & 0.604     & 0.192  & 0.284
-    \end{tabular}%
-    \caption{Average Results for the hallway scene of the FIN dataset.}
-    \label{tab:res-fin-hall}
-\end{table}
-
-\begin{table}[]
-    \centering
-    \begin{tabular}{c|ccc}
-        Algorithm & Precision       & Recall          & F1-Score        \\ \hline
-        RSPD      & 71.1\%          & \textbf{69.9\%} & \textbf{70.4\%} \\
-        OPS       & \textbf{74.7\%} & 37.1\%          & 49.2\%          \\
-        3D-KHT    & 62.3\%          & 54.9\%          & 58.2\%          \\
-        OBRG      & 46.8\%          & 27.3\%          & 34.0\%
-    \end{tabular}
-    \caption{Average Results for the office scene of the FIN dataset.}
-    \label{tab:res-fin-off}
-\end{table}
-
-\subsection{Summary Results}
 % NOTE 3DKHT kann keine löcher oder non-rectangular ebenen basteln!
 This section combines the preceding results of both experiments.
 RSPD is the only algorithm that produces comparable results to the Stanford experiment in the dynamic experiment.
