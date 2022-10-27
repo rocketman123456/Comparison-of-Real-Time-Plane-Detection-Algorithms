@@ -38,6 +38,7 @@ First, we present the metrics used for comparison, followed by an outline of the
 
 \subsection{Metrics}
 \label{subsec:metrics}
+\paragraph{Accuracy}
 To quantify the accuracy of the plane detection algorithms, we use the detected planes and the created ground truth to calculate the three following
 metrics: Precision, Recall, and the F1-score. The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed
 in Section~\ref{sec:metrics}.
@@ -45,11 +46,12 @@ in Section~\ref{sec:metrics}.
 
 \textcolor{red}{hier noch mehr ins detail gehen? (antwort) \underline{\hspace{2cm}}}
 
-
-In addition to the accuracy of an algorithm, we precisely measure the calculation time by splitting the calculation into pre-processing, plane
-detection, and post-processing.
+\paragraph{Time Measurements}
+\label{par:time}
+In addition to the accuracy of an algorithm, we precisely measure the calculation time by differentiating between pre-processing time $t_{pre}$, 
+plane detection $t_{calc}$, and post-processing $t_{post}$.
 RSPD and OPS perform an initial estimation of normals, while 3D-KHT and OBRG construct an octree during their
-pre-processing phase. Note that the octree construction of OBRG includes a local estimation of normals on the
+pre-processing phase. Note, that the octree construction of OBRG includes a local estimation of normals on the
 leaf level. OPS merges smaller planes if they pass a coplanarity test and then re-estimates the normals of the
 resulting plane. In the post-processing step, OBRG refines the borders of detected planes by inserting
 previously unallocated regions.
@@ -67,6 +69,11 @@ The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
     \caption{Pre-processing and post-processing steps of the plane detection algorithms. RSPD and 3D-KHT do not have any post-processing steps.}
     \label{tab:pre-post}
 \end{table}
+
+In einer echten Umgebung wachsen die Punktwolken inkrementell über Zeit. 
+Die Angabe von Durchschnittswerten der Berechnungszeiten ist daher weniger aussagekräftig, da diese bei anfänglichen Zeitschritten 
+kürzer sein werden, als am Ende der Aufnahme. Es ist daher sinnvoll, auch den zusammenhang zwischen der größe der Punktwolke 
+und der Berechnungszeit eines bestimmten Zeitschritts zu betrachten.
 
 
 \subsection{Parameterization of Algorithms}
@@ -182,7 +189,8 @@ The used parameters for the FIN experiment are summarized in the second row of T
 
 
 \section{Results}
-This section deals with the results of the experiments. The individual results of both experiments are presented and analyzed.
+This section deals with the results of the experiments. 
+The individual results of both experiments are presented and analyzed. Afterwards, the results are compared.
 
 was ich sagen möchte:
 \begin{itemize}
@@ -200,64 +208,89 @@ was ich sagen möchte:
 Wir haben RSPD, OPS, 3D-KHT und OBRG auf 139 Scenen des 2D-3D-S Datensatzes laufen lassen. Im Anschluss wurden zu jeder Scene die Präzision,
 der Recall und der F1-Score von jedem Algorithmus berechnet. Dazu wurden die Berechnungszeiten gemessen und in pre-processing, plane detection und
 post-processing aufgeteilt. Table~\ref{tab:res-3d2ds-total} zeigt die average der berechneten Ergebnisse zu jedem Algorithmus. Durch dicke Schrift
-werden die besten durchschnittswerte hervor gehoben. Dazu sei anzumerken, dass kein bester wert von $t_{post}$ angedeutet wird, da zwei der algorithmen
+werden die besten durchschnittswerte hervor gehoben. Für precision, recall und f1 sind die größten Werte dick geschrieben. Für alle zeitlichen
+Ergebnisse ist der geringste Wert durch dicke Schrift hervor gehoben. Dazu sei anzumerken, dass kein bester wert von $t_{post}$ angedeutet wird, da zwei der algorithmen
 keine post-processing schritte haben und daher "per default" weniger zeit in diesem Schritt verbringen.
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|cccccc}
-        Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$     & $t_{calc}$    & $t_{post}$ \\ \hline
-        RSPD      & 84.80\%          & \textbf{89.79\%} & \textbf{86.84\%} & 62.65         & 1.04          & /          \\
-        OPS       & \textbf{88.98\%} & 70.45\%          & 77.68\%          & 13.12         & 10.97         & 1.01       \\
-        3DKHT     & 71.40\%          & 78.32\%          & 75.19\%          & \textbf{0.71} & \textbf{1.03} & /          \\
-        OBRG      & 81.38\%          & 66.77\%          & 71.00\%          & 28.07         & 34.29         & 2.61
+    \begin{tabular}{c|cccccc|c}
+        Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$     & $t_{calc}$    & $t_{post}$ & $t_{sum}$     \\ \hline
+        RSPD      & 84.80\%          & \textbf{89.79\%} & \textbf{86.84\%} & 62.65         & 1.04          & /          & 63.69         \\
+        OPS       & \textbf{88.98\%} & 70.45\%          & 77.68\%          & 13.12         & 10.97         & 1.01       & 25.10         \\
+        3DKHT     & 71.40\%          & 78.32\%          & 75.19\%          & \textbf{0.71} & \textbf{1.03} & /          & \textbf{1.74} \\
+        OBRG      & 81.38\%          & 66.77\%          & 71.00\%          & 28.07         & 34.29         & 2.61       & 62.97
     \end{tabular}
-    \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the 2D-3D-S dataset. The right half of the columns shows the average time spent in
+    \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the 2D-3D-S dataset. The right half of the inner columns shows the average time spent in
         pre-processing ($t_{pre}$), the average time spent in the plane detection ($t_{calc}$), and the average time spent in post-processing steps ($t_{post}$).
         Note, that the absence of post-processing steps is denoted as "/". All times are measured in seconds.}
     \label{tab:res-3d2ds-total}
 \end{table}
 
-\textbf{\textcolor{red}{das aufteilen in Accuracy und Time macht zwar semantisch sinn, ist aber uncool für den leseflow glaube ich oder?}}
-
 \paragraph{Accuracy}
 Mit einer Präzision von ca. 85\%, einem Recall von ca. 90\% und einem F1-Score von ca. 87\% ist RSPD der insgesamt präziseste algorithmus.
-OPS übertrifft RSPD zwar in der Precision mit einem Wert von ca. 89\%, erzielt dafür aber deutlich schlechtere Recall und F1-Score Ergebnisse.
-3D-KHT erzielt durchschnittliche Ergebnisse mit einer Precision, Recall und F1-Score im Bereich zwischen 70\% bis 78\%.
-OBRG erreicht zwar eine gute Präzision mit ca 81\%, erzielt aber schlussendlich die schlechtesten Recall und F1-Score Werte unter den Algorithmen mit
+OPS übertrifft RSPD zwar in der Precision mit einem Wert von ca. 89\%, erzielt dafür aber deutlich geringere Recall und F1-Score Ergebnisse.
+3D-KHT erzielt Ergebnisse mit einer Precision, Recall und F1-Score im Bereich zwischen ca. 71\% und ca. 79\%.
+OBRG erreicht zwar eine hohe Präzision mit ca 81\%, erzielt aber schlussendlich die niedrigsten Recall und F1-Score Werte unter den Algorithmen mit
 67\%, bzw. 71\%.
 
 \paragraph{Time}
 3D-KHT scores the lowest processing times. With an average of 0.71 seconds spent in pre-processing, and an average of 1.03 seconds spent in plane detection,
-3D-KHT only needs an average of 1.74 seconds to process an entire point cloud. RSPD is the only algorithm that scores similar $t_{calc}$ values, with an 
-average of 1.04 seconds.
-With an average total calculation time of ca. 25 seconds and ca. 65 seconds, OPS and OBRG, respectively, are dramatically slower than the other two algorithms.
+3D-KHT only needs an average total of 1.74 seconds to process an entire point cloud. RSPD is the only algorithm that scores similar $t_{calc}$ values, with an
+average of 1.04 seconds. However, RSPD's time spent in pre-processing is the highest among the algorithms.
+With an average $t_{sum}$ of ca. 25 seconds and ca. 63 seconds, OPS and OBRG, respectively, run dramatically slower than the other two algorithms.
 
-\textbf{\textcolor{red}{die grafik muss noch sinnvoll eingebunden werden, wollte sie nur erstmal hier drin haben for future reference}}
+As stated in Paragraph~\ref{par:time}, it is useful to consider the relationship between the computation times and the amount of
+processed data. Figure~\ref{fig:sizetimestanford} shows this relationship. For each scene of the 2D-3D-S dataset, the pairs of 
+processing times and point cloud file sizes are drawn. 
+\begin{itemize}
+    \item pre: rspd, ops und obrg lineares wachstum
+    \item pre: 3dkht log wachstum
+    \item calc: 3dkht und rspd vergleichbares wachstum
+    \item calc: obrg und ops beide sehr instabil
+    \item post: ops negligible mit spikes, obrg am anfang instabil, gegen ende negligible
+    \item rspd: minimum bei ca 5s, maximum bei mehr als 100
+    \item 3dkht: pre und calc nah bei einander
+\end{itemize}
+\textbf{\textcolor{red}{wenn log scale und graph grade, sag ich dann dass das wachstum logarithmisch oder linear ist?}}
+
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/time_size_2d3ds.png}
-    \caption[Time per Cloud size 2D-3D-S]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, and post-processing
-        $t_{post}$ per cloud file size(mb) of the 2D-3D-S dataset.}
+    \caption[Time per Cloud size 2D-3D-S]{Time spent in pre-processing ($t_{pre}$), plane detection ($t_{calc}$), 
+    and post-processing ($t_{post}$) per point cloud file size of the 2D-3D-S dataset. Note, that the y-axis is 
+    scaled logarithmically to the base of ten.
+    \textbf{\textcolor{red}{3DKHT $\Rightarrow$ 3D-KHT}}
+    }
     \label{fig:sizetimestanford}
 \end{figure}
 
+
+\paragraph{Summary 2D-3D-S Experiment}
+OPS hat den größten Wert in Precision, während RSPD die höchste Accuracy und den größten F1-Score erzielt.
+3D-KHT hat mit durchschnittlich $1.74s$ die geringste Berechnungszeit $t_{sum}$. RSPD und OBRG haben mit mehr als 60 sekunden
+die größten $t_{sum}$ Werte unter den Algorithmen, wobei $t_{pre}$ bei RSPD den großteil ausmacht.
+
+\textbf{\textcolor{red}{todo: wachstum über zeit etc}}
 
 \subsection{FIN}
 Jeder der insgesamt 732 Zeitschritte des FIN Datensatzes wurde von jedem algorithmus verarbeitet. Im Anschluss wird
 jeder Zeitschritt seperat ausgewertet, also die Präzision, der Recall und der F1-Score berechnet. Dazu
 wurden, wie beim 2D-3D-S Experiment die Berechnungszeiten der Algorithmen für jeden Zeitschritt gemessen.
 Die durchschnittlichen Ergebnisse über alle Zeitschritte des FIN Experiments werden
-in Table~\ref{tab:res-fin-total} präsentiert.
+in Table~\ref{tab:res-fin-total} präsentiert. Für precision, recall und den f1-score sind die höchsten werte dick geschrieben.
+Die niedrigsten Zeiten jedes Berechnungsschritts sind ebenfalls durch dicke schrift gehighlighted.
+
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|cccccc}
-        Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$     & $t_{calc}$    & $t_{post}$ \\ \hline
-        RSPD      & 57.30\%          & \textbf{60.75\%} & \textbf{58.70\%} & 14.36         & \textbf{0.19} & /          \\
-        OPS       & \textbf{69.38\%} & 29.23\%          & 39.43\%          & 4.61          & 0.89          & 0.13       \\
-        3DKHT     & 49.76\%          & 44.40\%          & 46.48\%          & \textbf{0.14} & 0.29          & /          \\
-        OBRG      & 49.23\%          & 27.42\%          & 33.94\%          & 6.03          & 14.70         & 0.35
+    \begin{tabular}{c|cccccc|c}
+        Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$     & $t_{calc}$    & $t_{post}$ & $t_{sum}$     \\ \hline
+        RSPD      & 57.30\%          & \textbf{60.75\%} & \textbf{58.70\%} & 14.36         & \textbf{0.19} & /          & 14.55         \\
+        OPS       & \textbf{69.38\%} & 29.23\%          & 39.43\%          & 4.61          & 0.89          & 0.13       & 5.63          \\
+        3DKHT     & 49.76\%          & 44.40\%          & 46.48\%          & \textbf{0.14} & 0.29          & /          & \textbf{0.43} \\
+        OBRG      & 49.23\%          & 27.42\%          & 33.94\%          & 6.03          & 14.70         & 0.35       & 21.08
     \end{tabular}
     \caption[Average FIN Results]{Average Results of the FIN experiment. Shown are the average values of all scenes and time frames, sorted by
         algorithm. The right half of the columns shows the average time spent in pre-processing ($t_{pre}$), the average time spent in the plane
@@ -267,22 +300,22 @@ in Table~\ref{tab:res-fin-total} präsentiert.
 \end{table}
 
 \paragraph{Accuracy}
-OPS hat mit nahezu 70\% die höchste Durschnittspräzision der Algorithmen. RSPD hat dafür mit ca. 60\% die jeweils besten
+OPS hat mit nahezu 70\% die höchste Durschnittspräzision der Algorithmen. RSPD hat dafür mit ca. 60\% die jeweils höchsten
 Werte für Recall und F1-Score erzielt. 3D-KHT und OBRG erzielen ähnliche Ergebnisse der precision, bei Recall und
-F1-Score ist 3D-KHT jedoch um 13\%, bzw. 17\% besser als OBRG.
+F1-Score hat 3D-KHT jedoch um 13\%, bzw. 17\% höhere Werte als OBRG.
+
 \paragraph{Time}
-Das Pre-processing von RSPD ist mit abstand das langsamste der Algorithmen. Im kontrast dazu hat RSPD mit 0.19 sekunden
-die kürzeste Zeit, die in der plane detection verbracht wird.Insgesamt braucht 3D-KHT mit durchschnittlich $0.34$
-sekunden jedoch am kürzesten für die Berechnung eines Zeitschritts. OPS erzielt mit ca. 5 sekunden vergleichsweise
+RSPD braucht unter den algorithmen die meiste Zeit im pre-processing. Im kontrast dazu hat RSPD mit 0.19 sekunden
+die kürzeste Zeit, die in der plane detection verbracht wird. Insgesamt braucht 3D-KHT mit durchschnittlich $0.43$
+sekunden jedoch am kürzesten für die komplette Berechnung $t_{sum}$ eines Zeitschritts. OPS erzielt mit ca. 6 sekunden vergleichsweise
 durchschnittliche Zeiten und OBRG braucht mit mehr als 20 sekunden insgesamt am längsten für die Berechnung
 eines Zeitschritts.
 
-
-
 % \textbf{\textcolor{red}{might be more appropriately placed somewhere above}}
-Die Punktwolken des FIN experiments wachsen inkrementell. Unter der Annahme, dass dieses Wachstum stetig ist,
-würden die durschnittswerte der Berechnungszeiten eher die Berechnungszeit der Punktwolke an Zeitschritt $t_{max} \cdot \frac{1}{2}$ beschreiben.
-Es ist daher sinnvoll, den zusammenhang zwischen der größe der Punktwolke und der Berechnungszeit zu betrachten.
+% Die Punktwolken des FIN experiments wachsen inkrementell. Unter der Annahme, dass dieses Wachstum stetig ist,
+% würden die durschnittswerte der Berechnungszeiten eher die Berechnungszeit der Punktwolke an Zeitschritt $t_{max} \cdot \frac{1}{2}$ beschreiben.
+% Es ist daher sinnvoll, den zusammenhang zwischen der größe der Punktwolke und der Berechnungszeit zu betrachten.
+Wie auch in \textbf{\textcolor{red}{paragraph time von 2D-3D-S}} möchten wir den zusammenhang etc betrachten.
 In Figure~\ref{fig:dynhallway} werden die Dauer der Berechnung jedes Zeitschritts der Dateigröße von der
 \textit{hallway} Scene des FIN Datensatzes gegenüber gestellt.
 
@@ -290,7 +323,7 @@ In Figure~\ref{fig:dynhallway} werden die Dauer der Berechnung jedes Zeitschritt
     \centering
     \includegraphics[width=\textwidth]{images/dyn_time-hallway.png}
     \caption[Time Results Hallway]{Time spent in pre-processing (blue), plane detection (yellow), and post-processing
-        (green) of the hallway scene and cloud sizes (red) of each time step.}
+        (green) of the hallway scene and cloud sizes (red) of each time step. }
     \label{fig:dynhallway}
 \end{figure}
 
@@ -301,6 +334,8 @@ zu sein und befindet sich stets unter einem gewissen Wert. Einzig auffallend ist
 vom Start bis ca. 25.
 Finally, the time spent in post-processing of OPS and OBRG is negligible as both times seem to stay at a constant
 value.
+
+\paragraph{Summary FIN Experiment}
 
 \subsection{Comparison}
 When comparing Table~\ref{tab:res-3d2ds-total} and Table~\ref{tab:res-fin-total}, a pattern emerges:
