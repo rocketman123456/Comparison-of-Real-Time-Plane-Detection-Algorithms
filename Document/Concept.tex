@@ -248,14 +248,26 @@ Lastly, since this is a novel dataset and thus has no ground truth, we create a 
 % FIXME "wirkt etwas komisch hier. bin mir noch unsicher." 
 Finally, to determine whether or not an algorithm runs in real-time, we must first define the meaning of real-time.
 
-We have to consider possible hardware limitations, data flow, and how often it is needed to perform calculations, e.g., how quickly the SLAM algorithm
+Nicht alle Algorithmen funktionieren auf die gleiche Art und Weise. So kommt es, dass die Algorithmen verschiedene pre-und/oder post-processing Schritte 
+implementiert haben. Da manche dieser pre-processing Schritte durch den SLAM algorithmus oder die Kamera Sensorik ersetzt werden können, werden wir daher
+im Folgenden zwei Definitionen von \textit{real-time} präsentieren.
+
+Generally, we have to consider possible hardware limitations, data flow, and how often it is needed to perform calculations, e.g., how quickly the SLAM algorithm
 updates the map (Figure~\ref{fig:concept}, [2]) or how frequent new planes are needed (Figure~\ref{fig:concept}, [4]).
 
 The recorded raw data is not directly sent to the plane detection algorithm but instead given to RTAB-MAP, which then performs
 calculations to update and publish the map.
 Therefore, the upper limit is the frequency of how often RTAB-MAP publishes those updates, which by default is once per second.
-According to this upper limit, we consider an algorithm \textit{real-time applicable}, if it achieves an average frame
-rate of minimum 1, e.g., the algorithm manages to process the entire point cloud and detect all planes within one second.
+
+\paragraph{Total Real-Time}
+According to this upper limit of RTAB-MAP, we consider an algorithm \textit{totally Real-Time} applicable, if it achieves an average frame
+rate of minimum 1, e.g., the total processing time of an algorithm lies under one second. In the rest of this work, we will
+refer to \textit{total Real-Time} as $RT_{tot}$.
+
+\paragraph{Real-Time Plane Calculation}
+Being a subset of \textit{totally Real-Time applicability, Real-Time Plane Calculation} determines the real-time applicability if the processing time of an algorithm
+\textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. We will henceforth refer to 
+\textit{Real-Time Plane Calculation} as $RT_{calc}$
 
 %TODO  Eig nur needed wenn die algos langsamer sind als 1s ODER sollte die cloud extrem wachsen kann man sich auf die 6 meter beschränken, erstmal aber nicht}\\
 % \subsection*{reduktion (opt)}
@@ -268,8 +280,9 @@ rate of minimum 1, e.g., the algorithm manages to process the entire point cloud
 \section{Summary}
 Many applications have constraints in the form of a temporal component. Augmented or Virtual Reality applications that include plane detection
 are no exception. In addition to time constraints, good quality is usually tightly coupled to expensive sensors.
-% FIXME sprung zu groß
+The selection of the best plane detection algorithm, however, is non-trivial. We selected possible algorithms and presented two definitions of \textit{real-time}
+namely $RT_{tot}$ and $RT_{calc}$.
 To evaluate to what extent it is possible to perform precise plane detection with a real-time constraint on off-the-shelf hardware,
-we compare selected algorithms on the 2D-3D-S and a self-recorded dataset.
+we compare the selected algorithms on the 2D-3D-S dataset and a self-recorded dataset.
 
 \end{document}
