@@ -124,9 +124,17 @@ The results of the manual segmentation process are documented in Table~\ref{tab:
 
 \section{FIN Dataset}
 \label{sec:finimpl}
-
-Running \textit{realsense-ros} and holding our cameras, we walk through the aforementioned parts of the building while scanning to the best of our ability.
+Reiterating Section~\ref{sec:datasets}, we select four scene types of the 2D-3D-S dataset for the recording of the self-created FIN
+dataset. Namely, these scene types are \textit{auditorium, conference room, hallway,} and \textit{office}.
+As the name of the dataset suggests, we record these scene types inside the \textit{Faculty of INformatik} (FIN) at Otto-von-Guericke-University 
+in Magdeburg.
+Running \textit{realsense-ros} and holding our cameras, we walk through the corresponding parts of the building while scanning to the best of our ability.
 We save each incremental map update to a file for later usage.
+
+Given the differences in spatial dimension, the recordings of each scene also differ in length and size.
+The auditorium scene has a total of 296 individual time frames, the conference room scene has 113, the hallway has a total of 
+174, and the office has 125 time frames.
+The FIN dataset, thereby, has a total of 708 time frames.
 
 Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
 To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
