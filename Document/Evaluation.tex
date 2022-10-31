@@ -1,40 +1,14 @@
 \documentclass[main.tex]{subfiles}
 \begin{document}
-% neue TOC:
-% \begin{itemize}
-%     \item DONE wie im konzept gesagt vergleichen wir algorithmen um \$FRAGE zu beantworten
-%     \item DONE zunächst definieren wir, wie und woran wir die performanz der algos vergleichen
-%     \begin{itemize}
-%         \item DONE Wir werden die performanz an 3 metriken messen: P,R,F1 (siehe BG section)
-%     \end{itemize}
-%     \item wie im konzept festgestellt, sind die pdas nicht vergleichbar. daher haben wir 2 verschiedene datensätze rausgesucht und oder erstellt:
-%     \begin{itemize}
-%         \item 2D 3D S: statisch, direkt ganze wolke da
-%         \item FIN: dynamisch, inkrementell aufbauend
-%     \end{itemize}
-%     \item wir führen experimente auf beiden datensätzen durch 
-%     \item im anschluss werten wir die ergebnisse aus und evaluieren inwiefern die algorithmen echtzeitfähig sind
-% \end{itemize}
 
 \chapter{Evaluation}
-
-In diesem kapitel werden zuvor ausgewählte algorithmen einheitlich verglichen und die resultierenden ergebnisse ausgewertet.
+In this chapter, the previously selected algorithms are uniformly compared. We present the results.
 \section{Protocol}
-% \begin{itemize}
-%     \item was wir zeigen wollen
-%     \item daher vergleichen wir algorithmen
-%     \item wie vergleichen wir, woran ziehen wir schlüsse? 
-% \end{itemize}
+
 This work aims to determine which plane detection algorithm is the most suitable for an AR/VR system. For this decision, we uniformly compare the algorithms selected in
 Chapter~\ref{chap:Concept}. We split the comparison into two experiments conducted on different datasets: the 2D-3D-S and the
 self-created FIN dataset. Since both datasets are fundamentally different, we will perform the experiments and the analysis separately and then compare the results.
 First, we present the metrics used for comparison, followed by an outline of the used configurations of parameters for each experiment.
-% In this work, we perform a uniform comparison of plane detection algorithms. This comparison aims to evaluate the real-time plane 
-% detection on off-the-shelf hardware through the selection of the best algorithm.
-% In the following subsection, we present the metrics used for the evaluation.
-% We conduct experiments on both datasets and compare the results of both experiments with respect to the real-time applicability of the
-% algorithms. Particularly interesting are the differences resulting from the temporal component.
-% Finally, by evaluating the results of both experiments, we determine the most suitable plane detection algorithm for real-time, indoor environments. 
 
 \subsection{Metrics}
 \label{subsec:metrics}
@@ -50,24 +24,24 @@ in Section~\ref{sec:metrics}.
 \label{par:time}
 In addition to the accuracy, we are interested in the real-time applicability of an algorithm. We present two definitions
 of \textit{real-time} in Section~\ref{sec:realtime}.
-Da wir zwei Definitionen von echtzeit haben, ist es sinnvoll, auch zwei Metriken der Berechnungszeiten einzuführen.
-Dazu, um präzise Aussagen über die Laufzeiten der algorithmen treffen zu können, teilen wir die Berechnung in
-pre-processing, plane calculation, und post-processing auf. Die jeweiligen Berechnungszeiten werden im Folgenden als
-$t_{pre}, t_{calc}$ und $t_{post}$ bezeichnet. Neben präzisen Aussagen ermöglicht uns diese Aufteilung auch zu bestimmen,
-ob ein Algorithmus $RT_{calc}$ ist. Um zu bestimmen, ob ein Algorithmus $RT_{tot}$ ist, werden wir dazu die totale
-Berechnungszeit $t_{tot}$ angeben, welche sich aus der Summe der individuellen Zeiten ergibt:
+Since we have two definitions of real-time, it is helpful to introduce two metrics of computation times.
+We divide the calculation into pre-processing, plane calculation, and post-processing.
+The respective calculation times are in the following, referred to as $t_{pre}, t_{calc}$, and $t_{post}$.
+This separation allows for an in-depth analysis. Furthermore, it allows us to determine
+whether an algorithm is $RT_{calc}$. To determine whether an algorithm is $RT_{tot}$, we consider the
+total computation time $t_{tot}$, which is the sum of the individual times:
 
 \begin{equation}
     t_{tot} = t_{pre} + t_{calc} + t_{post}
 \end{equation}
 
 \textbf{\textcolor{red}{this still seems poorly placed}}
-In einer echten Umgebung wachsen die Punktwolken inkrementell über Zeit.
-Die Angabe von Durchschnittswerten der Berechnungszeiten ist daher nur bedingt aussagekräftig, da diese bei anfänglichen Zeitschritten
-kürzer sein werden, als am Ende der Aufnahme. Wir werden daher neben Durchschnittswerten der Berechnungszeiten auch
-den Zusammenhang zwischen der Größe der Punktwolke und der Dauer der Berechnung betrachten.
-Dazu sei anzumerken, dass wir nicht analog die Accuracy über zeit betrachten, da die Genauigkeit eines Algos nicht
-von der Größe der Punktwolke abhängen sollte und daher der Durchschnitt ausreicht.
+When recording a real environment, the point clouds grow incrementally over time.
+Therefore, the average calculation times alone are of limited significance, as we expect shorter times for the start of a recording
+and longer times for the most recent. Therefore, we consider the relationship between the point cloud size and the calculation time in
+addition to average values. However, we do not evaluate the accuracy over time since as accuracy of an algorithm should be
+independent of the size of the point cloud.
+
 
 \textbf{\textcolor{red}{das hier eher in den BG oder?}}
 RSPD, 3D-KHT and OBRG construct an octree during their pre-processing phase. Additionally, RSPD and OBRG perform an initial
@@ -110,7 +84,6 @@ All deviations from this default configuration necessary for the FIN experiment 
     \label{tab:rspd-param}
 \end{table}
 
-% FIXME overwork this paragraph given the newly obtained knowledge.
 \paragraph{2D-3D-S}
 For the 2D-3D-S experiment, we use the parameters of the provided implementation. These parameters include the maximum octree level $l_O$,
 the minimum number of samples per leaf node $\varepsilon$, the maximum percentage of outliers per plane $\theta_{outlier}$, and
@@ -186,7 +159,6 @@ The modification of parameters is highlighted in bold in Table~\ref{tab:3dkht-pa
     \label{tab:obrg-param}
 \end{table}
 
-% FIXME boldness in tables in der caption erläutern
 
 \paragraph{2D-3D-S}
 The used configurations for the experiments are shown in Table~\ref{tab:obrg-param}.
@@ -208,13 +180,12 @@ The individual results of both experiments are presented and analyzed. Lastly, t
 
 \subsection{2D-3D-S}
 
-Wir haben RSPD, OPS, 3D-KHT und OBRG auf 139 Scenen des 2D-3D-S Datensatzes laufen lassen. Im Anschluss wurden zu jeder Scene die Präzision,
-der Recall und der F1-Score von jedem Algorithmus berechnet. Dazu wurden die Berechnungszeiten gemessen und in pre-processing, plane detection und
-post-processing aufgeteilt. Table~\ref{tab:res-3d2ds-total} zeigt die average der berechneten Ergebnisse zu jedem Algorithmus. 
-Die rechteste Spalte gibt die totale Berechnungszeit $t_{tot}$ an. Durch dicke Schrift
-werden die größten durchschnittswerte der Accuracy, bzw. die kleinsten durchschnittswerte der Zeiten hervor gehoben. 
-Dazu sei anzumerken, dass kein niedrigster wert von $t_{post}$ angedeutet wird, da RSPD und 3D-KHT keine 
-post-processing schritte haben und daher "per default" weniger zeit in diesem Schritt verbringen.
+We ran RSPD, OPS, 3D-KHT, and OBRG on 139 scenes of the 2D-3D-S dataset. Subsequently, for each scene, the precision, recall, and
+F1-score of each algorithm were calculated. The computation times were measured and divided into pre-processing, plane detection,
+and post-processing. Table~\ref{tab:res-3d2ds-total} shows the average of the computed results for each algorithm.
+The rightmost column gives the total computation time $t_{tot}$. The largest values of the accuracy and the smallest average
+values of the times are indicated in bold. It is to be noted that no lowest value of $t_{post}$ is indicated since RSPD and 3D-KHT
+have no post-processing steps and, therefore, "per default", spend less time in this step.
 
 \begin{table}[H]
     \centering
@@ -233,11 +204,11 @@ post-processing schritte haben und daher "per default" weniger zeit in diesem Sc
 \end{table}
 
 \paragraph{Accuracy}
-Mit einer Präzision von ca. 85\%, einem Recall von ca. 90\% und einem F1-Score von ca. 87\% ist RSPD der insgesamt präziseste algorithmus.
-OPS übertrifft RSPD zwar in der Precision mit einem Wert von ca. 89\%, erzielt dafür aber deutlich geringere Recall und F1-Score Ergebnisse.
-3D-KHT erzielt Ergebnisse mit einer Precision, Recall und F1-Score im Bereich zwischen ca. 71\% und ca. 79\%.
-OBRG erreicht zwar eine hohe Präzision mit ca 81\%, erzielt aber schlussendlich die niedrigsten Recall und F1-Score Werte unter den Algorithmen mit
-67\%, bzw. 71\%.
+RSPD has the overall highest accuracy with a precision of ${\sim}85\%$, a recall of ${\sim}90\%$, and an F1-score of ${\sim}87\%$.
+OPS supersedes RSPD with a precision value of ${\sim}89\%$ but scores significantly lower recall and F1-score values.
+3D-KHT yields precision, recall and F1-score results in the range of ${\sim}71\%$ and ${\sim}79\%$.
+OBRG has a high precision value of ${\sim}81\%$, however its recall and F1-score values are the lowest out of all algorithms
+with ${\sim}67\%$ and ${\sim}71\%$, respectively.
 
 \paragraph{Average Time }
 \label{par:2D-3D-S-time}
@@ -249,67 +220,60 @@ With an average $t_{tot}$ of ca. 25 seconds and ca. 63 seconds, OPS and OBRG, re
 \paragraph{Relationship of Time and Size}
 As stated in Paragraph~\ref{par:time}, it is useful to consider the relationship between the computation times and the amount of
 processed data. For each scene of the 2D-3D-S dataset, the pairs of
-processing times and point cloud file sizes are presented in Figure~\ref{fig:sizetimestanford}. 
-
-Die Berechnungszeiten von 3D-KHT scheinen in keinem starken Verhältnis zur Größe der Punktwolke zu stehen.
-Sowohl die Dauer des pre-processing, als auch die Dauer der plane detection wachsen zunächst linear, 
-zeigen aber, auch bei großen Sprüngen der Punktwolkengröße, kein großes wachstum. Die Differenz der 
-Berechnungszeiten zwischen $100mb$ und $>200mb$ sind kaum zu erkennen.
-
-Die Berechnungszeiten von RPSD zeigen ein ähnliches Verhältnis, mit dem Unterschied, dass das pre-processing
-von RSPD um magnituden länger dauert. Wie bei 3D-KHT scheint die Dauer der plane detection eine obere 
-Grenze zu haben.
-
-Grundsätzlich hat die Dauer des pre-processings von OPS ein lineares Wachstum in abhängigkeit zur Größe 
-der Punktwolke. Auch die Dauer der plane detection zeigt insgesamt ein lineares Verhältnis, mit dem Unterschied,
-dass in diesem linearem Verhältnis eine gewisse Range an fluctuations existiert. Im Graphen zeigt sich dies
-durch eine scheinhafte vertikale Breite. Die post-processing Zeiten sind größtenteils zu vernachlässigen. 
-Die unregelmässigkeiten der Spikes gibt Grund zu annahme, dass es primär von der Struktur der Punktwolke 
-abhängt, anstatt von der reinen Größe. 
-
-Auch die Dauer des pre-processings von OBRG zeigt ein lineares Verhältnis in abhängigkeit zur Punktwolkengröße.
-Die durchschnittlich hohen $t_{pre}$ Werte aus Table~\ref{tab:res-3d2ds-total} kann man auch hier sehen, 
-da die meisten Werte über ${\sim}10^1$ liegen.
-Die $t_{calc}$ Werte von OBRG scheinen nicht abhängig von der Größe der Punktwolke zu sein, da bei steigenden
-Größen die Berechnungszeiten tendenziell sinken. Ein möglicher Grund könnte der feste Wert des Octree levels
-$l_{max}$ sein. Eine adaptive anpassung des Wertes würde wahrscheinlich zu einer ausgeglicheneren Kurve führen.
-Da die post-processing Phase auf den Daten der plane detection phase arbeitet, verhält sich die Kurve ähnlich,
-was das Argument der sub-optimalen Parametrisierung unterstützt.
-
-\textbf{\textcolor{red}{wenn log scale und graph grade, sag ich dann dass das wachstum logarithmisch oder linear ist?}}
-
+processing times and point cloud file sizes are presented in Figure~\ref{fig:sizetimestanford}.
 
 \begin{figure}[H]
     \centering
-    % \includegraphics[width=\textwidth]{images/time_size_2d3ds.png}
     \includegraphics[width=\textwidth]{images/SDsizetime.png}
     \caption[Time per Cloud size 2D-3D-S]{Time spent in pre-processing ($t_{pre}$), plane detection ($t_{calc}$),
         and post-processing ($t_{post}$) per point cloud file size of the 2D-3D-S dataset. Note, that the y-axis is
         scaled logarithmically to the base of ten.}
     \label{fig:sizetimestanford}
 \end{figure}
+The computation times of 3D-KHT do not seem to strongly relate to the size of the point cloud.
+Both the duration of the pre-processing and the duration of the plane detection initially grow linearly
+but do not show a large growth even with large jumps in point cloud size.
+The difference in calculation times between $100mb$ and ${>}200mb$ is hardly noticeable.
+
+The computation times of RPSD show a similar relation, with the difference that the pre-processing of RSPD takes significantly longer.
+As with 3D-KHT, the duration of plane detection seems to have an upper limit.
+
+In general, the pre-processing time of OPS has a linear growth depending on the size of the point cloud.
+The duration of plane detection also shows a linear relationship, with the difference that there is a certain level
+of fluctuation. The post-processing times are negligible for the most part, given the values below $10^0$.
+The irregularity of the spikes gives reason to assume that it primarily depends on the structure of the recorded
+environment rather than size alone.
+
+The duration of the pre-processing of OBRG also shows a linear relationship with respect to the point cloud size.
+The average high $t_{pre}$ values from Table~\ref{tab:res-3d2ds-total} are also reflected here since most values are above ${\sim}10^1$.
+The $t_{calc}$ values of OBRG do not appear to be dependent on the size of the point cloud, as the computation
+times tend to decrease with growing point clouds. A possible reason could be the fixed value of the octree levels $l_{max}$.
+An adaptive determination of octree size would likely lead to a more balanced curve.
+Since the post-processing phase operates on the plane detection phase data, the curve behaves similarly,
+supporting the sub-optimal parameterization argument.
+
 
 
 \paragraph{Summary 2D-3D-S Experiment}
-OPS hat den größten Wert in Precision, während RSPD die höchste Accuracy und den größten F1-Score erzielt.
-3D-KHT hat mit durchschnittlich $1.74s$ die geringste total Berechnungszeit $t_{tot}$. RSPD und OBRG haben mit mehr als 60 sekunden
-die größten $t_{tot}$ Werte unter den Algorithmen, wobei $t_{pre}$ bei RSPD den großteil ausmacht.
+OPS has the highest value in Precision, while RSPD achieves the highest Accuracy and F1 score.
+3D-KHT has the lowest total computation time $t_{tot}$ with an average of $1.74s$. With ${>}60s$,
+RSPD and OBRG have the largest $t_{tot}$ values among the algorithms, with $t_{pre}$ accounting for
+the majority for RSPD.
 
-Figure~\ref{fig:sizetimestanford} zeigt, dass die Laufzeiten von 3D-KHT am geringsten sind. RSPD hat ebenfalls geringe $t_{calc}$ Werte,
-verbringt jedoch die durchweg längste Zeit im pre-processing.
-Ferner scheinen die pre-processing Zeiten aller algorithmen im allgemeinen von der Größe der Punktwolke abhängig zu sein.
-Die plane detection Laufzeiten von OPS und OBRG fluctuieren, OPS weniger als OBRG.
-Die post-processing Laufzeiten von OPS sind insgesamt zu vernachlässigen, bei OBRG, mit ausnahme von ausreissern bei mittleren Dateigrößen,
-stabil bei durchschnittlich $2.61s$, siehe Tabelle~\ref{tab:res-3d2ds-total}.
+Figure~\ref{fig:sizetimestanford} shows that the runtimes of 3D-KHT are the smallest. RSPD also has low $t_{calc}$ values
+but consistently spends the longest time in pre-processing.
+Moreover, the pre-processing times of all algorithms seem to be generally dependent on the size of the point cloud.
+The plane detection runtimes of OPS and OBRG fluctuate. However, OPS fluctuates less than OBRG.
+The post-processing runtimes of OPS are negligible overall. The $t_{post}$ values of OBRG are stable at $2.61s$ on average,
+except for medium cloud sizes, see table~\ref{tab:res-3d2ds-total}.
 
 \subsection{FIN}
-Jeder der insgesamt 732 Zeitschritte des FIN Datensatzes wurde von jedem algorithmus verarbeitet. Im Anschluss wird
-jeder Zeitschritt seperat ausgewertet, also die Präzision, der Recall und der F1-Score berechnet. Dazu
-wurden, wie beim 2D-3D-S Experiment die Berechnungszeiten der Algorithmen für jeden Zeitschritt gemessen.
+Each of the total 732 time frames of the FIN data set was processed by each algorithm.
+Subsequently, we evaluated each time frame separately, i.e., by calculating the precision, the recall, and the F1 score.
+Additionally, we measured the computation times of each time frame for all algorithms.
 
-Die durchschnittlichen Ergebnisse über alle Zeitschritte aller Scenen des FIN Experiments werden
-in Table~\ref{tab:res-fin-total} präsentiert. Für precision, recall und den f1-score sind die höchsten werte dick geschrieben.
-Die niedrigsten Zeiten jedes Berechnungsschritts sind ebenfalls durch dicke schrift gehighlighted.
+The average results over all time steps of all scenes of the FIN experiment are presented in Table~\ref{tab:res-fin-total}.
+The highest values are written in bold for precision, recall, and the f1-score, as are the lowest times of each calculation step.
 
 
 \begin{table}[H]
@@ -331,26 +295,29 @@ Die niedrigsten Zeiten jedes Berechnungsschritts sind ebenfalls durch dicke schr
 \end{table}
 
 \paragraph{Accuracy}
-OPS hat mit nahezu 70\% die höchste Durschnittspräzision der Algorithmen. RSPD hat dafür mit ca. 60\% die jeweils höchsten
-Werte für Recall und F1-Score erzielt. 3D-KHT und OBRG erzielen ähnliche Ergebnisse der precision, bei Recall und
-F1-Score hat 3D-KHT jedoch um ca. 13\%, bzw. ca. 17\% höhere Werte als OBRG. 
-RSPD erzielt damit die insgesamt höchste Accuracy, während OBRG insgesamt die niedrigste erzielt.
+OPS has the highest average precision of the algorithms, with almost 70\%. RSPD, on the other hand, achieved the highest values
+for recall and the F1-score. 3D-KHT and OBRG achieved a similar precision, but for Recall and F1 score, however, 3D-KHT has
+higher values than OBRG by approx. 13\% and approx. 17\%, respectively. RSPD thus achieves the highest overall accuracy,
+while OBRG achieves the overall lowest.
+
 
 \paragraph{Average Time}
-RSPD braucht unter den algorithmen die meiste Zeit im pre-processing. Im kontrast dazu hat RSPD mit 0.19 sekunden
-die kürzeste Zeit, die in der plane detection verbracht wird. Insgesamt braucht 3D-KHT mit durchschnittlich $0.43$
-sekunden am kürzesten für die komplette Berechnung $t_{tot}$ eines Zeitschritts. OPS erzielt mit ca. 6 sekunden vergleichsweise
-durchschnittliche Zeiten und OBRG braucht mit mehr als 20 sekunden insgesamt am längsten für die Berechnung
-eines Zeitschritts.
+RSPD needs the most time in pre-processing among the algorithms. In contrast, RSPD has the shortest time spent
+during plane detection, with 0.19 seconds. Overall, 3D-KHT needs the shortest time for the complete computation $t_{tot}$
+of a time step with an average of $0.43$ seconds. OPS achieves comparatively average times with about 6 seconds, and OBRG
+takes the longest overall to compute a time step with more than 20 seconds.
+
 
 \paragraph{Relationship of Time and Size}
-Wie auch in Paragraph~\ref{par:2D-3D-S-time} möchten wir den zusammenhang zwischen der Menge an Daten und den Zeiten
-der Berechnung von ihnen betrachten.
-In Figure~\ref{fig:dynaudi} werden die Dauer der Berechnung jedes Zeitschritts der Dateigröße von der
-\textit{auditorium} Scene des FIN Datensatzes gegenüber gestellt. \textbf{\textcolor{red}{Dazu sei gesagt, dass vergleichbare grafiken
-        für die anderen Scenen des FIN Datensatzes erstellt wurden. Sie stellen argumentativ keine neuen informationen dar und werden
-        vollständigkeitshalber und aus platzgründen im anhang \$REF präsentiert. Es wurde sich hier für die Auditorium Scene
-        entschieden, da diese die längste Aufnahme darstellt, und damit die meisten Daten beinhaltet.}}
+
+We want to consider the relationship between the size of the point cloud and the corresponding calculation time.
+In Figure~\ref{fig:dynaudi}, we compare the processing times of each time step to the file size of the
+\textit{auditorium} scene of the FIN data set.
+
+Note, that we created similar graphs for the other scenes of the FIN dataset.
+However, they do not introduce any new information in argumentation and are presented in the appendix \textbf{\textcolor{red}{\$REF}} for completeness
+and spatial reasons.
+The auditorium scene was selected because it represents the longest recording, and thus contains the most data.
 
 \begin{figure}[H]
     \centering
@@ -361,27 +328,26 @@ In Figure~\ref{fig:dynaudi} werden die Dauer der Berechnung jedes Zeitschritts d
     \label{fig:dynaudi}
 \end{figure}
 
-
-Bei RSPD und OBRG kann man direkt sehen, dass die pre-processing zeiten $t_{pre}$ proportional zur größe der punktwolke
-sind. Im kontrast dazu scheinen bei OPS und 3D-KHT die pre-processing zeiten mehr mit den Zeiten der plane detection
-$t_{calc}$ in Verbindung zu stehen. Bei OPS und 3D-KHT scheint $t_{calc}$ unabhängig von der Größe der Punktwolke
-zu sein und befindet sich stets unter einem gewissen Wert. Die pre-processing und plane detection Laufzeiten von OBRG steigen am Anfang rapide,
-zeigen danach aber lineares Wachstum in abhängigkeit von der Punktwolkengröße.
-Die post-processing Zeiten von OPS fluctuieren stark zwischen 0 und der Dauer der plane detection. Die 
-post-processing Zeiten von OBRG scheinen im Vergleich dazu, nach dem spike am Anfang, konstant auf 
-einem Wert zu sein.
+The pre-processing times of RSPD and OBRG are noticeably proportional to the point cloud size.
+In contrast, for OPS and 3D-KHT, the pre-processing times seem to correlate with the plane detection times since
+both show similar spikes. The plane detection steps of OPS and 3D-KHT do not seem to depend on the point cloud size,
+as both seem to be limited by an upper bound. The pre-processing and plane detection times of OBRG grow rapidly in the
+beginning but afterward, show a linear growth in relation to the cloud size. The post-processing times of OPS fluctuate
+between 0 and the duration of plane detection. After the spike in the beginning, the $t_{post}$ values of OBRG seem to be
+consistent.
 
 \paragraph{Summary FIN Experiment}
-OPS hat die höchste Durchschnittspräzision, RSPD hat die größten Prozente in Recall und F1-Score. Auch in der plane detection
-hat RSPD mit durchschnittlichen $0.19s$ den geringsten $t_{calc}$ Wert unter den Algorithmen. Im kontrast dazu hat RSPD
-den längste Dauer des pre-processing mit $14.36s$ im Durchschnitt. Der algorithmus mit der Kürzesten pre-processing, sowie
-totalen Zeit ist 3D-KHT mit $t_{pre}=0.14$, bzw. $t_{sum}=0.43$.
+OPS has the highest average precision, and RSPD has the largest percentages in recall and F1 score. Additionally, RSPD has the lowest $t_{calc}$ value among the algorithms,
+with an average of $0.19s$ per time frame. In contrast, RSPD has the longest pre-processing time with $14.36s$ on average.
+The algorithm with the shortest pre-processing and the shortest total time is 3D-KHT with $t_{pre}=0.14$ and $t_{sum}=0.43$,
+respectively.
 
-Die Berechnungszeiten von RSPD und OBRG scheinen insgesamt abhängig von der Größe der Punktwolke zu sein.
-Dabei sind die $t_{pre}$ Werte von RSPD deutlich höher als die $t_{calc}$ Werte. Im kontrast dazu scheinen die pre-processing
-und plane detection Zeiten von OBRG am Ende der Aufnahme sich bei einen gemeinsamen Wert zu treffen.
-Die Berechnungszeiten von OPS und 3D-KHT scheinen unabhängig von der Punktwolke zu sein und befinden sich immer unter einer 
-oberen Grenze. Dabei ist diese obere Grenze bei 3D-KHT niedriger als bei OPS.
+
+In general, the calculation times of RSPD and OBRG seem to depend on the point cloud size.
+However, the time RPSD spends in pre-processing is significantly higher than in its plane detection step.
+In contrast, the pre-processing and plane detection times of OBRG seem to converge at the end.
+The calculation times of OPS and 3D-KHT seem to be independent of the point cloud size and consistently stay under an upper bound.
+However, 3D-KHT has a smaller upper bound than OPS.
 
 
 \subsection{Comparison}
@@ -389,26 +355,29 @@ When comparing Table~\ref{tab:res-3d2ds-total} and Table~\ref{tab:res-fin-total}
 OPS has the highest precision value, RSPD yields the highest Recall and F1-Score, and 3D-KHT has the lowest
 average total processing time.
 
-Wenn man sich Figure~\ref{fig:dynaudi} and Figure~\ref{fig:sizetimestanford} ansieht, fallen auch gemeinsamenkeiten auf:
-Der Kurvenverlauf von RSPD ist in beiden Experimenten praktisch identisch, ist proportional zur Größe der Punktwolke
-und die pre-processing Zeit stellt 99\% der totalen Berechnungszeit dar.
-Eine andere gemeinsamkeit ist, dass die post-processing Zeiten von OPS sehr fluktuiert. Bei OBRG scheint die Dauer des
-post-processings stabil um einen geringen Wert (${\sim}10^{-1}$) zu sein.
+Observing Figure~\ref{fig:dynaudi} and Figure~\ref{fig:sizetimestanford}, common features are noticeable:
 
-Es gibt aber auch Unterschiede. Im Vergleich zum 2D-3D-S Experiment verhalten sich die Laufzeiten von 3D-KHT beim
-FIN experiment nicht proportional zur Größe der Punktwolke. Dazu sei gesagt,dass die maximale Größe im FIN experiment
-bei ca. $30mb$ liegt, was natürlich deutlich kleiner als das maximum des 2D-3D-S Datensatzes (${>}400mb$) ist.
-Da in Figure~\ref{fig:sizetimestanford} aber auch für kleinere Wolken eine proportionalität zu erkennen ist, wird
-der grund für die verschiedenen Verläufe wahrscheinlich die unterschiedliche Parametrisierung sein.
+The curve shape of RSPD is very similar for both experiments, linearly dependent on the point cloud size, and the
+$t_{pre}$ accounts for $99\%$ of the total calculation time $t_{tot}$.
+In both experiments, the post-processing time of OPS fluctuates.
+The post-processing of OBRG seems to be mostly stable around a small value (${\sim}10^{-1}$).
+3D-KHT scores very low processing times in both experiments.
+
+However, there are also notable differences.
+Whereas the calculation times of 3D-KHT seem to be proportional to the point cloud size in the 2D-3D-S experiment, they show no such
+relation during the FIN experiment. It is, however, noteworthy that the cloud sizes widely differ between the experiments, as the
+maximum size of the FIN experiment (${\sim}30mb$) is very small, compared to largest scene of the 2D-3D-S dataset (${>}400mb$).
+Nonetheless, since Figure~\ref{fig:sizetimestanford} portrays a proportionality, even for smaller clouds, the reason for
+different curves is likely the difference of parameterization.
 
 \section{Summary}
-OBRG erzielt in keinem Experimemt die höchsten oder niedrigsten Werte.
-OPS hat in beiden Experimenten den höchsten precision Wert.
-Durch Recall und den F1-score hat RSPD in beiden Experimenten insgesamt die höchste Accuracy. 
-Das pre-processing von RSPD dauert von allen Algorithmen am längsten. Im kontrast dazu hat RSPD 
-den kleinsten $t_{calc}$ Durschnittswert im FIN Experiment.
-3D-KHT hat in beiden Experiment die geringste totale Berechnungszeit und übertrifft im 2D-3D-S Experiment die
-plane detection Zeit von RSPD.
+OBRG does not achieve the highest or lowest values in any experiment.
+OPS has the highest precision value in both experiments.
+Due to Recall and the F1-score, RSPD has the highest overall accuracy in both experiments.
+The pre-processing of RSPD takes the longest time of all algorithms. In contrast, RSPD has the smallest average $t_{calc}$
+value in the FIN experiment. 3D-KHT has the lowest total computation time in both experiments, and in the 2D-3D-S experiment,
+it outperforms the plane detection time of RSPD.
+
 
 % NOTE 3DKHT kann keine löcher oder non-rectangular ebenen basteln!
 
