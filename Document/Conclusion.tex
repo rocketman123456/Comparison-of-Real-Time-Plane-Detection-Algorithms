@@ -2,29 +2,96 @@
 
 \begin{document}
 \chapter{Conclusion and Future Work}
-\subsection*{Summary}
+\subsection{Summary}
 
-\paragraph*{Use case, scenario, real-world application, current problem}
+\paragraph{Use case, scenario, real-world application, current problem}
+Viele AR/VR anwendungen benutzen plane detection..
+Echtzeit ist wichtig..
+Es werden spezielle Sensoren benötigt, ein SLAM algo und ein geeigneter plane detection algo..
+Die Auswahl des besten plane detection algorithmus ist nicht trivial..
 
-\paragraph*{Daher das thema dieser arbeit}
+\paragraph{Daher das thema dieser arbeit}
+Wir vergleichen algorithmen mit fokus auf die echtzeitfähigkeit
+wir haben 2 definitionen für echtzeit angegeben..
+Wir beschränken uns in dieser arbeit auf plane detection mit intel realsense technologie
+ das beinhaltet 2 kameras und die dazugehörige software (+SLAM)
 
-\paragraph*{algorithmen}
+\paragraph{algorithmen}
+Es wurde die aktuelle literatur gelesen und eine liste aus algorithmen erstellt.
+Es wurden metriken zum objektiven und oberflächlichen Vergleich der algorithmen angegeben
+basierend auf den metriken wurden vier algorithmen für einen vergleich ausgewählt
 
-\paragraph*{Testscenario / datensatz}
+\paragraph{Testscenario / datensatz}
+Da die ausgewählten algorithmen nicht auf dem selben Datensatz getestet wurden haben wir 
+geeignete ausgesucht.
+Wir haben uns für den 2D-3D-S Datensatz entschieden..
+motiviert durch die abwesenheit eines datensatzes mit temporaler komponente
+ haben wir einen eigenen datensatz erstellt
 
-\paragraph*{Experimentaufbau}
+\paragraph{Experimentaufbau}
+Da wir zwei datensätze haben haben wir auch zwei experimente
+Zunächst wurden bewertungsmetriken der datensätze eingeführt:
+precision, recall, f1, 
+dazu wurden die berechnungszeiten genau gemessen und es wird unterschieden in pre-processing,
+plane detection und post-processing. 
+diese experimente wurden seperat durchgeführt und ausgewertet
+im anschluss darauf wurden die ergebnisse beider Experimente verglichen
 
-\paragraph*{Ergebnisse der experimente }
+\paragraph{Ergebnisse der Experimente }
+die ergebnisse lassen sich zusammenfassen in:
+3D-KHT ist der insgesamt schnellste
+RSPD ist der insgesamt präziseste
+ 
+wir haben zwei definitionen von echtzeit
+gemäß dieser definitionen und anhand der ergebnisse aus dem letzten kapitel gilt:
+(in einem realwelt environment)
+\begin{itemize}
+    \item 3D-KHT $\in RT_{tot}$, da $t_{tot} < 1$
+    \item RSPD $\in RT_{calc}$ , da $t_{calc}$< 1
+\end{itemize}
+
+\subsection{Fazit}
+
+OBRG ist nicht echtzeitfähig.
+
+Da das pre-processing von RSPD viel zu lange dauert ist RSPD insgesamt nicht total echtzeitfähig,
+die echtzeitfähigkeit beschränkt sich somit auf die plane detection phase.
+
+OPS erzielt im FIN experiment so grade werte die für eine plane detection echtzeit sprechen würden.
+Auch hier dauert das pre-processing zu lange um von einer totalen echtzeit sprechen zu können.
+
+3D-KHT ist im FIN experiment deutlich unter der Schranke von einer sekunde, damit in einem realen 
+enviroment total echtzeitfähig. 
 
 
-\subsection*{Fazit}
+\paragraph{Limitationen der ergebnisse}
+Ein Faktor der langsamen laufzeit von OBRG ist definitiv die implementation. Python ist aus diversen
+Gründen magnituden langsamer als C++ und es wurde bei der anfertigung der implementation die 
+präzision priorosiert da durch die wahl der programmiersprache sowieso nicht von echtzeitfähigkeit 
+ausgegangen wurde.
 
-\paragraph*{Limitationen der ergebnisse}
+3D-KHT ist der schnellste algorithmus, lässt aber leider in sachen accuracy viele prozente liegen.
 
-\paragraph*{Algo x ist der beste, mögl verbesserungen}
-
-\paragraph*{Future work I guess}
+\paragraph{Algo x ist der beste, mögl verbesserungen}
 
 
+
+Das einzige was RPSD von einer eindeutigen dominanz trennt ist die Dauer des preprocessings.
+In RPSD's pre-processing phase werden die normalen der Punktwolke berechnet. 
+Es ist möglich dass die normalen noch vor der plane detection phase aus Figure~\ref{fig:concept}
+berechnet werden. Zb kann sogar die intel realsense technologie die normalen exportieren.
+Dies würde nach angemessenen anpassungen des algorithmuses die Berechnungszeiten auf $t_{calc}$
+reduzieren. Somit würde RSPD ebenfalls total echtzeitfähig sein. 
+
+
+Diese anpassung des experiments würde einen bias gegenüber RSPD darstellen, weswegen wir das 
+unterlassen haben und als weitere aufgabe nach dem abschluss dieser arbeit ansehen.
+
+Ebenso interessant sind die Laufzeiten einer optimierten implementierung von OBRG in C++.
+
+Die parametrisierung von 3D-KHT ist definitiv die komplizierteste aus den algorithmen und hat daher
+das größte optimierungspotential. Das ist in dem fall ein doppelschneidiges schwert, da zuerst eine
+optimale/ausreichende parametrisierung gefunden werden muss, bevor der algorithmus das volle potential 
+entfaltet. 
 
 \end{document}

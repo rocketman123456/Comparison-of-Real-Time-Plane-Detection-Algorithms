@@ -8,7 +8,7 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=15 cm]{images/concept_specific.png}
-    \caption[Concrete Concept Graphic]{The procedure of the plane detection process. The specialized sensor records data ([1]), which is passed to
+    \caption[AR/VR System Overview]{The procedure of the plane detection process. The specialized sensor records data ([1]), which is passed to
         a SLAM algorithm ([2]). After map assembly, a point cloud is handed to a plane detection algorithm ([3]).
         The detected planes are given to a use-case-specific application ([4]).}
     \label{fig:concept}
@@ -73,26 +73,19 @@ In the following paragraphs, we define and outline appropriate criteria for the 
 The first criterion is the type of input expected by a plane detection algorithm.
 Allowing vastly different input types is likely to render the evaluation more complicated, if not impossible because an equivalent transformation
 between two input types is not always possible. 
-Usually, the data representation of the recorded environment falls into one of three categories:
-% FIXME wahrscheinlich eher in den BG
-% \begin{table}[H]
-%     \centering
-%     \begin{tabular}{c|c|c}
-%         \textbf{Input Types}             & \textbf{Value Types} & \textbf{Memory Layout} \\ \hline
-%         \textbf{Organized Point Cloud}   & 3D Coordinates       & 2D Matrix              \\
-%         \textbf{Unorganized Point Cloud} & 3D Coordinates       & 1D Array               \\
-%         \textbf{Depth Image}             & Distances to Sensor  & 2D Matrix              \\
-%         \textbf{RBG Image}               & RGB                  & 2D Matrix
-%     \end{tabular}
-%     \caption{Possible inputs for plane detection algorithms.}
-%     \label{tab:inputs}
-% \end{table}
+
+We detail the different types of input in Section~\ref{sec:dataformats}.
+
+To reiterate, the data representation of the recorded environment falls into one of three categories:
 \begin{itemize}
     \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
     \item \textit{organized} or \textit{structured point cloud} (OPC)
-    \item \textit{(depth-) image} (D-/I)
+    \item image:
+          \begin{itemize}
+              \item Depth (DI)
+              \item RGB (RGBI)
+          \end{itemize}
 \end{itemize}
-% FIXME in den Background verschieben ,hier nur kurz den unterschied umreissen 
 
 OPC and UPC both describe point clouds in the cartesian coordinate system. The primary difference is that the 3D coordinates inside
 an organized point cloud are saved in a 2D grid, while the unorganized cloud resembles an unsorted 1D array.
@@ -164,6 +157,7 @@ Finally, we end up with, and thus include, the following plane detection algorit
 \end{itemize}
 
 \section{Datasets}
+\label{sec:datasets}
 % FIXME
 % eigene arbeit nicht unterschlagen!
 % datensätze kurz umreissen
@@ -222,7 +216,8 @@ The recorded point clouds can be seen in Figure~\ref{fig:fin}.
         \caption[Dynamic Dataset office]{}
         \label{fig:finhw}
     \end{subfigure}
-    \caption[Dynamic Datasets]{The recordings for each scene type: (a) auditorium, (b) conference room, (c) office and (d) hallway.}
+    \caption[Dynamic Datasets]{The recorded point clouds for each scene type: (a) auditorium, (b) conference room, (c) office and (d) hallway. 
+    The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.}
     \label{fig:fin}
 \end{figure}
 Lastly, since this is a novel dataset and thus has no ground truth, we create a ground truth. The details thereof are explained in Section~\ref{sec:finimpl}.

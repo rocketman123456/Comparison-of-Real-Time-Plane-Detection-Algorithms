@@ -63,10 +63,56 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System \footn
     \label{tab:cameraspecs}
 \end{table}
 
+
+\section{Data Formats}
+\label{sec:dataformats}
+\subsection{Common Input Types}
+Usually, the data representation of the recorded environment falls into one of three categories:
+\begin{itemize}
+    \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
+    \item \textit{organized} or \textit{structured point cloud} (OPC)
+    \item image:
+          \begin{itemize}
+              \item Depth (DI)
+              \item RGB (RGBI)
+          \end{itemize}
+\end{itemize}
+
+The differences between these input types are summarized in Table~\ref{tab:inputs}.
+The fundamental difference between UPC and OPC is their format. Each point cloud has a \textit{width} and a \textit{height} parameter.
+An unorganized point cloud $c$ is generally equal to an unordered 1D array of 3D coordinates, i.e., $width = |c|$ and $height=1$.
+In contrast, the memory layout of an organized point cloud is a 2D matrix, where the width and height depend on the resolution of the used sensor.
+Intuitively, the value at index (0,0) would be in the top-left corner, and the value at index (\textit{width,height}) would be in the bottom-right corner.
+% FIXME bild selber machen: 2xmatrix mit eintrag, einmal (0,0)=XYZ, einmal (0,0) = d_0,0 
+When considering images, a differentiation between RGB images and depth images has to be made.
+Depth images are inherently similar to organized point clouds, given their resolution and two-dimensional structure.
+The primary difference is that the matrix stores distances to the sensor instead of 3D coordinates.
+RGB-images are, like Depth images, stored as a 2D Matrix but instead of distances or coordinates, the matrix stores
+values that describe the color of a pixel. Usually, this means that each pixel stores a triple that describes a specific
+color by the amount of included red, green, and blue.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c}
+        \textbf{Input Type} & \textbf{Value Types} & \textbf{Memory Layout} \\ \hline
+        \textbf{OPC}        & 3D Coordinates       & 2D Matrix              \\
+        \textbf{UPC}        & 3D Coordinates       & 1D Array               \\
+        \textbf{DI}         & Distances to Sensor  & 2D Matrix              \\
+        \textbf{RGBI}       & RGB                  & 2D Matrix
+    \end{tabular}
+    \caption{Possible inputs for plane detection algorithms.}
+    \label{tab:inputs}
+\end{table}
+
+\subsection{Common Plane Formats}
+
+% FIXME 
+\textbf{\textcolor{red}{TODO}}
+
 \section{Plane Detection}
 
 \paragraph*{introduction}
-The field of plane detection has been around for decades. Most methods of detecting planar regions are based on one of three main categories \cite*{Limberger_Oliveira_2015,Araújo_Oliveira_2020}:
+The field of plane detection has been around for decades.
+Most methods of detecting planar regions in unorganized point clouds are based on one of three main categories \cite*{Limberger_Oliveira_2015,Araújo_Oliveira_2020}:
 \begin{itemize}
     \item Hough Transform (HT)
     \item RANSAC (RC)
@@ -177,7 +223,7 @@ contain fewer normal vectors) in three-dimensional accumulator arrays, as portra
     \begin{subfigure}{0.25\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/accumulatorarray.png}
-        \caption[3D-KHT Accumulator Ball]{}
+        \caption[3D-KHT Accumulator Array]{}
         \label{fig:accarr}
     \end{subfigure}
     \hspace{\fill}
@@ -219,15 +265,139 @@ A residual value is obtained by taking the RMS of the distance of all included p
 For the region growing phase, all leaf nodes are selected as individual seed points. Starting from the seed with the lowest residual value, which relates to a low amount of noise,
 a neighboring leaf node $n$ is inserted into the region if $n$ does not belong to any region and the angular divergence between both normal vectors is smaller than
 a predefined threshold.
-
+% FIXME explain inlier criteria, mention thresholds
 Lastly, a refinement step is employed.
 Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% of included points fit the best plane. FR is leaf-based, and all previously unallocated neighboring nodes that satisfy an inlier criterion are added to the region.
 General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore,
 points from neighboring and previously unallocated leaf nodes are considered and inserted into the region if they, too, satisfy the inlier criterion.
 The refinement process returns a complete set of planar regions.
 
-\subsection{PEAC - Probabilistic Agglomerative Hierarchical Clustering}
-\subsection{CAPE - Fast Cylinder and Plane Extraction}
+\subsection{Probabilistic Agglomerative Hierarchical Clustering}
+Probabilistic Agglomerative Hierarchical Clustering (PEAC)~\cite{Feng_Taguchi_Kamat_2014} is a plane detection algorithm that takes an organized
+point cloud as input.
+
+\textbf{\textcolor{red}{preprocessing}}
+\begin{enumerate}
+    \item init graph:
+    \begin{enumerate}
+        \item init nodes:
+        \begin{itemize}
+            \item downsample resolution
+        \end{itemize}
+        \item init edges
+    \end{enumerate} 
+    \item clean up graph by removing certain types of nodes and corresponding edges
+    \begin{itemize}
+        \item nodes with high MSE (non-planar nodes)
+        \item missing data (due to sensor, e.g. behind windows, too far away)
+        \item depth discontinuities (e.g. monitor in front of wall)
+        \item boundary nodes
+    \end{itemize}
+\end{enumerate}
+\textbf{\textcolor{red}{plane detection}}
+AHC:
+\begin{enumerate}
+    \item build min heap for finding node with minimum MSE
+    \item exhaustively:
+    \begin{enumerate}
+        \item find the node with the lowest MSE $v$
+        \item merge with the best-fitting neighbor: $v \lor u_{best} \rightarrow u_{merge}$ 
+        \item if the MSE of $u_{best}$ exceeds a threshold $T_{MSE}$:
+        \begin{itemize}
+            \item extract $v$ from graph
+        \end{itemize}
+        \item else:
+        \begin{itemize}
+            \item insert edge ($v,u_{best}$) 
+            \item insert the merged node back into the graph
+        \end{itemize}
+    \end{enumerate}
+\end{enumerate}
+
+\textbf{\textcolor{red}{post-processing}}
+Refinement:
+\begin{enumerate}
+    \item focus on three types of artifacts:
+    \begin{enumerate}
+        \item sawtooth
+        \item unused points
+        \item over segmentation
+        \item all of them are at boundaries
+    \end{enumerate}
+    \item erode border nodes
+    \item perform pixel wise region growing, dabei alle 4 nachbarn betrachten
+    \item re-apply AHC on newly formed nodes
+\end{enumerate}
+
+\subsection{Fast Cylinder and Plane Extraction}
+Fast Cylinder and Plane Extraction (CAPE)~\cite{Proença_Gao_2018} implements an algorithm that detects planes and cylinders in organized point clouds to improve the performance
+of visual odometry. 
+
+\textbf{\textcolor{red}{pre-processing}}
+\begin{enumerate}
+    \item planar cell fitting
+    \begin{itemize}
+        \item also used in PEAC
+        \item non-planar: 
+        \begin{itemize}
+            \item NaN
+            \item depth discontinuities
+        \end{itemize}
+        \item then: plane fitting with PCA(->normal) and eigenvalue (->MSE)
+        \item only the first two moments of 3d points needed, könig-huygen formula can be used to calc the cov matrix
+    \end{itemize}
+    \item build histogram of normals
+    \begin{itemize}
+        \item convert normals of cell to polar and azimuthal angles
+        \item use those values for assorting to bins and building a histogram
+    \end{itemize}
+\end{enumerate}
+
+\textbf{\textcolor{red}{plane detection}}
+\begin{enumerate}
+    \item cell region growing
+    \begin{itemize}
+        \item given histogram and grid of planar cells, (copy of G:) list of rem. cells $R$, Set of segments $S$
+        \item exhaustively, until $R$ is empty:
+        \begin{enumerate}
+            \item C = get cells from the most frequent bin
+            \item if the number of cells is smaller than a threshold $k_1$: break
+            \item choose seed: cell with minimum MSE out of C
+            \item grow seed
+            \item remove resulting region from $R$ and remove cells in R from histogram
+            \item if $|R|< k_2$ continue
+            \item add $R$ to $S$  
+        \end{enumerate}
+        return $S$
+    \end{itemize}
+    \item plane (+cylinder) fitting (for all regions:)
+    \begin{itemize}
+        \item fit plane to region  [A]
+        \item if ratio of second largest eigenvalue to smallest large enough :save grid segmentation and plane params 
+        \item else: check if surface is invariant in one direction (property of open cylinders)
+        \begin{itemize}
+            \item PCA on [n1,...,nn] stacked matrix of [N,-N] (normal of the cell)
+            \item only continue if ratio of first eigenvalue to last eigenvalue is larger than a threshold
+            \item use center and normal to projekt cell to plane
+            \item use ransac to fit a cylinder (das geht weil cylinder ebenen sind mit inf radius)
+            \item cylinder fitting returns set of set of segments
+            \item foreach subsegment:
+            \item fit plane (siehe [A]), and depending on the MSE, add to either plane set or cylinder set
+        \end{itemize}
+    \end{itemize}
+    \item plane region merging
+\end{enumerate}
+
+\textbf{\textcolor{red}{post-processing}}
+boundary refinement:
+\begin{enumerate}
+    \item erode cell boundaries with 3x3 kernel, 4er nbhood (wie in PEAC) 
+    \item cells that are valid for refinement are given by the difference between the eroded segment and the segment to expand
+    \item distance between segment plane model to each point within the valid cells is calculated 
+    \item pixel within the cells are added to the segment if the MSE is less than the model MSE*konstant (im paper= 9)
+\end{enumerate}
+
+
 \subsection{SCH-RG - Plane Extraction using Spherical Convex Hulls}
 \subsection{D-KHT - Hough Transform for Real-Time Plane Detection}
 \subsection{DDFF - Depth Dependent Flood Fill}
@@ -235,25 +405,10 @@ The refinement process returns a complete set of planar regions.
 \subsection{PlaneRecNet}
 \subsection{PlaneRCNN}
 
-\section{Data Formats}
-\subsection{Common Input Types}
-The fundamental difference between UPC and OPC is their format. Each point cloud has a \textit{width} and a \textit{height} parameter.
-An unorganized point cloud $c$ is generally equal to an unordered 1D array of 3D coordinates, i.e., $width = |c|$ and $height=1$.
-In contrast, the memory layout of an organized point cloud is a 2D array, where the width and height depend on the resolution of the used sensor.
-% T265 kann keine OPC liefern
-Taking the maximum resolution of the T265(see Table~\ref{tab:cameraspecs}) as an example, the OPC would have a \textit{width} and \textit{height} of
-1280 and 720, respectively.
-Intuitively, the value at index (0,0) would be in the top-left corner, and the value at index (\textit{width,height}) would be in the bottom-right corner.
-% FIXME bild selber machen: 2xmatrix mit eintrag, einmal (0,0)=XYZ, einmal (0,0) = d_0,0 
-Depth images are inherently similar to organized point clouds, given their resolution and two-dimensional structure. The primary difference is that the values
-stored in the array are distances to the sensor instead of 3D coordinates.
-
-\subsection{Common Plane Formats}
-
 \section{Datasets}
 % FIXME Datensätze erklären
 % FIXME Tabelle erläutern!
-\begin{table}[]
+\begin{table}[H]
     \centering
     \begin{tabular}{c|c|c|c|c}
         \textbf{Dataset}                                                                                                                                                                      & \textbf{Input Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline

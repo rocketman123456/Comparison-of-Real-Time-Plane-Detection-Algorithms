@@ -49,8 +49,8 @@ Since the exact values of all thresholds have not been specified, we empirically
 To determine a region's planarity, we calculate the number of points that fit the best fitting plane within a predefined threshold.
 If that number supersedes the proposed 70\%-90\%, depending on the expected noise, the region is considered planar \cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.
 
-It is worth noting that the choice of implementation using python is inferior considering calculation time when compared with an equivalent implementation in C++. Writing an optimized implementation in C++ would, therefore, go beyond the scope of this work, as the optimization of
-a single method is not our focus.
+% It is worth noting that the choice of implementation using python is inferior considering calculation time when compared with an equivalent implementation in C++. Writing an optimized implementation in C++ would, therefore, go beyond the scope of this work, as the optimization of
+% a single method is not our focus.
 
 
 
@@ -137,6 +137,7 @@ The auditorium scene has a total of 296 individual time frames, the conference r
 The FIN dataset, thereby, has a total of 708 time frames.
 
 Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
+By creating a ground truth for only the last frame of each scene, we substantially reduce the time invested in this task. 
 To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
 Figure~\ref{fig:dynGT}.
 We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
