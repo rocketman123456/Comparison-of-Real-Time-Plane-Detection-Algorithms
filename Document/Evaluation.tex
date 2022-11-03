@@ -7,25 +7,39 @@ In this chapter, the previously selected algorithms are uniformly compared. We p
 
 This work aims to determine which plane detection algorithm is the most suitable for an AR/VR system. For this decision, we uniformly compare the algorithms selected in
 Chapter~\ref{chap:Concept}. We split the comparison into two experiments conducted on different datasets: the 2D-3D-S and the
-self-created FIN dataset. Since both datasets are fundamentally different, we will perform the experiments and the analysis separately and then compare the results.
+self-created FIN dataset.
+We conduct both experiments on an AMD Ryzen 7 5800H CPU with 16GB of RAM.
+Since both datasets are fundamentally different, we will perform the experiments and the analysis separately and then compare the results.
 First, we present the metrics used for comparison, followed by an outline of the used configurations of parameters for each experiment.
 
 \subsection{Metrics}
 \label{subsec:metrics}
 \paragraph{Accuracy}
 To quantify the accuracy of the plane detection algorithms, we use the detected planes and the created ground truth to calculate the three following
-metrics: Precision, Recall, and the F1-score. The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed
-in Section~\ref{sec:metrics}.
+metrics: Precision, Recall, and the F1-score.
+The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed in Section~\ref{sec:metrics}.
+Note that we use the detected planes for the calculation, however, we are not using them directly as a measure of performance due to the subjective
+nature of manual ground truth segmentation.
+We calculate the F1-score, as it is the harmonic mean of the precision and the recall. In practice, this means that an algorithm
+has to yield sufficient \textit{precision} and \textit{recall} results to score a sufficient \textit{F1-score}. The F1-score, thereby, is the primary metric
+for the quantitative comparison of algorithms in this work. However, we report the \textit{precision} and the \textit{recall} for thorough analysis.
 
-
-\textcolor{red}{hier noch mehr ins detail gehen? (antwort) \underline{\hspace{2cm}}}
 
 \paragraph{Time Measurements}
 \label{par:time}
-In addition to the accuracy, we are interested in the real-time applicability of an algorithm. We present two definitions
+In addition to the accuracy, we are interested in the real-time applicability of an algorithm. We introduce two definitions
 of \textit{real-time} in Section~\ref{sec:realtime}.
-Since we have two definitions of real-time, it is helpful to introduce two metrics of computation times.
-We divide the calculation into pre-processing, plane calculation, and post-processing.
+To reiterate, we consider an algorithm to be \textit{totally real-time} ($RT_{tot}$) applicable if its total runtime is smaller than $1s$.
+Furthermore, we consider an algorithm to achieve \textit{real-time plane detection} ($RT_{calc}$) if its
+plane detection step runs faster than $1s$.
+
+
+Having two definitions of real-time, it is helpful to introduce two metrics of computation time.
+When recording a real environment, the point clouds grow incrementally with each map update.
+Therefore, the average calculation times alone are of limited significance, as we expect shorter times for the start of a recording
+and longer times for the most recent. The first metric is, therefore, the relationship between the point cloud size and the calculation time.
+
+Following the separation of algorithms into phases, we accordingly divide the calculation into pre-processing, plane calculation, and post-processing.
 The respective calculation times are in the following, referred to as $t_{pre}, t_{calc}$, and $t_{post}$.
 This separation allows for an in-depth analysis. Furthermore, it allows us to determine
 whether an algorithm is $RT_{calc}$. To determine whether an algorithm is $RT_{tot}$, we consider the
@@ -35,40 +49,15 @@ total computation time $t_{tot}$, which is the sum of the individual times:
     t_{tot} = t_{pre} + t_{calc} + t_{post}
 \end{equation}
 
-\textbf{\textcolor{red}{this still seems poorly placed}}
-When recording a real environment, the point clouds grow incrementally over time.
-Therefore, the average calculation times alone are of limited significance, as we expect shorter times for the start of a recording
-and longer times for the most recent. Therefore, we consider the relationship between the point cloud size and the calculation time in
-addition to average values. However, we do not evaluate the accuracy over time since as accuracy of an algorithm should be
-independent of the size of the point cloud.
-
-
-\textbf{\textcolor{red}{das hier eher in den BG oder?}}
-RSPD, 3D-KHT and OBRG construct an octree during their pre-processing phase. Additionally, RSPD and OBRG perform an initial
-estimation of normals. OPS estimates the normal vectors for a randomly chosen sample set of points.
-During post-processing, OPS merges smaller planes if they pass a coplanarity test and then re-estimates the normals of the
-resulting plane. In the post-processing step, OBRG refines the borders of detected planes by inserting
-previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
-The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
-
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{c|cccc}
-             & RSPD & OPS   & 3D-KHT & OBRG       \\ \hline
-        Pre  & NE   & NE    & OC     & OC + NE    \\
-        Post & /    & Merge & /      & Refinement
-    \end{tabular}
-    \caption{Pre-processing and post-processing steps of the plane detection algorithms. RSPD and 3D-KHT do not have any post-processing steps.}
-    \label{tab:pre-post}
-\end{table}
 
 \subsection{Parameterization of Algorithms}
 Because the datasets inherit different amounts of noise, it is necessary to modify the algorithms accordingly.
 We thereby modify the algorithms' parameterization to achieve more noise robustness.
 In the following, the parameterizations of the algorithms with respect to the two experiments are outlined.
 Therein, we refer to the parameterization of the 2D-3D-S experiment as the default configuration.
-All deviations from this default configuration necessary for the FIN experiment are determined empirically.
+Furthermore, we determine an appropriate parameterization for the FIN dataset through
+empirical experiments. These experiments include multiple tests of different combinations of values on all scenes of the FIN dataset, 
+the ranges of which are specified in the respective paragraph of each algorithm.
 
 
 \subsubsection{RSPD}
@@ -85,15 +74,20 @@ All deviations from this default configuration necessary for the FIN experiment 
 \end{table}
 
 \paragraph{2D-3D-S}
+% FIXME das hier an der tabelle anpassen!!!
+\textbf{\textcolor{red}{an der tabelle anpassen}}
 For the 2D-3D-S experiment, we use the parameters of the provided implementation. These parameters include the maximum octree level $l_O$,
-the minimum number of samples per leaf node $\varepsilon$, the maximum percentage of outliers per plane $\theta_{outlier}$, and
+the minimum number of samples per leaf node $\varepsilon$, the maximum percentage of outliers per plane $MOR$, and
 the size of the nearest neighborhood $k$. Note that while $k=50$ is used in the respective paper~\cite[Section~3.3]{Araújo_Oliveira_2020},
 we use $k=30$ because, in our experience, it produces sufficient results while reducing the pre-processing time.
 
 \paragraph{FIN}
-\textbf{\textcolor{red}{Da bei der erstellung von rspd besonders auf noise resistenz geachtet wurde, passen wir keinen parameter für
-        das FIN experiment an.
-        Es wurden diverse anpassungen getestet, keine davon haben jedoch die ergebnisse verbessert.}}
+Multiple experiments with different values had been conducted. The individual ranges are: $l_O \in [8,12], \varepsilon \in [15, 150],
+MOR \in [15, 40], k \in [30, 90], MND \in [50°, 70°]$, and $MDP \in [0.15, 0.4]$.
+Through these experiments, we were not able to find a configuration that yields considerably better results than the default 
+parameterization. Therefore, no parameter modifications for the FIN dataset are made.
+
+
 \subsubsection{OPS}
 
 \textcolor{red}{ja, die parameter werden im background \textit{sicherlich} erklärt}
@@ -116,7 +110,10 @@ Furthermore, we set the inlier threshold $\theta_N$ to 100 and the probability f
 $p$ to $0.99$, as proposed in~\cite[Section~4A]{Sun_Mordohai_2019}.
 
 \paragraph{FIN}
-For the FIN experiment, we increase $KNN$ to 90, as larger neighborhood sizes increase the accuracy of normal estimation and,
+We ran experiments on the FIN dataset with different parameter values in the respective ranges:
+$\alpha\in[0.3\%, 6\%]$, $KNN\in[30, 150]$, $\theta_h\in[0.05, 0.5]$, $\theta_N\in[50, 1000]$, and $p\in[0.90, 1.0]$.
+We choose the configuration, that shows a balance between speed and accuracy, namely the following.
+We increase $KNN$ to 90, as larger neighborhood sizes increase the accuracy of normal estimation and,
 consequently, the overall accuracy of a method.
 Furthermore, we increase the tolerated plane thickness $\theta_h$ because an increase in sensor noise ultimately thickens the recorded planes.
 Both modifications are highlighted in bold in the second row of Table~\ref{tab:ops-param}.
@@ -143,6 +140,9 @@ Lastly, we set $s_\beta$ to 6, as proposed in~\cite[Section~3.1]{Limberger_Olive
 
 \paragraph{FIN}
 For the FIN experiment, we modify the values of $\rho_{num}$, $d_{max}$ and $s_\alpha$ to accommodate for the higher levels of noise.
+These values are obtained by performing tests with different parameterizations. Precisely, we used the following parameter ranges 
+combinations of values therein: 
+$\phi_{num} \in [20, 100]$, $\rho_{num} \in [50, 600]$, $s_{level}\in[1, 5]$, $\theta_N \in [50, 1000]$, and $d_{max} \in [0.05, 2.0], s_\alpha \in [5, 23]$, and $s_\beta \in [4, 8]$.
 Reducing $\rho_{num}$ should decrease the accuracy, however, it seems to yield better results in a high-noise environment like the FIN dataset.
 We increase $d_{max}$ and decrease $s_\alpha$ to allow for slightly thicker, e.g. noisier, planes to be detected.
 The modification of parameters is highlighted in bold in Table~\ref{tab:3dkht-param}.
@@ -166,6 +166,9 @@ Due to the low level of noise, we assign a very small tolerance to $\theta_{res}
 planarity threshold value of $\theta_p = 90\%$.
 
 \paragraph{FIN}
+We performed tests with different parameterizations, ranging as follows. 
+$\l_{max} \in [4\%, 7\%]$, $\theta_{res} \in [0.05, 0.3]$, $\theta_d \in [0.05, 0.3]$, $\theta_{ang}\in[0.13, 0.3], \theta_M \in [200, 6000]$, 
+and $\theta_p\in[70, 90]$.
 Due to higher levels of noise, and thus, thicker walls, we increase the residual threshold $\theta_{res}$, the distance
 threshold $\theta_d$, and the angular divergence threshold $\theta_{ang}$. According to~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015},
 the planarity threshold $\theta_p$ should be chosen between 70\% and 90\% depending on the noise level. As the expected noise level of the
@@ -216,6 +219,9 @@ with ${\sim}67\%$ and ${\sim}71\%$, respectively.
 3D-KHT only needs an average total of 1.74 seconds to process an entire point cloud. RSPD is the only algorithm that scores similar $t_{calc}$ values, with an
 average of 1.04 seconds. However, RSPD's time spent in pre-processing is the highest among the algorithms.
 With an average $t_{tot}$ of ca. 25 seconds and ca. 63 seconds, OPS and OBRG, respectively, run dramatically slower than the other two algorithms.
+According to these values, no algorithm achieves \textit{total real-time} applicability. RSPD and 3D-KHT are very close
+to falling under the threshold of $1s$ for $real-time plane detection$.
+
 
 \paragraph{Relationship of Time and Size}
 As stated in Paragraph~\ref{par:time}, it is useful to consider the relationship between the computation times and the amount of
@@ -259,6 +265,8 @@ OPS has the highest value in Precision, while RSPD achieves the highest Accuracy
 3D-KHT has the lowest total computation time $t_{tot}$ with an average of $1.74s$. With ${>}60s$,
 RSPD and OBRG have the largest $t_{tot}$ values among the algorithms, with $t_{pre}$ accounting for
 the majority for RSPD.
+
+Adhering to the definitions of real-time, no algorithm achieves real-time applicability in this experiment.
 
 Figure~\ref{fig:sizetimestanford} shows that the runtimes of 3D-KHT are the smallest. RSPD also has low $t_{calc}$ values
 but consistently spends the longest time in pre-processing.
@@ -306,10 +314,11 @@ RSPD needs the most time in pre-processing among the algorithms. In contrast, RS
 during plane detection, with 0.19 seconds. Overall, 3D-KHT needs the shortest time for the complete computation $t_{tot}$
 of a time step with an average of $0.43$ seconds. OPS achieves comparatively average times with about 6 seconds, and OBRG
 takes the longest overall to compute a time step with more than 20 seconds.
-
+RSPD, and 3D-KHT achieve \textit{real-time plane detection}. Additionally, 3D-KHT also achieves \textit{total real-time} applicability,
+with an average of $t{tot}=0.43$. When excluding the pre-processing time, OPS almost achieves \textit{real-time plane detection} with a
+value of $1.02s$, thereby taking $0.02s$ too long.
 
 \paragraph{Relationship of Time and Size}
-
 We want to consider the relationship between the size of the point cloud and the corresponding calculation time.
 In Figure~\ref{fig:dynaudi}, we compare the processing times of each time step to the file size of the
 \textit{auditorium} scene of the FIN data set.
@@ -323,7 +332,7 @@ The auditorium scene was selected because it represents the longest recording, a
     \centering
     \includegraphics[width=\textwidth]{images/dyn_time-audi.png}
     \caption[Time Results Auditorium]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, and post-processing
-    $t_{post}$ of the hallway scene and cloud sizes $size$ of each time frame. Note, that both y-axes are scaled
+        $t_{post}$ of the hallway scene and cloud sizes $size$ of each time frame. Note, that both y-axes are scaled
         logarithmically to the base of ten}
     \label{fig:dynaudi}
 \end{figure}

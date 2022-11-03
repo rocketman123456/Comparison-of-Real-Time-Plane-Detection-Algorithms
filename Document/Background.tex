@@ -109,7 +109,6 @@ color by the amount of included red, green, and blue.
 \textbf{\textcolor{red}{TODO}}
 
 \section{Plane Detection}
-
 \paragraph*{introduction}
 The field of plane detection has been around for decades.
 Most methods of detecting planar regions in unorganized point clouds are based on one of three main categories \cite*{Limberger_Oliveira_2015,Araújo_Oliveira_2020}:
@@ -148,12 +147,23 @@ The quality of the resulting regions depends on the choice of seed points, e.g.,
 In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
 
 \section{Plane Detection Algorithms}
-This section describes four algorithms that are used for the evaluation during this work.
+The following subsections detail the necessary background knowledge of all the plane detection algorithms mentioned in this paper.
+Aside from the functionality of a method, we give relevant higher-level information. This includes the separation of an algorithms 
+process in pre-processing, plane detection, and post-processing, as well as the expected input format and the proposed output format.
+ 
 
 \subsection{Robust Statistics approach for Plane Detection}
 Robust Statistics approach for Plane Detection (RSPD)~\cite{Araújo_Oliveira_2020} is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases;
 \textit{Split, Grow and Merge}.
 
+\textbf{\textcolor{red}{pre-processing}}
+build octree and calculate normals for all points
+
+\textbf{\textcolor{red}{plane detection}}
+\begin{itemize}
+    \item build octree
+    \item estimate normals
+\end{itemize}
 \paragraph*{Split}
 The authors propose to use an octree to recursively subdivide the point cloud. The subdivision is repeated until every leaf node contains less than $0.1\%$ of the total amount
 of points.
@@ -195,22 +205,37 @@ This phase returns all maximally merged planar patches, i.e. the final planes.
 
 \subsection{Oriented Point Sampling}
 Oriented Point Sampling (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized point cloud as input.
+
+\textbf{\textcolor{red}{pre-processing}}
+
 First, a sample of points is uniformly selected. The normal vectors of these points are estimated using SVD and the k nearest neighbors, which had been obtained using a k-d tree.
 An inverse distance weight function is employed to prioritize neighboring points that are closer to the sample of which the normal vector is currently being estimated.
 
+\textbf{\textcolor{red}{plane detection}}
 
 After normal estimation, one-point-RANSAC is used to find the largest plane. Usual RANSAC implementations sample three points to fit a plane. However, OPS fits a plane with only one sample point and its normal vector.
 Once a plane with the most inliers is obtained, its normal vector is re-estimated using SVD on all inliers, and all inliers are removed from the point cloud.
 This process is repeated until the number of remaining points falls below a predefined threshold $\theta_N$.
 
+\textbf{\textcolor{red}{post-processing}}
+\begin{itemize}
+    \item merge smaller planes if they pass a coplanarity test
+    \item re-estimate normals after merge
+\end{itemize}
+
 \subsection{3D-KHT}\label{sub:3dkht}
 \citeauthor{Limberger_Oliveira_2015}\cite{Limberger_Oliveira_2015} propose a hough transform-based plane detection method, which accepts unorganized point clouds as input \cite{Limberger_Oliveira_2015}.
+
+\textbf{\textcolor{red}{pre-processing}}
+
 The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in creation and manipulation.
 Furthermore, the octree succeeds in capturing the shapes inside the point cloud, while the k-d tree does not.
 
 Each leaf inside the octree continues subdividing until the points inside a leaf node are considered approximately coplanar, or the number of points is less than a predefined threshold.
 The authors recommend this threshold to value 30 for large point clouds.
 After the approximately coplanar nodes are refined by removing outliers, a plane is fit through the remaining points.
+
+\textbf{\textcolor{red}{plane detection}}
 
 This plane $\pi$ can, in polar coordinates, be uniquely described by a triple $(\rho, \theta, \phi)$.
 Inspired by \citeauthor{Borrmann_Elseberg_Lingemann_Nüchter_2011}\cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, an accumulator ball (Fig.~\ref{fig:accball}) is used for the voting procedure because the cells in polar regions are smaller (and therefore
@@ -252,8 +277,8 @@ If a cell $c$ in the accumulator has not yet been visited during iteration, $c$ 
 That way, the most dominant plane, i.e., the one with the most votes, is detected first.
 Finally, the detected planes are sorted by the number of different clusters that voted for them.
 
-\subsection{OBRG} \label{sec:bg-obrg}
-OBRG (Octree-Based Region Growing \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}) is also a method that employs region growing.
+\subsection{Octree-based Region Growing} \label{sec:bg-obrg}
+Octree-Based Region Growing (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} is also a method that employs region growing.
 
 First, an unorganized point cloud is recursively subdivided using an octree.
 An octree node $n$ repeatedly subdivides itself into eight children until the level of $n$ supersedes a predefined maximum subdivision value or if the
@@ -398,7 +423,44 @@ boundary refinement:
 \end{enumerate}
 
 
-\subsection{SCH-RG - Plane Extraction using Spherical Convex Hulls}
+\subsection{Plane Extraction using Spherical Convex Hulls}
+As the name suggests, Plane Extraction using Spherical Convex Hulls (SCH-RG) employs spherical convex hulls to detect planes in organized point clouds.
+
+\textbf{\textcolor{red}{pre-processing}}
+\begin{itemize}
+    \item bilateral filter to denoise
+    \item generate normal map
+    \item divide image into 20x20 pathes
+    \item calc MSE for all patches, discard those with higher than threshold
+    \item sort patches according to patch plane roughness 
+    \item patch centers = seed points
+\end{itemize}
+\textbf{\textcolor{red}{plane detection}}
+\begin{itemize}
+    \item exhaustively: perform SCH-RG on seed points 
+    \item if a seed is associated to an extracted plane, remove it from SPL
+    \item SCH-RG: 
+    \begin{enumerate}
+        \item given: patch T and seed s, clustered point set P
+        \item add seed to P
+        \item start a SCH from seed
+        \item create neighborhood queue for seed
+        \item exhaustively: get point from Q 
+        \item discard if distance to origin larger than threshold 
+        \item if p inside of the SCH, add to P and add its neighbors to Q
+        \item else:
+        \begin{itemize}
+            \item if point not in the CPR: discard
+            \item else: expand SCH with point, add point to P and add its neighbors to Q
+        \end{itemize}
+    \end{enumerate}
+    \item returns clustered point set
+\end{itemize}
+
+\textbf{\textcolor{red}{post-processing}}
+\begin{itemize}
+    \item dilation of planes to eliminate holes caused by noise (not further detailed)
+\end{itemize}
 \subsection{D-KHT - Hough Transform for Real-Time Plane Detection}
 \subsection{DDFF - Depth Dependent Flood Fill}
 \subsection{PlaneNet}

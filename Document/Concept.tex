@@ -156,6 +156,29 @@ Finally, we end up with, and thus include, the following plane detection algorit
     \item \textbf{OBRG}
 \end{itemize}
 
+
+RSPD, 3D-KHT and OBRG construct an octree (OC) during their pre-processing phase. Additionally, RSPD and OBRG perform an initial
+estimation of normals (NE). OPS estimates the normal vectors for a randomly chosen sample set of points.
+During post-processing, OPS merges smaller planes if they pass a coplanarity test and then re-estimates the normals of the
+resulting plane. In the post-processing step, OBRG refines the borders of detected planes by inserting
+previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
+The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|cccc}
+             & RSPD & OPS   & 3D-KHT & OBRG       \\ \hline
+        Pre  & NE   & NE    & OC     & OC + NE    \\
+        Post & /    & Merge & /      & Refinement
+    \end{tabular}
+    \caption{Pre-processing and post-processing steps of the plane detection algorithms. RSPD and 3D-KHT do not have any post-processing steps.}
+    \label{tab:pre-post}
+\end{table}
+
+
+
+
 \section{Datasets}
 \label{sec:datasets}
 % FIXME
