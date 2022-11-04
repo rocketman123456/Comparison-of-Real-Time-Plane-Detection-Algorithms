@@ -37,8 +37,8 @@ The subdivision is followed by calculating the saliency features using \textit{o
 We follow the pseudocode as stated in \cite[Algorithm~1]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. We modify the insertion into the set
 of regions by adding a containment check, to avoid redundancy of regions. By reducing the number of regions (incl. redundancies), we also
 reduce the total calculation time.
-Since the exact values of all thresholds have not been specified, we empirically select as follows:
-
+Since the exact values of all thresholds have not been specified, we obtain the following parameter values
+through empiric experiments on multiple 2D-3D-S scenes: 
 \begin{itemize}
     \item $\theta_r$ = 0.08
     \item $\theta_{ang}$ = 0.3

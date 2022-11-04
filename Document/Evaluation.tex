@@ -30,11 +30,10 @@ for the quantitative comparison of algorithms in this work. However, we report t
 In addition to the accuracy, we are interested in the real-time applicability of an algorithm. We introduce two definitions
 of \textit{real-time} in Section~\ref{sec:realtime}.
 To reiterate, we consider an algorithm to be \textit{totally real-time} ($RT_{tot}$) applicable if its total runtime is smaller than $1s$.
-Furthermore, we consider an algorithm to achieve \textit{real-time plane detection} ($RT_{calc}$) if its
-plane detection step runs faster than $1s$.
-
-
+Furthermore, we consider an algorithm to achieve \textit{real-time plane detection} ($RT_{calc}$) if the total calculation time
+excluding the pre-processing step runs faster than $1s.$ 
 Having two definitions of real-time, it is helpful to introduce two metrics of computation time.
+
 When recording a real environment, the point clouds grow incrementally with each map update.
 Therefore, the average calculation times alone are of limited significance, as we expect shorter times for the start of a recording
 and longer times for the most recent. The first metric is, therefore, the relationship between the point cloud size and the calculation time.
@@ -56,7 +55,7 @@ We thereby modify the algorithms' parameterization to achieve more noise robustn
 In the following, the parameterizations of the algorithms with respect to the two experiments are outlined.
 Therein, we refer to the parameterization of the 2D-3D-S experiment as the default configuration.
 Furthermore, we determine an appropriate parameterization for the FIN dataset through
-empirical experiments. These experiments include multiple tests of different combinations of values on all scenes of the FIN dataset, 
+empirical experiments. These experiments include multiple tests of different combinations of values on all scenes of the FIN dataset,
 the ranges of which are specified in the respective paragraph of each algorithm.
 
 
@@ -74,17 +73,16 @@ the ranges of which are specified in the respective paragraph of each algorithm.
 \end{table}
 
 \paragraph{2D-3D-S}
-% FIXME das hier an der tabelle anpassen!!!
-\textbf{\textcolor{red}{an der tabelle anpassen}}
-For the 2D-3D-S experiment, we use the parameters of the provided implementation. These parameters include the maximum octree level $l_O$,
-the minimum number of samples per leaf node $\varepsilon$, the maximum percentage of outliers per plane $MOR$, and
-the size of the nearest neighborhood $k$. Note that while $k=50$ is used in the respective paper~\cite[Section~3.3]{Araújo_Oliveira_2020},
+For the 2D-3D-S experiment, we use the parameters of the provided implementation\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}. These parameters include the maximum octree level $l_O$,
+the minimum number of samples per leaf node $\varepsilon$, the Maximum Outlier Ratio $MOR$ per plane, the size of the nearest neighborhood $k$,
+the Maximum Normal Deviation $MND$, and the Maximum Distance to Plane $MDP$. Note that while $k=50$ is used in the respective paper~\cite[Section~3.3]{Araújo_Oliveira_2020},
 we use $k=30$ because, in our experience, it produces sufficient results while reducing the pre-processing time.
+\textbf{\textcolor{red}{reducing how much? - test it!}}
 
 \paragraph{FIN}
 Multiple experiments with different values had been conducted. The individual ranges are: $l_O \in [8,12], \varepsilon \in [15, 150],
-MOR \in [15, 40], k \in [30, 90], MND \in [50°, 70°]$, and $MDP \in [0.15, 0.4]$.
-Through these experiments, we were not able to find a configuration that yields considerably better results than the default 
+    MOR \in [15, 40], k \in [30, 90], MND \in [50°, 70°]$, and $MDP \in [0.15, 0.4]$.
+Through these experiments, we were not able to find a configuration that yields considerably better results than the default
 parameterization. Therefore, no parameter modifications for the FIN dataset are made.
 
 
@@ -134,14 +132,15 @@ Both modifications are highlighted in bold in the second row of Table~\ref{tab:o
 The parameter configuration is shown in Table~\ref{tab:3dkht-param}. We use an accumulator discretization of 30 and 200 for $\phi$ and $\rho$, respectively.
 Starting to check for planarity at an octree level $s_{level}$ of 2 seems to yield the best results.
 \citeauthor{Limberger_Oliveira_2015}~\cite{Limberger_Oliveira_2015} propose
-a minimum of 30 samples per cluster, however, we use $0.2\%$ of the total point cloud due to the wide ranges of point cloud sizes in the dataset (see Subsection~\ref{subsec:bg-stanford}).
-Lastly, we set $s_\beta$ to 6, as proposed in~\cite[Section~3.1]{Limberger_Oliveira_2015}. In contrast, using a $s_\alpha$ value of 18 seemed to yield better results than the proposed 25.
-% FIXME im background sicher gehen dass ich die erklärt habe
+a minimum of 30 samples per cluster $s_{ps}$, however, we use $0.2\%$ of the total point cloud due to the wide ranges of point cloud sizes in the dataset (see Subsection~\ref{subsec:bg-stanford}).
+Lastly, we set the plane isotropy tolerance $s_\beta$ to 6, as proposed in~\cite[Section~3.1]{Limberger_Oliveira_2015}. 
+In contrast, using a plane thickness tolerance $s_\alpha$ value of 18 seemed to yield better results than the proposed 25. 
+This was determined by a small set of experiments with $s_\alpha$ values ranging between 15 and 33.
 
 \paragraph{FIN}
 For the FIN experiment, we modify the values of $\rho_{num}$, $d_{max}$ and $s_\alpha$ to accommodate for the higher levels of noise.
-These values are obtained by performing tests with different parameterizations. Precisely, we used the following parameter ranges 
-combinations of values therein: 
+These values are obtained by performing tests with different parameterizations. Precisely, we used the following parameter ranges
+combinations of values therein:
 $\phi_{num} \in [20, 100]$, $\rho_{num} \in [50, 600]$, $s_{level}\in[1, 5]$, $\theta_N \in [50, 1000]$, and $d_{max} \in [0.05, 2.0], s_\alpha \in [5, 23]$, and $s_\beta \in [4, 8]$.
 Reducing $\rho_{num}$ should decrease the accuracy, however, it seems to yield better results in a high-noise environment like the FIN dataset.
 We increase $d_{max}$ and decrease $s_\alpha$ to allow for slightly thicker, e.g. noisier, planes to be detected.
@@ -162,15 +161,15 @@ The modification of parameters is highlighted in bold in Table~\ref{tab:3dkht-pa
 
 \paragraph{2D-3D-S}
 The used configurations for the experiments are shown in Table~\ref{tab:obrg-param}.
-Due to the low level of noise, we assign a very small tolerance to $\theta_{res}$ and $\theta_d$. Additionally, we assign a high
-planarity threshold value of $\theta_p = 90\%$.
+The parameterization was determined during the implementation process.
+Due to the low level of noise, we assign a very small tolerance to the residual threshold$\theta_{res}$ and the distance threshold $\theta_d$. 
+Additionally, we assign a high planarity threshold value of $\theta_p = 90\%$.
 
 \paragraph{FIN}
-We performed tests with different parameterizations, ranging as follows. 
-$\l_{max} \in [4\%, 7\%]$, $\theta_{res} \in [0.05, 0.3]$, $\theta_d \in [0.05, 0.3]$, $\theta_{ang}\in[0.13, 0.3], \theta_M \in [200, 6000]$, 
+We performed tests with different parameterizations, individually ranging as follows.
+$\l_{max} \in [4\%, 7\%]$, $\theta_{res} \in [0.05, 0.3]$, $\theta_d \in [0.05, 0.3]$, $\theta_{ang}\in[0.13, 0.3], \theta_M \in [200, 6000]$,
 and $\theta_p\in[70, 90]$.
-Due to higher levels of noise, and thus, thicker walls, we increase the residual threshold $\theta_{res}$, the distance
-threshold $\theta_d$, and the angular divergence threshold $\theta_{ang}$. According to~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015},
+Due to higher levels of noise, and thus, thicker walls, we increase $\theta_{res}$, $\theta_d$, and the angular divergence threshold $\theta_{ang}$. According to~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015},
 the planarity threshold $\theta_p$ should be chosen between 70\% and 90\% depending on the noise level. As the expected noise level of the
 FIN dataset is much higher than the noise of the 2D-3D-S dataset, we reduce this threshold to 70\%.
 The used parameters for the FIN experiment are summarized in the second row of Table~\ref{tab:obrg-param}.
@@ -228,14 +227,24 @@ As stated in Paragraph~\ref{par:time}, it is useful to consider the relationship
 processed data. For each scene of the 2D-3D-S dataset, the pairs of
 processing times and point cloud file sizes are presented in Figure~\ref{fig:sizetimestanford}.
 
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\textwidth]{images/SDsizetime.png}
+%     \caption[Time per Cloud size 2D-3D-S]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$,
+%         and post-processing $t_{post}$ per point cloud file size of the 2D-3D-S dataset. Note, that both y-axes are
+%         scaled logarithmically to the base of ten.}
+%     \label{fig:sizetimestanford}
+% \end{figure}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/SDsizetime.png}
-    \caption[Time per Cloud size 2D-3D-S]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$,
-        and post-processing $t_{post}$ per point cloud file size of the 2D-3D-S dataset. Note, that both y-axes are
+    \def\svgwidth{\textwidth}
+    \input{images/stanfordpdf.pdf_tex}
+    \caption[Time per Cloud size 2D-3D-S]{The time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, 
+    post-processing $t_{post}$, and the total calculation time $t_{tot}$ per point cloud file size of the 2D-3D-S dataset. Note, that both y-axes are
         scaled logarithmically to the base of ten.}
     \label{fig:sizetimestanford}
 \end{figure}
+
 The computation times of 3D-KHT do not seem to strongly relate to the size of the point cloud.
 Both the duration of the pre-processing and the duration of the plane detection initially grow linearly
 but do not show a large growth even with large jumps in point cloud size.
@@ -330,7 +339,8 @@ The auditorium scene was selected because it represents the longest recording, a
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/dyn_time-audi.png}
+    \def\svgwidth{\textwidth}
+    \input{images/dynaudi.pdf_tex}
     \caption[Time Results Auditorium]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, and post-processing
         $t_{post}$ of the hallway scene and cloud sizes $size$ of each time frame. Note, that both y-axes are scaled
         logarithmically to the base of ten}
