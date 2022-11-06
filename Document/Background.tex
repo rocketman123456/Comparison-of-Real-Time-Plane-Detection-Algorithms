@@ -461,11 +461,231 @@ As the name suggests, Plane Extraction using Spherical Convex Hulls (SCH-RG) emp
 \begin{itemize}
     \item dilation of planes to eliminate holes caused by noise (not further detailed)
 \end{itemize}
-\subsection{D-KHT - Hough Transform for Real-Time Plane Detection}
-\subsection{DDFF - Depth Dependent Flood Fill}
+\subsection{Depth Kernel-based Hough Transform}
+Depth Kernel-based Hough Transform (D-KHT) \cite{Vera_Lucio_Fernandes_Velho_2018} is a Hough transform-based plane detection
+algorithm that accepts depth images as input.
+
+\textbf{\textcolor{red}{pre-processing}}
+clustering:
+\begin{itemize}
+    \item quadtree subdivision
+    \begin{itemize}
+        \item whole image is root
+        \item each node with more than threshold $s_{ms}$ samples: coplanarity test with PCA
+        \item all nodes with less than $s_{ms}$ inliers are ignored in the voting process
+        \item 
+    \end{itemize}
+    \item Summed area tables (SAT) computation for PCA efficiency
+    \begin{itemize}
+        \item the covariance and mean values can be calculated in constant time that way
+        \item pre-compute (9) SATs for each node 
+    \end{itemize}
+\end{itemize}
+
+\textbf{\textcolor{red}{plane detection}}
+given set of approx coplanar point clusters in leaf node
+\begin{itemize}
+    \item the best fitting plane is described by its mean point and a unit normal vector (which is the 
+    associated eigenvector to the least eigenvalue of the cov matrix)
+    \item the gaussian kernel that weights votes from the cluster in the parameter space of the plane normal
+    \item calc cov matrix of the gaussian kernel can be computed with first order error propagation \textbf{\textcolor{red}{mathe}}
+    \item cluster votes in spherical accumulator map $A$
+    \begin{itemize}
+        \item $\theta \in [-\pi , +\pi], \phi \in [0, \pi], \rho \in [0, \rho_{high}]$
+        \item $\rho_{high}$ is the farthest point from camera to a sample
+        \item the amount of samples within rho and are defined by params $N_\rho, N_\phi$
+    \end{itemize}
+    \item voting:
+    \begin{itemize}
+        \item for given kernel that is associated with a cluster:
+        \item increment bins of A that fall within two standart deviations of the mean \textbf{\textcolor{red}{formel}}
+        \item starting at specific bin, neighbors are flood filled with \textbf{\textcolor{red}{mathe}} als termination condition
+    \end{itemize}
+    \item after voting:
+    \begin{itemize}
+        \item compute convolution of accumulator with six-connected filter (smoothing of map)
+        \item hill climbing to detect peaks: plane is detected if the bin of a mean plane is a local maxima
+    \end{itemize}
+\end{itemize}
+
+\textbf{\textcolor{red}{post processing}}
+given set of parameters corresponding to detected planes
+\begin{itemize}
+    \item sort planes by relevance
+    \item relevance is defined by the summation of the weights associated with the clusters that contributed to the peak
+\end{itemize}
+The normal vector and the distance $\rho$ define the normal equation of the plane supporting a subset of 
+3d point entries.
+\subsection{Depth Dependent Flood Fill}
+Depth Dependent Flood Fill (DDFF) is a region growing-based algorithm that detects planes in organized point clouds. 
+Der algorithmus die weiterentwicklung des vorgängers \cite{Roychoudhury_Missura_Bennewitz_2021}.
+\textbf{\textcolor{red}{pre processing}}
+None
+
+\textbf{\textcolor{red}{plane detection}}
+seed selection:
+
+\begin{itemize}
+    \item seed size parameter $\sigma_{seed}$ defines cube around possible seed point
+    \item check for distance discontinuities  \textbf{\textcolor{red}{formeln für beide}}
+    \item check for curvature discontinuities
+\end{itemize}
+
+region growing:
+\begin{itemize}
+    \item perform region growth over spans of horizontal pixels 
+    \item member ship criteria:
+    \begin{enumerate}
+        \item perpendicular distance of point to plane defined by seed point and its normal
+        \item euclidian distance function to ensure pixel neighbors are also 3d neighbors
+        \item assure the pixel is not 0 or nan
+    \end{enumerate}
+\end{itemize}
+
+plane merging:
+region growing yields a set of oversegmented planes
+repeat the following until no planes are merged during an iteration, usually no more than 5 iteration is enough
+\begin{itemize}
+    \item build neighborhood graph defined by euclidian distance of edge pixels
+    \item iterate BFS through graph
+    \item merge if two planes fullfil a condition \textbf{\textcolor{red}{formel}}
+    \item if merged, recalculate centroid, normals and update graph accordingly
+\end{itemize}
+
+\textbf{\textcolor{red}{post-processing}}
+filling gaps:
+\begin{itemize}
+    \item two passes:
+    \begin{enumerate}
+        \item scan top to bottom 
+        \item bottom to top
+    \end{enumerate}
+    \item in both passes, identify horizontal strips of unmarked pixels that have the same neighbor either above or 
+    below and mark them with that neighbors label  
+\end{itemize}
+
 \subsection{PlaneNet}
+PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} ist a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.
+
+\textbf{\textcolor{red}{hier würde sich wahrscheinlich die grafik anbieten}}
+\begin{itemize}
+    \item built upon Dilated Residual Networks (DNR) 
+    \item followed by three predicion tasks
+    \begin{enumerate}
+        \item plane parameters
+        \begin{itemize}
+            \item global average pooling, reduce feature map size to 1x1
+            \item fully connected layer to produce Kx3 plane parameters. (K=10 in experiments)
+            \item loss function: order agnostic, based on chamfer distance metric for regressed plane parameters
+        \end{itemize}
+        \item segmentation mask
+        \begin{itemize}
+            \item start: pyramid pooling module
+            \item then: convolution layer. produces K+1 channel likelihood maps for planar and non-planar surfaces
+            \item finally: Dense conditional random field (DCRF), based on fast inference. meanfield iterations: 5/10 (training/testing)
+            \item loss function: softmax cross entropy to supervise segmentation training (pixel level)
+        \end{itemize}
+        \item non-planar depthmap
+        \begin{itemize}
+            \item start: pyramid pooling module
+            \item followed by convolution layer, produces a 1-channel depthmap
+            \item loss function: sum of squared depth differences between GT and predicted plane or non-planar 
+            depthmap (weighted by probabilities) 
+        \end{itemize}
+    \end{enumerate} 
+\end{itemize}
+
 \subsection{PlaneRecNet}
+PlaneRecNet~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images 
+as input.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/planerecnet.png}
+    \caption[PlaneRecNet Architecture]{The PlaneRecNet Architecture. Taken from the respective paper~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022}. 
+    \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
+\end{figure}
+
+approach: 
+focus on high quality global depth estimation so that plane params can be computed by PCA or RANSAC with the plane 
+segmentation and depth prediction. 
+
+\begin{itemize}
+    \item ResNet backbone output as input for the following
+    \item two seperate branches 
+    \begin{itemize}
+        \item plane segmentation branch
+        \begin{itemize}
+            \item in general: leight weight configuration of SOLOV2 \cite{wang2020solov2} adapted for planar segmentation
+            \item more specific: Feature pyramid network, followed by a prediction head and an instance mask head 
+            \item returns classes (obt. from pred. head) 
+            \item and masks obt. from non maximum suppresion of pred head and inst. mask head
+        \end{itemize}
+        \item depth estimation branch
+        \begin{itemize}
+            \item repeated convolution and de-convolution
+            \item after the first iteration: plane prior attention module with mask candidates as input which are obtained 
+            from dynamic convolution between the prediction head and instance mask head from the plane segmentation branch
+            \item finally: returns depth
+        \end{itemize}
+        \item plane prior attention module:
+        \begin{enumerate}
+            \item sigmoid function
+            \item 1x1 convolution
+            \item upscale(=0.25) with interpolation 
+            \item multiplication and concatenation of mask candidates with depth feature maps
+            \item concatenation of monocular depth estimation and depth feature maps
+            \item 3x3 convolution
+            \item relu activation
+        \end{enumerate}
+    \end{itemize}
+    \item i guess classes+masks are combined into planes
+    \item which is combined with the depth for a reconstructed scene
+\end{itemize}
+
+
 \subsection{PlaneRCNN}
+RCNN~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019} is a deep neural architecture that detects planar 
+regions and reconstructs a piecewise planar depth map from RGB-Images.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/planercnn.png}
+    \caption[PlaneRCNN Architecture]{The PlaneRCNN Architecture. Taken from the respective paper~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019}. 
+    \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
+\end{figure}
+
+3 main components:
+\begin{enumerate}
+    \item plane detection network
+    \begin{itemize}
+        \item predicts 3d plane parameters and segmentation mask
+        \item built upon Mask-R-CNN. here: "planar" as object instance
+        \item maskrcnn detects instances and estimates segmentation masks
+        \item then, estimate plane normal and offset $d$:
+        \begin{enumerate}
+            \item predict normal per planar instance
+            \item estimate depth map
+            \item algebraically calculate plane offset \textbf{\textcolor{red}{formel?}}
+        \end{enumerate}
+    \end{itemize}
+    \item segmentation refinement network
+    \begin{itemize}
+        \item takes the planar regions from 1. and optimizes the masks
+        \item uses convAccu: combines convolution layer and an accumulation scheme
+        \item aggregates information from all masks
+        \item at the end, refined plane masks are concatenated and compared against target 
+        masks with a cross entropy loss
+    \end{itemize}
+    \item warping loss module (only during training)
+    \begin{itemize}
+        \item uses a second angle on the same scene to ensure consistency
+        \item nearby view is 20 frames ahead during training
+        \item calculate nearby view by warping every pixel in the nearby view to the current one 
+        given the camera intrinsics
+        \item loss function is a simple absolute error between the current view and the 
+        warped nearby view. 
+    \end{itemize}
+\end{enumerate}
 
 \section{Datasets}
 % FIXME Datensätze erklären
