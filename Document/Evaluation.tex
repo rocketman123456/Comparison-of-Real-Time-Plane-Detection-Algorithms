@@ -27,27 +27,37 @@ for the quantitative comparison of algorithms in this work. However, we report t
 
 \paragraph{Time Measurements}
 \label{par:time}
-In addition to the accuracy, we are interested in the real-time applicability of an algorithm. We introduce two definitions
-of \textit{real-time} in Section~\ref{sec:realtime}.
+In addition to the accuracy, we are interested in the real-time applicability of an algorithm.
+We introduce two definitions of \textit{real-time} in Section~\ref{sec:realtime}.
 To reiterate, we consider an algorithm to be \textit{totally real-time} ($RT_{tot}$) applicable if its total runtime is smaller than $1s$.
 Furthermore, we consider an algorithm to achieve \textit{real-time plane detection} ($RT_{calc}$) if the total calculation time
 excluding the pre-processing step runs faster than $1s.$
-Having two definitions of real-time, it is helpful to introduce two metrics of computation time.
 
-When recording a real environment, the point clouds grow incrementally with each map update.
-Therefore, the average calculation times alone are of limited significance, as we expect shorter times for the start of a recording
-and longer times for the most recent. The first metric is, therefore, the relationship between the point cloud size and the calculation time.
 
-Following the separation of algorithms into phases, we accordingly divide the calculation into pre-processing, plane calculation, and post-processing.
-The respective calculation times are in the following, referred to as $t_{pre}, t_{calc}$, and $t_{post}$.
-This separation allows for an in-depth analysis. Furthermore, it allows us to determine
-whether an algorithm is $RT_{calc}$. To determine whether an algorithm is $RT_{tot}$, we consider the
-total computation time $t_{tot}$, which is the sum of the individual times:
+A simple approach to measuring calculation times could involve reporting the average total calculation time over a dataset. 
+However, when recording a real environment, the point clouds likely grow incrementally with each map update.
+Therefore, the average calculation time alone is of limited significance, as we expect shorter times for the start of a recording
+and longer times for the most recent point cloud. It is, therefore, necessary to analyze the
+relationship between the point cloud size and the calculation time as well.
+
+Following the separation of algorithms into phases (see Section~\ref{par:prepostalgos}), 
+we divide the calculation time into the pre-processing time $t_{pre}$, 
+the time spent during plane detection $t_{calc}$, and the duration of post-processing steps $t_{post}$.
+This separation allows for an in-depth analysis of the results. 
+Since we have two definitions of real-time, we introduce two metrics of calculation time:
+
+\begin{enumerate}
+    \item Focusing on $t_{calc}$ and $t_{post}$ allows us to determine whether an algorithm is \textit{real-time plane detection} applicable, \textit{and}
+    \item to determine whether an algorithm is \textit{totally real-time} applicable, we consider the total computation time 
+    $t_{tot}$, which is the sum of the individual times:
+\end{enumerate}
+
 
 \begin{equation}
     t_{tot} = t_{pre} + t_{calc} + t_{post}
 \end{equation}
 
+\textbf{\textcolor{red}{die reihenfolge dieser subsection fühlt sich off an weeeh}}
 
 \subsection{Parameterization of Algorithms}
 Because the datasets inherit different amounts of noise, it is necessary to modify the algorithms accordingly.

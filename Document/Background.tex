@@ -148,11 +148,12 @@ In the context of this work, a criterion for region growth could be the distance
 
 \section{Plane Detection Algorithms}
 The following subsections detail the necessary background knowledge of all the plane detection algorithms mentioned in this paper.
-Aside from the functionality of a method, we give relevant higher-level information. This includes the separation of an algorithms 
+Aside from the functionality of a method, we give relevant higher-level information. This includes the separation of an algorithms
 process in pre-processing, plane detection, and post-processing, as well as the expected input format and the proposed output format.
- 
+
 
 \subsection{Robust Statistics approach for Plane Detection}
+\label{subsec:bg-rspd}
 Robust Statistics approach for Plane Detection (RSPD)~\cite{Araújo_Oliveira_2020} is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases;
 \textit{Split, Grow and Merge}.
 
@@ -225,7 +226,7 @@ This process is repeated until the number of remaining points falls below a pred
 
 \subsection{3D Kernel-based Hough Transform}\label{sub:3dkht}
 With the 3D Kernel-based Hough Transform (3D-KHT),
-\citeauthor{Limberger_Oliveira_2015}\cite{Limberger_Oliveira_2015} propose a hough transform-based plane detection method, 
+\citeauthor{Limberger_Oliveira_2015}\cite{Limberger_Oliveira_2015} propose a hough transform-based plane detection method,
 which accepts unorganized point clouds as input \cite{Limberger_Oliveira_2015}.
 
 \textbf{\textcolor{red}{pre-processing}}
@@ -279,7 +280,8 @@ If a cell $c$ in the accumulator has not yet been visited during iteration, $c$ 
 That way, the most dominant plane, i.e., the one with the most votes, is detected first.
 Finally, the detected planes are sorted by the number of different clusters that voted for them.
 
-\subsection{Octree-based Region Growing} \label{sec:bg-obrg}
+\subsection{Octree-based Region Growing}
+\label{subsec:bg-obrg}
 Octree-Based Region Growing (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} is also a method that employs region growing.
 
 First, an unorganized point cloud is recursively subdivided using an octree.
@@ -306,51 +308,51 @@ point cloud as input.
 \textbf{\textcolor{red}{preprocessing}}
 \begin{enumerate}
     \item init graph:
-    \begin{enumerate}
-        \item init nodes:
-        \begin{itemize}
-            \item downsample resolution
-        \end{itemize}
-        \item init edges
-    \end{enumerate} 
+          \begin{enumerate}
+              \item init nodes:
+                    \begin{itemize}
+                        \item downsample resolution
+                    \end{itemize}
+              \item init edges
+          \end{enumerate}
     \item clean up graph by removing certain types of nodes and corresponding edges
-    \begin{itemize}
-        \item nodes with high MSE (non-planar nodes)
-        \item missing data (due to sensor, e.g. behind windows, too far away)
-        \item depth discontinuities (e.g. monitor in front of wall)
-        \item boundary nodes
-    \end{itemize}
+          \begin{itemize}
+              \item nodes with high MSE (non-planar nodes)
+              \item missing data (due to sensor, e.g. behind windows, too far away)
+              \item depth discontinuities (e.g. monitor in front of wall)
+              \item boundary nodes
+          \end{itemize}
 \end{enumerate}
 \textbf{\textcolor{red}{plane detection}}
 AHC:
 \begin{enumerate}
     \item build min heap for finding node with minimum MSE
     \item exhaustively:
-    \begin{enumerate}
-        \item find the node with the lowest MSE $v$
-        \item merge with the best-fitting neighbor: $v \lor u_{best} \rightarrow u_{merge}$ 
-        \item if the MSE of $u_{best}$ exceeds a threshold $T_{MSE}$:
-        \begin{itemize}
-            \item extract $v$ from graph
-        \end{itemize}
-        \item else:
-        \begin{itemize}
-            \item insert edge ($v,u_{best}$) 
-            \item insert the merged node back into the graph
-        \end{itemize}
-    \end{enumerate}
+          \begin{enumerate}
+              \item find the node with the lowest MSE $v$
+              \item merge with the best-fitting neighbor: $v \lor u_{best} \rightarrow u_{merge}$
+              \item if the MSE of $u_{best}$ exceeds a threshold $T_{MSE}$:
+                    \begin{itemize}
+                        \item extract $v$ from graph
+                    \end{itemize}
+              \item else:
+                    \begin{itemize}
+                        \item insert edge ($v,u_{best}$)
+                        \item insert the merged node back into the graph
+                    \end{itemize}
+          \end{enumerate}
 \end{enumerate}
 
 \textbf{\textcolor{red}{post-processing}}
 Refinement:
 \begin{enumerate}
     \item focus on three types of artifacts:
-    \begin{enumerate}
-        \item sawtooth
-        \item unused points
-        \item over segmentation
-        \item all of them are at boundaries
-    \end{enumerate}
+          \begin{enumerate}
+              \item sawtooth
+              \item unused points
+              \item over segmentation
+              \item all of them are at boundaries
+          \end{enumerate}
     \item erode border nodes
     \item perform pixel wise region growing, dabei alle 4 nachbarn betrachten
     \item re-apply AHC on newly formed nodes
@@ -358,69 +360,69 @@ Refinement:
 
 \subsection{Fast Cylinder and Plane Extraction}
 Fast Cylinder and Plane Extraction (CAPE)~\cite{Proença_Gao_2018} implements an algorithm that detects planes and cylinders in organized point clouds to improve the performance
-of visual odometry. 
+of visual odometry.
 
 \textbf{\textcolor{red}{pre-processing}}
 \begin{enumerate}
     \item planar cell fitting
-    \begin{itemize}
-        \item also used in PEAC
-        \item non-planar: 
-        \begin{itemize}
-            \item NaN
-            \item depth discontinuities
-        \end{itemize}
-        \item then: plane fitting with PCA(->normal) and eigenvalue (->MSE)
-        \item only the first two moments of 3d points needed, könig-huygen formula can be used to calc the cov matrix
-    \end{itemize}
+          \begin{itemize}
+              \item also used in PEAC
+              \item non-planar:
+                    \begin{itemize}
+                        \item NaN
+                        \item depth discontinuities
+                    \end{itemize}
+              \item then: plane fitting with PCA(->normal) and eigenvalue (->MSE)
+              \item only the first two moments of 3d points needed, könig-huygen formula can be used to calc the cov matrix
+          \end{itemize}
     \item build histogram of normals
-    \begin{itemize}
-        \item convert normals of cell to polar and azimuthal angles
-        \item use those values for assorting to bins and building a histogram
-    \end{itemize}
+          \begin{itemize}
+              \item convert normals of cell to polar and azimuthal angles
+              \item use those values for assorting to bins and building a histogram
+          \end{itemize}
 \end{enumerate}
 
 \textbf{\textcolor{red}{plane detection}}
 \begin{enumerate}
     \item cell region growing
-    \begin{itemize}
-        \item given histogram and grid of planar cells, (copy of G:) list of rem. cells $R$, Set of segments $S$
-        \item exhaustively, until $R$ is empty:
-        \begin{enumerate}
-            \item C = get cells from the most frequent bin
-            \item if the number of cells is smaller than a threshold $k_1$: break
-            \item choose seed: cell with minimum MSE out of C
-            \item grow seed
-            \item remove resulting region from $R$ and remove cells in R from histogram
-            \item if $|R|< k_2$ continue
-            \item add $R$ to $S$  
-        \end{enumerate}
-        return $S$
-    \end{itemize}
+          \begin{itemize}
+              \item given histogram and grid of planar cells, (copy of G:) list of rem. cells $R$, Set of segments $S$
+              \item exhaustively, until $R$ is empty:
+                    \begin{enumerate}
+                        \item C = get cells from the most frequent bin
+                        \item if the number of cells is smaller than a threshold $k_1$: break
+                        \item choose seed: cell with minimum MSE out of C
+                        \item grow seed
+                        \item remove resulting region from $R$ and remove cells in R from histogram
+                        \item if $|R|< k_2$ continue
+                        \item add $R$ to $S$
+                    \end{enumerate}
+                    return $S$
+          \end{itemize}
     \item plane (+cylinder) fitting (for all regions:)
-    \begin{itemize}
-        \item fit plane to region  [A]
-        \item if ratio of second largest eigenvalue to smallest large enough :save grid segmentation and plane params 
-        \item else: check if surface is invariant in one direction (property of open cylinders)
-        \begin{itemize}
-            \item PCA on [n1,...,nn] stacked matrix of [N,-N] (normal of the cell)
-            \item only continue if ratio of first eigenvalue to last eigenvalue is larger than a threshold
-            \item use center and normal to projekt cell to plane
-            \item use ransac to fit a cylinder (das geht weil cylinder ebenen sind mit inf radius)
-            \item cylinder fitting returns set of set of segments
-            \item foreach subsegment:
-            \item fit plane (siehe [A]), and depending on the MSE, add to either plane set or cylinder set
-        \end{itemize}
-    \end{itemize}
+          \begin{itemize}
+              \item fit plane to region  [A]
+              \item if ratio of second largest eigenvalue to smallest large enough :save grid segmentation and plane params
+              \item else: check if surface is invariant in one direction (property of open cylinders)
+                    \begin{itemize}
+                        \item PCA on [n1,...,nn] stacked matrix of [N,-N] (normal of the cell)
+                        \item only continue if ratio of first eigenvalue to last eigenvalue is larger than a threshold
+                        \item use center and normal to projekt cell to plane
+                        \item use ransac to fit a cylinder (das geht weil cylinder ebenen sind mit inf radius)
+                        \item cylinder fitting returns set of set of segments
+                        \item foreach subsegment:
+                        \item fit plane (siehe [A]), and depending on the MSE, add to either plane set or cylinder set
+                    \end{itemize}
+          \end{itemize}
     \item plane region merging
 \end{enumerate}
 
 \textbf{\textcolor{red}{post-processing}}
 boundary refinement:
 \begin{enumerate}
-    \item erode cell boundaries with 3x3 kernel, 4er nbhood (wie in PEAC) 
+    \item erode cell boundaries with 3x3 kernel, 4er nbhood (wie in PEAC)
     \item cells that are valid for refinement are given by the difference between the eroded segment and the segment to expand
-    \item distance between segment plane model to each point within the valid cells is calculated 
+    \item distance between segment plane model to each point within the valid cells is calculated
     \item pixel within the cells are added to the segment if the MSE is less than the model MSE*konstant (im paper= 9)
 \end{enumerate}
 
@@ -434,28 +436,28 @@ As the name suggests, Plane Extraction using Spherical Convex Hulls (SCH-RG) emp
     \item generate normal map
     \item divide image into 20x20 pathes
     \item calc MSE for all patches, discard those with higher than threshold
-    \item sort patches according to patch plane roughness 
+    \item sort patches according to patch plane roughness
     \item patch centers = seed points
 \end{itemize}
 \textbf{\textcolor{red}{plane detection}}
 \begin{itemize}
-    \item exhaustively: perform SCH-RG on seed points 
+    \item exhaustively: perform SCH-RG on seed points
     \item if a seed is associated to an extracted plane, remove it from SPL
-    \item SCH-RG: 
-    \begin{enumerate}
-        \item given: patch T and seed s, clustered point set P
-        \item add seed to P
-        \item start a SCH from seed
-        \item create neighborhood queue for seed
-        \item exhaustively: get point from Q 
-        \item discard if distance to origin larger than threshold 
-        \item if p inside of the SCH, add to P and add its neighbors to Q
-        \item else:
-        \begin{itemize}
-            \item if point not in the CPR: discard
-            \item else: expand SCH with point, add point to P and add its neighbors to Q
-        \end{itemize}
-    \end{enumerate}
+    \item SCH-RG:
+          \begin{enumerate}
+              \item given: patch T and seed s, clustered point set P
+              \item add seed to P
+              \item start a SCH from seed
+              \item create neighborhood queue for seed
+              \item exhaustively: get point from Q
+              \item discard if distance to origin larger than threshold
+              \item if p inside of the SCH, add to P and add its neighbors to Q
+              \item else:
+                    \begin{itemize}
+                        \item if point not in the CPR: discard
+                        \item else: expand SCH with point, add point to P and add its neighbors to Q
+                    \end{itemize}
+          \end{enumerate}
     \item returns clustered point set
 \end{itemize}
 
@@ -471,43 +473,43 @@ algorithm that accepts depth images as input.
 clustering:
 \begin{itemize}
     \item quadtree subdivision
-    \begin{itemize}
-        \item whole image is root
-        \item each node with more than threshold $s_{ms}$ samples: coplanarity test with PCA
-        \item all nodes with less than $s_{ms}$ inliers are ignored in the voting process
-        \item 
-    \end{itemize}
+          \begin{itemize}
+              \item whole image is root
+              \item each node with more than threshold $s_{ms}$ samples: coplanarity test with PCA
+              \item all nodes with less than $s_{ms}$ inliers are ignored in the voting process
+              \item
+          \end{itemize}
     \item Summed area tables (SAT) computation for PCA efficiency
-    \begin{itemize}
-        \item the covariance and mean values can be calculated in constant time that way
-        \item pre-compute (9) SATs for each node 
-    \end{itemize}
+          \begin{itemize}
+              \item the covariance and mean values can be calculated in constant time that way
+              \item pre-compute (9) SATs for each node
+          \end{itemize}
 \end{itemize}
 
 \textbf{\textcolor{red}{plane detection}}
 given set of approx coplanar point clusters in leaf node
 \begin{itemize}
-    \item the best fitting plane is described by its mean point and a unit normal vector (which is the 
-    associated eigenvector to the least eigenvalue of the cov matrix)
+    \item the best fitting plane is described by its mean point and a unit normal vector (which is the
+          associated eigenvector to the least eigenvalue of the cov matrix)
     \item the gaussian kernel that weights votes from the cluster in the parameter space of the plane normal
     \item calc cov matrix of the gaussian kernel can be computed with first order error propagation \textbf{\textcolor{red}{mathe}}
     \item cluster votes in spherical accumulator map $A$
-    \begin{itemize}
-        \item $\theta \in [-\pi , +\pi], \phi \in [0, \pi], \rho \in [0, \rho_{high}]$
-        \item $\rho_{high}$ is the farthest point from camera to a sample
-        \item the amount of samples within rho and are defined by params $N_\rho, N_\phi$
-    \end{itemize}
+          \begin{itemize}
+              \item $\theta \in [-\pi , +\pi], \phi \in [0, \pi], \rho \in [0, \rho_{high}]$
+              \item $\rho_{high}$ is the farthest point from camera to a sample
+              \item the amount of samples within rho and are defined by params $N_\rho, N_\phi$
+          \end{itemize}
     \item voting:
-    \begin{itemize}
-        \item for given kernel that is associated with a cluster:
-        \item increment bins of A that fall within two standart deviations of the mean \textbf{\textcolor{red}{formel}}
-        \item starting at specific bin, neighbors are flood filled with \textbf{\textcolor{red}{mathe}} als termination condition
-    \end{itemize}
+          \begin{itemize}
+              \item for given kernel that is associated with a cluster:
+              \item increment bins of A that fall within two standart deviations of the mean \textbf{\textcolor{red}{formel}}
+              \item starting at specific bin, neighbors are flood filled with \textbf{\textcolor{red}{mathe}} als termination condition
+          \end{itemize}
     \item after voting:
-    \begin{itemize}
-        \item compute convolution of accumulator with six-connected filter (smoothing of map)
-        \item hill climbing to detect peaks: plane is detected if the bin of a mean plane is a local maxima
-    \end{itemize}
+          \begin{itemize}
+              \item compute convolution of accumulator with six-connected filter (smoothing of map)
+              \item hill climbing to detect peaks: plane is detected if the bin of a mean plane is a local maxima
+          \end{itemize}
 \end{itemize}
 
 \textbf{\textcolor{red}{post processing}}
@@ -516,10 +518,10 @@ given set of parameters corresponding to detected planes
     \item sort planes by relevance
     \item relevance is defined by the summation of the weights associated with the clusters that contributed to the peak
 \end{itemize}
-The normal vector and the distance $\rho$ define the normal equation of the plane supporting a subset of 
+The normal vector and the distance $\rho$ define the normal equation of the plane supporting a subset of
 3d point entries.
 \subsection{Depth Dependent Flood Fill}
-Depth Dependent Flood Fill (DDFF) is a region growing-based algorithm that detects planes in organized point clouds. 
+Depth Dependent Flood Fill (DDFF) is a region growing-based algorithm that detects planes in organized point clouds.
 Der algorithmus die weiterentwicklung des vorgängers \cite{Roychoudhury_Missura_Bennewitz_2021}.
 \textbf{\textcolor{red}{pre processing}}
 None
@@ -535,13 +537,13 @@ seed selection:
 
 region growing:
 \begin{itemize}
-    \item perform region growth over spans of horizontal pixels 
+    \item perform region growth over spans of horizontal pixels
     \item member ship criteria:
-    \begin{enumerate}
-        \item perpendicular distance of point to plane defined by seed point and its normal
-        \item euclidian distance function to ensure pixel neighbors are also 3d neighbors
-        \item assure the pixel is not 0 or nan
-    \end{enumerate}
+          \begin{enumerate}
+              \item perpendicular distance of point to plane defined by seed point and its normal
+              \item euclidian distance function to ensure pixel neighbors are also 3d neighbors
+              \item assure the pixel is not 0 or nan
+          \end{enumerate}
 \end{itemize}
 
 plane merging:
@@ -558,12 +560,12 @@ repeat the following until no planes are merged during an iteration, usually no 
 filling gaps:
 \begin{itemize}
     \item two passes:
-    \begin{enumerate}
-        \item scan top to bottom 
-        \item bottom to top
-    \end{enumerate}
-    \item in both passes, identify horizontal strips of unmarked pixels that have the same neighbor either above or 
-    below and mark them with that neighbors label  
+          \begin{enumerate}
+              \item scan top to bottom
+              \item bottom to top
+          \end{enumerate}
+    \item in both passes, identify horizontal strips of unmarked pixels that have the same neighbor either above or
+          below and mark them with that neighbors label
 \end{itemize}
 
 \subsection{PlaneNet}
@@ -571,126 +573,126 @@ PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} ist a deep learning-based ap
 
 \textbf{\textcolor{red}{hier würde sich wahrscheinlich die grafik anbieten}}
 \begin{itemize}
-    \item built upon Dilated Residual Networks (DNR) 
+    \item built upon Dilated Residual Networks (DNR)
     \item followed by three predicion tasks
-    \begin{enumerate}
-        \item plane parameters
-        \begin{itemize}
-            \item global average pooling, reduce feature map size to 1x1
-            \item fully connected layer to produce Kx3 plane parameters. (K=10 in experiments)
-            \item loss function: order agnostic, based on chamfer distance metric for regressed plane parameters
-        \end{itemize}
-        \item segmentation mask
-        \begin{itemize}
-            \item start: pyramid pooling module
-            \item then: convolution layer. produces K+1 channel likelihood maps for planar and non-planar surfaces
-            \item finally: Dense conditional random field (DCRF), based on fast inference. meanfield iterations: 5/10 (training/testing)
-            \item loss function: softmax cross entropy to supervise segmentation training (pixel level)
-        \end{itemize}
-        \item non-planar depthmap
-        \begin{itemize}
-            \item start: pyramid pooling module
-            \item followed by convolution layer, produces a 1-channel depthmap
-            \item loss function: sum of squared depth differences between GT and predicted plane or non-planar 
-            depthmap (weighted by probabilities) 
-        \end{itemize}
-    \end{enumerate} 
+          \begin{enumerate}
+              \item plane parameters
+                    \begin{itemize}
+                        \item global average pooling, reduce feature map size to 1x1
+                        \item fully connected layer to produce Kx3 plane parameters. (K=10 in experiments)
+                        \item loss function: order agnostic, based on chamfer distance metric for regressed plane parameters
+                    \end{itemize}
+              \item segmentation mask
+                    \begin{itemize}
+                        \item start: pyramid pooling module
+                        \item then: convolution layer. produces K+1 channel likelihood maps for planar and non-planar surfaces
+                        \item finally: Dense conditional random field (DCRF), based on fast inference. meanfield iterations: 5/10 (training/testing)
+                        \item loss function: softmax cross entropy to supervise segmentation training (pixel level)
+                    \end{itemize}
+              \item non-planar depthmap
+                    \begin{itemize}
+                        \item start: pyramid pooling module
+                        \item followed by convolution layer, produces a 1-channel depthmap
+                        \item loss function: sum of squared depth differences between GT and predicted plane or non-planar
+                              depthmap (weighted by probabilities)
+                    \end{itemize}
+          \end{enumerate}
 \end{itemize}
 
 \subsection{PlaneRecNet}
-PlaneRecNet~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images 
+PlaneRecNet~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images
 as input.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/planerecnet.png}
-    \caption[PlaneRecNet Architecture]{The PlaneRecNet Architecture. Taken from the respective paper~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022}. 
-    \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
+    \caption[PlaneRecNet Architecture]{The PlaneRecNet Architecture. Taken from the respective paper~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022}.
+        \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
 \end{figure}
 
-approach: 
-focus on high quality global depth estimation so that plane params can be computed by PCA or RANSAC with the plane 
-segmentation and depth prediction. 
+approach:
+focus on high quality global depth estimation so that plane params can be computed by PCA or RANSAC with the plane
+segmentation and depth prediction.
 
 \begin{itemize}
     \item ResNet backbone output as input for the following
-    \item two seperate branches 
-    \begin{itemize}
-        \item plane segmentation branch
-        \begin{itemize}
-            \item in general: leight weight configuration of SOLOV2 \cite{wang2020solov2} adapted for planar segmentation
-            \item more specific: Feature pyramid network, followed by a prediction head and an instance mask head 
-            \item returns classes (obt. from pred. head) 
-            \item and masks obt. from non maximum suppresion of pred head and inst. mask head
-        \end{itemize}
-        \item depth estimation branch
-        \begin{itemize}
-            \item repeated convolution and de-convolution
-            \item after the first iteration: plane prior attention module with mask candidates as input which are obtained 
-            from dynamic convolution between the prediction head and instance mask head from the plane segmentation branch
-            \item finally: returns depth
-        \end{itemize}
-        \item plane prior attention module:
-        \begin{enumerate}
-            \item sigmoid function
-            \item 1x1 convolution
-            \item upscale(=0.25) with interpolation 
-            \item multiplication and concatenation of mask candidates with depth feature maps
-            \item concatenation of monocular depth estimation and depth feature maps
-            \item 3x3 convolution
-            \item relu activation
-        \end{enumerate}
-    \end{itemize}
+    \item two seperate branches
+          \begin{itemize}
+              \item plane segmentation branch
+                    \begin{itemize}
+                        \item in general: leight weight configuration of SOLOV2 \cite{wang2020solov2} adapted for planar segmentation
+                        \item more specific: Feature pyramid network, followed by a prediction head and an instance mask head
+                        \item returns classes (obt. from pred. head)
+                        \item and masks obt. from non maximum suppresion of pred head and inst. mask head
+                    \end{itemize}
+              \item depth estimation branch
+                    \begin{itemize}
+                        \item repeated convolution and de-convolution
+                        \item after the first iteration: plane prior attention module with mask candidates as input which are obtained
+                              from dynamic convolution between the prediction head and instance mask head from the plane segmentation branch
+                        \item finally: returns depth
+                    \end{itemize}
+              \item plane prior attention module:
+                    \begin{enumerate}
+                        \item sigmoid function
+                        \item 1x1 convolution
+                        \item upscale(=0.25) with interpolation
+                        \item multiplication and concatenation of mask candidates with depth feature maps
+                        \item concatenation of monocular depth estimation and depth feature maps
+                        \item 3x3 convolution
+                        \item relu activation
+                    \end{enumerate}
+          \end{itemize}
     \item i guess classes+masks are combined into planes
     \item which is combined with the depth for a reconstructed scene
 \end{itemize}
 
 
 \subsection{PlaneRCNN}
-RCNN~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019} is a deep neural architecture that detects planar 
+RCNN~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019} is a deep neural architecture that detects planar
 regions and reconstructs a piecewise planar depth map from RGB-Images.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/planercnn.png}
-    \caption[PlaneRCNN Architecture]{The PlaneRCNN Architecture. Taken from the respective paper~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019}. 
-    \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
+    \caption[PlaneRCNN Architecture]{The PlaneRCNN Architecture. Taken from the respective paper~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019}.
+        \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
 \end{figure}
 
 3 main components:
 \begin{enumerate}
     \item plane detection network
-    \begin{itemize}
-        \item predicts 3d plane parameters and segmentation mask
-        \item built upon Mask-R-CNN. here: "planar" as object instance
-        \item maskrcnn detects instances and estimates segmentation masks
-        \item then, estimate plane normal and offset $d$:
-        \begin{enumerate}
-            \item predict normal per planar instance
-            \item estimate depth map
-            \item algebraically calculate plane offset \textbf{\textcolor{red}{formel?}}
-        \end{enumerate}
-    \end{itemize}
+          \begin{itemize}
+              \item predicts 3d plane parameters and segmentation mask
+              \item built upon Mask-R-CNN. here: "planar" as object instance
+              \item maskrcnn detects instances and estimates segmentation masks
+              \item then, estimate plane normal and offset $d$:
+                    \begin{enumerate}
+                        \item predict normal per planar instance
+                        \item estimate depth map
+                        \item algebraically calculate plane offset \textbf{\textcolor{red}{formel?}}
+                    \end{enumerate}
+          \end{itemize}
     \item segmentation refinement network
-    \begin{itemize}
-        \item takes the planar regions from 1. and optimizes the masks
-        \item uses convAccu: combines convolution layer and an accumulation scheme
-        \item aggregates information from all masks
-        \item at the end, refined plane masks are concatenated and compared against target 
-        masks with a cross entropy loss
-    \end{itemize}
+          \begin{itemize}
+              \item takes the planar regions from 1. and optimizes the masks
+              \item uses convAccu: combines convolution layer and an accumulation scheme
+              \item aggregates information from all masks
+              \item at the end, refined plane masks are concatenated and compared against target
+                    masks with a cross entropy loss
+          \end{itemize}
     \item warping loss module (only during training)
-    \begin{itemize}
-        \item uses a second angle on the same scene to ensure consistency
-        \item nearby view is 20 frames ahead during training
-        \item calculate nearby view by warping every pixel in the nearby view to the current one 
-        given the camera intrinsics
-        \item loss function is a simple absolute error between the current view and the 
-        warped nearby view. 
-    \end{itemize}
+          \begin{itemize}
+              \item uses a second angle on the same scene to ensure consistency
+              \item nearby view is 20 frames ahead during training
+              \item calculate nearby view by warping every pixel in the nearby view to the current one
+                    given the camera intrinsics
+              \item loss function is a simple absolute error between the current view and the
+                    warped nearby view.
+          \end{itemize}
 \end{enumerate}
 
 \section{Datasets}
-This section outlines a set of datasets popular in the evaluation of algorithms 
+This section outlines a set of datasets popular in the evaluation of algorithms
 in the field of plane detection. Table~\ref{tab:datasets} summarizes the key characteristics of each
 dataset. The individual datasets are outlined in the following subsections.
 % FIXME Datensätze erklären
@@ -711,8 +713,8 @@ dataset. The individual datasets are outlined in the following subsections.
         \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory
     \end{tabular}
     \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
-    Note, that the synthetic datasets (e.g., SegComp and SYNBEP) represent neither indoor nor outdoor scenes, hence the "/" in 
-    the respective table entries.
+        Note, that the synthetic datasets (e.g., SegComp and SYNBEP) represent neither indoor nor outdoor scenes, hence the "/" in
+        the respective table entries.
     }
     \label{tab:datasets}
 \end{table}

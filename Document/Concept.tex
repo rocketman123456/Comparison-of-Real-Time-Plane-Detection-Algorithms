@@ -72,7 +72,7 @@ In the following paragraphs, we define and outline appropriate criteria for the 
 \paragraph{Type of Input}\label{par:input}
 The first criterion is the type of input expected by a plane detection algorithm.
 Allowing vastly different input types is likely to render the evaluation more complicated, if not impossible because an equivalent transformation
-between two input types is not always possible. 
+between two input types is not always possible.
 
 We detail the different types of input in Section~\ref{sec:dataformats}.
 
@@ -117,19 +117,19 @@ Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit 
 \begin{table}[H]
     \centering
     \begin{tabular}{c|c|c}
-        \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format}\\ \hline %& \textbf{Learning-Based} \\ \hline%& \textbf{Availability} \\ \hline
-        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers              \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers              \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers              \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers              \\  %& N                       \\ %& Y                   \\ \hline
-        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers              \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & n, d            \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers              \\  %& N                       \\ %& N                     \\ \hline
-        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers              \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers              \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                   & n, d            \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                   & reconstructed scene  \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                   & n, d            \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format} \\ \hline %& \textbf{Learning-Based} \\ \hline%& \textbf{Availability} \\ \hline
+        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               \\  %& N                       \\ %& Y                   \\ \hline
+        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & n, d                  \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers               \\  %& N                       \\ %& N                     \\ \hline
+        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & n, d                  \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & reconstructed scene   \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & n, d                  \\  %& Y                       \\ %& Y                     \\ \hline
     \end{tabular}
     \caption{Plane Detection Algorithms}
     \label{tab:algos}
@@ -156,9 +156,19 @@ Finally, we end up with, and thus include, the following plane detection algorit
     \item \textbf{OBRG}
 \end{itemize}
 
+\paragraph{Temporal Subdivision in Phases}
+\label{par:prepostalgos}
+To enable a precise evaluation, we subdivide the plane detection algorithms into three phases:
+The pre-processing phase, the plane detection phase, and the post-processing phase. Note, that
+we use the terms "phase" and "step" interchangeably in this work. In the following, we outline
+the pre-processing and post-processing steps taken by the selected algorithms. To avoid redundancy,
+we refer the reader to the Subsections~\ref{subsec:bg-rspd}-\ref{subsec:bg-obrg} for information on the plane detection
+step.
 
-RSPD, 3D-KHT and OBRG construct an octree (OC) during their pre-processing phase. Additionally, RSPD and OBRG perform an initial
-estimation of normals (NE). OPS estimates the normal vectors for a randomly chosen sample set of points.
+RSPD, 3D-KHT, and OBRG construct an octree (OC) during their pre-processing phase.
+Additionally, RSPD and OBRG perform an initial estimation of normals (NE).
+OPS estimates the normal vectors for a randomly chosen sample set of points of pre-determined size.
+
 During post-processing, OPS merges smaller planes if they pass a coplanarity test and then re-estimates the normals of the
 resulting plane. In the post-processing step, OBRG refines the borders of detected planes by inserting
 previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
@@ -172,7 +182,8 @@ The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
         Pre  & NE   & NE    & OC     & OC + NE    \\
         Post & /    & Merge & /      & Refinement
     \end{tabular}
-    \caption{Pre-processing and post-processing steps of the plane detection algorithms. RSPD and 3D-KHT do not have any post-processing steps.}
+    \caption{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of 
+    a pre-/post-processing step.}
     \label{tab:pre-post}
 \end{table}
 
@@ -181,23 +192,19 @@ The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
 
 \section{Datasets}
 \label{sec:datasets}
-% FIXME
-% eigene arbeit nicht unterschlagen!
-% datensätze kurz umreissen
-% analog zu PDA section
-% "aber keiner hat eine temporale komponente, daher müssen wir einen eigenen aufnehmen" 
 As mentioned at the beginning of this chapter, we also need an appropriate dataset for the evaluation.
 Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}).
 
 In Subsection~\ref{subsec:pdaselect}, we determined unorganized point clouds as the type of input. Furthermore, we focus on plane detection in real environments in this work.
-Because most datasets do not conform to these two requirements, only \textit{2D-3D-S} and \textit{Leica} remain. Since we, additionally, want to detect planes in indoor environments, 
-\textit{Leica} also ceases to be an option. Thus, we choose 2D-3D-S as the dataset for the evaluation.
-\textcolor{red}{\\beispiel bilder von 2d3ds ?}\newline
+Because most datasets do not conform to these two requirements, only \textit{2D-3D-S} and \textit{Leica} remain. 
+Since we focus on the detection of planes in indoor environments, \textit{Leica} also ceases to be an option. 
+Thus, we choose 2D-3D-S as the dataset for the evaluation.
+% \textcolor{red}{\\beispiel bilder von 2d3ds ?}\newline
 Nonetheless, we cannot use the provided ground truth of 2D-3D-S because it represents the segmented scene on the level of objects, rather than planes in the scene.
-Consequently, we create a ground truth that aligns with the aim of this work, i.e., planes. We outline the details thereof in Section~\ref{sec:gtseg}.  
+Consequently, we create a ground truth that aligns with the aim of this work, i.e., planes. We outline the details thereof in Section~\ref{sec:gtseg}.
 
-Lastly, 2D-3D-S does not inherit any temporal component, i.e., the unorganized point clouds do not grow incrementally over time. 
-To the best of our knowledge, there exists no dataset that meets the above criteria and, additionally, provides a plane-focused ground truth. 
+Lastly, 2D-3D-S does not inherit any temporal component, i.e., the unorganized point clouds do not grow incrementally over time.
+To the best of our knowledge, there exists no dataset that meets the above criteria and, additionally, provides a plane-focused ground truth.
 Thus, we record an incrementally growing dataset in the Faculty of Computer Science (FIN) at Otto-von-Guericke University Magdeburg.
 
 % \subsection{FIN Experiment}
@@ -212,6 +219,7 @@ To perform a thorough comparison between the FIN and 2D-3D-S, and, subsequently,
 
 We focus on these four scene types because they are the most common in a real indoor environment.
 The recorded point clouds can be seen in Figure~\ref{fig:fin}.
+Lastly, since this is a novel dataset and thus has no ground truth, we create a ground truth. The details thereof are explained in Section~\ref{sec:finimpl}.
 
 
 \begin{figure}[H]
@@ -239,38 +247,24 @@ The recorded point clouds can be seen in Figure~\ref{fig:fin}.
         \caption[Dynamic Dataset office]{}
         \label{fig:finhw}
     \end{subfigure}
-    \caption[Dynamic Datasets]{The recorded point clouds for each scene type: (a) auditorium, (b) conference room, (c) office and (d) hallway. 
-    The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.}
+    \caption[Dynamic Datasets]{The recorded point clouds for each scene type: (a) auditorium, (b) conference room, (c) office and (d) hallway.
+        The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.}
     \label{fig:fin}
 \end{figure}
-Lastly, since this is a novel dataset and thus has no ground truth, we create a ground truth. The details thereof are explained in Section~\ref{sec:finimpl}.
-
-% Running \textit{realsense-ros} and holding our cameras, we walk through the aforementioned parts of the building while scanning to the best of our ability.
-% We save each incremental map update to a file for later usage.
-
-% Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
-% To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
-% Figure~\ref{fig:dynGT}.
-% We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
-% % Furthermore, we remove planes from the ground truth if the number of included points falls short of a threshold. 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=15 cm]{images/dynamic_eval.png}
-%     \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation. All planes that are included in \textit{Ground Truth} are cropped depending on
-%         the available point cloud at each time \textit{t} }
-%     \label{fig:dynGT}
-% \end{figure}
 
 
 \section{Definition Real-Time}\label{sec:realtime}
-% FIXME "wirkt etwas komisch hier. bin mir noch unsicher." 
 Finally, to determine whether or not an algorithm runs in real-time, we must first define the meaning of real-time.
 
-Nicht alle Algorithmen funktionieren auf die gleiche Art und Weise. So kommt es, dass die Algorithmen verschiedene pre-und/oder post-processing Schritte 
-implementiert haben. Da manche dieser pre-processing Schritte durch den SLAM algorithmus oder die Kamera Sensorik ersetzt werden können, werden wir daher
-im Folgenden zwei Definitionen von \textit{real-time} präsentieren.
 
-Generally, we have to consider possible hardware limitations, data flow, and how often it is needed to perform calculations, e.g., how quickly the SLAM algorithm
+In Subsection~\ref{subsec:pdaselect}, we introduce the differentiation between pre-processing and post-processing steps.
+It is possible that one phase of an algorithm accounts for the majority of the total calculation time and that the algorithm
+would be considered \textit{real-time} applicable, if that phase were to be excluded.
+Because some steps can be covered by previous steps in the AR/VR system, i.e., by the sensor or the SLAM algorithm, 
+we give two definitions of \textit{real-time}. 
+
+In general, and without taking the algorithms internal structure into consideration, we have to consider possible 
+hardware limitations, data flow, and how often it is needed to perform calculations, e.g., how quickly the SLAM algorithm
 updates the map (Figure~\ref{fig:concept}, [2]) or how frequent new planes are needed (Figure~\ref{fig:concept}, [4]).
 
 The recorded raw data is not directly sent to the plane detection algorithm but instead given to RTAB-MAP, which then performs
@@ -284,7 +278,7 @@ refer to \textit{total Real-Time} as $RT_{tot}$.
 
 \paragraph{Real-Time Plane Calculation}
 Being a subset of \textit{totally Real-Time applicability, Real-Time Plane Calculation} determines the real-time applicability if the processing time of an algorithm
-\textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. We will henceforth refer to 
+\textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. We will henceforth refer to
 \textit{Real-Time Plane Calculation} as $RT_{calc}$
 
 %TODO  Eig nur needed wenn die algos langsamer sind als 1s ODER sollte die cloud extrem wachsen kann man sich auf die 6 meter beschränken, erstmal aber nicht}\\
