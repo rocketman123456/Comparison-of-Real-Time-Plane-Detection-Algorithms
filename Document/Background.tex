@@ -223,8 +223,10 @@ This process is repeated until the number of remaining points falls below a pred
     \item re-estimate normals after merge
 \end{itemize}
 
-\subsection{3D-KHT}\label{sub:3dkht}
-\citeauthor{Limberger_Oliveira_2015}\cite{Limberger_Oliveira_2015} propose a hough transform-based plane detection method, which accepts unorganized point clouds as input \cite{Limberger_Oliveira_2015}.
+\subsection{3D Kernel-based Hough Transform}\label{sub:3dkht}
+With the 3D Kernel-based Hough Transform (3D-KHT),
+\citeauthor{Limberger_Oliveira_2015}\cite{Limberger_Oliveira_2015} propose a hough transform-based plane detection method, 
+which accepts unorganized point clouds as input \cite{Limberger_Oliveira_2015}.
 
 \textbf{\textcolor{red}{pre-processing}}
 
@@ -688,6 +690,9 @@ regions and reconstructs a piecewise planar depth map from RGB-Images.
 \end{enumerate}
 
 \section{Datasets}
+This section outlines a set of datasets popular in the evaluation of algorithms 
+in the field of plane detection. Table~\ref{tab:datasets} summarizes the key characteristics of each
+dataset. The individual datasets are outlined in the following subsections.
 % FIXME Datensätze erklären
 % FIXME Tabelle erläutern!
 \begin{table}[H]
@@ -705,10 +710,14 @@ regions and reconstructs a piecewise planar depth map from RGB-Images.
         \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      \\
         \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory
     \end{tabular}
-    \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.}
+    \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
+    Note, that the synthetic datasets (e.g., SegComp and SYNBEP) represent neither indoor nor outdoor scenes, hence the "/" in 
+    the respective table entries.
+    }
     \label{tab:datasets}
 \end{table}
 
+\subsection{SegComp}
 \subsection{2D-3D-S}
 \label{subsec:bg-stanford}
 2D-3D-S was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
@@ -719,6 +728,16 @@ Furthermore, the average amount of points per scene is ${\sim}10^6$ with an aver
 \textcolor{red}{diese 2 sätze sind dann jetzt wahrscheinlich misplaced}
 Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the dataset nevertheless reflects a realistic distribution of scene types since
 it is not realistic if a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
+
+\subsection{NYU V2}
+\subsection{Kinect}
+\subsection{ICL-NUIM}
+\subsection{SYNBEP}
+\subsection{ARCO}
+\subsection{SUN}
+\subsection{Leica}
+\subsection{TUM}
+
 
 \section{Evaluation Metrics}
 \label{sec:metrics}
@@ -760,7 +779,7 @@ $$v_i \in gt_j \land v_i \notin a_k \Rightarrow v_{i} \in FN$$
 $$v_i \notin gt_j \land v_i \in a_k \Rightarrow v_{i} \in FP$$
 % TODO not needed right? $$v_i \notin gt_j \land v_i \notin a_k \Rightarrow v_{i} \in TN$$  , True Negative(TN)} 
 
-With those four rules, we can calculate the precision, recall and F1 score like this:
+With those rules, we can calculate the precision, recall and F1 score like this:
 $$Precision = \frac{|TP|}{|TP|+|FP|}$$
 $$Recall = \frac{|TP|}{|TP|+|FN|}$$
 
