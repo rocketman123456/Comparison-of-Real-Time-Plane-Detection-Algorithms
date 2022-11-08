@@ -148,8 +148,8 @@ In the context of this work, a criterion for region growth could be the distance
 
 \section{Plane Detection Algorithms}
 The following subsections detail the necessary background knowledge of all the plane detection algorithms mentioned in this paper.
-Aside from the functionality of a method, we give relevant higher-level information. This includes the separation of an algorithms
-process in pre-processing, plane detection, and post-processing, as well as the expected input format and the proposed output format.
+Aside from the functionality of a method, we give relevant higher-level information. \textbf{\textcolor{red}{This includes the separation of an algorithms
+process in pre-processing, plane detection, and post-processing, as well as the expected input format and the proposed output format.}}
 
 
 \subsection{Robust Statistics approach for Plane Detection}
@@ -304,59 +304,46 @@ The refinement process returns a complete set of planar regions.
 \subsection{Probabilistic Agglomerative Hierarchical Clustering}
 Probabilistic Agglomerative Hierarchical Clustering (PEAC)~\cite{Feng_Taguchi_Kamat_2014} is a plane detection algorithm that takes an organized
 point cloud as input.
+The agglomerative hierarchical clustering is based on an algorithm called 
+\textit{line regression}\cite[Section~III.B]{Nguyen_Martinelli_Tomatis_Siegwart_2005}. The primary difference is
+that, instead of a double linked list, PEAC operates on a graph $G$.
 
-\textbf{\textcolor{red}{preprocessing}}
+First, the input organized point cloud is divided into non-overlapping nodes through the initialization of $G$.
+Each node in $G$ has a pre-determined height $H$ and width $W$, whereas $H$ and $W$ correspond to index ranges in the 
+point cloud, i.e., each node contains a set of points. 
+Then, $G$ is refined by removing the following types of nodes and corresponding edges~\cite[Section~III.A]{Feng_Taguchi_Kamat_2014}:
+\textbf{\textcolor{red}{zitieren um depth discontinuities sagen zu dürfen?}}
 \begin{enumerate}
-    \item init graph:
-          \begin{enumerate}
-              \item init nodes:
-                    \begin{itemize}
-                        \item downsample resolution
-                    \end{itemize}
-              \item init edges
-          \end{enumerate}
-    \item clean up graph by removing certain types of nodes and corresponding edges
-          \begin{itemize}
-              \item nodes with high MSE (non-planar nodes)
-              \item missing data (due to sensor, e.g. behind windows, too far away)
-              \item depth discontinuities (e.g. monitor in front of wall)
-              \item boundary nodes
-          \end{itemize}
+    \item Nodes that contain NaN or 0 values, e.g., missing data,  
+    \item nodes that contain at least one point that is depth-discontinuous with its four neighbors, e.g., neighbors 
+    in the pixel space but not in coordinate space, 
+    \item nodes with a high MSE, e.g., non-planar regions, \textit{and}
+    \item nodes that share an edge with two different planes, e.g., the corners of walls.
 \end{enumerate}
-\textbf{\textcolor{red}{plane detection}}
-AHC:
-\begin{enumerate}
-    \item build min heap for finding node with minimum MSE
-    \item exhaustively:
-          \begin{enumerate}
-              \item find the node with the lowest MSE $v$
-              \item merge with the best-fitting neighbor: $v \lor u_{best} \rightarrow u_{merge}$
-              \item if the MSE of $u_{best}$ exceeds a threshold $T_{MSE}$:
-                    \begin{itemize}
-                        \item extract $v$ from graph
-                    \end{itemize}
-              \item else:
-                    \begin{itemize}
-                        \item insert edge ($v,u_{best}$)
-                        \item insert the merged node back into the graph
-                    \end{itemize}
-          \end{enumerate}
-\end{enumerate}
+During this step, all points inside a node share a common plane normal.
 
-\textbf{\textcolor{red}{post-processing}}
-Refinement:
-\begin{enumerate}
-    \item focus on three types of artifacts:
-          \begin{enumerate}
-              \item sawtooth
-              \item unused points
-              \item over segmentation
-              \item all of them are at boundaries
-          \end{enumerate}
-    \item erode border nodes
-    \item perform pixel wise region growing, dabei alle 4 nachbarn betrachten
-    \item re-apply AHC on newly formed nodes
-\end{enumerate}
+The \textit{agglomerative hierarchical clustering} step starts with the construction of a min-MSE-heap data 
+structure that contains the nodes of $G$, sorted in ascending order by the value of their MSE. 
+The following steps are then repeated exhaustively.
+First, the node $v$ that has the current minimum MSE is merged with one of its neighbors $u$ that minimizes the merged MSE.
+If the merged MSE is larger than a threshold $\theta_{MSE}$, then a plane is found and the merged node is removed from G.
+if $MSE_{merge}$ is larger than a threshold $\theta_{MSE}$, then a plane segment is found and extracted from $G$.
+Otherwise, the merged node is added back to $G$, joining the edges of $v$ and $u$.
+
+Lastly, a refinement step is employed. Due to the clustering of nodes that contain a set of points, certain types of 
+artifacts can occur:
+\begin{itemize}
+    \item Sawtooth,
+    \item unused data points, \textit{and} 
+    \item over-segmentation.
+\end{itemize}
+First, if not all neighbors of a node $v$ belong to the plane of $v$, all points of $v$ are added to a queue $Q_{RG}$.
+Then, region growing is performed on the points inside $Q_{RG}$, where the 4-connected neighbors are observed. 
+A neighboring point $n$ is inserted into the segment $k$ of a point $v$ if $n$ does not belong to $k$, and
+the distance to $k$ is smaller than the distance to its current segment. Additionally, $n$ is inserted into $Q_{RG}$, 
+which also happens if $n \in k$.
+The region growing is followed by another \textit{agglomerative hierarchical clustering} step. 
+
 
 \subsection{Fast Cylinder and Plane Extraction}
 Fast Cylinder and Plane Extraction (CAPE)~\cite{Proença_Gao_2018} implements an algorithm that detects planes and cylinders in organized point clouds to improve the performance
@@ -520,53 +507,63 @@ given set of parameters corresponding to detected planes
 \end{itemize}
 The normal vector and the distance $\rho$ define the normal equation of the plane supporting a subset of
 3d point entries.
+
+
 \subsection{Depth Dependent Flood Fill}
-Depth Dependent Flood Fill (DDFF) is a region growing-based algorithm that detects planes in organized point clouds.
-Der algorithmus die weiterentwicklung des vorgängers \cite{Roychoudhury_Missura_Bennewitz_2021}.
-\textbf{\textcolor{red}{pre processing}}
-None
+\textbf{\textcolor{red}{another case of "nicht perfekt verstanden, daher zu lang". reicht aber als erste iteration}}
+Depth Dependent Flood Fill (DDFF)~\cite{Roychoudhury_Missura_Bennewitz_2021_new} is a region growing-based algorithm that detects planes in organized point clouds.
+The algorithm builds upon and improves their previous method~\cite{Roychoudhury_Missura_Bennewitz_2021_old}.
 
-\textbf{\textcolor{red}{plane detection}}
-seed selection:
+The algorithm starts by selecting appropriate seeds. First, the organized point cloud gets subdivided into cubes of a
+pre-determined size $\sigma_{seed}$. Within these cubes, the points are checked for depth discontinuities, as well as 
+curvature discontinuities. They are evaluated against $\sigma_{seed}$ and a normal orientation difference 
+threshold $\theta_{ang}$, respectively. If neither of the thresholds are exceeded, the center of the cube is marked as 
+a seed for region growing. 
 
-\begin{itemize}
-    \item seed size parameter $\sigma_{seed}$ defines cube around possible seed point
-    \item check for distance discontinuities  \textbf{\textcolor{red}{formeln für beide}}
-    \item check for curvature discontinuities
-\end{itemize}
+The region growing is performed on point-level. Starting from a given seed $s$, a region is expanded by checking 
+neighbors within a horizontal span. 
+Given a horizontal span of length n, its middle pixel $p$, the minimum plane size $\sigma$ is calculated as follows:
 
-region growing:
-\begin{itemize}
-    \item perform region growth over spans of horizontal pixels
-    \item member ship criteria:
-          \begin{enumerate}
-              \item perpendicular distance of point to plane defined by seed point and its normal
-              \item euclidian distance function to ensure pixel neighbors are also 3d neighbors
-              \item assure the pixel is not 0 or nan
-          \end{enumerate}
-\end{itemize}
+\begin{equation}
+    \sigma = \rho(p) = \kappa_\rho \cdot \delta(p)^2 + \gamma_\rho,
+\end{equation}
+where $\delta(p)$ is the depth value of $p$, and $\kappa_\rho, \gamma_\rho$ are tuneable parameters.
+If the span is growing towards the right, the pixel $n$ that is $\sigma$ pixel away from the right border is checked 
+for membership. Additionally, $n$'s upper and lower neighbors are also checked for membership. If $n$ and at least one
+of $n$'s vertical neighbors pass the following membership test, $n$ and all pixels in between are added to the span of $s$.
 
-plane merging:
-region growing yields a set of oversegmented planes
-repeat the following until no planes are merged during an iteration, usually no more than 5 iteration is enough
-\begin{itemize}
-    \item build neighborhood graph defined by euclidian distance of edge pixels
-    \item iterate BFS through graph
-    \item merge if two planes fullfil a condition \textbf{\textcolor{red}{formel}}
-    \item if merged, recalculate centroid, normals and update graph accordingly
-\end{itemize}
+\begin{enumerate}
+    \item The perpendicular distance of $n$ to the plane defined by $s$ and its normal is smaller than 
+    a threshold $\tau_{flood}$,
+    \item the euclidian distance between $p$ and a neighboring pixel is smaller than a threshold 
+    $\tau_{point}$, \textit{and}
+    \item $n$ is neither NaN, nor 0. 
+\end{enumerate}
 
-\textbf{\textcolor{red}{post-processing}}
-filling gaps:
-\begin{itemize}
-    \item two passes:
-          \begin{enumerate}
-              \item scan top to bottom
-              \item bottom to top
-          \end{enumerate}
-    \item in both passes, identify horizontal strips of unmarked pixels that have the same neighbor either above or
-          below and mark them with that neighbors label
-\end{itemize}
+This region growing process yields a set of oversegmented planes. In a refinement step, the set of planes is reduced 
+by performing merging of planes.
+First, a neighborhood graph of the rough segments is constructed. Any segments that share a border, i.e., the bordering 
+pixels have a small euclidian distance, are connected through a bidirectional edge.
+The graph is traversed in a breadth-first manner, merging two connected nodes, $a,b$, if they satisfy the following condition:
+
+\begin{enumerate}
+    \item the seed normals of a and b diverge less than a threshold $\tau_{angle}$, \textit{and}
+    \item the perpendicular distance between the segments is less than threshold $\tau_{merge}$.
+\end{enumerate}
+If $a$ fails the membership test with its neighbor $b$, the membership test is repeated between $b$ and all planes $a$ 
+has merged with. If this fails, the unidirectional edge $(ab)$ is removed from the graph. Note, that the edge $(ba)$ will
+be validated later, as b is subject to change through merges with other neighbors.
+
+After a successful merge, a new centroid and normal are obtained by adding both plane normals and centroids together, 
+while the respective amount of inliers acts as a weight.
+
+The BFS iteration is repeated, until no merge occurs during an iteration. The authors state that, typically, no more than five
+iterations are needed~\cite[Section~III.E]{Roychoudhury_Missura_Bennewitz_2021_new}.
+
+The flooding under the constraint of minimum plane size leaves gaps. Therefore, as a refinement step, a two-pass 
+algorithm is used to fill these gaps. The first pass scans top-to-bottom, and the second bottom-to-top.
+In both passes, horizontal strips of non-assigned pixels are detected. If the vertical neighbors have the same plane label,
+we mark all unmarked pixels with the same label.
 
 \subsection{PlaneNet}
 PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} ist a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.

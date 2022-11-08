@@ -358,21 +358,8 @@
   language     = {en}
 }
 
-@inproceedings{Roychoudhury_Missura_Bennewitz_2021,
-  address      = {Prague, Czech Republic},
-  title        = {Plane Segmentation Using Depth-Dependent Flood Fill},
-  isbn         = {978-1-66541-714-3},
-  url          = {https://ieeexplore.ieee.org/document/9635930/},
-  doi          = {10.1109/IROS51168.2021.9635930},
-  abstractnote = {The detection of planar surfaces in a point cloud is a popular technique for the extraction of drivable or walkable surfaces and for tabletop segmentation. Unfortunately, RGB-D sensors are quite noisy and provide incomplete data, which makes the extraction of surfaces more challenging. Also, it is desirable to process the point cloud data in real time, which at a rate of approximately 30 Hz, leaves only a small amount of computation time per frame. We have already developed a real time-capable plane segmentation method [1] that exploits the organized structure of RGB-D point clouds in order to implement a computationally efﬁcient region growing algorithm. It uses the point-plane distance to assign points to their segments rather than inherently unreliable surface normals. Now we are presenting an improvement where we adapt thresholds and other parameters of our algorithm to the measured depth in order to account for an increasing scatter of the points at larger distances from the camera. We estimate a minimum detectable plane size in pixels dependent on the measured depth. This enables us to stride in pixel coordinates with larger steps that are adaptive to the measured depth and to implement more robust sanity checks of depth-dependent size. Apart from a speed-up of the runtime of our algorithm, the segmentation quality also increased. We show a comparison between our improvement, our previous version, and other state-of-the-art methods evaluated on multiple commonly available datasets.},
-  booktitle    = {2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  publisher    = {IEEE},
-  author       = {Roychoudhury, Arindam and Missura, Marceli and Bennewitz, Maren},
-  year         = {2021},
-  month        = {Sep},
-  pages        = {2210–2216},
-  language     = {en}
-}
+
+
 
 @inproceedings{Liu_Yang_Ceylan_Yumer_Furukawa_2018,
   address      = {Salt Lake City, UT},
@@ -717,10 +704,54 @@
 }
 
 @article{wang2020solov2,
-  title={Solov2: Dynamic and fast instance segmentation},
-  author={Wang, Xinlong and Zhang, Rufeng and Kong, Tao and Li, Lei and Shen, Chunhua},
-  journal={Advances in Neural information processing systems},
-  volume={33},
-  pages={17721--17732},
-  year={2020}
+  title   = {Solov2: Dynamic and fast instance segmentation},
+  author  = {Wang, Xinlong and Zhang, Rufeng and Kong, Tao and Li, Lei and Shen, Chunhua},
+  journal = {Advances in Neural information processing systems},
+  volume  = {33},
+  pages   = {17721--17732},
+  year    = {2020}
+}
+
+@inproceedings{Nguyen_Martinelli_Tomatis_Siegwart_2005,
+  title        = {A comparison of line extraction algorithms using 2D laser rangefinder for indoor mobile robotics},
+  issn         = {2153-0866},
+  doi          = {10.1109/IROS.2005.1545234},
+  abstractnote = {This paper presents an experimental evaluation of different line extraction algorithms on 2D laser scans for indoor environment. Six popular algorithms in mobile robotics and computer vision are selected and tested. Experiments are performed on 100 real data scans collected in an office environment with a map size of 80m /spl times/ 50m. Several comparison criteria are proposed and discussed to highlight the advantages and drawbacks of each algorithm, including speed, complexity, correctness and precision. The results of the algorithms are compared with the ground truth using standard statistical methods.},
+  booktitle    = {2005 IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  author       = {Nguyen, V. and Martinelli, A. and Tomatis, N. and Siegwart, R.},
+  year         = {2005},
+  month        = {Aug},
+  pages        = {1929–1934}
+}
+
+@inproceedings{Roychoudhury_Missura_Bennewitz_2021_new,
+  address      = {Prague, Czech Republic},
+  title        = {Plane Segmentation Using Depth-Dependent Flood Fill},
+  isbn         = {978-1-66541-714-3},
+  url          = {https://ieeexplore.ieee.org/document/9635930/},
+  doi          = {10.1109/IROS51168.2021.9635930},
+  abstractnote = {The detection of planar surfaces in a point cloud is a popular technique for the extraction of drivable or walkable surfaces and for tabletop segmentation. Unfortunately, RGB-D sensors are quite noisy and provide incomplete data, which makes the extraction of surfaces more challenging. Also, it is desirable to process the point cloud data in real time, which at a rate of approximately 30 Hz, leaves only a small amount of computation time per frame. We have already developed a real time-capable plane segmentation method [1] that exploits the organized structure of RGB-D point clouds in order to implement a computationally efﬁcient region growing algorithm. It uses the point-plane distance to assign points to their segments rather than inherently unreliable surface normals. Now we are presenting an improvement where we adapt thresholds and other parameters of our algorithm to the measured depth in order to account for an increasing scatter of the points at larger distances from the camera. We estimate a minimum detectable plane size in pixels dependent on the measured depth. This enables us to stride in pixel coordinates with larger steps that are adaptive to the measured depth and to implement more robust sanity checks of depth-dependent size. Apart from a speed-up of the runtime of our algorithm, the segmentation quality also increased. We show a comparison between our improvement, our previous version, and other state-of-the-art methods evaluated on multiple commonly available datasets.},
+  booktitle    = {2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  publisher    = {IEEE},
+  author       = {Roychoudhury, Arindam and Missura, Marceli and Bennewitz, Maren},
+  year         = {2021},
+  month        = {Sep},
+  pages        = {2210–2216},
+  language     = {en}
+}
+
+@inproceedings{Roychoudhury_Missura_Bennewitz_2021_old,
+  address      = {Xi’an, China},
+  title        = {Plane Segmentation in Organized Point Clouds using Flood Fill},
+  isbn         = {978-1-72819-077-8},
+  url          = {https://ieeexplore.ieee.org/document/9561325/},
+  doi          = {10.1109/ICRA48506.2021.9561325},
+  abstractnote = {The segmentation of a point cloud into planar primitives is a popular approach to ﬁrst-line scene interpretation and is particularly useful in mobile robotics for the extraction of drivable or walkable surfaces and for tabletop segmentation for manipulation purposes. Unfortunately, the planar segmentation task becomes particularly challenging when the point clouds are obtained from an inherently noisy, robot-mounted sensor that is often in motion, therefor requiring real time processing capabilities. We present a real time-capable plane segmentation technique based on a region growing algorithm that exploits the organized structure of point clouds obtained from RGB-D sensors. In order to counteract the sensor noise, we invest into careful selection of seeds that start the region growing and avoid the computation of surface normals whenever possible. We implemented our algorithm in C++ and thoroughly tested it in both simulated and real-world environments where we are able to compare our approach against existing state-of-the-art methods implemented in the Point Cloud Library. The experiments presented here suggest that our approach is accurate and fast, even in the presence of considerable sensor noise.},
+  booktitle    = {2021 IEEE International Conference on Robotics and Automation (ICRA)},
+  publisher    = {IEEE},
+  author       = {Roychoudhury, Arindam and Missura, Marcell and Bennewitz, Maren},
+  year         = {2021},
+  month        = {May},
+  pages        = {13532–13538},
+  language     = {en}
 }
