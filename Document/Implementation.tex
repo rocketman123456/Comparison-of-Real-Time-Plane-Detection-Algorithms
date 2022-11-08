@@ -38,7 +38,7 @@ We follow the pseudocode as stated in \cite[Algorithm~1]{Vo_Truong-Hong_Laefer_B
 of regions by adding a containment check, to avoid redundancy of regions. By reducing the number of regions (incl. redundancies), we also
 reduce the total calculation time.
 Since the exact values of all thresholds have not been specified, we obtain the following parameter values
-through empiric experiments on multiple 2D-3D-S scenes: 
+through empiric experiments on multiple 2D-3D-S scenes:
 \begin{itemize}
     \item $\theta_r$ = 0.08
     \item $\theta_{ang}$ = 0.3
@@ -81,41 +81,38 @@ have to view each point cloud and segment the included planes manually. An exemp
 
 
 The manual segmentation process is very time consuming, not only because of the large amount of data but also due
-to the following recurring questions.
-
-\begin{enumerate}
-    \item "Which level of curvature separates planar from non-planar?",
-    \item "How sparse can a cloud be to still be considered a plane?" \textit{and}
-    \item "When does a plane need splitting(or multiple planes merging)?"
-\end{enumerate}
-All these questions slow down the segmentation process. On average, the segmentation of a scene took 8-10 minutes, which, for all 272 scenes,
-would equate to a total of 36-45 hours. To reduce the time spent in segmentation, we perform an initial analysis of the scenes in a given area
+to the level of subjectivity involved.
+On average, the segmentation of a scene took 8-10 minutes, which, for all 272 scenes,
+would result in a total of 36-45 hours. To reduce the time spent in segmentation, we perform an initial analysis of the scenes in a given area
 and omit scenes that show no noticeable difference compared to others. This analysis reduces the number of segmented scenes to slightly more than half
 of the total, reducing the time to 18-23 hours.
 
 The results of the manual segmentation process are documented in Table~\ref{tab:stanfordStats}.
+The table is inspired by~\cite[Table~7]{2017arXiv170201105A}. Like the original, it shows the amounts of scenes per scene type in each area.
+We extended the table by adding a column dedicated to the planes included in each scene type. According to the table, a total amount of 3410 planes
+are included in the dataset.
 
 
 \begin{table}[H]
     \centering
     \resizebox{\textwidth}{!}{%
         \begin{tabular}{c|c|c|c|c|c|c|c|c}
-            Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL            & Planes        \\ \hline
-            auditorium       & -       & 2/2     & -       & -       & -       & -       & 2/2              & 70            \\ \hline
-            conference room  & 2/2     & 1/1     & 1 /1    & 3/3     & 3/3     & 1/1     & 11/11            & 375           \\ \hline
-            copy room        & 1/1     & -       & -       & -       & -       & 1/1     & 2/2              & 45            \\ \hline
-            hallway          & 8/8     & 12/12   & 6/6     & 14/14   & 1/15    & 6/6     & 48/61            & 977           \\ \hline
-            lobby            & -       & -       & -       & 2 /2    & 1/1     & -       & 3/3              & 207           \\ \hline
-            lounge           & -       & -       & 2/2     & -       & -       & 1/1     & 3/3              & 101           \\ \hline
-            office           & 16/31   & 5/14    & 10/10   & 9/22    & 4/42    & 3/37    & 48/156           & 1116          \\ \hline
-            open space       & -       & -       & -       & -       & -       & 1 /1    & 1/1              & 10            \\ \hline
-            pantry           & 1/1     & -       & -       & -       & /1      & 1/1     & 3/3              & 73            \\ \hline
-            storage          & -       & 9/9     & 2 /2    & 4/4     & 4/4     & -       & 19/19            & 222           \\ \hline
-            WC               & 1/1     & 2/2     & 2/2     & 4/4     & 4/2     & -       & 11/11            & 214           \\ \hline
+            Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL            & Planes \\ \hline
+            auditorium       & -       & 2/2     & -       & -       & -       & -       & 2/2              & 70             \\ \hline
+            conference room  & 2/2     & 1/1     & 1 /1    & 3/3     & 3/3     & 1/1     & 11/11            & 375            \\ \hline
+            copy room        & 1/1     & -       & -       & -       & -       & 1/1     & 2/2              & 45             \\ \hline
+            hallway          & 8/8     & 12/12   & 6/6     & 14/14   & 1/15    & 6/6     & 48/61            & 977            \\ \hline
+            lobby            & -       & -       & -       & 2 /2    & 1/1     & -       & 3/3              & 207            \\ \hline
+            lounge           & -       & -       & 2/2     & -       & -       & 1/1     & 3/3              & 101            \\ \hline
+            office           & 16/31   & 5/14    & 10/10   & 9/22    & 4/42    & 3/37    & 48/156           & 1116           \\ \hline
+            open space       & -       & -       & -       & -       & -       & 1 /1    & 1/1              & 10             \\ \hline
+            pantry           & 1/1     & -       & -       & -       & /1      & 1/1     & 3/3              & 73             \\ \hline
+            storage          & -       & 9/9     & 2 /2    & 4/4     & 4/4     & -       & 19/19            & 222            \\ \hline
+            WC               & 1/1     & 2/2     & 2/2     & 4/4     & 4/2     & -       & 11/11            & 214            \\ \hline
                              &         &         &         &         &         &         & \textbf{139/272} & \textbf{3410}
         \end{tabular}
     }
-    \caption[2S-3D-S Statistics]{2D-3D-S statistics. Shown are the number of scenes per category and for how many we created a ground truth ($\#GT/\#Total$).
+    \caption[2S-3D-S Statistics]{2D-3D-S dataset statistics. Shown are the number of scenes per category and for how many we created a ground truth ($\#GT/\#Total$).
         Furthermore, the rightmost column reports the number of segmented planes per scene category.  }
     \label{tab:stanfordStats}
 \end{table}
@@ -126,18 +123,18 @@ The results of the manual segmentation process are documented in Table~\ref{tab:
 \label{sec:finimpl}
 Reiterating Section~\ref{sec:datasets}, we select four scene types of the 2D-3D-S dataset for the recording of the self-created FIN
 dataset. Namely, these scene types are \textit{auditorium, conference room, hallway,} and \textit{office}.
-As the name of the dataset suggests, we record these scene types inside the \textit{Faculty of INformatik} (FIN) at Otto-von-Guericke-University 
+As the name of the dataset suggests, we record these scene types inside the \textit{Faculty of INformatik} (FIN) at Otto-von-Guericke-University
 in Magdeburg.
 Running \textit{realsense-ros} and holding our cameras, we walk through the corresponding parts of the building while scanning to the best of our ability.
 We save each incremental map update to a file for later usage.
 
 Given the differences in spatial dimension, the recordings of each scene also differ in length and size.
-The auditorium scene has a total of 296 individual time frames, the conference room scene has 113, the hallway has a total of 
+The auditorium scene has a total of 296 individual time frames, the conference room scene has 113, the hallway has a total of
 174, and the office has 125 time frames.
 The FIN dataset, thereby, has a total of 708 time frames.
 
 Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
-By creating a ground truth for only the last frame of each scene, we substantially reduce the time invested in this task. 
+By creating a ground truth for only the last frame of each scene, we substantially reduce the time invested in this task.
 To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
 Figure~\ref{fig:dynGT}.
 We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.

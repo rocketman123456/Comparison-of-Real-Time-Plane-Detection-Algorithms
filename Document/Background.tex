@@ -149,22 +149,17 @@ In the context of this work, a criterion for region growth could be the distance
 \section{Plane Detection Algorithms}
 The following subsections detail the necessary background knowledge of all the plane detection algorithms mentioned in this paper.
 Aside from the functionality of a method, we give relevant higher-level information. \textbf{\textcolor{red}{This includes the separation of an algorithms
-process in pre-processing, plane detection, and post-processing, as well as the expected input format and the proposed output format.}}
+        process in pre-processing, plane detection, and post-processing, as well as the expected input format and the proposed output format.}}
 
 
 \subsection{Robust Statistics approach for Plane Detection}
 \label{subsec:bg-rspd}
+
+\textbf{\textcolor{red}{Parameter: $l_O, \varepsilon, MOR, k, MND, MDP$}}
+
 Robust Statistics approach for Plane Detection (RSPD)~\cite{Araújo_Oliveira_2020} is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases;
 \textit{Split, Grow and Merge}.
 
-\textbf{\textcolor{red}{pre-processing}}
-build octree and calculate normals for all points
-
-\textbf{\textcolor{red}{plane detection}}
-\begin{itemize}
-    \item build octree
-    \item estimate normals
-\end{itemize}
 \paragraph*{Split}
 The authors propose to use an octree to recursively subdivide the point cloud. The subdivision is repeated until every leaf node contains less than $0.1\%$ of the total amount
 of points.
@@ -207,17 +202,17 @@ This phase returns all maximally merged planar patches, i.e. the final planes.
 \subsection{Oriented Point Sampling}
 Oriented Point Sampling (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized point cloud as input.
 
-\textbf{\textcolor{red}{pre-processing}}
+\textbf{\textcolor{red}{more detail}}
+\textbf{\textcolor{red}{parameters: $\alpha_s, KNN, \theta_h, \theta_N, p$}}
 
 First, a sample of points is uniformly selected. The normal vectors of these points are estimated using SVD and the k nearest neighbors, which had been obtained using a k-d tree.
 An inverse distance weight function is employed to prioritize neighboring points that are closer to the sample of which the normal vector is currently being estimated.
 
-\textbf{\textcolor{red}{plane detection}}
 
 After normal estimation, one-point-RANSAC is used to find the largest plane. Usual RANSAC implementations sample three points to fit a plane. However, OPS fits a plane with only one sample point and its normal vector.
 Once a plane with the most inliers is obtained, its normal vector is re-estimated using SVD on all inliers, and all inliers are removed from the point cloud.
 This process is repeated until the number of remaining points falls below a predefined threshold $\theta_N$.
-
+% FIXME
 \textbf{\textcolor{red}{post-processing}}
 \begin{itemize}
     \item merge smaller planes if they pass a coplanarity test
@@ -229,7 +224,7 @@ With the 3D Kernel-based Hough Transform (3D-KHT),
 \citeauthor{Limberger_Oliveira_2015}\cite{Limberger_Oliveira_2015} propose a hough transform-based plane detection method,
 which accepts unorganized point clouds as input \cite{Limberger_Oliveira_2015}.
 
-\textbf{\textcolor{red}{pre-processing}}
+\textbf{\textcolor{red}{parameters: $\phi_{num}$  $\rho_{num}$  $s_{level}$  $s_{ps}$  $d_{max}$     $s_\alpha$  $s_\beta$}}
 
 The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in creation and manipulation.
 Furthermore, the octree succeeds in capturing the shapes inside the point cloud, while the k-d tree does not.
@@ -238,7 +233,6 @@ Each leaf inside the octree continues subdividing until the points inside a leaf
 The authors recommend this threshold to value 30 for large point clouds.
 After the approximately coplanar nodes are refined by removing outliers, a plane is fit through the remaining points.
 
-\textbf{\textcolor{red}{plane detection}}
 
 This plane $\pi$ can, in polar coordinates, be uniquely described by a triple $(\rho, \theta, \phi)$.
 Inspired by \citeauthor{Borrmann_Elseberg_Lingemann_Nüchter_2011}\cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, an accumulator ball (Fig.~\ref{fig:accball}) is used for the voting procedure because the cells in polar regions are smaller (and therefore
@@ -284,6 +278,8 @@ Finally, the detected planes are sorted by the number of different clusters that
 \label{subsec:bg-obrg}
 Octree-Based Region Growing (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} is also a method that employs region growing.
 
+\textbf{\textcolor{red}{parameters: $l_{max}$ $\theta_{res}$  $\theta_{d}$  $\theta_{ang}$  $\theta_M$  $\theta_p$}}
+
 First, an unorganized point cloud is recursively subdivided using an octree.
 An octree node $n$ repeatedly subdivides itself into eight children until the level of $n$ supersedes a predefined maximum subdivision value or if the
 amount of contained points in $n$ is less than a predefined minimum of included points.
@@ -302,117 +298,115 @@ points from neighboring and previously unallocated leaf nodes are considered and
 The refinement process returns a complete set of planar regions.
 
 \subsection{Probabilistic Agglomerative Hierarchical Clustering}
+\label{subsec:bg-peac}
 Probabilistic Agglomerative Hierarchical Clustering (PEAC)~\cite{Feng_Taguchi_Kamat_2014} is a plane detection algorithm that takes an organized
 point cloud as input.
-The agglomerative hierarchical clustering is based on an algorithm called 
+The agglomerative hierarchical clustering is based on an algorithm called
 \textit{line regression}\cite[Section~III.B]{Nguyen_Martinelli_Tomatis_Siegwart_2005}. The primary difference is
 that, instead of a double linked list, PEAC operates on a graph $G$.
 
 First, the input organized point cloud is divided into non-overlapping nodes through the initialization of $G$.
-Each node in $G$ has a pre-determined height $H$ and width $W$, whereas $H$ and $W$ correspond to index ranges in the 
-point cloud, i.e., each node contains a set of points. 
+Each node in $G$ has a pre-determined height $H$ and width $W$, whereas $H$ and $W$ correspond to index ranges in the
+point cloud, i.e., each node contains a set of points.
 Then, $G$ is refined by removing the following types of nodes and corresponding edges~\cite[Section~III.A]{Feng_Taguchi_Kamat_2014}:
 \textbf{\textcolor{red}{zitieren um depth discontinuities sagen zu dürfen?}}
 \begin{enumerate}
-    \item Nodes that contain NaN or 0 values, e.g., missing data,  
-    \item nodes that contain at least one point that is depth-discontinuous with its four neighbors, e.g., neighbors 
-    in the pixel space but not in coordinate space, 
+    \item Nodes that contain NaN or 0 values, e.g., missing data,
+    \item nodes that contain at least one point that is depth-discontinuous with its four neighbors, e.g., neighbors
+          in the pixel space but not in coordinate space,
     \item nodes with a high MSE, e.g., non-planar regions, \textit{and}
     \item nodes that share an edge with two different planes, e.g., the corners of walls.
 \end{enumerate}
 During this step, all points inside a node share a common plane normal.
 
-The \textit{agglomerative hierarchical clustering} step starts with the construction of a min-MSE-heap data 
-structure that contains the nodes of $G$, sorted in ascending order by the value of their MSE. 
+The \textit{agglomerative hierarchical clustering} step starts with the construction of a min-MSE-heap data
+structure that contains the nodes of $G$, sorted in ascending order by the value of their MSE.
 The following steps are then repeated exhaustively.
 First, the node $v$ that has the current minimum MSE is merged with one of its neighbors $u$ that minimizes the merged MSE.
 If the merged MSE is larger than a threshold $\theta_{MSE}$, then a plane is found and the merged node is removed from G.
 if $MSE_{merge}$ is larger than a threshold $\theta_{MSE}$, then a plane segment is found and extracted from $G$.
 Otherwise, the merged node is added back to $G$, joining the edges of $v$ and $u$.
 
-Lastly, a refinement step is employed. Due to the clustering of nodes that contain a set of points, certain types of 
+Lastly, a refinement step is employed. Due to the clustering of nodes that contain a set of points, certain types of
 artifacts can occur:
 \begin{itemize}
     \item Sawtooth,
-    \item unused data points, \textit{and} 
+    \item unused data points, \textit{and}
     \item over-segmentation.
 \end{itemize}
 First, if not all neighbors of a node $v$ belong to the plane of $v$, all points of $v$ are added to a queue $Q_{RG}$.
-Then, region growing is performed on the points inside $Q_{RG}$, where the 4-connected neighbors are observed. 
+Then, region growing is performed on the points inside $Q_{RG}$, where the 4-connected neighbors are observed.
 A neighboring point $n$ is inserted into the segment $k$ of a point $v$ if $n$ does not belong to $k$, and
-the distance to $k$ is smaller than the distance to its current segment. Additionally, $n$ is inserted into $Q_{RG}$, 
+the distance to $k$ is smaller than the distance to its current segment. Additionally, $n$ is inserted into $Q_{RG}$,
 which also happens if $n \in k$.
-The region growing is followed by another \textit{agglomerative hierarchical clustering} step. 
+The region growing is followed by another \textit{agglomerative hierarchical clustering} step.
 
 
 \subsection{Fast Cylinder and Plane Extraction}
-Fast Cylinder and Plane Extraction (CAPE)~\cite{Proença_Gao_2018} implements an algorithm that detects planes and cylinders in organized point clouds to improve the performance
-of visual odometry.
+Fast Cylinder and Plane Extraction (CAPE)~\cite{Proença_Gao_2018} is a region growing-based algorithm that detects
+planes and cylinders in organized point clouds.
+The authors propose this algorithm as an extension of their Probabilistic Visual Odometry Framework~\cite{Proenca_Gao_2018}.
 
-\textbf{\textcolor{red}{pre-processing}}
+In preparation for the region growing step, the cloud is subdivided into patches of pre-defined size, similar to
+the graph initialization of PEAC (see Section~\ref{subsec:bg-peac}).
+A patch size of 20x20 was used in their evaluation~\cite[Section~V.A]{Proença_Gao_2018}.
+Then, the planarity of the patches is tested, and a patch is considered non-planar, if:
+\begin{itemize}
+    \item The amount of NaN or 0 points exceeds a threshold, \textit{or}
+    \item the patch has depth discontinuities,
+\end{itemize}
+whereas the depth discontinuities are only checked for pixels along two vertical and horizontal lines that pass through
+the patch center. \textbf{\textcolor{red}{satz ist schon sehr ähnlich zum original}}
+A plane is then fit through the patch inliers by performing principle component analysis (PCA). The plane's MSE
+corresponds to the lowest eigenvalue, and the plane's normal vector is its eigenvector.
+A patch is considered planar, if:
+\begin{equation}
+    MSE_{patch} < (\sigma_{\bar{z}} + \epsilon)^2,
+\end{equation}
+where $\sigma_{\bar{z}}$ is the estimated standard uncertainty of the patches' mean depth value. $\epsilon$ is a
+tolerance coefficient. \textbf{\textcolor{red}{satz ist schon sehr ähnlich zum original}}
+
+The normal vectors are converted from cartesian to spherical coordinates, thus being described by a polar angle, and
+an azimuth angle. These spherical normal vectors are then assorted into bins, thus building a histogram $H$.
+
+This histogram is now used for the region growing step.
+First, a set of patches $C$ of the most frequent bin in $H$ are obtained. Stop, if the most frequent bin
+yields fewer patches than a threshold $k_1$. The patch with the smallest MSE out of $C$ is chosen as a seed $s$.
+In general, a 4-connected neighborhood is used in this approach, and a neighboring patch $n$ is inserted into a region, if:
 \begin{enumerate}
-    \item planar cell fitting
-          \begin{itemize}
-              \item also used in PEAC
-              \item non-planar:
-                    \begin{itemize}
-                        \item NaN
-                        \item depth discontinuities
-                    \end{itemize}
-              \item then: plane fitting with PCA(->normal) and eigenvalue (->MSE)
-              \item only the first two moments of 3d points needed, könig-huygen formula can be used to calc the cov matrix
-          \end{itemize}
-    \item build histogram of normals
-          \begin{itemize}
-              \item convert normals of cell to polar and azimuthal angles
-              \item use those values for assorting to bins and building a histogram
-          \end{itemize}
+    \item $n$ is not assigned to any region,
+    \item the dot product of both patches normal vectors is less than a threshold $T_N$, \textit{and}
+    \item the orthogonal distance of $n$'s center to the region is less than $T_d(s) = l\sqrt{(1-T_N^2)}$,
 \end{enumerate}
+where $l$ is the distance between the corner points of $s$.
+If a complete segment $S$ is found, all included patches are removed from the list of remaining patches, and
+the bins of the histogram are updated accordingly. Lastly, if $S$ exceeds the minimum plane size $k_2$, it is added
+to the set of detected planes.
 
-\textbf{\textcolor{red}{plane detection}}
-\begin{enumerate}
-    \item cell region growing
-          \begin{itemize}
-              \item given histogram and grid of planar cells, (copy of G:) list of rem. cells $R$, Set of segments $S$
-              \item exhaustively, until $R$ is empty:
-                    \begin{enumerate}
-                        \item C = get cells from the most frequent bin
-                        \item if the number of cells is smaller than a threshold $k_1$: break
-                        \item choose seed: cell with minimum MSE out of C
-                        \item grow seed
-                        \item remove resulting region from $R$ and remove cells in R from histogram
-                        \item if $|R|< k_2$ continue
-                        \item add $R$ to $S$
-                    \end{enumerate}
-                    return $S$
-          \end{itemize}
-    \item plane (+cylinder) fitting (for all regions:)
-          \begin{itemize}
-              \item fit plane to region  [A]
-              \item if ratio of second largest eigenvalue to smallest large enough :save grid segmentation and plane params
-              \item else: check if surface is invariant in one direction (property of open cylinders)
-                    \begin{itemize}
-                        \item PCA on [n1,...,nn] stacked matrix of [N,-N] (normal of the cell)
-                        \item only continue if ratio of first eigenvalue to last eigenvalue is larger than a threshold
-                        \item use center and normal to projekt cell to plane
-                        \item use ransac to fit a cylinder (das geht weil cylinder ebenen sind mit inf radius)
-                        \item cylinder fitting returns set of set of segments
-                        \item foreach subsegment:
-                        \item fit plane (siehe [A]), and depending on the MSE, add to either plane set or cylinder set
-                    \end{itemize}
-          \end{itemize}
-    \item plane region merging
-\end{enumerate}
+The planarity of all segments is now assessed. This is done by calculating the covariance of all included points and,
+subsequently, comparing the ratio of the second largest eigenvalue to the smallest eigenvalue thereof. If this ratio
+exceeds a pre-determined parameter $plane_min_score$, the segment is considered a plane.
+Otherwise, additional steps are needed.
+First, the surface of a segment is checked for invariance, which is a property of open cylinders.
+For this task, PCA is performed on the stacked matrix of normal vectors of the segment.
+Then, the ratio of the first eigenvalue to the last eigenvalue of this covariance matrix, namely the condition number,
+is calculated. If the condition number exceeds a threshold $\theta_{cond}$, the segment is comprised of a set of
+cylinders or planes~\cite[Section~III.D]{Proença_Gao_2018}.
 
-\textbf{\textcolor{red}{post-processing}}
-boundary refinement:
-\begin{enumerate}
-    \item erode cell boundaries with 3x3 kernel, 4er nbhood (wie in PEAC)
-    \item cells that are valid for refinement are given by the difference between the eroded segment and the segment to expand
-    \item distance between segment plane model to each point within the valid cells is calculated
-    \item pixel within the cells are added to the segment if the MSE is less than the model MSE*konstant (im paper= 9)
-\end{enumerate}
+Using the eigenvector with the smallest eigenvalue, the center points and normal vectors of all patches
+in the segment are then projected onto a plane. Then, multiple models are fit by performing sequential RANSAC.
+Planes are then fit through each model obtained by RANSAC. If the MSE of the plane is lower than the MSE of
+the corresponding cylinder model, the model is considered a plane, and a cylinder otherwise.
 
+Lastly, the segments are undergone a refinement step.
+First, segments are eroded by removing boundary patches through the use of a 3x3 kernel. Next, the eroded segments are expanded by using
+a 3x3 8-neighbor kernel. The authors propose, that all patches valid for refinement are given by the difference between
+the expanded segment and the eroded segment. Lastly, each pixel $p$ within the patches is added to
+the segment $S$ if:
+\begin{equation}
+    dist(p,S) \leq MSE_S \cdot k,
+\end{equation}
+where $k$ is a constant. The authors use $k=9$ in their work.
 
 \subsection{Plane Extraction using Spherical Convex Hulls}
 As the name suggests, Plane Extraction using Spherical Convex Hulls (SCH-RG) employs spherical convex hulls to detect planes in organized point clouds.
@@ -515,34 +509,34 @@ Depth Dependent Flood Fill (DDFF)~\cite{Roychoudhury_Missura_Bennewitz_2021_new}
 The algorithm builds upon and improves their previous method~\cite{Roychoudhury_Missura_Bennewitz_2021_old}.
 
 The algorithm starts by selecting appropriate seeds. First, the organized point cloud gets subdivided into cubes of a
-pre-determined size $\sigma_{seed}$. Within these cubes, the points are checked for depth discontinuities, as well as 
-curvature discontinuities. They are evaluated against $\sigma_{seed}$ and a normal orientation difference 
-threshold $\theta_{ang}$, respectively. If neither of the thresholds are exceeded, the center of the cube is marked as 
-a seed for region growing. 
+pre-determined size $\sigma_{seed}$. Within these cubes, the points are checked for depth discontinuities, as well as
+curvature discontinuities. They are evaluated against $\sigma_{seed}$ and a normal orientation difference
+threshold $\theta_{ang}$, respectively. If neither of the thresholds are exceeded, the center of the cube is marked as
+a seed for region growing.
 
-The region growing is performed on point-level. Starting from a given seed $s$, a region is expanded by checking 
-neighbors within a horizontal span. 
+The region growing is performed on point-level. Starting from a given seed $s$, a region is expanded by checking
+neighbors within a horizontal span.
 Given a horizontal span of length n, its middle pixel $p$, the minimum plane size $\sigma$ is calculated as follows:
 
 \begin{equation}
     \sigma = \rho(p) = \kappa_\rho \cdot \delta(p)^2 + \gamma_\rho,
 \end{equation}
 where $\delta(p)$ is the depth value of $p$, and $\kappa_\rho, \gamma_\rho$ are tuneable parameters.
-If the span is growing towards the right, the pixel $n$ that is $\sigma$ pixel away from the right border is checked 
+If the span is growing towards the right, the pixel $n$ that is $\sigma$ pixel away from the right border is checked
 for membership. Additionally, $n$'s upper and lower neighbors are also checked for membership. If $n$ and at least one
 of $n$'s vertical neighbors pass the following membership test, $n$ and all pixels in between are added to the span of $s$.
 
 \begin{enumerate}
-    \item The perpendicular distance of $n$ to the plane defined by $s$ and its normal is smaller than 
-    a threshold $\tau_{flood}$,
-    \item the euclidian distance between $p$ and a neighboring pixel is smaller than a threshold 
-    $\tau_{point}$, \textit{and}
-    \item $n$ is neither NaN, nor 0. 
+    \item The perpendicular distance of $n$ to the plane defined by $s$ and its normal is smaller than
+          a threshold $\tau_{flood}$,
+    \item the euclidian distance between $p$ and a neighboring pixel is smaller than a threshold
+          $\tau_{point}$, \textit{and}
+    \item $n$ is neither NaN, nor 0.
 \end{enumerate}
 
-This region growing process yields a set of oversegmented planes. In a refinement step, the set of planes is reduced 
+This region growing process yields a set of oversegmented planes. In a refinement step, the set of planes is reduced
 by performing merging of planes.
-First, a neighborhood graph of the rough segments is constructed. Any segments that share a border, i.e., the bordering 
+First, a neighborhood graph of the rough segments is constructed. Any segments that share a border, i.e., the bordering
 pixels have a small euclidian distance, are connected through a bidirectional edge.
 The graph is traversed in a breadth-first manner, merging two connected nodes, $a,b$, if they satisfy the following condition:
 
@@ -550,17 +544,17 @@ The graph is traversed in a breadth-first manner, merging two connected nodes, $
     \item the seed normals of a and b diverge less than a threshold $\tau_{angle}$, \textit{and}
     \item the perpendicular distance between the segments is less than threshold $\tau_{merge}$.
 \end{enumerate}
-If $a$ fails the membership test with its neighbor $b$, the membership test is repeated between $b$ and all planes $a$ 
+If $a$ fails the membership test with its neighbor $b$, the membership test is repeated between $b$ and all planes $a$
 has merged with. If this fails, the unidirectional edge $(ab)$ is removed from the graph. Note, that the edge $(ba)$ will
 be validated later, as b is subject to change through merges with other neighbors.
 
-After a successful merge, a new centroid and normal are obtained by adding both plane normals and centroids together, 
+After a successful merge, a new centroid and normal are obtained by adding both plane normals and centroids together,
 while the respective amount of inliers acts as a weight.
 
 The BFS iteration is repeated, until no merge occurs during an iteration. The authors state that, typically, no more than five
 iterations are needed~\cite[Section~III.E]{Roychoudhury_Missura_Bennewitz_2021_new}.
 
-The flooding under the constraint of minimum plane size leaves gaps. Therefore, as a refinement step, a two-pass 
+The flooding under the constraint of minimum plane size leaves gaps. Therefore, as a refinement step, a two-pass
 algorithm is used to fill these gaps. The first pass scans top-to-bottom, and the second bottom-to-top.
 In both passes, horizontal strips of non-assigned pixels are detected. If the vertical neighbors have the same plane label,
 we mark all unmarked pixels with the same label.
@@ -699,7 +693,7 @@ dataset. The individual datasets are outlined in the following subsections.
     \begin{tabular}{c|c|c|c|c}
         \textbf{Dataset}                                                                                                                                                                      & \textbf{Input Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
         \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      \\
-        \textbf{2D-3D-S}       \cite{armeni_cvpr16}                                                                                                                                           & UPC                   & Y             & Y               & objects     \\
+        \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                     & UPC                   & Y             & Y               & objects     \\
         \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     \\
         \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      \\
         \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  \\
