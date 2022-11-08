@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append('/home/pedda/Documents/coding/OBRG/')
 import obrg
+import matplotlib
+matplotlib.rcParams.update({'font.size': 26, 'figure.subplot.bottom': 0.06,'figure.subplot.top': 0.95})
 
 
 def dyn_eval(path_to_subclouds: str, binaries_path: str):
@@ -198,12 +200,14 @@ def results_over_time(path: str, algos=ALGOS):
 def whatevs(path: str, algos=ALGOS):
     sizes = []
     for cfile in os.listdir(path):
-        if not cfile.endswith('.pcd'):
+        if not cfile.endswith('.txt'):
             continue
         sizes.append([os.path.getsize(os.path.join(path,cfile))/1000000, int(cfile[6:10])])
     fig = plt.figure(figsize=[20, 15])
     sizes.sort(key= lambda x: x[1])
     sizes = np.array(sizes)
+    print(sizes[-1])
+    A = {algo: {} for algo in algos}
     for i, algo in enumerate(algos):
         times = []
         pres = []
@@ -219,25 +223,112 @@ def whatevs(path: str, algos=ALGOS):
                 data.append([time,pr,po, int(file[12:16])])
             else:
                 data.append([time,pr,po, int(file[6:10])])
-
-        ax = fig.add_subplot(len(ALGOS),1, i+1)
-        ax.set_title(algo)
+        ax = fig.add_subplot(len(algos),1, i+1)
+        ax.set_title(algo, loc='left',y=0.9, x=0.01, pad=-16)
         ax2 = ax.twinx()
         times = np.array(list(sorted(times)))
         data.sort(key = lambda x : x[3])
+        print(f'{algo}:{max(data, key=lambda x: x[0])[0]}')
         data = np.array(data)
         # frames = np.array(list(range(len(times))))
         frames = np.arange(len(data))
         frames2 = np.arange(len(sizes))
+        for j, tf in enumerate(frames):
+            A[algo][j] = data[j]
+        ax2.plot(frames2, sizes[:,0],'--',color='purple')
+        if i != 3:
+            ax.get_xaxis().set_visible(False)
+            ax2.get_xaxis().set_visible(False)
+        ax.set_yscale('log')
+        ax.plot(frames, data[:,1],marker='.', label = "$t_{pre}$")
+        ax.plot(frames, data[:,0],marker='.', label="$t_{calc}$")
+        ax.plot(frames, data[:,2],marker='.', label ="$t_{post}$")
+        if algo not in ['RSPD','3DKHT']:
+            ax.plot(frames, np.sum(data[:,:3], axis=1),
+                    marker='.',  label='$t_{tot}$')
+        else:
+            ax.plot(frames, np.sum(data[:,:2], axis=1),
+                    marker='.',  label='$t_{tot}$')
+        ax.plot(0,0,'--',label="$size$")
+        ax.set_yscale('log')
+        ax2.set_yscale('log')
+        ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
 
-        ax.plot(frames, data[:,0], label="calc")
-        ax.plot(frames, data[:,1], label = "pre")
-        ax.plot(frames, data[:,2], label ="post")
-        ax.set_ylim(0,np.nanmax(data[:,:3]))
+        # ax2.legend()
+    fig.text(0.06, 0.5, '$t_{pre}(s), t_{calc}(s), t_{post}(s), t_{tot}(s)$',
+         ha='center', va='center', rotation='vertical')
+    fig.text(0.96, 0.5, '$size(mb)$', ha='center', va='center', rotation='vertical')
+    fig.text(0.5,0, 'Individual Time Frames', ha='center', va='bottom', rotation='horizontal')
+    box = fig.axes[0].get_position()
+    # fig.axes[0].set_position([box.x0, box.y0 + box.height * 0.1,
+    #                 box.width, box.height * 0.9])
+
+    # Put a legend below current axis
+    # fig.axes[0].legend(loc='center right', fancybox=True, shadow=True, ncol=5)
+    lines_labels = [fig.axes[0].get_legend_handles_labels()]
+    lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
+    fig.legend(lines, labels, loc='upper center', fancybox=True, shadow=True, ncol=5)
+    maxlim = max([ax.get_ylim() for ax in fig.axes[::2]], key=lambda x: x[1])
+    minlim = min([ax.get_ylim() for ax in fig.axes[::2] if ax.get_ylim()[0] > 0],key=lambda x: x[0])
+    print(minlim, maxlim)    
+    for i, ax in enumerate(fig.axes):
+        if i %2 == 0:
+            ax.set_yscale('log')
+            ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+            ax.set_yticks([0.1,1,10,round(maxlim[1])])
+            ax.set_yticklabels([r'$\leq$0.1', "1","10",f'{round(maxlim[1])}'])
+            ax.grid(axis='y')
+            ax.set_ylim(0.1,round(maxlim[1]))    
+        else:
+            ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+
+
+    plt.show()
+    # plt.close()
+    # return A
+
+def avg(root, algos=ALGOS):
+    data = {}
+    max_time = float('inf')
+    for scene in os.listdir(root):
+        if scene == 'TEST':
+            continue
+        data[scene] = whatevs(os.path.join(root,scene)) # dataset -> algo -> time -> [calc, pre, post]
+        if len(data[scene]['RSPD']) < max_time:
+            max_time = len(data[scene]['RSPD'])
+    avg_per_time = {algo:{} for algo in algos} # algo -> timeframe -> [calc, pre,post]
+    for scene, algodata in data.items():
+        for algo, timedata in algodata.items():
+            for time, d in timedata.items():
+                if time > max_time:
+                    break
+                if time not in avg_per_time[algo].keys(): 
+                    avg_per_time[algo][time] = [0.0,0.0,0.0]  # calc = pre = post = 0.0
+                for i in range(3):
+                    avg_per_time[algo][time][i] += d[i]
+    # avg values
+    for algo, algodata in avg_per_time.items():
+        for time, values in algodata.items():
+            for val in values:
+                val /=4
+    fig = plt.figure(figsize=[20, 15])
+    for i, a in enumerate(avg_per_time.items()):
+        algo, algodata = a
+        t = np.array(list(algodata.keys()))
+        d = np.array(list(algodata.values()))
+        ax = fig.add_subplot(len(ALGOS),1, i+1)
+        ax.set_title(algo)
+        ax2 = ax.twinx()
+        ax.plot(t, d[:,0], label='calc')
+        ax2.plot(t, d[:,1], label='pre', color='red')
+        ax.plot(t, d[:,2], label='post')
+        ax.set_ylim(0)
         if i == 0:
             ax.legend()
-        ax2.plot(frames2, sizes[:,0],color='red' )
+            ax2.legend(loc='lower right')
     plt.show()
+
+
 def get_dyn_df(results_folder: str, algos=ALGOS):
     # load results
     results = [Result.from_file(os.path.join(results_folder, file))
@@ -311,28 +402,29 @@ if __name__ == '__main__':
     last_cloud = args.last_cloud
     gt_path = f"{dataset}/GT"
     
-    dynamic_detection(dataset, binaries, ['RSPD'])
-    # # os.rename(os.path.join(dataset,'Application'), os.path.join(dataset, '3DKHT'))
-    for algo in ['RSPD']:
-        algo_path = os.path.join(dataset, algo)
+    # dynamic_detection(dataset, binaries, ['RSPD'])
+    # # # os.rename(os.path.join(dataset,'Application'), os.path.join(dataset, '3DKHT'))
+    # for algo in ['RSPD']:
+    #     algo_path = os.path.join(dataset, algo)
 
-        iohelper = IOHelper(last_cloud, gt_path, algo_path)
-        complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(last_cloud)
-        ground_truth = iohelper.read_gt()
-        voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
-            complete_cloud, voxel_size=0.3)
+    #     iohelper = IOHelper(last_cloud, gt_path, algo_path)
+    #     complete_cloud: o3d.geometry.PointCloud = iohelper.read_pcd(last_cloud)
+    #     ground_truth = iohelper.read_gt()
+    #     voxel_grid = o3d.geometry.VoxelGrid.create_from_point_cloud(
+    #         complete_cloud, voxel_size=0.3)
 
-        timeframes = iohelper.get_frames(dataset)
-        for timeframe in tqdm(timeframes):
+    #     timeframes = iohelper.get_frames(dataset)
+    #     for timeframe in tqdm(timeframes):
             
-            sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(
-                timeframe, voxel_grid, complete_cloud)
-    #         # if len(sub_gt) < 5:
-    #         #     draw_bb_planes(sub_gt, sub_cloud, sub_algo)
-    #         # draw_voxel_correspondence(sub_gt, sub_algo, sub_cloud)
-            evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
-            # evaluate_without_acc(timeframe, 'OPS', dataset)
-    dynamic_collection(dataset, ['RSPD'])
+    #         sub_cloud, sub_gt, sub_algo = iohelper.get_frame_data(
+    #             timeframe, voxel_grid, complete_cloud)
+    # #         # if len(sub_gt) < 5:
+    # #         #     draw_bb_planes(sub_gt, sub_cloud, sub_algo)
+    # #         # draw_voxel_correspondence(sub_gt, sub_algo, sub_cloud)
+    #         evaluate_timeframe(sub_cloud, sub_gt, sub_algo, timeframe)
+    #         # evaluate_without_acc(timeframe, 'OPS', dataset)
+    # dynamic_collection(dataset, ['RSPD'])
     # get_dyn_df(os.path.join(dataset, 'results'))
     # results_over_time(os.path.join(dataset,'results'), ['RSPD'])
-    # whatevs(dataset)
+    whatevs(dataset)
+    # avg("FIN-Dataset")

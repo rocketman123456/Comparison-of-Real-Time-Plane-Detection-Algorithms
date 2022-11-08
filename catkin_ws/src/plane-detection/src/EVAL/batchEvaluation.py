@@ -449,11 +449,11 @@ if __name__ == '__main__':
 
     rootFolder = args.root_folder
     algorithm_binaries = args.algo_binaries
-    # run_specific("/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/hallway_11",algorithm_binaries, ['RSPD'])
-    for i in range(1,4):
-        batch_detect(os.path.join(rootFolder, f'Area_{i}'), algorithm_binaries, ['OPS'])
-        batch_evaluate(os.path.join(rootFolder, f'Area_{i}'), ['OPS'])
-        collect_results(os.path.join(rootFolder, f'Area_{i}'))
+    # run_specific("/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_5/office_3",algorithm_binaries, ['OPS'])
+    # for i in range(2,3):
+        # batch_detect(os.path.join(rootFolder, f'Area_{i}'), algorithm_binaries, ['OPS'])
+        # batch_evaluate(os.path.join(rootFolder, f'Area_{i}'), ['OPS'])
+    collect_results(os.path.join(rootFolder, f'Area_{5}'), ['OPS'])
     combine_area_results('Stanford3dDataset_v1.2_Aligned_Version')
     # get_df(os.path.join(rootFolder,"results"))
     # get_df2(os.path.join(rootFolder,"results"))

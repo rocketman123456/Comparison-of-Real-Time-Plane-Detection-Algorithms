@@ -123,11 +123,11 @@ if __name__ == '__main__':
     # cloud_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/pointclouds/boiler_room.pcl"
     # gt_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ground_truth.geo"
     # algo_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ransac_schnabel.geo"
-    # cloud_path = "FIN-Dataset/hallway/1664012989.030196428.txt"
-    # gt_path = "FIN-Dataset/hallway/GT"
-    # algo_path = "FIN-Dataset/hallway/RSPD/1664012989.030196428.geo"
-    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/FIN-Dataset/auditorium/1664003770.004746437.txt"
-    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/FIN-Dataset/auditorium/GT"
-    algo_path = "/home/pedda/Documents/uni/BA/clones/PlaneDetection/CommandLineOption/test/"
+    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/auditorium_2.txt"
+    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/GT"
+    algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/RSPD/auditorium_2.geo"
+    # cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/FIN-Dataset/auditorium/1664003770.004746437.txt"
+    # gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/FIN-Dataset/auditorium/GT"
+    # algo_path = "/home/pedda/Documents/uni/BA/clones/PlaneDetection/CommandLineOption/test/"
     # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_1//RSPD"
-    evaluate(cloud_path, gt_path, algo_path, False,0.4)
+    evaluate(cloud_path, gt_path, algo_path)
