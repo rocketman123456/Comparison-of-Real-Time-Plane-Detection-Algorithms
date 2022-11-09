@@ -22,7 +22,7 @@ metrics: Precision, \textit{Recall}, and the F1-Score.
 The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed in Section~\ref{sec:metrics}.
 Note that we use the detected planes for the calculation, however, we are not using them directly as a measure of performance due to the subjective
 nature of manual ground truth segmentation.
-\textbf{\textcolor{red}{we calculate the precision..}}
+\textbf{\textcolor{red}{todo:we calculate the precision..}}
 \textbf{\textcolor{red}{we calculate the recall..}}
 
 We calculate the \textit{F1-Score}, as it is the harmonic mean of the \textit{Precision} and the \textit{Recall}. In practice, this means that an algorithm
@@ -144,9 +144,9 @@ Both modifications are highlighted in bold in the second row of Table~\ref{tab:o
 \paragraph{2D-3D-S}
 The parameter configuration is shown in Table~\ref{tab:3dkht-param}. We use an accumulator discretization of 30 and 200 for $\phi$ and $\rho$, respectively.
 Starting to check for planarity at an octree level $s_{level}$ of 2 seems to yield the best results.
-\citeauthor{\cite{LimbergerOliveira2015HT3D}}~\cite{LimbergerOliveira2015HT3D} propose
+\citeauthor{LimbergerOliveira2015HT3D}\cite{LimbergerOliveira2015HT3D} propose
 a minimum of 30 samples per cluster $s_{ps}$, however, we use $0.2\%$ of the total point cloud due to the wide ranges of point cloud sizes in the dataset (see Subsection~\ref{subsec:bg-stanford}).
-Lastly, we set the plane isotropy tolerance $s_\beta$ to 6, as proposed in~\cite[Section~3.1]{\cite{LimbergerOliveira2015HT3D}}.
+Lastly, we set the plane isotropy tolerance $s_\beta$ to 6, as proposed in~\cite[Section~3.1]{LimbergerOliveira2015HT3D}.
 In contrast, using a plane thickness tolerance $s_\alpha$ value of 18 seemed to yield better results than the proposed 25.
 This was determined by a small set of experiments with $s_\alpha$ values ranging between 15 and 33.
 
@@ -161,8 +161,8 @@ The modification of parameters is highlighted in bold in Table~\ref{tab:3dkht-pa
 
 
 \subsubsection{OBRG}
-\textbf{\textcolor{red}{die fucking parameter sind in tabelle 1+4 des papers}}
-\textbf{\textcolor{red}{+3.1 rot markiert}}
+% \textbf{\textcolor{red}{die fucking parameter sind in tabelle 1+4 des papers}}
+% \textbf{\textcolor{red}{+3.1 rot markiert}}
 \begin{table}[H]
     \centering
     \begin{tabular}{c|cccccc}

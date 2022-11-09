@@ -118,7 +118,7 @@ interchangeably.
 \section{Plane Detection}
 \paragraph*{introduction}
 The field of plane detection has been around for decades.
-Most methods of detecting planar regions in unorganized point clouds are based on one of three main categories \cite*{\cite{LimbergerOliveira2015HT3D},Araújo_Oliveira_2020}:
+Most methods of detecting planar regions in unorganized point clouds are based on one of three main categories \cite{LimbergerOliveira2015HT3D, Araújo_Oliveira_2020}:
 \begin{itemize}
     \item Hough Transform (HT)
     \item RANSAC (RC)
@@ -154,9 +154,11 @@ The quality of the resulting regions depends on the choice of seed points, e.g.,
 In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
 
 \section{Plane Detection Algorithms}
+\textbf{\textcolor{red}{Disclaimer: bin grade noch dabei die algorithmen anzupassen. ich schreibe zuerst 
+die erklärungen zuende und gleiche das level of detail dann an (+ andere todos, siehe todoist)}}
+
 The following subsections detail the necessary background knowledge of all the plane detection algorithms mentioned in this paper.
-Aside from the functionality of a method, we give relevant higher-level information. \textbf{\textcolor{red}{This includes the separation of an algorithms
-        process in pre-processing, plane detection, and post-processing, as well as the expected input format and the proposed output format.}}
+Aside from the functionality of a method, we give relevant higher-level information, e.g., the expected input format and the proposed output format.
 
 
 \subsection{Robust Statistics approach for Plane Detection}
@@ -219,8 +221,7 @@ An inverse distance weight function is employed to prioritize neighboring points
 After normal estimation, one-point-RANSAC is used to find the largest plane. Usual RANSAC implementations sample three points to fit a plane. However, OPS fits a plane with only one sample point and its normal vector.
 Once a plane with the most inliers is obtained, its normal vector is re-estimated using SVD on all inliers, and all inliers are removed from the point cloud.
 This process is repeated until the number of remaining points falls below a predefined threshold $\theta_N$.
-% FIXME
-\textbf{\textcolor{red}{post-processing}}
+
 \begin{itemize}
     \item merge smaller planes if they pass a coplanarity test
     \item re-estimate normals after merge
@@ -264,7 +265,7 @@ contain fewer normal vectors) in three-dimensional accumulator arrays, as portra
     \end{subfigure}
     \hspace{\fill}
     \caption[Hough Transform Accumulators]{Accumulator array (a), taken from \cite*[Figure~3]{Borrmann_Elseberg_Lingemann_Nüchter_2011}. Accumulator
-        ball(b) used in 3D-KHT, taken from \cite*[Figure~5]{\cite{LimbergerOliveira2015HT3D}}.}
+        ball(b) used in 3D-KHT, taken from \cite*[Figure~5]{LimbergerOliveira2015HT3D}.}
 \end{figure}
 
 During the voting procedure, votes are not cast for each data point but rather on previously calculated approximately coplanar clusters.
@@ -272,7 +273,7 @@ When casting a vote on a given cluster $c_i$ with its plane (represented by $(\r
 With this update, its neighboring clusters also receive a vote determined by the uncertainty value of $c_i$. Due to the non-discrete
 values of uncertainty, the votes are floating-point values as well.
 
-All Peaks within the accumulator ball are detected in the last step. Because the votes tend to be sparsely distributed \cite[Section~3.4]{\cite{LimbergerOliveira2015HT3D}},
+All Peaks within the accumulator ball are detected in the last step. Because the votes tend to be sparsely distributed \cite[Section~3.4]{LimbergerOliveira2015HT3D},
 an auxiliary array $A$ is used to memorize the entries inside the accumulator that are set. When an accumulator index is assigned a value for the first time, it is also added to $A$.
 Therefore, it is only necessary to iterate the auxiliary array to find peaks inside the accumulator.
 Furthermore, an intermediary smoothing step is performed by merging adjacent peaks inside the accumulator and storing them in $A$.
@@ -450,6 +451,7 @@ Lastly, dilation is performed to eliminate holes in planes. This is not further 
 
 
 \subsection{Depth Kernel-based Hough Transform}
+\textbf{\textcolor{red}{todo: ausformulieren }}
 Depth Kernel-based Hough Transform (D-KHT) \cite{Vera_Lucio_Fernandes_Velho_2018} is a Hough transform-based plane detection
 algorithm that accepts depth images as input.
 
@@ -594,6 +596,7 @@ PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} ist a deep learning-based ap
 \end{itemize}
 
 \subsection{PlaneRecNet}
+\label{subsec:planerecnet}
 PlaneRecNet~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images
 as input.
 \begin{figure}[H]
@@ -723,10 +726,12 @@ An individual scene has a complete unstructured point cloud and a list of annota
 The dataset includes a wide range of point cloud sizes, with a minimum of $8\cdot 10^4$ and a maximum of $7\cdot 10^6$
 Furthermore, the average amount of points per scene is ${\sim}10^6$ with an average file size of ${\sim}34mb$.
 
-\textcolor{red}{diese 2 sätze sind dann jetzt wahrscheinlich misplaced}
+\textbf{\textcolor{red}{diese sätze eignen sich eher im concept. aber: ich sehe auch keinen vorteil 
+sie drin zu lassen }}
 Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the dataset nevertheless reflects a realistic distribution of scene types since
 it is not realistic if a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
 
+\textbf{\textcolor{red}{TODO datensätze umreissen, was , wie, wo, wieviel etc}}
 \subsection{NYU V2}
 \subsection{Kinect}
 \subsection{ICL-NUIM}

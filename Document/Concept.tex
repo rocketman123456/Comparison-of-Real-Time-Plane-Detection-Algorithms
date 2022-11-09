@@ -92,12 +92,12 @@ Finally, some methods use plane detection as a means to an end, e.g., for recons
 \label{subsec:pdaselect}
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
 The table shows the input type and the output format of all algorithms.
-Note, that the final output of PlaneRecNet is a piecewise-planar reconstruction of a scene.
-However, modifying the architecture to return the segmentation masks requires minimal
+Note, that the final output of PlaneRecNet is a piecewise-planar reconstruction of a scene (see Subsection~\ref{subsec:planerecnet}).
+However, modifying the architecture to return the segmentation masks would require minimal
 effort (see Figure~\ref{fig:planerecnet}).
 \textbf{\textcolor{red}{explain table further?}}
-Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit sinnvollsten werte(?\textcolor{red}{"ich nehme UPC aus {UPC, OPC, DI}... idk wie ich das nennen soll}) ausgewählt und anhand dessen unpassende algorithmen von der evaluierung ausgeschlossen.
-\textbf{\textcolor{red}{output types mit BG abgleichen}}
+% Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit sinnvollsten werte(?\textcolor{red}{"ich nehme UPC aus {UPC, OPC, DI}... idk wie ich das nennen soll}) ausgewählt und anhand dessen unpassende algorithmen von der evaluierung ausgeschlossen.
+% \textbf{\textcolor{red}{output types mit BG abgleichen}}
 \begin{table}[H]
     \centering
     \begin{tabular}{c|c|c}
@@ -138,7 +138,6 @@ Applying these restrictions, we end up with, and thus include, the following pla
     \item \textbf{OPS}
     \item \textbf{3D-KHT}
     \item \textbf{OBRG}
-          with an "L"-shaped desk because the algorithm can only detect rectangular planes
 \end{itemize}
 
 \paragraph{Temporal Subdivision in Phases}
@@ -276,7 +275,7 @@ we give two definitions of \textit{real-time}.
 In general, and without taking the algorithms internal structure into consideration, we have to consider possible
 hardware limitations, data flow, and how often it is needed to perform calculations, e.g., how quickly the SLAM algorithm
 updates the map (Figure~\ref{fig:concept}, [2]) or how frequent new planes are needed (Figure~\ref{fig:concept}, [4]). 
-\textbf{\textcolor{red}{Since the movement of a user is highly contextual, we instead focus on the software and hardware restrictions.}}
+\textbf{\textcolor{red}{Since the movement of a user is highly contextual, we instead focus on the software and hardware restrictions. (useful?)}}
 
 The recorded raw data is not directly sent to the plane detection algorithm but instead given to RTAB-MAP, which then performs
 calculations to update and publish the map.
