@@ -21,62 +21,43 @@ In general, the environment is continuously recorded by a specialized sensor whi
 is subsequently passed to a plane detection algorithm([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application([4]).
 The application would then further process those planes, e.g., by creating a live visualization of them or by assisting the movement of visually impaired people~\cite{Carranza_Estrella_Zaidi_Carranza_2021}.
 
-To remove any noticeable lag in the application, the plane detection step has to run under a temporal restriction, henceforth referred to as \textit{real-time}.
-We state a more precise definition in Section~\ref{sec:realtime}.
+To remove any noticeable delay in the application, the plane detection step has to run under a temporal restriction, henceforth referred to as \textit{real-time}.
+We introduce a thorough definition of \textit{real-time} in Section~\ref{sec:realtime}.
 
-When creating such a AR/VR system, the choice of plane detection algorithm is naturally of great importance. The problem is that most published algorithms are not inherently comparable.
-Often different datasets or metrics are used, which precludes comparison by quantification. Alternatively, algorithms are not comparable by internal functionality
-because many methods require different inputs, and the format of the planes differs accordingly. All in all, selecting a single 'best' algorithm is impossible solely based on the metrics presented in their
-respective work.
+When creating such an AR/VR system, the choice of plane detection algorithm is naturally of great importance. The problem is that most published algorithms are inherently incomparable.
+Often different datasets or metrics are used, which precludes comparison by quantification.
+Alternatively, algorithms are not comparable by internal functionality because many methods require other inputs, and the format of the planes differs accordingly.
+All in all, selecting a single 'best' algorithm, solely based on the results presented in their respective work, is impossible.
 
 To answer the question of which algorithm is best and whether it is real-time capable, we make a unified comparison of plane detection algorithms.
 To perform this evaluation, we need the following:
 
 \begin{enumerate}
     \item \label{enum:pda}Appropriate plane detection algorithms,
-    \item \label{enum:ds} a useful dataset \textit{and}
+    \item \label{enum:ds} a useful dataset, \textit{and}
     \item \label{enum:rt} a definition of \textit{real-time}.
 \end{enumerate}
-The following sections are dedicated to them.
-
-
-% Roter Faden:
-% \begin{itemize}
-%     \item generic view on AR + VR system
-%     \item Describe the building blocks in there
-%     \item Point out that the decision on the "best" PDA is not clear
-%     \item Tell me why that is not clear!
-%     \item Get me going on those PDA
-%           \begin{itemize}
-%               \item describe my view on the world
-%               \item show marco that table
-%               \item describe what these values mean and why they are important
-%           \end{itemize}
-% \end{itemize}
+The following sections are dedicated to these requirements.
 
 \section{Selection of Plane Detection Algorithms}\label{sec:pdaselection}
-% SECTION get me going on those PDA 
-% FIXME describe my view on the world
-% FIXME show marco that table
-% FIXME describe what these values mean and why they are important
-%!SECTION - 
 
-Since most algorithms differ in certain aspects, it is not possible to compare them all uniformly. Furthermore, not all algorithms have the same motivation and therefore focus on different things.
-For example, evaluating an algorithm in a scenario it has not been designed for would not yield meaningful results.
-It is, therefore, necessary to first define objective criteria to superficially determine which algorithm seems to be relevant for the context of this work.
+Since most algorithms differ in certain aspects, it is not possible to compare them all uniformly.
+Furthermore, not all algorithms are created out of the same motivation and, therefore, focus on different things.
+Evaluating an algorithm in a scenario it has not been designed for would not yield meaningful results.
+It is, therefore, necessary to first define objective criteria to superficially determine which algorithm seems to be relevant
+for the context of this work.
 
 
 \subsection{Criteria}
-In the following paragraphs, we define and outline appropriate criteria for the objective assessment of plane detection algorithms.
+In the following paragraphs, we outline appropriate criteria for the objective assessment of plane detection algorithms.
 
 \paragraph{Type of Input}\label{par:input}
 The first criterion is the type of input expected by a plane detection algorithm.
 Allowing vastly different input types is likely to render the evaluation more complicated, if not impossible because an equivalent transformation
 between two input types is not always possible.
 
-We detail the different types of input in Section~\ref{sec:dataformats}.
-
-To reiterate, the data representation of the recorded environment falls into one of three categories:
+We detail the different types of input in Section~\ref{sec:dataformats}. To reiterate, the data representation of the recorded
+environment falls into one of three categories:
 \begin{itemize}
     \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
     \item \textit{organized} or \textit{structured point cloud} (OPC)
@@ -88,7 +69,7 @@ To reiterate, the data representation of the recorded environment falls into one
 \end{itemize}
 
 OPC and UPC both describe point clouds in the cartesian coordinate system. The primary difference is that the 3D coordinates inside
-an organized point cloud are saved in a 2D grid, while the unorganized cloud resembles an unsorted 1D array.
+an organized point cloud are saved in a 2D grid, while the unorganized cloud resembles an unsorted 1D array.\\
 Like OPC, depth images are a 2D grid of values. However, in contrast to the 3D coordinates of an OPC, the data points of depth images
 are the distances to the sensor.
 
@@ -100,9 +81,9 @@ If no uniform output type can be determined, consequently, no uniform metric for
 
 
 Often the found planes are saved as a list of 3D points, henceforth referred to as inliers, which were assigned to a plane.
-Another often-plane output format is the cartesian equation of a plane described by a normal vector $n$ and a vector $d$.
+Another often used plane output format is the cartesian equation of a plane described by a normal vector $n$ and a vector $d$.
 
-In methods that work on image data, found planes are often described by an image mask or pixels that belong together.
+In methods that work on image data, found planes are often described by a segmentation mask (SM) or regions of pixels that belong together.
 
 Finally, some methods use plane detection as a means to an end, e.g., for reconstructing a scene.
 % FIXME FIX table sodass maske oder da steht
@@ -110,61 +91,66 @@ Finally, some methods use plane detection as a means to an end, e.g., for recons
 \subsection{Plane Detection Algorithms}
 \label{subsec:pdaselect}
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
-\textcolor{red}{explanation of table}
-
+The table shows the input type and the output format of all algorithms.
+Note, that the final output of PlaneRecNet is a piecewise-planar reconstruction of a scene.
+However, modifying the architecture to return the segmentation masks requires minimal
+effort (see Figure~\ref{fig:planerecnet}).
+\textbf{\textcolor{red}{explain table further?}}
 Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit sinnvollsten werte(?\textcolor{red}{"ich nehme UPC aus {UPC, OPC, DI}... idk wie ich das nennen soll}) ausgewählt und anhand dessen unpassende algorithmen von der evaluierung ausgeschlossen.
-
+\textbf{\textcolor{red}{output types mit BG abgleichen}}
 \begin{table}[H]
     \centering
     \begin{tabular}{c|c|c}
         \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format} \\ \hline %& \textbf{Learning-Based} \\ \hline%& \textbf{Availability} \\ \hline
         \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
         \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{3DKHT} \cite{Limberger_Oliveira_2015}                    & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{3DKHT} \cite{LimbergerOliveira2015HT3D}                    & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
         \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               \\  %& N                       \\ %& Y                   \\ \hline
         \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & n, d                  \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & $n, d$                \\  %& N                       \\ %& Y                     \\ \hline
         \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers               \\  %& N                       \\ %& N                     \\ \hline
         \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               \\  %& N                       \\ %& Y                     \\ \hline
         \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & n, d                  \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & reconstructed scene   \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & n, d                  \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & $n, d$                \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & SM                    \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & $n, d$                \\  %& Y                       \\ %& Y                     \\ \hline
     \end{tabular}
-    \caption{Plane Detection Algorithms}
+    \caption{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of input.}
     \label{tab:algos}
 \end{table}
 
 Addressing the criterion of input type, we are only interested in performing plane detection in complete environments.
-Because unorganized point clouds are not limited in their dimension, they are more suitable for capturing entire environments.
-We hereby consider organized point clouds or images inappropriate because they do not offer a complete view
-on a scene.
+Because unorganized point clouds are not limited to a snapshot of a scene, they are more suitable for capturing entire environments.
+For that reason, we consider organized point clouds or images inappropriate for this work because they do not offer a complete view on a scene.
 We, therefore, exclude  \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
 
 Secondly, the detected planes need to be in the same format because, even for the same plane, different representations could very well lead to different results.
 Assume a plane in cartesian form and a plane represented by its inliers. The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
-In contrast, the plane described by its inliers allows for holes and non-rectangular shapes, e.g., doorways or a round table.
+Conversely, the plane described by its inliers allows for holes and non-rectangular shapes, e.g., doorways or a round table, respectively.
+Being able to represent planes of any shape is important for many applications.
 We thereby determine \textit{inliers} as the preferred plane format and exclude all methods which do not comply, namely \textit{CAPE, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
 
 
-Finally, we end up with, and thus include, the following plane detection algorithms in our evaluation:
+Applying these restrictions, we end up with, and thus include, the following plane detection algorithms in our evaluation:
 
 \begin{itemize}
     \item \textbf{RSPD}
     \item \textbf{OPS}
     \item \textbf{3D-KHT}
     \item \textbf{OBRG}
+          with an "L"-shaped desk because the algorithm can only detect rectangular planes
 \end{itemize}
 
 \paragraph{Temporal Subdivision in Phases}
 \label{par:prepostalgos}
-To enable a precise evaluation, we subdivide the plane detection algorithms into three phases:
+To enable a precise evaluation, we subdivide these plane detection algorithms into three phases:
 The pre-processing phase, the plane detection phase, and the post-processing phase. Note, that
 we use the terms "phase" and "step" interchangeably in this work. In the following, we outline
 the pre-processing and post-processing steps taken by the selected algorithms. To avoid redundancy,
-we refer the reader to the Subsections~\ref{subsec:bg-rspd}-\ref{subsec:bg-obrg} for information on the plane detection
-step.
+we refer the reader to the Subsections~\ref{subsec:bg-rspd}-\ref{subsec:bg-obrg} for a detailed explanation of each
+algorithm.
 
+The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
 RSPD, 3D-KHT, and OBRG construct an octree (OC) during their pre-processing phase.
 Additionally, RSPD and OBRG perform an initial estimation of normals (NE).
 OPS estimates the normal vectors for a randomly chosen sample set of points of pre-determined size.
@@ -172,7 +158,6 @@ OPS estimates the normal vectors for a randomly chosen sample set of points of p
 During post-processing, OPS merges smaller planes if they pass a coplanarity test and then re-estimates the normals of the
 resulting plane. In the post-processing step, OBRG refines the borders of detected planes by inserting
 previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
-The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
 
 
 \begin{table}[H]
@@ -182,8 +167,8 @@ The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
         Pre  & NE   & NE    & OC     & OC + NE    \\
         Post & /    & Merge & /      & Refinement
     \end{tabular}
-    \caption{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of 
-    a pre-/post-processing step.}
+    \caption{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of
+        a pre-/post-processing step.}
     \label{tab:pre-post}
 \end{table}
 
@@ -195,21 +180,46 @@ The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
 As mentioned at the beginning of this chapter, we also need an appropriate dataset for the evaluation.
 Through extensive research of current literature, we compiled a list of popular datasets (see Table~\ref{tab:datasets}).
 
-In Subsection~\ref{subsec:pdaselect}, we determined unorganized point clouds as the type of input. Furthermore, we focus on plane detection in real environments in this work.
-Because most datasets do not conform to these two requirements, only \textit{2D-3D-S} and \textit{Leica} remain. 
-Since we focus on the detection of planes in indoor environments, \textit{Leica} also ceases to be an option. 
-Thus, we choose 2D-3D-S as the dataset for the evaluation.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c|c|c|c}
+        \textbf{Dataset}                                                                                                                                                                      & \textbf{Scene Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
+        \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                      & UPC                   & Y             & Y               & objects     \\
+        \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      \\
+        \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      \\
+        \textbf{SYNBEP}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      \\
+        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           \\
+        \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      \\
+        \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     \\
+        \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  \\
+        \textbf{SUN}         \cite{7298655}                                                                                                                                                   & DI                    & Y             & Y               & objects     \\
+        \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory
+    \end{tabular}
+    \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
+        Note, that the synthetic datasets (e.g., SegComp and SYNBEP) represent neither indoor nor outdoor scenes, hence the "/" in
+        the respective table entries. The datasets are clustered by their type of format. Moreover, the remaining order is arbitrary.
+    }
+    \label{tab:datasets}
+\end{table}
+
+In Subsection~\ref{subsec:pdaselect}, we determine unorganized point clouds as the type of input. Furthermore, we focus on plane detection in real environments in this work.
+Because most datasets do not conform to these two requirements, only \textit{2D-3D-S} and \textit{Leica} remain.
+Since we focus on plane detection in indoor environments, \textit{Leica} also ceases to be an option.
+Thus, we choose \textit{2D-3D-S} as the dataset for the evaluation.
 % \textcolor{red}{\\beispiel bilder von 2d3ds ?}\newline
-Nonetheless, we cannot use the provided ground truth of 2D-3D-S because it represents the segmented scene on the level of objects, rather than planes in the scene.
-Consequently, we create a ground truth that aligns with the aim of this work, i.e., planes. We outline the details thereof in Section~\ref{sec:gtseg}.
 
-Lastly, 2D-3D-S does not inherit any temporal component, i.e., the unorganized point clouds do not grow incrementally over time.
+Nonetheless, we cannot use the provided ground truth of \textit{2D-3D-S} because it represents the segmented scene on the level of objects, rather than planes in the scene.
+Consequently, we create an appropriate ground truth by manual segmentation of all planes in a given scene. 
+We outline the details thereof in Section~\ref{sec:gtseg}.
+
+Lastly, \textit{2D-3D-S} does not inherit any temporal component, i.e., the unorganized point clouds do not grow incrementally over time.
 To the best of our knowledge, there exists no dataset that meets the above criteria and, additionally, provides a plane-focused ground truth.
-Thus, we record an incrementally growing dataset in the Faculty of Computer Science (FIN) at Otto-von-Guericke University Magdeburg.
+Therefore, we record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg, 
+henceforth referred to as the \textit{FIN} dataset.
+ 
 
-% \subsection{FIN Experiment}
-% We record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg.
-To perform a thorough comparison between the FIN and 2D-3D-S, and, subsequently, between the static and the dynamic dataset, we record a scene for each of the following scene types:
+
+To perform a thorough comparison between the \textit{FIN} and \textit{2D-3D-S}, and, subsequently, between the static and the dynamic dataset, we record a scene for each of the following scene types:
 \begin{itemize}
     \item office
     \item conference room
@@ -254,18 +264,19 @@ Lastly, since this is a novel dataset and thus has no ground truth, we create a 
 
 
 \section{Definition Real-Time}\label{sec:realtime}
-Finally, to determine whether or not an algorithm runs in real-time, we must first define the meaning of real-time.
+Finally, as mentioned in Section~\ref{chap:Concept}, to determine whether or not an algorithm runs in real-time, we must first define the meaning of real-time.
 
 
 In Subsection~\ref{subsec:pdaselect}, we introduce the differentiation between pre-processing and post-processing steps.
 It is possible that one phase of an algorithm accounts for the majority of the total calculation time and that the algorithm
 would be considered \textit{real-time} applicable, if that phase were to be excluded.
-Because some steps can be covered by previous steps in the AR/VR system, i.e., by the sensor or the SLAM algorithm, 
-we give two definitions of \textit{real-time}. 
+Because some steps can be covered by previous steps in the AR/VR system (see Figure~\ref{fig:concept}), i.e., by the sensor or the SLAM algorithm,
+we give two definitions of \textit{real-time}.
 
-In general, and without taking the algorithms internal structure into consideration, we have to consider possible 
+In general, and without taking the algorithms internal structure into consideration, we have to consider possible
 hardware limitations, data flow, and how often it is needed to perform calculations, e.g., how quickly the SLAM algorithm
-updates the map (Figure~\ref{fig:concept}, [2]) or how frequent new planes are needed (Figure~\ref{fig:concept}, [4]).
+updates the map (Figure~\ref{fig:concept}, [2]) or how frequent new planes are needed (Figure~\ref{fig:concept}, [4]). 
+\textbf{\textcolor{red}{Since the movement of a user is highly contextual, we instead focus on the software and hardware restrictions.}}
 
 The recorded raw data is not directly sent to the plane detection algorithm but instead given to RTAB-MAP, which then performs
 calculations to update and publish the map.
@@ -273,13 +284,13 @@ Therefore, the upper limit is the frequency of how often RTAB-MAP publishes thos
 
 \paragraph{Total Real-Time}
 According to this upper limit of RTAB-MAP, we consider an algorithm \textit{totally Real-Time} applicable, if it achieves an average frame
-rate of minimum 1, e.g., the total processing time of an algorithm lies under one second. In the rest of this work, we will
-refer to \textit{total Real-Time} as $RT_{tot}$.
+rate of minimum 1, e.g., the total processing time of an algorithm lies under one second. In the remainder of this work, we
+use \textit{total Real-Time} and $RT_{tot}$ interchangeably. 
 
 \paragraph{Real-Time Plane Calculation}
 Being a subset of \textit{totally Real-Time applicability, Real-Time Plane Calculation} determines the real-time applicability if the processing time of an algorithm
-\textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. We will henceforth refer to
-\textit{Real-Time Plane Calculation} as $RT_{calc}$
+\textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. Like $RT_{tot}$, we use 
+\textit{Real-Time Plane Calculation} and $RT_{calc}$ interchangeably.
 
 %TODO  Eig nur needed wenn die algos langsamer sind als 1s ODER sollte die cloud extrem wachsen kann man sich auf die 6 meter beschränken, erstmal aber nicht}\\
 % \subsection*{reduktion (opt)}
@@ -292,9 +303,11 @@ Being a subset of \textit{totally Real-Time applicability, Real-Time Plane Calcu
 \section{Summary}
 Many applications have constraints in the form of a temporal component. Augmented or Virtual Reality applications that include plane detection
 are no exception. In addition to time constraints, good quality is usually tightly coupled to expensive sensors.
-The selection of the best plane detection algorithm, however, is non-trivial. We selected possible algorithms and presented two definitions of \textit{real-time}
-namely $RT_{tot}$ and $RT_{calc}$.
-To evaluate to what extent it is possible to perform precise plane detection with a real-time constraint on off-the-shelf hardware,
-we compare the selected algorithms on the 2D-3D-S dataset and a self-recorded dataset.
-
+In this work, we aim to evaluate the quality of real-time plane detection algorithms under the use of more affordable hardware, i.e., Intel RealSense.
+At the beginning of this chapter, we state that three aspects are required for this evaluation, namely plane detection algorithms, a dataset, and a definition 
+of real-time.
+The selection of the best plane detection algorithm, however, is non-trivial. After defining meaningful criteria for objective judgement, we 
+select appropriate plane detection algorithms. Moreover, we select two datasets, one of which is a novel creation,
+ and present two definitions of \textit{real-time} namely $RT_{tot}$ and $RT_{calc}$.
+In Chapter~\ref{chap:eval}, we perform the evaluation.
 \end{document}

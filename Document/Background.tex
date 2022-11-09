@@ -84,25 +84,30 @@ An unorganized point cloud $c$ is generally equal to an unordered 1D array of 3D
 In contrast, the memory layout of an organized point cloud is a 2D matrix, where the width and height depend on the resolution of the used sensor.
 Intuitively, the value at index (0,0) would be in the top-left corner, and the value at index (\textit{width,height}) would be in the bottom-right corner.
 % FIXME bild selber machen: 2xmatrix mit eintrag, einmal (0,0)=XYZ, einmal (0,0) = d_0,0 
+
 When considering images, a differentiation between RGB images and depth images has to be made.
 Depth images are inherently similar to organized point clouds, given their resolution and two-dimensional structure.
 The primary difference is that the matrix stores distances to the sensor instead of 3D coordinates.
 RGB-images are, like Depth images, stored as a 2D Matrix but instead of distances or coordinates, the matrix stores
 values that describe the color of a pixel. Usually, this means that each pixel stores a triple that describes a specific
 color by the amount of included red, green, and blue.
+
+Another important aspect is that OPC or images can have 0, empty or \textit{not-a-number} (NaN) entries, while unorganized point clouds
+omit such values. Possible reasons for invalid pixels include points too far away from the sensor, or even windows or mirrors.
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|c|c}
-        \textbf{Input Type} & \textbf{Value Types} & \textbf{Memory Layout} \\ \hline
-        \textbf{OPC}        & 3D Coordinates       & 2D Matrix              \\
-        \textbf{UPC}        & 3D Coordinates       & 1D Array               \\
-        \textbf{DI}         & Distances to Sensor  & 2D Matrix              \\
-        \textbf{RGBI}       & RGB                  & 2D Matrix
+    \begin{tabular}{c|c|c|c}
+        \textbf{Input Type} & \textbf{Value Types} & \textbf{Memory Layout} & \textbf{0 or NaN} \\ \hline
+        \textbf{OPC}        & 3D Coordinates       & 2D Matrix              & N                 \\
+        \textbf{UPC}        & 3D Coordinates       & 1D Array               & Y                 \\
+        \textbf{DI}         & Distances to Sensor  & 2D Matrix              & Y                 \\
+        \textbf{RGBI}       & RGB                  & 2D Matrix              & Y
     \end{tabular}
-    \caption{Possible inputs for plane detection algorithms.}
+    \caption{Possible inputs for plane detection algorithms columns dedicated to the stored data, the memory layout, and whether
+        the input type allows for invalid values.}
     \label{tab:inputs}
 \end{table}
-It is worth noting that, in the literature, the terms "depth image" and "organized point cloud" are used somewhat 
+It is worth noting that, in the literature, the terms "depth image" and "organized point cloud" are used somewhat
 interchangeably.
 
 \subsection{Common Plane Formats}
@@ -113,7 +118,7 @@ interchangeably.
 \section{Plane Detection}
 \paragraph*{introduction}
 The field of plane detection has been around for decades.
-Most methods of detecting planar regions in unorganized point clouds are based on one of three main categories \cite*{Limberger_Oliveira_2015,Araújo_Oliveira_2020}:
+Most methods of detecting planar regions in unorganized point clouds are based on one of three main categories \cite*{\cite{LimbergerOliveira2015HT3D},Araújo_Oliveira_2020}:
 \begin{itemize}
     \item Hough Transform (HT)
     \item RANSAC (RC)
@@ -223,8 +228,8 @@ This process is repeated until the number of remaining points falls below a pred
 
 \subsection{3D Kernel-based Hough Transform}\label{sub:3dkht}
 With the 3D Kernel-based Hough Transform (3D-KHT),
-\citeauthor{Limberger_Oliveira_2015}\cite{Limberger_Oliveira_2015} propose a hough transform-based plane detection method,
-which accepts unorganized point clouds as input \cite{Limberger_Oliveira_2015}.
+\citeauthor{LimbergerOliveira2015HT3D}\cite{LimbergerOliveira2015HT3D} propose a hough transform-based plane detection method,
+which accepts unorganized point clouds as input \cite{LimbergerOliveira2015HT3D}.
 
 \textbf{\textcolor{red}{parameters: $\phi_{num}$  $\rho_{num}$  $s_{level}$  $s_{ps}$  $d_{max}$     $s_\alpha$  $s_\beta$}}
 
@@ -259,7 +264,7 @@ contain fewer normal vectors) in three-dimensional accumulator arrays, as portra
     \end{subfigure}
     \hspace{\fill}
     \caption[Hough Transform Accumulators]{Accumulator array (a), taken from \cite*[Figure~3]{Borrmann_Elseberg_Lingemann_Nüchter_2011}. Accumulator
-        ball(b) used in 3D-KHT, taken from \cite*[Figure~5]{Limberger_Oliveira_2015}.}
+        ball(b) used in 3D-KHT, taken from \cite*[Figure~5]{\cite{LimbergerOliveira2015HT3D}}.}
 \end{figure}
 
 During the voting procedure, votes are not cast for each data point but rather on previously calculated approximately coplanar clusters.
@@ -267,7 +272,7 @@ When casting a vote on a given cluster $c_i$ with its plane (represented by $(\r
 With this update, its neighboring clusters also receive a vote determined by the uncertainty value of $c_i$. Due to the non-discrete
 values of uncertainty, the votes are floating-point values as well.
 
-All Peaks within the accumulator ball are detected in the last step. Because the votes tend to be sparsely distributed \cite[Section~3.4]{Limberger_Oliveira_2015},
+All Peaks within the accumulator ball are detected in the last step. Because the votes tend to be sparsely distributed \cite[Section~3.4]{\cite{LimbergerOliveira2015HT3D}},
 an auxiliary array $A$ is used to memorize the entries inside the accumulator that are set. When an accumulator index is assigned a value for the first time, it is also added to $A$.
 Therefore, it is only necessary to iterate the auxiliary array to find peaks inside the accumulator.
 Furthermore, an intermediary smoothing step is performed by merging adjacent peaks inside the accumulator and storing them in $A$.
@@ -294,7 +299,7 @@ a neighboring leaf node $n$ is inserted into the region if $n$ does not belong t
 a predefined threshold.
 % FIXME explain inlier criteria, mention thresholds
 Lastly, a refinement step is employed.
-Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% of included points fit the best plane. FR is leaf-based, and all previously unallocated neighboring nodes that satisfy an inlier criterion are added to the region.
+Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% of included points fit the best plane~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. FR is leaf-based, and all previously unallocated neighboring nodes that satisfy an inlier criterion are added to the region.
 General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore,
 points from neighboring and previously unallocated leaf nodes are considered and inserted into the region if they, too, satisfy the inlier criterion.
 The refinement process returns a complete set of planar regions.
@@ -411,31 +416,31 @@ the segment $S$ if:
 where $k$ is a constant. The authors use $k=9$ in their work.
 
 \subsection{Plane Extraction using Spherical Convex Hulls}
-As the name suggests, Plane Extraction using Spherical Convex Hulls (SCH-RG) employs spherical convex hulls to 
+As the name suggests, Plane Extraction using Spherical Convex Hulls (SCH-RG) employs spherical convex hulls to
 detect planes in organized point clouds.
-The primary concept behind this method is that the planes are not parameterized, but rather represented as 
+The primary concept behind this method is that the planes are not parameterized, but rather represented as
 a set of geometric constraints in the spherical coordinate system.
 
 First, a set of pre-processing steps is employed.
-First, a bilateral filter is used for the reduction of noise. Subsequently, a normal map of the entire image 
+First, a bilateral filter is used for the reduction of noise. Subsequently, a normal map of the entire image
 is generated.
-To prepare for the region growing step, appropriate seeds are selected. This is effectively done by subdividing the 
+To prepare for the region growing step, appropriate seeds are selected. This is effectively done by subdividing the
 image into a grid, discarding non-planar cells, and choosing the cell centroids as seeds.
-The planarity of a cell is determined by its mean-square-error (MSE), which is calculated through all included 
+The planarity of a cell is determined by its mean-square-error (MSE), which is calculated through all included
 points and the best fitting plane. This MSE is then compared against a MSE threshold.
 
-Having obtained a set of seed points, the region growing step is employed. 
-Each time a new seed is retrieved, all normals of the corresponding cell are gathered and transformed 
+Having obtained a set of seed points, the region growing step is employed.
+Each time a new seed is retrieved, all normals of the corresponding cell are gathered and transformed
 into the spherical domain. A queue is used for the retrieval of seeds and neighboring points.
-Starting from a seed $s$, neighboring points and their normals are sequentially retrieved. 
-If a neighbor $n$ is already assigned to some region or the depth difference is larger than a threshold $T$, it is 
-discarded. If $n$ is located inside of the spherical convex hull of the region of $s$, 
-it is added to the region, and its neighbors are inserted into the queue. If $n$ is not inside a 
+Starting from a seed $s$, neighboring points and their normals are sequentially retrieved.
+If a neighbor $n$ is already assigned to some region or the depth difference is larger than a threshold $T$, it is
+discarded. If $n$ is located inside of the spherical convex hull of the region of $s$,
+it is added to the region, and its neighbors are inserted into the queue. If $n$ is not inside a
 convex hull, it is necessary to check whether $n$ is outside of the so-called \textit{cluster-permissible region} (CPR):
 \begin{equation}
     CPR(p) = \{q \in \mathbb{S} | \angle(p,q)\leq 2\theta\},
 \end{equation}
-where $\theta$ is an angular threshold. Note that the CPR of multiple points, e.g., a region, is determined by 
+where $\theta$ is an angular threshold. Note that the CPR of multiple points, e.g., a region, is determined by
 the intersection of all individual points.
 If $n$ is outside the CPR of the current region, it is discarded. Otherwise, the convex hull is updated with $n$,
 $n$ is added into the set of points included in the region, and its neighbors are inserted into the queue.
@@ -596,6 +601,8 @@ as input.
     \includegraphics[width=\textwidth]{images/planerecnet.png}
     \caption[PlaneRecNet Architecture]{The PlaneRecNet Architecture. Taken from the respective paper~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022}.
         \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
+
+    \label{fig:planerecnet}
 \end{figure}
 
 approach:
@@ -686,32 +693,32 @@ in the field of plane detection. Table~\ref{tab:datasets} summarizes the key cha
 dataset. The individual datasets are outlined in the following subsections.
 % FIXME Datensätze erklären
 % FIXME Tabelle erläutern!
-\begin{table}[H]
-    \centering
-    \begin{tabular}{c|c|c|c|c}
-        \textbf{Dataset}                                                                                                                                                                      & \textbf{Input Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
-        \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      \\
-        \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                     & UPC                   & Y             & Y               & objects     \\
-        \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     \\
-        \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      \\
-        \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  \\
-        \textbf{SYNBEP}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      \\
-        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           \\
-        \textbf{SUN}         \cite{7298655}                                                                                                                                                   & DI                    & Y             & Y               & objects     \\
-        \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      \\
-        \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory
-    \end{tabular}
-    \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
-        Note, that the synthetic datasets (e.g., SegComp and SYNBEP) represent neither indoor nor outdoor scenes, hence the "/" in
-        the respective table entries.
-    }
-    \label{tab:datasets}
-\end{table}
+% \begin{table}[H]
+%     \centering
+%     \begin{tabular}{c|c|c|c|c}
+%         \textbf{Dataset}                                                                                                                                                                      & \textbf{Input Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
+%         \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      \\
+%         \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                      & UPC                   & Y             & Y               & objects     \\
+%         \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     \\
+%         \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      \\
+%         \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  \\
+%         \textbf{SYNBEP}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      \\
+%         \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           \\
+%         \textbf{SUN}         \cite{7298655}                                                                                                                                                   & DI                    & Y             & Y               & objects     \\
+%         \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      \\
+%         \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory
+%     \end{tabular}
+%     \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
+%         Note, that the synthetic datasets (e.g., SegComp and SYNBEP) represent neither indoor nor outdoor scenes, hence the "/" in
+%         the respective table entries.
+%     }
+%     \label{tab:datasets}
+% \end{table}
 
 \subsection{SegComp}
 \subsection{2D-3D-S}
 \label{subsec:bg-stanford}
-2D-3D-S was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
+\textit{2D-3D-S} was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
 An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
 The dataset includes a wide range of point cloud sizes, with a minimum of $8\cdot 10^4$ and a maximum of $7\cdot 10^6$
 Furthermore, the average amount of points per scene is ${\sim}10^6$ with an average file size of ${\sim}34mb$.

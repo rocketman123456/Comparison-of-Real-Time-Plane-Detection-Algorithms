@@ -2,12 +2,14 @@
 \begin{document}
 
 \chapter{Evaluation}
-In this chapter, the previously selected algorithms are uniformly compared. We present the results.
+\label{chap:eval}
+In this chapter, the previously selected algorithms are uniformly compared. We present and analyze the results.
+Prior to the evaluation, we present the protocol thereof.
 \section{Protocol}
 
 This work aims to determine which plane detection algorithm is the most suitable for an AR/VR system. For this decision, we uniformly compare the algorithms selected in
-Chapter~\ref{chap:Concept}. We split the comparison into two experiments conducted on different datasets: the 2D-3D-S and the
-self-created FIN dataset.
+Chapter~\ref{chap:Concept}. We split the comparison into two experiments conducted on different datasets: the \textit{2D-3D-S} and the
+self-created \textit{FIN} dataset.
 We conduct both experiments on an AMD Ryzen 7 5800H CPU with 16GB of RAM.
 Since both datasets are fundamentally different, we will perform the experiments and the analysis separately and then compare the results.
 First, we present the metrics used for comparison, followed by an outline of the used configurations of parameters for each experiment.
@@ -20,8 +22,11 @@ metrics: Precision, \textit{Recall}, and the F1-Score.
 The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed in Section~\ref{sec:metrics}.
 Note that we use the detected planes for the calculation, however, we are not using them directly as a measure of performance due to the subjective
 nature of manual ground truth segmentation.
-We calculate the F1-Score, as it is the harmonic mean of the \textit{Precision} and the \textit{Recall}. In practice, this means that an algorithm
-has to yield sufficient \textit{Precision} and \textit{Recall} results to score a sufficient \textit{F1-Score}. The F1-Score, thereby, is the primary metric
+\textbf{\textcolor{red}{we calculate the precision..}}
+\textbf{\textcolor{red}{we calculate the recall..}}
+
+We calculate the \textit{F1-Score}, as it is the harmonic mean of the \textit{Precision} and the \textit{Recall}. In practice, this means that an algorithm
+has to yield sufficient \textit{Precision} and \textit{Recall} results to score a sufficient \textit{F1-Score} . The \textit{F1-Score}, thereby, is the primary metric
 for the quantitative comparison of algorithms in this work. However, we report the \textit{Precision} and the \textit{Recall} for thorough analysis.
 
 
@@ -37,13 +42,13 @@ excluding the pre-processing step runs faster than $1s.$
 A simple approach to measuring calculation times could involve reporting the average total calculation time over a dataset. 
 However, when recording a real environment, the point clouds likely grow incrementally with each map update.
 Therefore, the average calculation time alone is of limited significance, as we expect shorter times for the start of a recording
-and longer times for the most recent point cloud. It is, therefore, necessary to analyze the
+and longer times for the most recent point cloud. Based on this assumption, it is necessary to analyze the
 relationship between the point cloud size and the calculation time as well.
 
 Following the separation of algorithms into phases (see Section~\ref{par:prepostalgos}), 
 we divide the calculation time into the pre-processing time $t_{pre}$, 
 the time spent during plane detection $t_{calc}$, and the duration of post-processing steps $t_{post}$.
-This separation allows for an in-depth analysis of the results. 
+This separation enables an in-depth analysis of both average results and the results per time frame.
 Since we have two definitions of real-time, we introduce two metrics of calculation time:
 
 \begin{enumerate}
@@ -57,13 +62,11 @@ Since we have two definitions of real-time, we introduce two metrics of calculat
     t_{tot} = t_{pre} + t_{calc} + t_{post}
 \end{equation}
 
-\textbf{\textcolor{red}{die reihenfolge dieser subsection fühlt sich off an weeeh}}
-
 \subsection{Parameterization of Algorithms}
 Because the datasets inherit different amounts of noise, it is necessary to modify the algorithms accordingly.
 We thereby modify the algorithms' parameterization to achieve more noise robustness.
 In the following, the parameterizations of the algorithms with respect to the two experiments are outlined.
-Therein, we refer to the parameterization of the 2D-3D-S experiment as the default configuration.
+Therein, we refer to the parameterization of the \textit{2D-3D-S} experiment as the default configuration.
 Furthermore, we determine an appropriate parameterization for the FIN dataset through
 empirical experiments. These experiments include multiple tests of different combinations of values on all scenes of the FIN dataset,
 the ranges of which are specified in the respective paragraph of each algorithm.
@@ -83,7 +86,7 @@ the ranges of which are specified in the respective paragraph of each algorithm.
 \end{table}
 
 \paragraph{2D-3D-S}
-For the 2D-3D-S experiment, we use the parameters of the provided implementation\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}. These parameters include the maximum octree level $l_O$,
+For the \textit{2D-3D-S} experiment, we use the parameters of the provided implementation\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}. These parameters include the maximum octree level $l_O$,
 the minimum number of samples per leaf node $\varepsilon$, the Maximum Outlier Ratio $MOR$ per plane, the size of the nearest neighborhood $k$,
 the Maximum Normal Deviation $MND$, and the Maximum Distance to Plane $MDP$. Note that while $k=50$ is used in the respective paper~\cite[Section~3.3]{Araújo_Oliveira_2020},
 we use $k=30$ because, in our experience, it produces sufficient results while reducing the pre-processing time.
@@ -98,7 +101,6 @@ parameterization. Therefore, no parameter modifications for the FIN dataset are 
 
 \subsubsection{OPS}
 
-\textcolor{red}{ja, die parameter werden im background \textit{sicherlich} erklärt}
 \begin{table}[H]
     \centering
     \begin{tabular}{c|ccccc}
@@ -111,7 +113,7 @@ parameterization. Therefore, no parameter modifications for the FIN dataset are 
 \end{table}
 
 \paragraph{2D-3D-S}
-The parameter configuration used for the 2D-3D-S experiment is shown in the first row of Table~\ref{tab:ops-param}.
+The parameter configuration used for the \textit{2D-3D-S} experiment is shown in the first row of Table~\ref{tab:ops-param}.
 Like the parameterization of RSPD, we took this configuration from the provided implementation\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}}.
 We use a sampling rate $\alpha_s$ of 3\% and a neighborhood size $KNN$ of 30 for the estimation of normal vectors.
 Additionally, we use a distance threshold $\theta_h$ of 0.05(m).
@@ -142,9 +144,9 @@ Both modifications are highlighted in bold in the second row of Table~\ref{tab:o
 \paragraph{2D-3D-S}
 The parameter configuration is shown in Table~\ref{tab:3dkht-param}. We use an accumulator discretization of 30 and 200 for $\phi$ and $\rho$, respectively.
 Starting to check for planarity at an octree level $s_{level}$ of 2 seems to yield the best results.
-\citeauthor{Limberger_Oliveira_2015}~\cite{Limberger_Oliveira_2015} propose
+\citeauthor{\cite{LimbergerOliveira2015HT3D}}~\cite{LimbergerOliveira2015HT3D} propose
 a minimum of 30 samples per cluster $s_{ps}$, however, we use $0.2\%$ of the total point cloud due to the wide ranges of point cloud sizes in the dataset (see Subsection~\ref{subsec:bg-stanford}).
-Lastly, we set the plane isotropy tolerance $s_\beta$ to 6, as proposed in~\cite[Section~3.1]{Limberger_Oliveira_2015}.
+Lastly, we set the plane isotropy tolerance $s_\beta$ to 6, as proposed in~\cite[Section~3.1]{\cite{LimbergerOliveira2015HT3D}}.
 In contrast, using a plane thickness tolerance $s_\alpha$ value of 18 seemed to yield better results than the proposed 25.
 This was determined by a small set of experiments with $s_\alpha$ values ranging between 15 and 33.
 
@@ -157,7 +159,10 @@ Reducing $\rho_{num}$ should decrease the accuracy, however, it seems to yield b
 We increase $d_{max}$ and decrease $s_\alpha$ to allow for slightly thicker, e.g. noisier, planes to be detected.
 The modification of parameters is highlighted in bold in Table~\ref{tab:3dkht-param}.
 
+
 \subsubsection{OBRG}
+\textbf{\textcolor{red}{die fucking parameter sind in tabelle 1+4 des papers}}
+\textbf{\textcolor{red}{+3.1 rot markiert}}
 \begin{table}[H]
     \centering
     \begin{tabular}{c|cccccc}
@@ -172,6 +177,7 @@ The modification of parameters is highlighted in bold in Table~\ref{tab:3dkht-pa
 
 \paragraph{2D-3D-S}
 The used configurations for the experiments are shown in Table~\ref{tab:obrg-param}.
+Since the specific values of 
 The parameterization was determined during the implementation process and showed a reasonable compromise between
 efficiency and accuracy.
 Due to the low level of noise, we assign a very small tolerance to the residual threshold$\theta_{res}$ and the distance threshold $\theta_d$.
@@ -184,7 +190,7 @@ and $\theta_p\in[70, 90]$.
 Due to higher levels of noise, and thus, thicker walls, we increase $\theta_{res}$, $\theta_d$, and the angular divergence threshold $\theta_{ang}$.
 According to~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015},
 the planarity threshold $\theta_p$ should be chosen between 70\% and 90\% depending on the noise level. As the expected noise level of the
-FIN dataset is much higher than the noise of the 2D-3D-S dataset, we reduce this threshold to 70\%.
+FIN dataset is much higher than the noise of the \textit{2D-3D-S} dataset, we reduce this threshold to 70\%.
 The used parameters for the FIN experiment are summarized in the second row of Table~\ref{tab:obrg-param}.
 
 
@@ -195,12 +201,12 @@ The individual results of both experiments are presented and analyzed. Lastly, t
 
 \subsection{2D-3D-S}
 
-We ran RSPD, OPS, 3D-KHT, and OBRG on 139 scenes of the 2D-3D-S dataset. Subsequently, for each scene, the \textit{Precision, Recall,} and
-the \textit{F1-Score} of each algorithm were calculated. The computation times were measured and divided into pre-processing, plane detection,
-and post-processing. Table~\ref{tab:res-3d2ds-total} shows the average of the computed results for each algorithm.
+We ran RSPD, OPS, 3D-KHT, and OBRG on 139 scenes of the \textit{2D-3D-S} dataset. Subsequently, for each scene, the \textit{Precision, Recall,} and
+the \textit{F1-Score} of each algorithm were calculated. The computation times were measured and divided into pre-processing $t_{pre}$, plane detection $t_{calc}$,
+and post-processing $t_{post}$. Table~\ref{tab:res-3d2ds-total} shows the average of the computed results for each algorithm.
 The rightmost column gives the total computation time $t_{tot}$. The largest values of the accuracy and the smallest average
 values of the times are indicated in bold. It is to be noted that no lowest value of $t_{post}$ is indicated since RSPD and 3D-KHT
-have no post-processing steps and, therefore, "per default", spend less time in this step.
+have no post-processing steps and, therefore, "per default" spend less time in this step.
 
 \begin{table}[H]
     \centering
@@ -211,41 +217,39 @@ have no post-processing steps and, therefore, "per default", spend less time in 
         3DKHT     & 71.40\%          & 78.32\%          & 75.19\%          & \textbf{0.71} & \textbf{1.03} & /          & \textbf{1.74} \\
         OBRG      & 81.38\%          & 66.77\%          & 71.00\%          & 28.07         & 34.29         & 2.61       & 62.97
     \end{tabular}
-    \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the 2D-3D-S dataset. The right half of the inner columns shows the average time spent in
+    \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the \textit{2D-3D-S} dataset. The right half of the inner columns shows the average time spent in
         pre-processing ($t_{pre}$), the average time spent in the plane detection ($t_{calc}$), and the average time spent in post-processing steps ($t_{post}$).
-        The rightmost column shows the average total calculation time $s_{tot}$.
+        The rightmost column shows the average total calculation time $t_{tot}$.
         Note, that the absence of post-processing steps is denoted as "/". All times are measured in seconds.}
     \label{tab:res-3d2ds-total}
 \end{table}
 
 \paragraph{Accuracy}
-RSPD has the overall highest accuracy with a \textit{Precision} of ${\sim}85\%$, a \textit{Recall} of ${\sim}90\%$, and an \textit{F1-Score}of ${\sim}87\%$.
-OPS supersedes RSPD with a \textit{Precision} value of ${\sim}89\%$ but scores significantly lower \textit{Recall} and \textit{F1-Score}values.
-3D-KHT yields \textit{Precision}, \textit{Recall} and \textit{F1-Score}results in the range of ${\sim}71\%$ and ${\sim}79\%$.
-OBRG has a high \textit{Precision} value of ${\sim}81\%$, however its \textit{Recall} and \textit{F1-Score}values are the lowest out of all algorithms
+RSPD has the overall highest accuracy with a \textit{Precision} of ${\sim}85\%$, a \textit{Recall} of ${\sim}90\%$, and an \textit{F1-Score} of ${\sim}87\%$.
+OPS supersedes RSPD with a \textit{Precision} value of ${\sim}89\%$ but scores significantly lower \textit{Recall} and \textit{F1-Score} values.
+3D-KHT yields \textit{Precision}, \textit{Recall} and \textit{F1-Score} results in the range of ${\sim}71\%$ and ${\sim}79\%$.
+OBRG has a high \textit{Precision} value of ${\sim}81\%$, however its \textit{Recall} and \textit{F1-Score} values are the lowest out of all algorithms
 with ${\sim}67\%$ and ${\sim}71\%$, respectively.
 
 \paragraph{Average Time }
 \label{par:2D-3D-S-time}
-With an average of 0.71 seconds spent in pre-processing, and an average of 1.03 seconds spent in plane detection,
-3D-KHT only needs an average total of 1.74 seconds to process an entire point cloud and thereby achieves the lowest calculation times.
+With an average of $0.71s$ spent in pre-processing, and an average of $1.03s$ spent in plane detection,
+3D-KHT only needs an average total of $1.74s$ to process an entire point cloud and thereby achieves the lowest calculation times.
 RSPD is the only algorithm that scores similar $t_{calc}$ values, with an
-average of 1.04 seconds. However, RSPD's time spent in pre-processing is the highest among the algorithms.
-With an average $t_{tot}$ of ca. 25 seconds and ca. 63 seconds, OPS and OBRG, respectively, run dramatically slower than the other two algorithms.
+average of $1.04s$. However, RSPD's time spent in pre-processing is the highest among the algorithms.
+With an average $t_{tot}$ of ${\sim}25s$ and ${\sim}63s$, OPS and OBRG, respectively, run dramatically slower than the other two algorithms.
 According to these values, no algorithm achieves \textit{total real-time} applicability. RSPD and 3D-KHT are very close
-to falling under the threshold of $1s$ for \textit{real-time plane detection}.
+to falling under the threshold of $1s$ for \textit{real-time plane detection}, exceeding it by only $0.4s$ and $0.3s$, respectively
 
 
 \paragraph{Relationship of Time and Size}
-As stated in Paragraph~\ref{par:time}, it is useful to consider the relationship between the computation times and the amount of
-processed data. For each scene of the 2D-3D-S dataset, the pairs of
-processing times and point cloud file sizes are presented in Figure~\ref{fig:sizetimestanford}.
+For each scene of the \textit{2D-3D-S} dataset, the pairs of processing times and point cloud file sizes are presented in Figure~\ref{fig:sizetimestanford}.
 
 % \begin{figure}[H]
 %     \centering
 %     \includegraphics[width=\textwidth]{images/SDsizetime.png}
 %     \caption[Time per Cloud size 2D-3D-S]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$,
-%         and post-processing $t_{post}$ per point cloud file size of the 2D-3D-S dataset. Note, that both y-axes are
+%         and post-processing $t_{post}$ per point cloud file size of the \textit{2D-3D-S} dataset. Note, that both y-axes are
 %         scaled logarithmically to the base of ten.}
 %     \label{fig:sizetimestanford}
 % \end{figure}
@@ -254,7 +258,7 @@ processing times and point cloud file sizes are presented in Figure~\ref{fig:siz
     \def\svgwidth{\textwidth}
     \input{images/stanfordpdf.pdf_tex}
     \caption[Time per Cloud size 2D-3D-S]{The time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$,
-        post-processing $t_{post}$, and the total calculation time $t_{tot}$ per point cloud file size of the 2D-3D-S dataset.
+        post-processing $t_{post}$, and the total calculation time $t_{tot}$ per point cloud file size of the \textit{2D-3D-S} dataset.
         Note, that the y-axis is scaled logarithmically to the base of ten.}
     \label{fig:sizetimestanford}
 \end{figure}
@@ -282,7 +286,7 @@ times tend to decrease with growing point clouds. A possible reason could be the
 An adaptive determination of octree size would likely lead to a more balanced curve.
 Since the post-processing phase operates on the unrefined regions returned by the plane detection phase, the curve behaves similarly,
 supporting the sub-optimal parameterization argument. \textbf{\textcolor{red}{schwierig das zu behaupten. SISO prinzip}}
-From our experience, the mid-sized scenes in the 2D-3D-S dataset are often long and narrow hallways. Assuming an inappropriate
+From our experience, the mid-sized scenes in the \textit{2D-3D-S} dataset are often long and narrow hallways. Assuming an inappropriate
 octree depth parameter, the subdivision could effectively split the hallway, returning a set of chunks that are in no
 way to be considered planar. This would consequently lead to an early termination due to failed thresholds, thus reducing
 the calculation times (and most likely yielding low accuracy).
@@ -306,18 +310,20 @@ except for medium cloud sizes, see table~\ref{tab:res-3d2ds-total}.
 Adhering strictly to our definitions of real-time, no algorithm achieves real-time applicability in this experiment.
 However, we might consider RSPD and 3D-KHT to be \textit{real-time plane detection} applicable, since
 the point cloud sizes vary greatly, and the average duration of their plane detection phase is only
-$0.03-0.04$ over the $1s$ threshold.
+$0.03s-0.04s$ greater than the $1s$ threshold.
 Furthermore, as Figure~\ref{fig:sizetimestanford} suggests, RSPD and 3D-KHT are
 \textit{real-time plane detection} applicable for point clouds with a size ${\lesssim}40mb$, or
 ${\lesssim}1.5{\cdot}10^6$ points.
 
 \subsection{FIN}
 Each of the total 708 time frames of the FIN data set was processed by each algorithm.
-Subsequently, we evaluated each time frame separately, i.e., by calculating the \textit{Precision, the Recall,} and the \textit{F1-Score}.
-Additionally, we measured the computation times of each time frame for all algorithms.
+Subsequently, we evaluated each time frame separately, i.e., by calculating the \textit{Precision, the Recall,} and the \textit{F1-Score} .
+Additionally, we measured the computation times of each time frame for all algorithms, again divided into pre-processing $t_{pre}$,
+plane detection $t_{calc}$, and post-processing $t_{post}$.
 
 The average results over all time steps of all scenes of the FIN experiment are presented in Table~\ref{tab:res-fin-total}.
-The highest values are written in bold for \textit{Precision, Recall,} and the \textit{F1-Score}, as are the lowest times of each calculation step.
+The highest values are written in bold for \textit{Precision, Recall,} and the \textit{F1-Score}, as are the lowest times of each calculation step and the 
+total time.
 
 
 \begin{table}[H]
@@ -341,7 +347,7 @@ The highest values are written in bold for \textit{Precision, Recall,} and the \
 \paragraph{Accuracy}
 OPS has the highest average \textit{Precision} of the algorithms, with almost 70\%. RSPD achieves the highest values
 for \textit{Recall} and the \textit{F1-Score} with ${\sim}61\%$ and ${\sim}59\%$, respectively.
-3D-KHT and OBRG achieve a similar \textit{Precision}, but for \textit{Recall} and F1-Score, however, 3D-KHT has
+3D-KHT and OBRG achieve a similar \textit{Precision}, but for \textit{Recall} and \textit{F1-Score}, however, 3D-KHT has
 higher values than OBRG by approx. 13\% and approx. 17\%, respectively.
 RSPD thus achieves the highest overall accuracy, while OBRG achieves the overall lowest.
 
@@ -394,7 +400,7 @@ plane detection step consistently stays under $1s$.
 
 \paragraph{Summary FIN Experiment}
 \label{par:sumfinexp}
-OPS has the highest average \textit{Precision}, and RSPD has the largest percentages of \textit{Recall} and the \textit{F1-Score}.
+OPS has the highest average \textit{Precision}, and RSPD has the largest percentages of \textit{Recall} and the \textit{F1-Score} .
 Additionally, RSPD has the lowest $t_{calc}$ value among the algorithms,
 with an average of $0.19s$ per time frame. In contrast, RSPD has the longest pre-processing time with $14.36s$ on average.
 The algorithm with the shortest pre-processing and the shortest total time is 3D-KHT with $t_{pre}=0.14s$ and $t_{tot}=0.43s$,
@@ -418,22 +424,21 @@ the apparent upper bound and considerable fluctuations, we cautiously consider O
 
 \subsection{Comparison}
 When comparing Table~\ref{tab:res-3d2ds-total} and Table~\ref{tab:res-fin-total}, a pattern emerges:
-OPS has the highest \textit{Precision} value, RSPD yields the highest \textit{Recall} and F1-Score, and 3D-KHT has the lowest
+OPS has the highest \textit{Precision} value, RSPD yields the highest \textit{Recall} and \textit{F1-Score}, and 3D-KHT has the lowest
 average total processing time.
 
-Observing Figure~\ref{fig:dynaudi} and Figure~\ref{fig:sizetimestanford}, common features are noticeable:
-
+Observing Figure~\ref{fig:dynaudi} and Figure~\ref{fig:sizetimestanford}, common features are noticeable: 
 The curve shape of RSPD is very similar for both experiments, linearly dependent on the point cloud size, and the
 $t_{pre}$ accounts for $99\%$ of the total calculation time $t_{tot}$.
 In both experiments, the post-processing time of OPS fluctuates.
 The post-processing of OBRG seems to be oriented around a given value, however, this value differs
-between the experiments (${\sim}0.3s$ for the FIN experiment and ${\sim}3s$ for the 2D-3D-S experiment).
+between the experiments (${\sim}0.3s$ for the FIN experiment and ${\sim}3s$ for the \textit{2D-3D-S} experiment).
 3D-KHT scores very low processing times in both experiments.
 
 However, there are also notable differences.
-Whereas the calculation times of 3D-KHT seem to be proportional to the point cloud size in the 2D-3D-S experiment, they show no such
+Whereas the calculation times of 3D-KHT seem to be proportional to the point cloud size in the \textit{2D-3D-S} experiment, they show no such
 relation during the FIN experiment. It is, however, noteworthy that the cloud sizes widely differ between the experiments, as the
-maximum size of the FIN experiment (${\sim}30mb$) is very small, compared to largest scene of the 2D-3D-S dataset (${>}400mb$).
+maximum size of the FIN experiment (${\sim}30mb$) is very small, compared to largest scene of the \textit{2D-3D-S} dataset (${>}400mb$).
 Nonetheless, since Figure~\ref{fig:sizetimestanford} portrays a proportionality, even for smaller clouds, the reason for
 different curves is likely the difference of parameterization.
 
@@ -449,9 +454,9 @@ The results of neither experiment show a \textit{real-time} applicability of OBR
 \section{Summary}
 OBRG does not achieve the highest or lowest values in any experiment.
 OPS has the highest \textit{Precision} in both experiments.
-Due to \textit{Recall} and the F1-Score, RSPD has the highest overall accuracy in both experiments.
+Due to \textit{Recall} and the \textit{F1-Score}, RSPD has the highest overall accuracy in both experiments.
 The pre-processing of RSPD takes the longest time of all algorithms. In contrast, RSPD has the smallest average $t_{calc}$
-value in the FIN experiment. 3D-KHT has the lowest total computation time in both experiments, and in the 2D-3D-S experiment,
+value in the FIN experiment. 3D-KHT has the lowest total computation time in both experiments, and in the \textit{2D-3D-S} experiment,
 it outperforms the plane detection time of RSPD.
 
 3D-KHT is \textit{real-time plane detection} applicable in both experiments, \textit{totally real-time} applicable
