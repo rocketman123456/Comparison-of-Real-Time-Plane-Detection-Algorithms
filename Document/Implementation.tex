@@ -20,7 +20,7 @@ Note, that the subsections of RSPD and OPS are joined due to a lack of noticeabl
 We implement RSPD\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} and OPS\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}} using their respective open source implementations on GitHub.
 Note that, while the implementation of RSPD is provided by one of the authors, we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}\cite{Sun_Mordohai_2019}.
 Both methods are implemented in C++ and depend on the C++ linear algebra library \textit{Eigen}\footnote{\href{https://eigen.tuxfamily.org/index.php}{https://eigen.tuxfamily.org/index.php}},
-and the C++ API of the Point-Cloud Library\footnote{\href{https://pointclouds.org/}{https://pointclouds.org/}}, \textit{libpcl-dev}.
+and the C++ API of the Point-Cloud Library~\cite{Rusu_ICRA2011_PCL}, \textit{libpcl-dev}.
 
 \subsection{3D-KHT}
 
@@ -36,7 +36,7 @@ To our knowledge, no open-source implementation is available for the algorithm.
 We, therefore, use our own implementation.
 
 We implement the algorithm using python. We choose to write our own octree implementation for spatial subdivision of our point cloud, since
-public libraries like \textit{open3d} are limited in terms of leaf node functionality.
+the implementation of public libraries like \textit{open3d}~\cite{Zhou2018} are limited in terms of leaf node functionality.
 The subdivision is followed by calculating the saliency features using \textit{open3d}'s normal estimation function.
 We follow the pseudocode as stated in \cite[Algorithm~1]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. We modify the insertion into the set
 of regions by adding a containment check, to avoid redundancy of regions. By reducing the number of regions (incl. redundancies), we also
@@ -70,6 +70,7 @@ have to view each point cloud and segment the included planes manually. An exemp
             plane detection, the three table tops would form exactly one plane.}
         \label{fig:tables}
     \end{subfigure}
+     \caption[Ground Truth Segmentation figures]{}
 \end{figure}
 
 

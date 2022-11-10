@@ -154,8 +154,8 @@ The quality of the resulting regions depends on the choice of seed points, e.g.,
 In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
 
 \section{Plane Detection Algorithms}
-\textbf{\textcolor{red}{Disclaimer: bin grade noch dabei die algorithmen anzupassen. ich schreibe zuerst 
-die erklärungen zuende und gleiche das level of detail dann an (+ andere todos, siehe todoist)}}
+\textbf{\textcolor{red}{Disclaimer: bin grade noch dabei die algorithmen anzupassen. ich schreibe zuerst
+        die erklärungen zuende und gleiche das level of detail dann an (+ andere todos, siehe todoist)}}
 
 The following subsections detail the necessary background knowledge of all the plane detection algorithms mentioned in this paper.
 Aside from the functionality of a method, we give relevant higher-level information, e.g., the expected input format and the proposed output format.
@@ -451,61 +451,96 @@ Lastly, dilation is performed to eliminate holes in planes. This is not further 
 
 
 \subsection{Depth Kernel-based Hough Transform}
-\textbf{\textcolor{red}{todo: ausformulieren }}
 Depth Kernel-based Hough Transform (D-KHT) \cite{Vera_Lucio_Fernandes_Velho_2018} is a Hough transform-based plane detection
 algorithm that accepts depth images as input.
 
-\textbf{\textcolor{red}{pre-processing}}
-clustering:
-\begin{itemize}
-    \item quadtree subdivision
-          \begin{itemize}
-              \item whole image is root
-              \item each node with more than threshold $s_{ms}$ samples: coplanarity test with PCA
-              \item all nodes with less than $s_{ms}$ inliers are ignored in the voting process
-              \item
-          \end{itemize}
-    \item Summed area tables (SAT) computation for PCA efficiency
-          \begin{itemize}
-              \item the covariance and mean values can be calculated in constant time that way
-              \item pre-compute (9) SATs for each node
-          \end{itemize}
-\end{itemize}
+The algorithm is performed in three stages: \textit{Clustering, Voting,} and \textit{Peak Detection}.
 
-\textbf{\textcolor{red}{plane detection}}
-given set of approx coplanar point clusters in leaf node
-\begin{itemize}
-    \item the best fitting plane is described by its mean point and a unit normal vector (which is the
-          associated eigenvector to the least eigenvalue of the cov matrix)
-    \item the gaussian kernel that weights votes from the cluster in the parameter space of the plane normal
-    \item calc cov matrix of the gaussian kernel can be computed with first order error propagation \textbf{\textcolor{red}{mathe}}
-    \item cluster votes in spherical accumulator map $A$
-          \begin{itemize}
-              \item $\theta \in [-\pi , +\pi], \phi \in [0, \pi], \rho \in [0, \rho_{high}]$
-              \item $\rho_{high}$ is the farthest point from camera to a sample
-              \item the amount of samples within rho and are defined by params $N_\rho, N_\phi$
-          \end{itemize}
-    \item voting:
-          \begin{itemize}
-              \item for given kernel that is associated with a cluster:
-              \item increment bins of A that fall within two standart deviations of the mean \textbf{\textcolor{red}{formel}}
-              \item starting at specific bin, neighbors are flood filled with \textbf{\textcolor{red}{mathe}} als termination condition
-          \end{itemize}
-    \item after voting:
-          \begin{itemize}
-              \item compute convolution of accumulator with six-connected filter (smoothing of map)
-              \item hill climbing to detect peaks: plane is detected if the bin of a mean plane is a local maxima
-          \end{itemize}
-\end{itemize}
+\paragraph{Clustering}
+In the clustering step, a quadtree is constructed to spatially subdivide the image. A node recursively subdivides
+itself, until a minimum of included points $s_{ms}$ is reached, or until the set of points is considered approximately
+coplanar. The latter is determined through a principle component analysis (PCA). Therein, the mean and
+a covariance matrix are computed.
+Pre-computing and subsequently referencing Summed-Area-Tables (SATs) is done to increase the efficiency
+of this step, leading to a constant-time calculation of the covariance matrix.
+If a non-planar node has less than $s_{ms}$ points, these points are then considered non-relevant and
+ignored during the voting step.
 
-\textbf{\textcolor{red}{post processing}}
-given set of parameters corresponding to detected planes
+\paragraph{Voting}
+The clustering step returns a set of approximately coplanar point clusters.
+The best-fitting plane of each cluster is calculated. It is determined by the cluster's mean point,
+and a normal vector which is the eigenvector associated with the least eigenvalue of the covariance matrix.
+Two things are necessary to perform the voting step:
 \begin{itemize}
-    \item sort planes by relevance
-    \item relevance is defined by the summation of the weights associated with the clusters that contributed to the peak
+    \item An Accumulator to store the votes, \textit{and}
+    \item a set of gaussian kernels corresponding to the coplanar clusters.
 \end{itemize}
-The normal vector and the distance $\rho$ define the normal equation of the plane supporting a subset of
-3d point entries.
+Given the mean point $\mu_{(x,y,z)}$ and the unit normal vector $\overrightarrow{n}=(n_x,n_y,n_z)^T$ of a cluster,
+the center of the gaussian kernel is calculated:
+\def\A{
+\begin{pmatrix}
+    \mu_x \\
+    \mu_y \\
+    \mu_z 
+\end{pmatrix}
+}
+\def\B{
+    \begin{matrix}
+        n_x\mu_x + n_y\mu_y + n_z\mu_z \\
+        \cos^{-1}(n_z)                 \\
+        \tan^{-1}(\frac{n_y}{n_x})
+    \end{matrix}
+}
+\begin{equation}
+    \label{eq:kht-kernel}
+    \mu_{(\rho,\phi,\theta)} = \A =  \left(\B\right)
+\end{equation}
+
+The covariance matrix of the gaussian kernel can then be calculated through first-order error propagation:
+\begin{equation}
+    \Sigma_{(\rho,\phi,\theta)} = J\Sigma_{(x,y,z)}J^T,
+\end{equation}
+where $J$ is the Jacobi-Matrix of Equation~\ref{eq:kht-kernel}.
+
+An unbiased spherical accumulator, like in \cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, is used to store votes.
+The axes of the accumulator range are in the following ranges: 
+$$\theta \in [-\pi , +\pi], \phi \in [0, \pi], \rho \in [0, \rho_{high}]$$,
+where $\rho_{high}$ is determined by the farthest distance between the camera and a point of the input image.
+The discretization of $\theta$ and $\phi$ are pre-determined by the user and should be based on the expected 
+granularity of detected planes. Most likely, this also relates to the expected amount of noise.
+During the voting itself, the accumulator bins are incremented if they are within two standard deviations of the
+kernel mean $\mu_{(\rho,\phi,\theta)}$. 
+
+\paragraph{Peak Detection}
+The voting step fills the bins of the accumulator with votes. A smoothing of the bins is performed to avoid 
+oversegmentation or the detection of multiple equivalent planes.  
+\citeauthor{Vera_Lucio_Fernandes_Velho_2018}\cite[Section~3.5]{Vera_Lucio_Fernandes_Velho_2018} compute a convolution of the 
+accumulator, as well as a 6-connected filter with a central weight of $0.2002$ and neighbor weights of $0.1333$.
+A hill-climbing strategy is then adopted to detect peaks in the accumulator. Each peak represents the 
+parameterization of a detected plane. These planes are then sorted by relevance, whereas the relevance of a plane 
+is determined by a weighted sum of the clusters that voted for the corresponding peak. The weights therein 
+depend more on the number of corresponding pixels of a cluster, rather than the number of samples.
+
+All planes, parameterized by $(\rho,\phi,\theta)$, are then transformed back into cartesian coordinates. 
+Moreover, they are parameterized by a center point, which is defined by $\rho$, and a normal vector $\overrightarrow{n}$: 
+\def\C{
+    \begin{pmatrix}
+        n_x \\
+        n_y \\
+        n_z 
+    \end{pmatrix}
+}
+\def\D{
+    \begin{pmatrix}
+        \sin\phi\cos\theta \\
+        \sin\phi\sin\theta \\
+         \cos\phi
+    \end{pmatrix}
+}
+
+\begin{equation}
+        \overrightarrow{n}  = \C = \D
+\end{equation} 
 
 
 \subsection{Depth Dependent Flood Fill}
@@ -726,8 +761,8 @@ An individual scene has a complete unstructured point cloud and a list of annota
 The dataset includes a wide range of point cloud sizes, with a minimum of $8\cdot 10^4$ and a maximum of $7\cdot 10^6$
 Furthermore, the average amount of points per scene is ${\sim}10^6$ with an average file size of ${\sim}34mb$.
 
-\textbf{\textcolor{red}{diese sätze eignen sich eher im concept. aber: ich sehe auch keinen vorteil 
-sie drin zu lassen }}
+\textbf{\textcolor{red}{diese sätze eignen sich eher im concept. aber: ich sehe auch keinen vorteil
+        sie drin zu lassen }}
 Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the dataset nevertheless reflects a realistic distribution of scene types since
 it is not realistic if a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
 
