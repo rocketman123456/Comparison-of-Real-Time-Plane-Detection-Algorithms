@@ -69,7 +69,7 @@ environment falls into one of three categories:
 \end{itemize}
 
 OPC and UPC both describe point clouds in the cartesian coordinate system. The primary difference is that the 3D coordinates inside
-an organized point cloud are saved in a 2D grid, while the unorganized cloud resembles an unsorted 1D array.\\
+an \textit{organized} point cloud are saved in a 2D grid, while the \textit{unorganized} point cloud resembles an unsorted 1D array.\\
 Like OPC, depth images are a 2D grid of values. However, in contrast to the 3D coordinates of an OPC, the data points of depth images
 are the distances to the sensor.
 
@@ -100,29 +100,33 @@ effort (see Figure~\ref{fig:planerecnet}).
 % \textbf{\textcolor{red}{output types mit BG abgleichen}}
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|c|c}
-        \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format} \\ \hline %& \textbf{Learning-Based} \\ \hline%& \textbf{Availability} \\ \hline
-        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{3DKHT} \cite{LimbergerOliveira2015HT3D}                    & UPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               \\  %& N                       \\ %& Y                   \\ \hline
-        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & $n, d$                \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers               \\  %& N                       \\ %& N                     \\ \hline
-        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & $n, d$                \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & SM                    \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & $n, d$                \\  %& Y                       \\ %& Y                     \\ \hline
+    \begin{tabular}{c|c|c|c}
+        \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Section}            \\ \hline %& \textbf{Learning-Based} \\ \hline%& \textbf{Availability} \\ \hline
+        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               & \ref{subsec:bg-rspd}        \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               & \ref{subsec:bg-ops}         \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{3DKHT} \cite{LimbergerOliveira2015HT3D}                  & UPC                 & inliers               & \ref{subsec:bg-3dkht}       \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               & \ref{subsec:bg-obrg}        \\  %& N                       \\ %& Y                   \\ \hline
+        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               & \ref{subsec:bg-peac}        \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & $n, d$                & \ref{subsec:bg-cape}        \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers               & \ref{subsec:bg-schrg}       \\  %& N                       \\ %& N                     \\ \hline
+        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               & \ref{subsec:bg-dkht}        \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & \ref{subsec:bg-ddff}        \\  %& N                       \\ %& Y                     \\ \hline
+        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & $n, d$                & \ref{subsec:bg-planenet}    \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & SM                    & \ref{subsec:bg-planerecnet} \\  %& Y                       \\ %& Y                     \\ \hline
+        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & $n, d$                & \ref{subsec:bg-planercnn}   \\  %& Y                       \\ %& Y                     \\ \hline
     \end{tabular}
-    \caption{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of input.}
+    \caption{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of input.
+        The rightmost column provides the placement within this work.}
     \label{tab:algos}
 \end{table}
-
 Addressing the criterion of input type, we are only interested in performing plane detection in complete environments.
-Because unorganized point clouds are not limited to a snapshot of a scene, they are more suitable for capturing entire environments.
-For that reason, we consider organized point clouds or images inappropriate for this work because they do not offer a complete view on a scene.
-We, therefore, exclude  \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
+Each update published by RTAB-MAP is the union of new data and the current state of the recorded map. RTAB-MAP publishes this update
+in form of an \textit{unorganized} point cloud (see Figure~\ref{fig:rtabmap}).
+To perform plane detection with an algorithm that expects an \textit{organized} point cloud as input, the UPC has to be transformed into an OPC.
+This transformation is not-trivial and involves the projection of 3D coordinates onto a sphere based on a set of sensor parameters.
+An exemplary implementation thereof is included in the lidar toolbox of MATLAB\footnote{\href{https://de.mathworks.com/help/lidar/ug/unorgaized-to-organized-pointcloud-conversion.html}{https://de.mathworks.com/help/lidar/ug/unorgaized-to-organized-pointcloud-conversion.html}}.
+However, this transformation neglects the global structure of the environment, as it returns a two-dimensional representation of the environment.
+Therefore, we focus on \textit{unorganized} point clouds in this work and exclude \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
 
 Secondly, the detected planes need to be in the same format because, even for the same plane, different representations could very well lead to different results.
 Assume a plane in cartesian form and a plane represented by its inliers. The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
@@ -181,41 +185,44 @@ Through extensive research of current literature, we compiled a list of popular 
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|c|c|c|c}
-        \textbf{Dataset}                                                                                                                                                                      & \textbf{Scene Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
-        \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                      & UPC                   & Y             & Y               & objects     \\
-        \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      \\
-        \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      \\
-        \textbf{SYNBEP}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      \\
-        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           \\
-        \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      \\
-        \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     \\
-        \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  \\
-        \textbf{SUN}         \cite{7298655}                                                                                                                                                   & DI                    & Y             & Y               & objects     \\
-        \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory
+    \begin{tabular}{c|c|c|c|c|c}
+        \textbf{Dataset}                                                                                                                                                                      & \textbf{Scene Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} & \textbf{Section}         \\ \hline
+        \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                      & UPC                   & Y             & Y               & objects     & \ref{subsec:bg-stanford} \\
+        \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      & \ref{subsec:bg-Leica}    \\
+        \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      & \ref{subsec:bg-Kinect}   \\
+        \textbf{SYNBEP}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      & \ref{subsec:bg-SYNBEP}   \\
+        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           & \ref{subsec:bg-ARCO}     \\
+        \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      & \ref{subsec:bg-segcomp}  \\
+        \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     & \ref{subsec:bg-NYU}      \\
+        \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  & \ref{subsec:bg-ICL}      \\
+        \textbf{SUN}         \cite{7298655}                                                                                                                                                   & DI                    & Y             & Y               & objects     & \ref{subsec:bg-SUN}      \\
+        \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory  & \ref{subsec:bg-TUM}      \\ \hline
+        \textbf{FIN (ours)}                                                                                                                                                                   & UPC                   & Y             & Y               & planes      & \ref{sec:finimpl}
     \end{tabular}
-    \caption[Popular Datasets]{Popular Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
+    \caption[Popular Datasets]{Plane detection Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
         Note, that the synthetic datasets (e.g., SegComp and SYNBEP) represent neither indoor nor outdoor scenes, hence the "/" in
         the respective table entries. The datasets are clustered by their type of format. Moreover, the remaining order is arbitrary.
+        The rightmost column provides the placement within this work.
+        Note, that we include our dataset (FIN) in this table for completeness reasons.
     }
     \label{tab:datasets}
 \end{table}
-
-In Subsection~\ref{subsec:pdaselect}, we determine unorganized point clouds as the type of input. Furthermore, we focus on plane detection in real environments in this work.
+\textbf{\textcolor{red}{strich drunter, ours (FIN)}}
+In Subsection~\ref{subsec:pdaselect}, we determine \textit{unorganized} point clouds as the type of input. Furthermore, we focus on plane detection in real environments in this work.
 Because most datasets do not conform to these two requirements, only \textit{2D-3D-S} and \textit{Leica} remain.
-Since we focus on plane detection in indoor environments, \textit{Leica} also ceases to be an option.
+Since we focus on plane detection in indoor environments, \textit{Leica} ceases to be an option.
 Thus, we choose \textit{2D-3D-S} as the dataset for the evaluation.
 % \textcolor{red}{\\beispiel bilder von 2d3ds ?}\newline
 
 Nonetheless, we cannot use the provided ground truth of \textit{2D-3D-S} because it represents the segmented scene on the level of objects, rather than planes in the scene.
-Consequently, we create an appropriate ground truth by manual segmentation of all planes in a given scene. 
+Consequently, we create an appropriate ground truth by manual segmentation of all planes in a given scene.
 We outline the details thereof in Section~\ref{sec:gtseg}.
 
-Lastly, \textit{2D-3D-S} does not inherit any temporal component, i.e., the unorganized point clouds do not grow incrementally over time.
+Lastly, \textit{2D-3D-S} does not inherit any temporal component, i.e., the \textit{unorganized} point clouds do not grow incrementally over time.
 To the best of our knowledge, there exists no dataset that meets the above criteria and, additionally, provides a plane-focused ground truth.
-Therefore, we record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg, 
+Therefore, we record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg,
 henceforth referred to as the \textit{FIN} dataset.
- 
+
 
 
 To perform a thorough comparison between the \textit{FIN} and \textit{2D-3D-S}, and, subsequently, between the static and the dynamic dataset, we record a scene for each of the following scene types:
@@ -274,21 +281,20 @@ we give two definitions of \textit{real-time}.
 
 In general, and without taking the algorithms internal structure into consideration, we have to consider possible
 hardware limitations, data flow, and how often it is needed to perform calculations, e.g., how quickly the SLAM algorithm
-updates the map (Figure~\ref{fig:concept}, [2]) or how frequent new planes are needed (Figure~\ref{fig:concept}, [4]). 
-\textbf{\textcolor{red}{Since the movement of a user is highly contextual, we instead focus on the software and hardware restrictions. (useful?)}}
+updates the map (Figure~\ref{fig:concept}, [2]) or how frequent new planes are needed (Figure~\ref{fig:concept}, [4]).
 
 The recorded raw data is not directly sent to the plane detection algorithm but instead given to RTAB-MAP, which then performs
 calculations to update and publish the map.
 Therefore, the upper limit is the frequency of how often RTAB-MAP publishes those updates, which by default is once per second.
 
-\paragraph{Total Real-Time}
+\paragraph{Total Real-Time $RT_{tot}$}
 According to this upper limit of RTAB-MAP, we consider an algorithm \textit{totally Real-Time} applicable, if it achieves an average frame
 rate of minimum 1, e.g., the total processing time of an algorithm lies under one second. In the remainder of this work, we
-use \textit{total Real-Time} and $RT_{tot}$ interchangeably. 
+use \textit{total Real-Time} and $RT_{tot}$ interchangeably.
 
-\paragraph{Real-Time Plane Calculation}
+\paragraph{Real-Time Plane Calculation $RT_{calc}$}
 Being a subset of \textit{totally Real-Time applicability, Real-Time Plane Calculation} determines the real-time applicability if the processing time of an algorithm
-\textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. Like $RT_{tot}$, we use 
+\textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. Like $RT_{tot}$, we use
 \textit{Real-Time Plane Calculation} and $RT_{calc}$ interchangeably.
 
 %TODO  Eig nur needed wenn die algos langsamer sind als 1s ODER sollte die cloud extrem wachsen kann man sich auf die 6 meter beschränken, erstmal aber nicht}\\
@@ -303,10 +309,10 @@ Being a subset of \textit{totally Real-Time applicability, Real-Time Plane Calcu
 Many applications have constraints in the form of a temporal component. Augmented or Virtual Reality applications that include plane detection
 are no exception. In addition to time constraints, good quality is usually tightly coupled to expensive sensors.
 In this work, we aim to evaluate the quality of real-time plane detection algorithms under the use of more affordable hardware, i.e., Intel RealSense.
-At the beginning of this chapter, we state that three aspects are required for this evaluation, namely plane detection algorithms, a dataset, and a definition 
+At the beginning of this chapter, we state that three aspects are required for this evaluation, namely plane detection algorithms, a dataset, and a definition
 of real-time.
-The selection of the best plane detection algorithm, however, is non-trivial. After defining meaningful criteria for objective judgement, we 
+The selection of the best plane detection algorithm, however, is non-trivial. After defining meaningful criteria for objective judgement, we
 select appropriate plane detection algorithms. Moreover, we select two datasets, one of which is a novel creation,
- and present two definitions of \textit{real-time} namely $RT_{tot}$ and $RT_{calc}$.
+and present two definitions of \textit{real-time} namely $RT_{tot}$ and $RT_{calc}$.
 In Chapter~\ref{chap:eval}, we perform the evaluation.
 \end{document}

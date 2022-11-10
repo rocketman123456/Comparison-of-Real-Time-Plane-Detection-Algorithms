@@ -35,7 +35,9 @@ RTAB-MAP's general workflow is shown below in Figure~\ref{fig:rtabmap}:
 \begin{figure}[!h]
     \centering
     \includegraphics[width=15 cm]{images/rtabmap.png}
-    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's main node. Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
+    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's main node. Note, that the \textit{Point Cloud} returned by the \textit{Global Map Assembling} 
+    is an unorganized point cloud (see Section~\ref{sec:dataformats}).   
+    Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
     \label{fig:rtabmap}
 \end{figure}
 
@@ -65,6 +67,10 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System \footn
 
 
 \section{Data Formats}
+In the following chapters, we often refer to different data representations. Specifically, the data that is given into a plane detection algorithm, and 
+the exportation format of the planes are vital. The following subsections provide necessary information and further distinctions.
+
+
 \label{sec:dataformats}
 \subsection{Common Input Types}
 Usually, the data representation of the recorded environment falls into one of three categories:
@@ -107,8 +113,7 @@ omit such values. Possible reasons for invalid pixels include points too far awa
         the input type allows for invalid values.}
     \label{tab:inputs}
 \end{table}
-It is worth noting that, in the literature, the terms "depth image" and "organized point cloud" are used somewhat
-interchangeably.
+It is worth noting that, in the literature, the terms "depth image" and "organized point cloud" are used interchangeably.
 
 \subsection{Common Plane Formats}
 
@@ -116,7 +121,6 @@ interchangeably.
 \textbf{\textcolor{red}{TODO}}
 
 \section{Plane Detection}
-\paragraph*{introduction}
 The field of plane detection has been around for decades.
 Most methods of detecting planar regions in unorganized point clouds are based on one of three main categories \cite{LimbergerOliveira2015HT3D, Araújo_Oliveira_2020}:
 \begin{itemize}
@@ -209,6 +213,7 @@ In the last phase, the previously grown patches are merged. Two planar patches $
 This phase returns all maximally merged planar patches, i.e. the final planes.
 
 \subsection{Oriented Point Sampling}
+\label{subsec:bg-ops}
 Oriented Point Sampling (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized point cloud as input.
 
 \textbf{\textcolor{red}{more detail}}
@@ -227,7 +232,8 @@ This process is repeated until the number of remaining points falls below a pred
     \item re-estimate normals after merge
 \end{itemize}
 
-\subsection{3D Kernel-based Hough Transform}\label{sub:3dkht}
+\subsection{3D Kernel-based Hough Transform}
+\label{subsec:bg-3dkht}
 With the 3D Kernel-based Hough Transform (3D-KHT),
 \citeauthor{LimbergerOliveira2015HT3D}\cite{LimbergerOliveira2015HT3D} propose a hough transform-based plane detection method,
 which accepts unorganized point clouds as input \cite{LimbergerOliveira2015HT3D}.
@@ -351,6 +357,7 @@ The region growing is followed by another \textit{agglomerative hierarchical clu
 
 
 \subsection{Fast Cylinder and Plane Extraction}
+\label{subsec:bg-cape}
 Fast Cylinder and Plane Extraction (CAPE)~\cite{Proença_Gao_2018} is a region growing-based algorithm that detects
 planes and cylinders in organized point clouds.
 The authors propose this algorithm as an extension of their Probabilistic Visual Odometry Framework~\cite{Proenca_Gao_2018}.
@@ -417,6 +424,7 @@ the segment $S$ if:
 where $k$ is a constant. The authors use $k=9$ in their work.
 
 \subsection{Plane Extraction using Spherical Convex Hulls}
+\label{subsec:bg-schrg}
 As the name suggests, Plane Extraction using Spherical Convex Hulls (SCH-RG) employs spherical convex hulls to
 detect planes in organized point clouds.
 The primary concept behind this method is that the planes are not parameterized, but rather represented as
@@ -451,6 +459,7 @@ Lastly, dilation is performed to eliminate holes in planes. This is not further 
 
 
 \subsection{Depth Kernel-based Hough Transform}
+\label{subsec:bg-dkht}
 Depth Kernel-based Hough Transform (D-KHT) \cite{Vera_Lucio_Fernandes_Velho_2018} is a Hough transform-based plane detection
 algorithm that accepts depth images as input.
 
@@ -544,6 +553,7 @@ Moreover, they are parameterized by a center point, which is defined by $\rho$, 
 
 
 \subsection{Depth Dependent Flood Fill}
+\label{subsec:bg-ddff}
 \textbf{\textcolor{red}{another case of "nicht perfekt verstanden, daher zu lang". reicht aber als erste iteration}}
 Depth Dependent Flood Fill (DDFF)~\cite{Roychoudhury_Missura_Bennewitz_2021_new} is a region growing-based algorithm that detects planes in organized point clouds.
 The algorithm builds upon and improves their previous method~\cite{Roychoudhury_Missura_Bennewitz_2021_old}.
@@ -600,6 +610,7 @@ In both passes, horizontal strips of non-assigned pixels are detected. If the ve
 we mark all unmarked pixels with the same label.
 
 \subsection{PlaneNet}
+\label{subsec:bg-planenet}
 PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} ist a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.
 
 \textbf{\textcolor{red}{hier würde sich wahrscheinlich die grafik anbieten}}
@@ -631,7 +642,7 @@ PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} ist a deep learning-based ap
 \end{itemize}
 
 \subsection{PlaneRecNet}
-\label{subsec:planerecnet}
+\label{subsec:bg-planerecnet}
 PlaneRecNet~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images
 as input.
 \begin{figure}[H]
@@ -682,6 +693,7 @@ segmentation and depth prediction.
 
 
 \subsection{PlaneRCNN}
+\label{subsec:bg-planercnn}
 RCNN~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019} is a deep neural architecture that detects planar
 regions and reconstructs a piecewise planar depth map from RGB-Images.
 
@@ -753,7 +765,6 @@ dataset. The individual datasets are outlined in the following subsections.
 %     \label{tab:datasets}
 % \end{table}
 
-\subsection{SegComp}
 \subsection{2D-3D-S}
 \label{subsec:bg-stanford}
 \textit{2D-3D-S} was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
@@ -762,53 +773,63 @@ The dataset includes a wide range of point cloud sizes, with a minimum of $8\cdo
 Furthermore, the average amount of points per scene is ${\sim}10^6$ with an average file size of ${\sim}34mb$.
 
 \textbf{\textcolor{red}{diese sätze eignen sich eher im concept. aber: ich sehe auch keinen vorteil
-        sie drin zu lassen }}
+sie drin zu lassen }}
 Furthermore, one could argue that an uneven distribution of scene types introduces a particular bias. While it is true that the distribution is quite uneven, the dataset nevertheless reflects a realistic distribution of scene types since
 it is not realistic if a building contains only lecture halls. Inversely, it is appropriate to assume that an office complex contains a substantial amount of hallways needed to connect all offices.
 
 \textbf{\textcolor{red}{TODO datensätze umreissen, was , wie, wo, wieviel etc}}
-\subsection{NYU V2}
-\subsection{Kinect}
-\subsection{ICL-NUIM}
-\subsection{SYNBEP}
-\subsection{ARCO}
-\subsection{SUN}
 \subsection{Leica}
+\label{subsec:bg-Leica}
+\subsection{Kinect}
+\label{subsec:bg-Kinect}
+\subsection{SYNBEP}
+\label{subsec:bg-SYNBEP}
+\subsection{ARCO}
+\label{subsec:bg-ARCO}
+\subsection{SegComp}
+\label{subsec:bg-segcomp}
+\subsection{NYU V2}
+\label{subsec:bg-NYU}
+\subsection{ICL-NUIM}
+\label{subsec:bg-ICL}
+\subsection{SUN}
+\label{subsec:bg-SUN}
 \subsection{TUM}
+\label{subsec:bg-TUM}
 
 
 \section{Evaluation Metrics}
 \label{sec:metrics}
 Wenn man sachen segmentiert oder muster erkennen möchte usw. benutzt man oft zur evaluierung metriken, die die qualität der benutzten methode beschreiben.
-Usual metrics are \textit{precision, recall} and the \textit{f1-score}.
-In general, \textit{precision} describes how many of the results are relevant, i.e., the percentage of correctly calculated values(see Eq.~\ref{eq:prec}). \textit{Recall} describes the ratio of relevant results to all relevant data, i.e.
-the likelihood of a result being relevant(see Eq.~\ref{eq:rec}). Lastly, the \textit{f1-score} is the harmonic mean of the former two metrics (see Eq.~\ref{eq:f1}).
+Usual metrics are \textit{Precision, Recall} and the \textit{F1-Score}.
+In general, \textit{Precision} describes how many of the results are relevant, i.e., the percentage of correctly calculated values(see Eq.~\ref{eq:prec}). \textit{Recall} describes the ratio of relevant results to all relevant data, i.e.
+the likelihood of a result being relevant(see Eq.~\ref{eq:rec}). Lastly, the \textit{F1-Score} is the harmonic mean of the former two metrics (see Eq.~\ref{eq:f1}).
 
 \begin{equation}
-    Precision = \frac{|\{\text{correct values}\} \cap \{\text{obtained values}\}|}{|\{\text{obtained values}\}|}
+    Precision = \frac{\text{True Positive}}{\text{True Positive + False Positive}}
     \label{eq:prec}
 \end{equation}
 
 \begin{equation}
-    Recall = \frac{|\{\text{correct values}\} \cap \{\text{obtained values}\}|}{|\{\text{correct values}\}|}
+    Recall = \frac{\text{True Positive}}{\text{True Positive + False Negative}}
     \label{eq:rec}
 \end{equation}
 
 \begin{equation}
-    \text{\textit{f1-score}} = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}
+    \text{\textit{F1-Score}} = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}
     \label{eq:f1}
 \end{equation}
 
 
 
-In the context of this work, we calculate \textit{precision, recall} and the \textit{f1-score} as follows.
+In the context of this work, we calculate \textit{Precision, Recall} and the \textit{F1-Score} as follows.
 Required are the original point cloud $PC$, the corresponding list of ground truth planes $GT$ and the planes obtained from a plane detection algorithm $A$.
 First, we regularize the $PC$ to reduce complexity and to avoid proximity bias, because of the inverse relationship
 between distance to sensor and cloud density. This regularization is obtained through voxelization of the point cloud.
 With this voxel grid, we can now calculate corresponding sets of voxels for each list of points that represent a plane.
 In the next step, we compare our planes from $GT$ with $A$ to obtain a list of corresponding pairs of ground truth and found planes.
 A ground truth plane $gt_i$ is marked as \textit{detected} if any plane from the list of found planes achieves a minimum voxel overlap of $50\%$.
-With this list of correspondences, we calculate \textit{precision, recall} and the \textit{f1-score}.
+With this list of correspondences, we calculate \textit{Precision, Recall} and the \textit{F1-Score}.
 
 For a given ground truth plane $gt_j$ and a corresponding detected plane $a_k$ we can sort a given voxel $v_i$ into the categories
 \textit{True Positive(TP), False Positive(FP) and False Negative(FN)} as follows.
@@ -817,7 +838,7 @@ $$v_i \in gt_j \land v_i \notin a_k \Rightarrow v_{i} \in FN$$
 $$v_i \notin gt_j \land v_i \in a_k \Rightarrow v_{i} \in FP$$
 % TODO not needed right? $$v_i \notin gt_j \land v_i \notin a_k \Rightarrow v_{i} \in TN$$  , True Negative(TN)} 
 
-With those rules, we can calculate the precision, recall and F1 score like this:
+With those rules, we can calculate the Precision, Recall and F1 score like this:
 $$Precision = \frac{|TP|}{|TP|+|FP|}$$
 $$Recall = \frac{|TP|}{|TP|+|FN|}$$
 

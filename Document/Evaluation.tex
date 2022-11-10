@@ -89,8 +89,7 @@ the ranges of which are specified in the respective paragraph of each algorithm.
 For the \textit{2D-3D-S} experiment, we use the parameters of the provided implementation\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}. These parameters include the maximum octree level $l_O$,
 the minimum number of samples per leaf node $\varepsilon$, the Maximum Outlier Ratio $MOR$ per plane, the size of the nearest neighborhood $k$,
 the Maximum Normal Deviation $MND$, and the Maximum Distance to Plane $MDP$. Note that while $k=50$ is used in the respective paper~\cite[Section~3.3]{Araújo_Oliveira_2020},
-we use $k=30$ because, in our experience, it produces sufficient results while reducing the pre-processing time.
-\textbf{\textcolor{red}{reducing how much? - test it!}}
+$k=30$ the official implementation. We adopted the latter because, in our experience, it produces sufficient results while reducing the pre-processing time.
 
 \paragraph{FIN}
 Multiple experiments with different values had been conducted. The individual ranges are: $l_O \in [8,12], \varepsilon \in [15, 150],
@@ -262,7 +261,8 @@ For each scene of the \textit{2D-3D-S} dataset, the pairs of processing times an
         Note, that the y-axis is scaled logarithmically to the base of ten.}
     \label{fig:sizetimestanford}
 \end{figure}
-
+\textbf{\textcolor{red}{tpre in seconds}}
+\textbf{\textcolor{red}{figure noch höher machen!}}
 The computation times of 3D-KHT do not seem to strongly relate to the size of the point cloud.
 Both the duration of the pre-processing and the duration of the plane detection initially grow linearly
 but do not show a large growth even with large jumps in point cloud size.
@@ -361,7 +361,9 @@ takes the longest overall to compute a time step with more than $20s$.
 RSPD and 3D-KHT achieve \textit{real-time plane detection} applicability. Additionally, 3D-KHT also achieves \textit{total real-time} applicability,
 with an average total time of $0.43s$. OPS can almost be considered to be in $RT_{calc}$ with a subtotal
 calculation time of $1.02s$, thereby taking $0.02s$ too long.
-The average calculation times of OBRG show non-\textit{real-time} applicability.
+With an average pre-processing time of ${\sim}6s$ and an average of ${\sim}15s$ spent in plane detection, OBRG qualifies for 
+neither of the introduced definitions of \textit{real-time}.
+
 
 \paragraph{Relationship of Time and Size}
 As mentioned before, we consider the relationship between the size of the point cloud and the corresponding calculation time.
@@ -384,7 +386,7 @@ recording, and thus contains the most data.
         Note, that both y-axes are scaled logarithmically to the base of ten.}
     \label{fig:dynaudi}
 \end{figure}
-
+\textbf{\textcolor{red}{time frames erklären!}}
 The pre-processing times of RSPD and OBRG are noticeably proportional to the point cloud size.
 In contrast, for OPS and 3D-KHT, the pre-processing times seem to correlate with the plane detection times since
 both show similar spikes. The plane detection steps of OPS and 3D-KHT do not seem to depend on the point cloud size,

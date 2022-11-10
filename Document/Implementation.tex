@@ -9,7 +9,7 @@ We implement all algorithms and further architecture on a Lenovo IdeaPad 5 Pro,
 which runs Linux Ubuntu 20.04.5. The laptop has an AMD Ryzen 7 5800H CPU and 16 GB of RAM.
 
 We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}, as well as \textit{realsense-ros} with all additional dependencies.
-
+\textbf{\textcolor{red}{footnote, zu realsense ggf version number weil die neue nicht mehr funzt}}
 
 \section{Plane Detection Algorithms}
 In Chapter~\ref{chap:Background}, we provide detailed information about the algorithms we select in Section~\ref{sec:pdaselection}.
@@ -90,7 +90,7 @@ are included in the dataset.
 \begin{table}[H]
     \centering
     \resizebox{\textwidth}{!}{%
-        \begin{tabular}{c|c|c|c|c|c|c|c|c}
+        \begin{tabular}{c|c|c|c|c|c|c|c||c}
             Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL            & Planes \\ \hline
             auditorium       & -       & 2/2     & -       & -       & -       & -       & 2/2              & 70             \\ \hline
             conference room  & 2/2     & 1/1     & 1 /1    & 3/3     & 3/3     & 1/1     & 11/11            & 375            \\ \hline
@@ -107,10 +107,11 @@ are included in the dataset.
         \end{tabular}
     }
     \caption[2S-3D-S Statistics]{2D-3D-S dataset statistics. Shown are the number of scenes per category and for how many we created a ground truth ($\#GT/\#Total$).
-        Furthermore, the rightmost column reports the number of segmented planes per scene category.  }
+        Note, that the rightmost column reports the number of segmented planes per scene category and does \textit{not} 
+        correspond to other columns in this table.  }
     \label{tab:stanfordStats}
 \end{table}
-
+\textbf{\textcolor{red}{doppel trennung}}
 
 
 \section{FIN Dataset}
