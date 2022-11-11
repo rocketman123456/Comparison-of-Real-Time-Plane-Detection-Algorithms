@@ -654,43 +654,20 @@ as input.
     \label{fig:planerecnet}
 \end{figure}
 
-approach:
-focus on high quality global depth estimation so that plane params can be computed by PCA or RANSAC with the plane
-segmentation and depth prediction.
+The entire architecture of PlaneRecNet is portrayed in Figure~\ref{fig:planerecnet}.
+The general approach of this method is to calculate plane parameters through principle component analysis (PCA) or RANSAC
+after providing a precisely estimated depth.
+This is achieved by implementing two separate branches, namely \textit{Plane segmentation}, and \textit{Depth estimation}.
+Both branches obtain their input from a common precursor which is a \textit{ResNet}~\cite{He_Zhang_Ren_Sun_2015} backbone.
+The \textit{Plane segmentation} branch is a light weight configuration of SOLOV2~\cite{wang2020solov2} that has been modified to
+fit the context of plane detection.
+The \textit{Depth estimation} branch is a lightweight \textit{Feature Pyramid Network} (FPN)~\cite{Lin_Dollár_Girshick_He_Hariharan_Belongie_2017}.
+Within the \textit{Depth estimation} branch, a so-called \textit{Plane Prior Attention} (PPA) module is used to introduce 
+the mask candidates from the \textit{Plane segmentation} branch into the depth estimation. The PPA module is based
+on the \textit{Depth Attention Volume}~\cite{Huynh_Nguyen-Ha_Matas_Rahtu_Heikkila_2020}.
 
-\begin{itemize}
-    \item ResNet backbone output as input for the following
-    \item two seperate branches
-          \begin{itemize}
-              \item plane segmentation branch
-                    \begin{itemize}
-                        \item in general: leight weight configuration of SOLOV2 \cite{wang2020solov2} adapted for planar segmentation
-                        \item more specific: Feature pyramid network, followed by a prediction head and an instance mask head
-                        \item returns classes (obt. from pred. head)
-                        \item and masks obt. from non maximum suppresion of pred head and inst. mask head
-                    \end{itemize}
-              \item depth estimation branch
-                    \begin{itemize}
-                        \item repeated convolution and de-convolution
-                        \item after the first iteration: plane prior attention module with mask candidates as input which are obtained
-                              from dynamic convolution between the prediction head and instance mask head from the plane segmentation branch
-                        \item finally: returns depth
-                    \end{itemize}
-              \item plane prior attention module:
-                    \begin{enumerate}
-                        \item sigmoid function
-                        \item 1x1 convolution
-                        \item upscale(=0.25) with interpolation
-                        \item multiplication and concatenation of mask candidates with depth feature maps
-                        \item concatenation of monocular depth estimation and depth feature maps
-                        \item 3x3 convolution
-                        \item relu activation
-                    \end{enumerate}
-          \end{itemize}
-    \item i guess classes+masks are combined into planes
-    \item which is combined with the depth for a reconstructed scene
-\end{itemize}
-
+The estimated depth values and the segmentation masks, and classes, are then combined into a piecewise planar 
+scene reconstruction of the input image. No further refinement is implemented. 
 
 \subsection{PlaneRCNN}
 \label{subsec:bg-planercnn}
