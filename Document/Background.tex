@@ -323,7 +323,6 @@ First, the input organized point cloud is divided into non-overlapping nodes thr
 Each node in $G$ has a pre-determined height $H$ and width $W$, whereas $H$ and $W$ correspond to index ranges in the
 point cloud, i.e., each node contains a set of points.
 Then, $G$ is refined by removing the following types of nodes and corresponding edges~\cite[Section~III.A]{Feng_Taguchi_Kamat_2014}:
-\textbf{\textcolor{red}{zitieren um depth discontinuities sagen zu dürfen?}}
 \begin{enumerate}
     \item Nodes that contain NaN or 0 values, e.g., missing data,
     \item nodes that contain at least one point that is depth-discontinuous with its four neighbors, e.g., neighbors
@@ -370,20 +369,13 @@ Then, the planarity of the patches is tested, and a patch is considered non-plan
     \item The amount of NaN or 0 points exceeds a threshold, \textit{or}
     \item the patch has depth discontinuities,
 \end{itemize}
-whereas the depth discontinuities are only checked for pixels along two vertical and horizontal lines that pass through
-the patch center. \textbf{\textcolor{red}{satz ist schon sehr ähnlich zum original}}
+whereas the depth discontinuities are only checked for pixels on an axis-aligned cross through the center of the patch
 A plane is then fit through the patch inliers by performing principle component analysis (PCA). The plane's MSE
 corresponds to the lowest eigenvalue, and the plane's normal vector is its eigenvector.
-A patch is considered planar, if:
-\begin{equation}
-    MSE_{patch} < (\sigma_{\bar{z}} + \epsilon)^2,
-\end{equation}
-where $\sigma_{\bar{z}}$ is the estimated standard uncertainty of the patches' mean depth value. $\epsilon$ is a
-tolerance coefficient. \textbf{\textcolor{red}{satz ist schon sehr ähnlich zum original}}
+A patch is considered planar, if its mean depth value is within the standard deviation of all depth values in the patch, plus a tolerance.
 
 The normal vectors are converted from cartesian to spherical coordinates, thus being described by a polar angle, and
 an azimuth angle. These spherical normal vectors are then assorted into bins, thus building a histogram $H$.
-
 This histogram is now used for the region growing step.
 First, a set of patches $C$ of the most frequent bin in $H$ are obtained. Stop, if the most frequent bin
 yields fewer patches than a threshold $k_1$. The patch with the smallest MSE out of $C$ is chosen as a seed $s$.
@@ -554,7 +546,6 @@ Moreover, they are parameterized by a center point, which is defined by $\rho$, 
 
 \subsection{Depth Dependent Flood Fill}
 \label{subsec:bg-ddff}
-\textbf{\textcolor{red}{another case of "nicht perfekt verstanden, daher zu lang". reicht aber als erste iteration}}
 Depth Dependent Flood Fill (DDFF)~\cite{Roychoudhury_Missura_Bennewitz_2021_new} is a region growing-based algorithm that detects planes in organized point clouds.
 The algorithm builds upon and improves their previous method~\cite{Roychoudhury_Missura_Bennewitz_2021_old}.
 
@@ -611,35 +602,28 @@ we mark all unmarked pixels with the same label.
 
 \subsection{PlaneNet}
 \label{subsec:bg-planenet}
-PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} ist a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.
+PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} is a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.
 
-\textbf{\textcolor{red}{hier würde sich wahrscheinlich die grafik anbieten}}
-\begin{itemize}
-    \item built upon Dilated Residual Networks (DNR)
-    \item followed by three predicion tasks
-          \begin{enumerate}
-              \item plane parameters
-                    \begin{itemize}
-                        \item global average pooling, reduce feature map size to 1x1
-                        \item fully connected layer to produce Kx3 plane parameters. (K=10 in experiments)
-                        \item loss function: order agnostic, based on chamfer distance metric for regressed plane parameters
-                    \end{itemize}
-              \item segmentation mask
-                    \begin{itemize}
-                        \item start: pyramid pooling module
-                        \item then: convolution layer. produces K+1 channel likelihood maps for planar and non-planar surfaces
-                        \item finally: Dense conditional random field (DCRF), based on fast inference. meanfield iterations: 5/10 (training/testing)
-                        \item loss function: softmax cross entropy to supervise segmentation training (pixel level)
-                    \end{itemize}
-              \item non-planar depthmap
-                    \begin{itemize}
-                        \item start: pyramid pooling module
-                        \item followed by convolution layer, produces a 1-channel depthmap
-                        \item loss function: sum of squared depth differences between GT and predicted plane or non-planar
-                              depthmap (weighted by probabilities)
-                    \end{itemize}
-          \end{enumerate}
-\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/planenet.png}
+    \caption[PlaneNet Architecture]{The PlaneNet Architecture. Taken from the respective paper~\cite[Figure~2]{Liu_Yang_Ceylan_Yumer_Furukawa_2018}.}
+    \label{fig:planenet}
+\end{figure}
+
+
+The method implements a \textit{Dilated Residual Networks} (DRNs)~\cite{yu2017dilated} as a precursor for a total of three output branches. 
+These three branches predict 
+\begin{enumerate}
+    \item A set of plane parameters, 
+    \item a set of corresponding segmentation masks, \textit{and}
+    \item a non-planar depthmap,
+\end{enumerate}
+as portrayed in Figure~\ref{fig:planenet}. The DRN is followed by a global pooling, or a pyramid pooling step, depending on the prediction branch.
+To obtain a set of plane parameters, the global pooling is followed by a fully connected layer, which produces $K$ parameter triples. $K$ corresponds to the number of 
+expected planes within a scene. \citeauthor{Liu_Yang_Ceylan_Yumer_Furukawa_2018}\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} use $K=10$ during their experiments.
+A convolution layer is placed after the pyramid pooling the output of which is returned by the \textit{non-planar depthmap} branch. 
+An additional dense conditional random field (DCRF) is applied to obtain the segmentation masks.
 
 \subsection{PlaneRecNet}
 \label{subsec:bg-planerecnet}
@@ -648,9 +632,7 @@ as input.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/planerecnet.png}
-    \caption[PlaneRecNet Architecture]{The PlaneRecNet Architecture. Taken from the respective paper~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022}.
-        \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
-
+    \caption[PlaneRecNet Architecture]{The PlaneRecNet Architecture. Taken from the respective paper~\cite[Figure~1]{Xie_Shu_Rambach_Pagani_Stricker_2022}}.
     \label{fig:planerecnet}
 \end{figure}
 
@@ -659,7 +641,7 @@ The general approach of this method is to calculate plane parameters through pri
 after providing a precisely estimated depth.
 This is achieved by implementing two separate branches, namely \textit{Plane segmentation}, and \textit{Depth estimation}.
 Both branches obtain their input from a common precursor which is a \textit{ResNet}~\cite{He_Zhang_Ren_Sun_2015} backbone.
-The \textit{Plane segmentation} branch is a light weight configuration of SOLOV2~\cite{wang2020solov2} that has been modified to
+The \textit{Plane segmentation} branch is a lightweight configuration of SOLOV2~\cite{wang2020solov2} that has been modified to
 fit the context of plane detection.
 The \textit{Depth estimation} branch is a lightweight \textit{Feature Pyramid Network} (FPN)~\cite{Lin_Dollár_Girshick_He_Hariharan_Belongie_2017}.
 Within the \textit{Depth estimation} branch, a so-called \textit{Plane Prior Attention} (PPA) module is used to introduce 
@@ -677,42 +659,26 @@ regions and reconstructs a piecewise planar depth map from RGB-Images.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/planercnn.png}
-    \caption[PlaneRCNN Architecture]{The PlaneRCNN Architecture. Taken from the respective paper~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019}.
-        \textbf{\textcolor{red}{die grafik gibts evtl nochmal in scharf im repo}}}
+    \caption[PlaneRCNN Architecture]{The PlaneRCNN Architecture. Taken from the respective paper~\cite[Figure~2]{Liu_Kim_Gu_Furukawa_Kautz_2019}.}
+    \label{fig:planercnn}
 \end{figure}
 
-3 main components:
+The architecture of PlaneRCNN, as seen in Figure~\ref{fig:planercnn}, consists of three primary modules:
 \begin{enumerate}
-    \item plane detection network
-          \begin{itemize}
-              \item predicts 3d plane parameters and segmentation mask
-              \item built upon Mask-R-CNN. here: "planar" as object instance
-              \item maskrcnn detects instances and estimates segmentation masks
-              \item then, estimate plane normal and offset $d$:
-                    \begin{enumerate}
-                        \item predict normal per planar instance
-                        \item estimate depth map
-                        \item algebraically calculate plane offset \textbf{\textcolor{red}{formel?}}
-                    \end{enumerate}
-          \end{itemize}
-    \item segmentation refinement network
-          \begin{itemize}
-              \item takes the planar regions from 1. and optimizes the masks
-              \item uses convAccu: combines convolution layer and an accumulation scheme
-              \item aggregates information from all masks
-              \item at the end, refined plane masks are concatenated and compared against target
-                    masks with a cross entropy loss
-          \end{itemize}
-    \item warping loss module (only during training)
-          \begin{itemize}
-              \item uses a second angle on the same scene to ensure consistency
-              \item nearby view is 20 frames ahead during training
-              \item calculate nearby view by warping every pixel in the nearby view to the current one
-                    given the camera intrinsics
-              \item loss function is a simple absolute error between the current view and the
-                    warped nearby view.
-          \end{itemize}
+    \item The plane detection network,
+    \item a segmentation refinement network, \textit{and}
+    \item a warping loss module.
 \end{enumerate}
+The first module is built upon the semantic segmentation network MaskRCNN~\cite{he2017mask}. The module is modified to differentiate between "planar" and "non-planar" 
+object instances. In contrast to \textit{PlaneNet} (see Subsection~\ref{subsec:bg-planenet}), the number of planes to detect is not pre-determined. Moreover, 
+plane parameters and segmentation masks are calculated.
+
+The second module, namely the \textit{segmentation refinement network}, refines the extracted segmentation masks obtained from the \textit{plane detection network}.
+This is done by introducing non-locality into a U-Net~\cite{ronneberger2015u} by combining a convolution layer with an accumulation of feature volumes. The authors name this
+particular step the \textit{ConvAccu} module~\cite[Section~3.2]{Liu_Kim_Gu_Furukawa_Kautz_2019}.
+
+The \textit{warping loss module} implements a refinement step.  This module uses a second angle of the same view to ensure consistency. A view from 20 frames ahead is 
+projected into the current view to further refine the segmentation process. It is worth noting, that this is only performed during training to improve the accuracy.
 
 \section{Datasets}
 This section outlines a set of datasets popular in the evaluation of algorithms
