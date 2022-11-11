@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from classes import Result
 matplotlib.rcParams.update(
-    {'font.size': 26, 'figure.subplot.bottom': 0.06, 'figure.subplot.top': 0.95})
+    {'font.size': 40, 'figure.subplot.bottom': 0.06, 'figure.subplot.top': 0.95})
 root = 'Stanford3dDataset_v1.2_Aligned_Version'
 # algo -> [[size, pre, calc, post]]
 data = {'3DKHT': [],
@@ -38,7 +38,7 @@ for i in range(1, 7):
 print(f'{st = }')
 print(f'{round(st[0]/k)}/{round(st[1]/k)}')
 # exit()
-fig = plt.figure(figsize=[80, 30])
+fig = plt.figure(figsize=[45, 60])
 max_pre = -1
 max_calc = -1
 min_pre = 99
@@ -108,11 +108,13 @@ for i, algo in enumerate(data.keys()):
     if i != 3:
         ax.get_xaxis().set_visible(False)
     # ax.set_xscale('log')
-fig.text(0.06, 0.5, '$t_{pre}(s), t_{calc}(s), t_{post}(s), t_{tot}(s)$',
-         ha='center', va='center', rotation='vertical')
+fig.text(0.06, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
+         ha='center', va='center', rotation='vertical', fontdict={'fontsize':40 })
 fig.text(0.5, 0, 'File Size(mb)', ha='center',
          va='bottom', rotation='horizontal')
 
 fig.axes[0].legend(loc='lower right', fancybox=True, shadow=True, ncol=5)
 
-plt.show()
+plt.savefig("stanfordsvg.svg", format="svg")
+
+# plt.show()

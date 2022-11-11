@@ -15,7 +15,7 @@ import sys
 sys.path.append('/home/pedda/Documents/coding/OBRG/')
 import obrg
 import matplotlib
-matplotlib.rcParams.update({'font.size': 26, 'figure.subplot.bottom': 0.06,'figure.subplot.top': 0.95})
+matplotlib.rcParams.update({'font.size': 40, 'figure.subplot.bottom': 0.06,'figure.subplot.top': 0.95})
 
 
 def dyn_eval(path_to_subclouds: str, binaries_path: str):
@@ -203,7 +203,7 @@ def whatevs(path: str, algos=ALGOS):
         if not cfile.endswith('.txt'):
             continue
         sizes.append([os.path.getsize(os.path.join(path,cfile))/1000000, int(cfile[6:10])])
-    fig = plt.figure(figsize=[20, 15])
+    fig = plt.figure(figsize=[45,60])
     sizes.sort(key= lambda x: x[1])
     sizes = np.array(sizes)
     print(sizes[-1])
@@ -240,9 +240,9 @@ def whatevs(path: str, algos=ALGOS):
             ax.get_xaxis().set_visible(False)
             ax2.get_xaxis().set_visible(False)
         ax.set_yscale('log')
-        ax.plot(frames, data[:,1],marker='.', label = "$t_{pre}$")
-        ax.plot(frames, data[:,0],marker='.', label="$t_{calc}$")
-        ax.plot(frames, data[:,2],marker='.', label ="$t_{post}$")
+        ax.plot(frames, data[:,1],marker='.',linewidth=3, label = "$t_{pre}$")
+        ax.plot(frames, data[:,0],marker='.',linewidth=3, label="$t_{calc}$")
+        ax.plot(frames, data[:,2],marker='.',linewidth=3, label ="$t_{post}$")
         if algo not in ['RSPD','3DKHT']:
             ax.plot(frames, np.sum(data[:,:3], axis=1),
                     marker='.',  label='$t_{tot}$')
@@ -255,7 +255,7 @@ def whatevs(path: str, algos=ALGOS):
         ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
 
         # ax2.legend()
-    fig.text(0.06, 0.5, '$t_{pre}(s), t_{calc}(s), t_{post}(s), t_{tot}(s)$',
+    fig.text(0.06, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
          ha='center', va='center', rotation='vertical')
     fig.text(0.96, 0.5, '$size(mb)$', ha='center', va='center', rotation='vertical')
     fig.text(0.5,0, 'Individual Time Frames', ha='center', va='bottom', rotation='horizontal')
@@ -282,8 +282,8 @@ def whatevs(path: str, algos=ALGOS):
         else:
             ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
 
-
-    plt.show()
+    plt.savefig('dynaudi.svg',format='svg')
+    # plt.show()
     # plt.close()
     # return A
 

@@ -16,19 +16,22 @@ First, we present the metrics used for comparison, followed by an outline of the
 
 \subsection{Metrics}
 \label{subsec:metrics}
+The following two paragraphs detail the metrics we use in this evaluation. Note, that by using the term "time frame" or "time step", we refer to 
+an the state of the point
 \paragraph{Accuracy}
 To quantify the accuracy of the plane detection algorithms, we use the detected planes and the created ground truth to calculate the three following
 metrics: Precision, \textit{Recall}, and the F1-Score.
+We calculate the \textit{Precision}, as this reports the percentage of correctly detected points within the planes an algorithm returned.
+Similarly, we calculate the \textit{Recall} because it gives information about the percentage of correctly detected points in comparison to the number of 
+points that \textit{could} be detected.
+Using these metrics separately is problematic as we cannot expect the distribution of "plane" to "non-plane" to be even. 
+The \textit{F1-Score} is the harmonic mean of the \textit{Precision} and the \textit{Recall} and therefore measures the balance between the \textit{Precision} and
+\textit{Recall}. Intuitively, this means that an algorithmhas to yield sufficient \textit{Precision} and \textit{Recall} results to score 
+a sufficient \textit{F1-Score}. The \textit{F1-Score}, thereby, is the primary metric for the quantitative comparison of algorithms in this work. 
+However, we report the \textit{Precision} and the \textit{Recall} for thorough analysis.
 The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed in Section~\ref{sec:metrics}.
 Note that we use the detected planes for the calculation, however, we are not using them directly as a measure of performance due to the subjective
 nature of manual ground truth segmentation.
-\textbf{\textcolor{red}{todo:we calculate the precision..}}
-\textbf{\textcolor{red}{we calculate the recall..}}
-
-We calculate the \textit{F1-Score}, as it is the harmonic mean of the \textit{Precision} and the \textit{Recall}. In practice, this means that an algorithm
-has to yield sufficient \textit{Precision} and \textit{Recall} results to score a sufficient \textit{F1-Score} . The \textit{F1-Score}, thereby, is the primary metric
-for the quantitative comparison of algorithms in this work. However, we report the \textit{Precision} and the \textit{Recall} for thorough analysis.
-
 
 \paragraph{Time Measurements}
 \label{par:time}
@@ -73,7 +76,6 @@ the ranges of which are specified in the respective paragraph of each algorithm.
 
 
 \subsubsection{RSPD}
-\textbf{\textcolor{red}{die abkürzungen werden sicherlich im BG erklärt.}}
 \begin{table}[H]
     \centering
     \begin{tabular}{c|cccccc}
@@ -254,7 +256,7 @@ For each scene of the \textit{2D-3D-S} dataset, the pairs of processing times an
 % \end{figure}
 \begin{figure}[H]
     \centering
-    \def\svgwidth{\textwidth}
+    \def\svgwidth{0.9\textwidth}
     \input{images/stanfordpdf.pdf_tex}
     \caption[Time per Cloud size 2D-3D-S]{The time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$,
         post-processing $t_{post}$, and the total calculation time $t_{tot}$ per point cloud file size of the \textit{2D-3D-S} dataset.
@@ -378,7 +380,7 @@ recording, and thus contains the most data.
 
 \begin{figure}[H]
     \centering
-    \def\svgwidth{\textwidth}
+    \def\svgwidth{0.9\textwidth}
     % \input{images/dynaudi.pdf_tex}
     \input{images/dynaudi_crop.pdf_tex}
     \caption[Time Results Auditorium]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, post-processing

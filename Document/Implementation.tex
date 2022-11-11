@@ -8,9 +8,10 @@ It is necessary to perform all experiments on the same machine to ensure a consi
 We implement all algorithms and further architecture on a Lenovo IdeaPad 5 Pro,
 which runs Linux Ubuntu 20.04.5. The laptop has an AMD Ryzen 7 5800H CPU and 16 GB of RAM.
 
-We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}, as well as \textit{realsense-ros} with all additional dependencies.
-\textbf{\textcolor{red}{footnote, zu realsense ggf version number weil die neue nicht mehr funzt}}
-
+We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}\footnote{\href{http://wiki.ros.org/noetic}{http://wiki.ros.org/noetic}}, as well as 
+\textit{realsense-ros}\footnote{\href{https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy}{https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy}} with all additional dependencies.
+Note, that the version of \textit{realsense-ros} changed over the course of this work. 
+ 
 \section{Plane Detection Algorithms}
 In Chapter~\ref{chap:Background}, we provide detailed information about the algorithms we select in Section~\ref{sec:pdaselection}.
 The following subsections deal with the implementation details thereof. 
@@ -33,7 +34,7 @@ Lastly, the multi-processing API OpenMP\footnote{\href{https://www.openmp.org/}{
 \subsection{OBRG}
 \label{sec:impl-obrg}
 To our knowledge, no open-source implementation is available for the algorithm.
-We, therefore, use our own implementation.
+We, therefore, use our own implementation, which can be found on our Github repository\footnote{\href{https://github.com/lupeterm/OBRG}{https://github.com/lupeterm/OBRG}}.
 
 We implement the algorithm using python. We choose to write our own octree implementation for spatial subdivision of our point cloud, since
 the implementation of public libraries like \textit{open3d}~\cite{Zhou2018} are limited in terms of leaf node functionality.
@@ -118,7 +119,7 @@ are included in the dataset.
 \label{sec:finimpl}
 Reiterating Section~\ref{sec:datasets}, we select four scene types of the \textit{2D-3D-S} dataset for the recording of the self-created FIN
 dataset. Namely, these scene types are \textit{auditorium, conference room, hallway,} and \textit{office}.
-All scenes are recorded inside the \textit{Faculty of INformatik} (FIN) at Otto-von-Guericke-Universityin Magdeburg.
+All scenes are recorded inside the \textit{Faculty of INformatik} (FIN) at Otto-von-Guericke-University in Magdeburg.
 Running \textit{realsense-ros} and holding our cameras, we walk through the corresponding parts of the building while scanning to the best of our ability.
 We save each incremental map update to a file for further usage.
 
