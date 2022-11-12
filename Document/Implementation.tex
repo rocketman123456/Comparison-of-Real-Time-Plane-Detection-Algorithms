@@ -55,7 +55,6 @@ always planar, we cannot use them for the evaluation of plane detection algorith
 We use the open-source 3D point cloud and mesh processing software \textit{CloudCompare}\footnote{\href{https://www.danielgm.net/cc/}{https://www.danielgm.net/cc/}} to visualize a scene and manually segment included planes.
 Because we cannot assume all walls to be planar or that, e.g., the tops or three adjacent tables always form the same number of planes (see Figure~\ref{fig:tables}), we
 have to view each point cloud and segment the included planes manually. An exemplary before-and after-segmentation is shown below in Figure~\ref{fig:gtseg}.
-\textbf{\textcolor{red}{bounding boxes der GT, oder anderer plot wäre gut - da sieht man nischt}}
 \begin{figure} [H]
     \begin{subfigure}{0.5\textwidth}
         \centering
@@ -112,7 +111,6 @@ are included in the dataset.
         correspond to other columns in this table.  }
     \label{tab:stanfordStats}
 \end{table}
-\textbf{\textcolor{red}{doppel trennung}}
 
 
 \section{FIN Dataset}
@@ -124,22 +122,23 @@ Running \textit{realsense-ros} and holding our cameras, we walk through the corr
 We save each incremental map update to a file for further usage.
 
 Given the differences in spatial dimension, the recordings of each scene also differ in length and size.
-The auditorium scene has a total of 296 individual time frames, the conference room scene has 113, the hallway has a total of
-174, and the office has 125 time frames.
+The auditorium scene has a total of 296 individual time frames, the conference room scene has 113, the hallway has a total of 174, 
+and the office has 125 time frames.
 The FIN dataset, thereby, has a total of 708 time frames.
 
 Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
 By creating a ground truth for only the last frame of each scene, we substantially reduce the time invested in this task.
-To prepare for the evaluation of a map $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$, as shown in
-Figure~\ref{fig:dynGT}.
+To prepare for the evaluation of a point cloud $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$.
+Figure~\ref{fig:dynGT} shows the final point cloud and the manually created ground truth $gt_{end}$ of the \textit{hallway} scene on the far right. 
+On the left thereof, two point clouds of earlier stages of the recording are shown, as well as their dynamically created ground truth. 
 We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
-% Furthermore, we remove planes from the ground truth if the number of included points falls short of a threshold. 
-\textbf{\textcolor{red}{for the love of god, please change this figure before submitting}}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=15 cm]{images/dynamic_eval.png}
-    \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation. All planes that are included in \textit{Ground Truth} are cropped depending on
-        the available point cloud at each time \textit{t} }
+    \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation shown by the example of three point clouds from the
+    \textit{hallway} scene, as well as the corresponding ground truth.}
+
     \label{fig:dynGT}
 \end{figure}
 
