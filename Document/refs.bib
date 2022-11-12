@@ -11,525 +11,254 @@
 % · ISBN, ISSN, DOI, location, date, editors and others are optional and usually not included (if you include them be consistent and include them for all references)
 
 
-@inproceedings{8461000,
-  author    = {Droeschel, David and Behnke, Sven},
-  booktitle = {2018 IEEE International Conference on Robotics and Automation (ICRA)},
-  title     = {Efficient Continuous-Time SLAM for 3D Lidar-Based Online Mapping},
-  year      = {2018},
-  volume    = {},
-  number    = {},
-  pages     = {5000-5007},
-  doi       = {10.1109/ICRA.2018.8461000}
-}
-
- @article{Artal_Montiel_Tardos_2015,
-  title        = {ORB-SLAM: A Versatile and Accurate Monocular SLAM System},
-  volume       = {31},
-  issn         = {1941-0468},
-  doi          = {10.1109/TRO.2015.2463671},
-  abstractnote = {This paper presents ORB-SLAM, a feature-based monocular simultaneous localization and mapping (SLAM) system that operates in real time, in small and large indoor and outdoor environments. The system is robust to severe motion clutter, allows wide baseline loop closing and relocalization, and includes full automatic initialization. Building on excellent algorithms of recent years, we designed from scratch a novel system that uses the same features for all SLAM tasks: tracking, mapping, relocalization, and loop closing. A survival of the fittest strategy that selects the points and keyframes of the reconstruction leads to excellent robustness and generates a compact and trackable map that only grows if the scene content changes, allowing lifelong operation. We present an exhaustive evaluation in 27 sequences from the most popular datasets. ORB-SLAM achieves unprecedented performance with respect to other state-of-the-art monocular SLAM approaches. For the benefit of the community, we make the source code public.},
-  number       = {5},
-  journal      = {IEEE Transactions on Robotics},
-  author       = {Mur-Artal, Raul and Montiel, J. M. M. and Tardos, Juan D.},
-  year         = {2015},
-  month        = {Oct},
-  pages        = {1147–1163}
-}
-
- 
- @inproceedings{Usenko_Engel_Stuckler_Cremers_2016,
-  address      = {Stockholm},
-  title        = {Direct visual-inertial odometry with stereo cameras},
-  isbn         = {978-1-4673-8026-3},
-  url          = {http://ieeexplore.ieee.org/document/7487335/},
-  doi          = {10.1109/ICRA.2016.7487335},
-  abstractnote = {We propose a novel direct visual-inertial odometry method for stereo cameras. Camera pose, velocity and IMU biases are simultaneously estimated by minimizing a combined photometric and inertial energy functional. This allows us to exploit the complementary nature of vision and inertial data. At the same time, and in contrast to all existing visual-inertial methods, our approach is fully direct: geometry is estimated in the form of semi-dense depth maps instead of manually designed sparse keypoints. Depth information is obtained both from static stereo – relating the ﬁxed-baseline images of the stereo camera – and temporal stereo – relating images from the same camera, taken at different points in time. We show that our method outperforms not only vision-only or loosely coupled approaches, but also can achieve more accurate results than state-of-the-art keypoint-based methods on different datasets, including rapid motion and signiﬁcant illumination changes. In addition, our method provides high-ﬁdelity semi-dense, metric reconstructions of the environment, and runs in real-time on a CPU.},
-  booktitle    = {2016 IEEE International Conference on Robotics and Automation (ICRA)},
-  publisher    = {IEEE},
-  author       = {Usenko, Vladyslav and Engel, Jakob and Stuckler, Jorg and Cremers, Daniel},
-  year         = {2016},
-  month        = {May},
-  pages        = {1885–1892},
-  language     = {en}
-}
- 
-  @inproceedings{Harmat_Sharf_Trentini_2012,
-  address      = {Berlin, Heidelberg},
-  title        = {Parallel Tracking and Mapping with Multiple Cameras on an Unmanned Aerial Vehicle},
-  isbn         = {978-3-642-33509-9},
-  abstractnote = {This paper presents the development and testing of a new multi-camera system designed for tracking and mapping aboard a small unmanned aerial vehicle. In order to be resistant to failure from loss of tracking, the large field of view cameras are positioned in such a way as to cover a large portion of the vehicle’s surroundings. The proposed algorithm is tested indoors, and it is found that the system achieves good performance. More importantly, it is shown that the system is resistant to failure by comparing it to a system with fewer cameras that loses tracking during certain portions of the test.},
-  booktitle    = {Intelligent Robotics and Applications},
-  publisher    = {Springer Berlin Heidelberg},
-  author       = {Harmat, Adam and Sharf, Inna and Trentini, Michael},
-  editor       = {Su, Chun-Yi and Rakheja, Subhash and Liu, Honghai},
-  year         = {2012},
-  pages        = {421–432}
-}
-
-@inproceedings{Leutenegger_Furgale_Rabaud_Chli_Konolige_Siegwart_2013,
-  title        = {Keyframe-Based Visual-Inertial SLAM using Nonlinear Optimization},
-  isbn         = {978-981-07-3937-9},
-  url          = {http://www.roboticsproceedings.org/rss09/p37.pdf},
-  doi          = {10.15607/RSS.2013.IX.037},
-  abstractnote = {The fusion of visual and inertial cues has become popular in robotics due to the complementary nature of the two sensing modalities. While most fusion strategies to date rely on ﬁltering schemes, the visual robotics community has recently turned to non-linear optimization approaches for tasks such as visual Simultaneous Localization And Mapping (SLAM), following the discovery that this comes with signiﬁcant advantages in quality of performance and computational complexity. Following this trend, we present a novel approach to tightly integrate visual measurements with readings from an Inertial Measurement Unit (IMU) in SLAM. An IMU error term is integrated with the landmark reprojection error in a fully probabilistic manner, resulting to a joint non-linear cost function to be optimized. Employing the powerful concept of ‘keyframes’ we partially marginalize old states to maintain a bounded-sized optimization window, ensuring real-time operation. Comparing against both vision-only and loosely-coupled visual-inertial algorithms, our experiments conﬁrm the beneﬁts of tight fusion in terms of accuracy and robustness.},
-  booktitle    = {Robotics: Science and Systems IX},
-  publisher    = {Robotics: Science and Systems Foundation},
-  author       = {Leutenegger, Stefan and Furgale, Paul and Rabaud, Vincent and Chli, Margarita and Konolige, Kurt and Siegwart, Roland},
-  year         = {2013},
-  month        = {Jun},
-  language     = {en}
-}
-
- @article{MurArtal_Tardos_2017,
-  title        = {ORB-SLAM2: An Open-Source SLAM System for Monocular, Stereo, and RGB-D Cameras},
-  volume       = {33},
-  issn         = {1941-0468},
-  doi          = {10.1109/TRO.2017.2705103},
-  abstractnote = {We present ORB-SLAM2, a complete simultaneous localization and mapping (SLAM) system for monocular, stereo and RGB-D cameras, including map reuse, loop closing, and relocalization capabilities. The system works in real time on standard central processing units in a wide variety of environments from small hand-held indoors sequences, to drones flying in industrial environments and cars driving around a city. Our back-end, based on bundle adjustment with monocular and stereo observations, allows for accurate trajectory estimation with metric scale. Our system includes a lightweight localization mode that leverages visual odometry tracks for unmapped regions and matches with map points that allow for zero-drift localization. The evaluation on 29 popular public sequences shows that our method achieves state-of-the-art accuracy, being in most cases the most accurate SLAM solution. We publish the source code, not only for the benefit of the SLAM community, but with the aim of being an out-of-the-box SLAM solution for researchers in other fields.},
-  number       = {5},
-  journal      = {IEEE Transactions on Robotics},
-  author       = {Mur-Artal, Raúl and Tardós, Juan D.},
-  year         = {2017},
-  month        = {Oct},
-  pages        = {1255–1262}
-}
- 
- 
- @article{Hulik_Spanel_Smrz_Materna_2014,
-  title        = {Continuous plane detection in point-cloud data based on 3D Hough Transform},
-  volume       = {25},
-  issn         = {10473203},
-  doi          = {10.1016/j.jvcir.2013.04.001},
-  abstractnote = {This paper deals with shape extraction from depth images (point clouds) in the context of modern robotic vision systems. It presents various optimizations of the 3D Hough Transform used for plane extraction from point cloud data. Presented enhancements of standard methods address problems related to noisy data, high memory requirements for the parameter space and computational complexity of point accumulations. The realised robust plane detector beneﬁts from a continuous point cloud stream generated by a depth sensor over time. It is used for iterative reﬁnements of the results. The system is compared to a state-of-the-art RANSAC-based plane detector from the Point Cloud Library (PCL). Experimental results show that it overcomes the PCL alternative in the stability of plane detection and in the number of negative detections. This advantage is crucial for robotic applications, e.g., when a robot approaches a wall, it can be consistently recognized. The paper concludes with a discussion of further promising optimisation that will be implemented as a future step.},
-  number       = {1},
-  journal      = {Journal of Visual Communication and Image Representation},
-  author       = {Hulik, Rostislav and Spanel, Michal and Smrz, Pavel and Materna, Zdenek},
-  year         = {2014},
-  month        = {Jan},
-  pages        = {86–97},
-  language     = {en}
+@article{Araújo_Oliveira_2020,
+  author  = {Araújo, Abner M. C. and Oliveira, Manuel M.},
+  title   = {A robust statistics approach for plane detection in unorganized point clouds},
+  journal = {Pattern Recognition},
+  pages   = {107-115},
+  volume  = {100},
+  year    = {2020}
 }
 
 @article{LimbergerOliveira2015HT3D,
   author  = {Frederico A. Limberger and Manuel M. Oliveira},
   title   = {Real-Time Detection of Planar Regions in Unorganized Point Clouds},
   journal = {Pattern Recognition},
-  year    = {2015},
+  pages   = {2043-2053},
   volume  = {48},
   number  = {6},
-  pages   = {2043-2053},
-  doi     = {http://dx.doi.org/10.1016/j.patcog.2014.12.020},
-  issn    = {0031-3203}
+  year    = {2015}
 }
  
+ @article{Borrmann_Elseberg_Lingemann_Nüchter_2011,
+  author  = {Borrmann, Dorit and Elseberg, Jan and Lingemann, Kai and Nüchter, Andreas},
+  title   = {The 3D Hough Transform for plane detection in point clouds: A review and a new accumulator design},
+  journal = {3D Research},
+  pages   = {3},
+  volume  = {2},
+  number  = {2},
+  year    = {2011}
+}
  @article{Durrant_Whyte_Bailey_2006,
-  title        = {Simultaneous localization and mapping: part I},
-  volume       = {13},
-  issn         = {1558-223X},
-  doi          = {10.1109/MRA.2006.1638022},
-  abstractnote = {This paper describes the simultaneous localization and mapping (SLAM) problem and the essential methods for solving the SLAM problem and summarizes key implementations and demonstrations of the method. While there are still many practical issues to overcome, especially in more complex outdoor environments, the general SLAM method is now a well understood and established part of robotics. Another part of the tutorial summarized more recent works in addressing some of the remaining issues in SLAM, including computation, feature representation, and data association.},
-  number       = {2},
-  journal      = {IEEE Robotics Automation Magazine},
-  author       = {Durrant-Whyte, H. and Bailey, T.},
-  year         = {2006},
-  month        = {Jun},
-  pages        = {99–110}
+  author  = {Durrant-Whyte, H. and Bailey, T.},
+  title   = {Simultaneous localization and mapping: part I},
+  volume  = {13},
+  number  = {2},
+  journal = {IEEE Robotics Automation Magazine},
+  year    = {2006},
+  pages   = {99-110}
 }
  
  @article{Fischler1981RandomSC,
-  title   = {Random sample consensus: a paradigm for model fitting with applications to image analysis and automated cartography},
   author  = {Martin A. Fischler and Robert C. Bolles},
+  title   = {Random sample consensus: a paradigm for model fitting with applications to image analysis and automated cartography},
   journal = {Commun. ACM},
   year    = {1981},
   volume  = {24},
   pages   = {381-395}
 }
 
-
-
-
  @article{Sun_Mordohai_2019,
-  title        = {Oriented Point Sampling for Plane Detection in Unorganized Point Clouds},
-  url          = {http://arxiv.org/abs/1905.02553},
-  abstractnote = {Plane detection in 3D point clouds is a crucial pre-processing step for applications such as point cloud segmentation, semantic mapping and SLAM. In contrast to many recent plane detection methods that are only applicable on organized point clouds, our work is targeted to unorganized point clouds that do not permit a 2D parametrization. We compare three methods for detecting planes in point clouds efﬁciently. One is a novel method proposed in this paper that generates plane hypotheses by sampling from a set of points with estimated normals. We named this method Oriented Point Sampling (OPS) to contrast with more conventional techniques that require the sampling of three unoriented points to generate plane hypotheses. We also implemented an efﬁcient plane detection method based on local sampling of three unoriented points and compared it with OPS and the 3D-KHT algorithm, which is based on octrees, on the detection of planes on 10,000 point clouds from the SUN RGB-D dataset.},
-  note         = {arXiv:1905.02553 [cs]},
-  number       = {arXiv:1905.02553},
-  publisher    = {arXiv},
-  author       = {Sun, Bo and Mordohai, Philippos},
-  year         = {2019},
-  month        = {May},
-  language     = {en},
-  url          = {https://github.com/victor-amblard/OrientedPointSampling}
+  author    = {Sun, Bo and Mordohai, Philippos},
+  title     = {Oriented Point Sampling for Plane Detection in Unorganized Point Clouds},
+  note      = {arXiv:1905.02553 [cs]},
+  number    = {arXiv:1905.02553},
+  publisher = {arXiv},
+  year      = {2019}
 }
 
  @inbook{Oehler_Stueckler_Welle_Schulz_Behnke_2011,
-  address      = {Berlin, Heidelberg},
-  series       = {Lecture Notes in Computer Science},
-  title        = {Efficient Multi-resolution Plane Segmentation of 3D Point Clouds},
-  volume       = {7102},
-  isbn         = {978-3-642-25488-8},
-  url          = {http://link.springer.com/10.1007/978-3-642-25489-5_15},
-  doi          = {10.1007/978-3-642-25489-5_15},
-  abstractnote = {We present an efﬁcient multi-resolution approach to segment a 3D point cloud into planar components. In order to gain efﬁciency, we process large point clouds iteratively from coarse to ﬁne 3D resolutions: At each resolution, we rapidly extract surface normals to describe surface elements (surfels). We group surfels that cannot be associated with planes from coarser resolutions into coplanar clusters with the Hough transform. We then extract connected components on these clusters and determine a best plane ﬁt through RANSAC. Finally, we merge plane segments and reﬁne the segmentation on the ﬁnest resolution. In experiments, we demonstrate the efﬁciency and quality of our method and compare it to other state-of-the-art approaches.},
-  booktitle    = {Intelligent Robotics and Applications},
-  publisher    = {Springer Berlin Heidelberg},
-  author       = {Oehler, Bastian and Stueckler, Joerg and Welle, Jochen and Schulz, Dirk and Behnke, Sven},
-  editor       = {Jeschke, Sabina and Liu, Honghai and Schilberg, Daniel},
-  year         = {2011},
-  pages        = {145–156},
-  collection   = {Lecture Notes in Computer Science},
-  language     = {en}
+  author    = {Oehler, Bastian and Stueckler, Joerg and Welle, Jochen and Schulz, Dirk and Behnke, Sven},
+  title     = {Efficient Multi-resolution Plane Segmentation of 3D Point Clouds},
+  booktitle = {Intelligent Robotics and Applications},
+  publisher = {Springer Berlin Heidelberg},
+  volume    = {7102},
+  year      = {2011},
+  pages     = {145–156}
 }
 
 @article{Adams_Bischof_1994,
-  title        = {Seeded region growing},
-  volume       = {16},
-  issn         = {1939-3539},
-  doi          = {10.1109/34.295913},
-  abstractnote = {We present here a new algorithm for segmentation of intensity images which is robust, rapid, and free of tuning parameters. The method, however, requires the input of a number of seeds, either individual pixels or regions, which will control the formation of regions into which the image will be segmented. In this correspondence, we present the algorithm, discuss briefly its properties, and suggest two ways in which it can be employed, namely, by using manual seed selection or by automated procedures.<>},
-  number       = {6},
-  journal      = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
-  author       = {Adams, R. and Bischof, L.},
-  year         = {1994},
-  month        = {Jun},
-  pages        = {641–647}
+  author  = {Adams, R. and Bischof, L.},
+  title   = {Seeded region growing},
+  volume  = {16},
+  number  = {6},
+  journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year    = {1994},
+  pages   = {641–647}
 }
 
  @article{Hähnel_Burgard_Thrun_2003,
-  title        = {Learning compact 3D models of indoor and outdoor environments with a mobile robot},
-  volume       = {44},
-  issn         = {09218890},
-  doi          = {10.1016/S0921-8890(03)00007-1},
-  abstractnote = {This paper presents an algorithm for full 3D shape reconstruction of indoor and outdoor environments with mobile robots. Data is acquired with laser range ﬁnders installed on a mobile robot. Our approach combines efﬁcient scan matching routines for robot pose estimation with an algorithm for approximating environments using ﬂat surfaces. On top of that, our approach includes a mesh simpliﬁcation technique to reduce the complexity of the resulting models. In extensive experiments, our method is shown to produce accurate models of indoor and outdoor environments that compare favorably to other methods.},
-  number       = {1},
-  journal      = {Robotics and Autonomous Systems},
-  author       = {Hähnel, Dirk and Burgard, Wolfram and Thrun, Sebastian},
-  year         = {2003},
-  month        = {Jul},
-  pages        = {15–27},
-  language     = {en}
+  author  = {Hähnel, Dirk and Burgard, Wolfram and Thrun, Sebastian},
+  title   = {Learning compact 3D models of indoor and outdoor environments with a mobile robot},
+  volume  = {44},
+  number  = {1},
+  journal = {Robotics and Autonomous Systems},
+  year    = {2003},
+  pages   = {15–27}
 }
 
-@article{Araújo_Oliveira_2020,
-  title        = {A robust statistics approach for plane detection in unorganized point clouds},
-  volume       = {100},
-  issn         = {00313203},
-  doi          = {10.1016/j.patcog.2019.107115},
-  abstractnote = {Plane detection is a key component for many applications, such as industrial reverse engineering and self-driving cars. However, existing plane-detection techniques are sensitive to noise and to user-deﬁned parameters. We introduce a fast deterministic technique for plane detection in unorganized point clouds that is robust to noise and virtually independent of parameter tuning. It is based on a novel planarity test drawn from robust statistics and on a split and merge strategy. Its parameter values are automatically adjusted to ﬁt the local distribution of samples in the input dataset, thus lending to good reconstruction of even small planar regions. We demonstrate the eﬀectiveness of our solution on several real datasets, comparing its performance to state-of-art plane detection techniques, and showing that it achieves better accuracy, while still being one of the fastest.},
-  journal      = {Pattern Recognition},
-  author       = {Araújo, Abner M. C. and Oliveira, Manuel M.},
-  year         = {2020},
-  month        = {Apr},
-  pages        = {107115},
-  language     = {en}
-}
 
 @inproceedings{Sturm_Engelhard_Endres_Burgard_Cremers_2012,
-  address      = {Vilamoura-Algarve, Portugal},
-  title        = {A benchmark for the evaluation of RGB-D SLAM systems},
-  isbn         = {978-1-4673-1736-8},
-  url          = {http://ieeexplore.ieee.org/document/6385773/},
-  doi          = {10.1109/IROS.2012.6385773},
-  abstractnote = {In this paper, we present a novel benchmark for the evaluation of RGB-D SLAM systems. We recorded a large set of image sequences from a Microsoft Kinect with highly accurate and time-synchronized ground truth camera poses from a motion capture system. The sequences contain both the color and depth images in full sensor resolution (640 × 480) at video frame rate (30 Hz). The ground-truth trajectory was obtained from a motion-capture system with eight high-speed tracking cameras (100 Hz). The dataset consists of 39 sequences that were recorded in an ofﬁce environment and an industrial hall. The dataset covers a large variety of scenes and camera motions. We provide sequences for debugging with slow motions as well as longer trajectories with and without loop closures. Most sequences were recorded from a handheld Kinect with unconstrained 6-DOF motions but we also provide sequences from a Kinect mounted on a Pioneer 3 robot that was manually navigated through a cluttered indoor environment. To stimulate the comparison of different approaches, we provide automatic evaluation tools both for the evaluation of drift of visual odometry systems and the global pose error of SLAM systems. The benchmark website [1] contains all data, detailed descriptions of the scenes, speciﬁcations of the data formats, sample code, and evaluation tools.},
-  booktitle    = {2012 IEEE/RSJ International Conference on Intelligent Robots and Systems},
-  publisher    = {IEEE},
-  author       = {Sturm, Jrgen and Engelhard, Nikolas and Endres, Felix and Burgard, Wolfram and Cremers, Daniel},
-  year         = {2012},
-  month        = {Oct},
-  pages        = {573–580},
-  language     = {en}
+  author    = {Sturm, Jrgen and Engelhard, Nikolas and Endres, Felix and Burgard, Wolfram and Cremers, Daniel},
+  title     = {A benchmark for the evaluation of RGB-D SLAM systems},
+  booktitle = {IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  publisher = {IEEE},
+  year      = {2012},
+  pages     = {573–580}
 }
 
 @inproceedings{Handa_Whelan_McDonald_Davison_2014,
-  address      = {Hong Kong, China},
-  title        = {A benchmark for RGB-D visual odometry, 3D reconstruction and SLAM},
-  isbn         = {978-1-4799-3685-4},
-  url          = {http://ieeexplore.ieee.org/document/6907054/},
-  doi          = {10.1109/ICRA.2014.6907054},
-  abstractnote = {We introduce the Imperial College London and National University of Ireland Maynooth (ICL-NUIM) dataset for the evaluation of visual odometry, 3D reconstruction and SLAM algorithms that typically use RGB-D data. We present a collection of handheld RGB-D camera sequences within synthetically generated environments. RGB-D sequences with perfect ground truth poses are provided as well as a ground truth surface model that enables a method of quantitatively evaluating the ﬁnal map or surface reconstruction accuracy. Care has been taken to simulate typically observed real-world artefacts in the synthetic imagery by modelling sensor noise in both RGB and depth data. While this dataset is useful for the evaluation of visual odometry and SLAM trajectory estimation, our main focus is on providing a method to benchmark the surface reconstruction accuracy which to date has been missing in the RGB-D community despite the plethora of ground truth RGB-D datasets available.},
-  booktitle    = {2014 IEEE International Conference on Robotics and Automation (ICRA)},
-  publisher    = {IEEE},
-  author       = {Handa, Ankur and Whelan, Thomas and McDonald, John and Davison, Andrew J.},
-  year         = {2014},
-  month        = {May},
-  pages        = {1524–1531},
-  language     = {en}
-}
-
-@inproceedings{armeni_cvpr16,
-  title     = {3D Semantic Parsing of Large-Scale Indoor Spaces},
-  author    = {Iro Armeni and Ozan Sener and Amir R. Zamir and Helen Jiang and Ioannis Brilakis and Martin Fischer and Silvio Savarese},
-  booktitle = {Proceedings of the IEEE International Conference on Computer Vision and Pattern Recognition},
-  year      = {2016}
+  title     = {A benchmark for RGB-D visual odometry, 3D reconstruction and SLAM},
+  booktitle = {IEEE International Conference on Robotics and Automation},
+  publisher = {IEEE},
+  author    = {Handa, Ankur and Whelan, Thomas and McDonald, John and Davison, Andrew J.},
+  year      = {2014},
+  pages     = {1524–1531}
 }
 
  @article{Labbé_Michaud_2019,
-  title        = {RTAB-Map as an open-source lidar and visual simultaneous localization and mapping library for large-scale and long-term online operation: LABBÉ and MICHAUD},
-  volume       = {36},
-  issn         = {15564959},
-  doi          = {10.1002/rob.21831},
-  abstractnote = {Distributed as an open‐source library since 2013, real‐time appearance‐based mapping (RTAB‐Map) started as an appearance‐based loop closure detection approach with memory management to deal with large‐scale and long‐term online operation. It then grew to implement simultaneous localization and mapping (SLAM) on various robots and mobile platforms. As each application brings its own set of constraints on sensors, processing capabilities, and locomotion, it raises the question of which SLAM approach is the most appropriate to use in terms of cost, accuracy, computation power, and ease of integration. Since most of SLAM approaches are either visual‐ or lidar‐based, comparison is difficult. Therefore, we decided to extend RTAB‐Map to support both visual and lidar SLAM, providing in one package a tool allowing users to implement and compare a variety of 3D and 2D solutions for a wide range of applications with different robots and sensors. This paper presents this extended version of RTAB‐Map and its use in comparing, both quantitatively and qualitatively, a large selection of popular real‐world datasets (e.g., KITTI, EuRoC, TUM RGB‐D, MIT Stata Center on PR2 robot), outlining strengths, and limitations of visual and lidar SLAM configurations from a practical perspective for autonomous navigation applications.},
-  number       = {2},
-  journal      = {Journal of Field Robotics},
-  author       = {Labbé, Mathieu and Michaud, François},
-  year         = {2019},
-  month        = {Mar},
-  pages        = {416–446},
-  language     = {en}
+  title   = {RTAB-Map as an open-source lidar and visual simultaneous localization and mapping library for large-scale and long-term online operation: LABBÉ and MICHAUD},
+  volume  = {36},
+  number  = {2},
+  journal = {Journal of Field Robotics},
+  author  = {Labbé, Mathieu and Michaud, François},
+  year    = {2019},
+  pages   = {416–446}
 }
 
  @article{Vo_Truong-Hong_Laefer_Bertolotto_2015,
-  title        = {Octree-based region growing for point cloud segmentation},
-  volume       = {104},
-  issn         = {09242716},
-  doi          = {10.1016/j.isprsjprs.2015.01.011},
-  abstractnote = {This paper introduces a novel, region-growing algorithm for the fast surface patch segmentation of three-dimensional point clouds of urban environments. The proposed algorithm is composed of two stages based on a coarse-to-ﬁne concept. First, a region-growing step is performed on an octree-based voxelized representation of the input point cloud to extract major (coarse) segments. The output is then passed through a reﬁnement process. As part of this, there are two competing factors related to voxel size selection. To balance the constraints, an adaptive octree is created in two stages. Empirical studies on real terrestrial and airborne laser scanning data for complex buildings and an urban setting show the proposed approach to be at least an order of magnitude faster when compared to a conventional region growing method and able to incorporate semantic-based feature criteria, while achieving precision, recall, and ﬁtness scores of at least 75% and as much as 95%.},
-  journal      = {ISPRS Journal of Photogrammetry and Remote Sensing},
-  author       = {Vo, Anh-Vu and Truong-Hong, Linh and Laefer, Debra F. and Bertolotto, Michela},
-  year         = {2015},
-  month        = {Jun},
-  pages        = {88–100},
-  language     = {en}
+  title   = {Octree-based region growing for point cloud segmentation},
+  volume  = {104},
+  journal = {ISPRS Journal of Photogrammetry and Remote Sensing},
+  author  = {Vo, Anh-Vu and Truong-Hong, Linh and Laefer, Debra F. and Bertolotto, Michela},
+  year    = {2015},
+  pages   = {88–100}
 }
 
 @article{2017arXiv170201105A,
-  author        = {{Armeni}, I. and {Sax}, A. and {Zamir}, A.~R. and {Savarese}, S.
-                   },
-  title         = {{Joint 2D-3D-Semantic Data for Indoor Scene Understanding}},
+  author        = {Armeni, I. and Sax, A. and Zamir, A.~R. and Savarese, S.},
+  title         = {Joint 2D-3D-Semantic Data for Indoor Scene Understanding},
   journal       = {ArXiv e-prints},
   archiveprefix = {arXiv},
   eprint        = {1702.01105},
   primaryclass  = {cs.CV},
-  keywords      = {Computer Science - Computer Vision and Pattern Recognition, Computer Science - Robotics},
-  year          = 2017,
-  month         = feb,
-  adsurl        = {http://adsabs.harvard.edu/abs/2017arXiv170201105A},
-  adsnote       = {Provided by the SAO/NASA Astrophysics Data System}
+  year          = 2017
 }
 
  @inproceedings{Feng_Taguchi_Kamat_2014,
-  address      = {Hong Kong, China},
-  title        = {Fast plane extraction in organized point clouds using agglomerative hierarchical clustering},
-  isbn         = {978-1-4799-3685-4},
-  url          = {http://ieeexplore.ieee.org/document/6907776/},
-  doi          = {10.1109/ICRA.2014.6907776},
-  abstractnote = {Real-time plane extraction in 3D point clouds is crucial to many robotics applications. We present a novel algorithm for reliably detecting multiple planes in real time in organized point clouds obtained from devices such as Kinect sensors. By uniformly dividing such a point cloud into non-overlapping groups of points in the image space, we ﬁrst construct a graph whose node and edge represent a group of points and their neighborhood respectively. We then perform an agglomerative hierarchical clustering on this graph to systematically merge nodes belonging to the same plane until the plane ﬁtting mean squared error exceeds a threshold. Finally we reﬁne the extracted planes using pixel-wise region growing. Our experiments demonstrate that the proposed algorithm can reliably detect all major planes in the scene at a frame rate of more than 35Hz for 640x480 point clouds, which to the best of our knowledge is much faster than state-of-the-art algorithms.},
-  booktitle    = {2014 IEEE International Conference on Robotics and Automation (ICRA)},
-  publisher    = {IEEE},
-  author       = {Feng, Chen and Taguchi, Yuichi and Kamat, Vineet R.},
-  year         = {2014},
-  month        = {May},
-  pages        = {6218–6225},
-  language     = {en}
+  title     = {Fast plane extraction in organized point clouds using agglomerative hierarchical clustering},
+  booktitle = {IEEE International Conference on Robotics and Automation},
+  publisher = {IEEE},
+  author    = {Feng, Chen and Taguchi, Yuichi and Kamat, Vineet R.},
+  year      = {2014},
+  pages     = {6218–6225}
 }
  
 @article{Proença_Gao_2018,
-  title        = {Fast Cylinder and Plane Extraction from Depth Cameras for Visual Odometry},
-  url          = {http://arxiv.org/abs/1803.02380},
-  abstractnote = {This paper presents CAPE, a method to extract planes and cylinder segments from organized point clouds, which processes 640×480 depth images on a single CPU core at an average of 300 Hz, by operating on a grid of planar cells. While, compared to state-of-the-art plane extraction, the latency of CAPE is more consistent and 4-10 times faster, depending on the scene, we also demonstrate empirically that applying CAPE to visual odometry can improve trajectory estimation on scenes made of cylindrical surfaces (e.g. tunnels), whereas using a plane extraction approach that is not curve-aware deteriorates performance on these scenes.},
-  note         = {number: arXiv:1803.02380
-                  arXiv:1803.02380 [cs]},
-  number       = {arXiv:1803.02380},
-  publisher    = {arXiv},
-  author       = {Proença, Pedro F. and Gao, Yang},
-  year         = {2018},
-  month        = {Jul},
-  language     = {en}
+  title     = {Fast Cylinder and Plane Extraction from Depth Cameras for Visual Odometry},
+  note      = {number: arXiv:1803.02380
+               arXiv:1803.02380 [cs]},
+  number    = {arXiv:1803.02380},
+  publisher = {arXiv},
+  author    = {Proença, Pedro F. and Gao, Yang},
+  year      = {2018}
 }
 
 @inproceedings{Mols_Li_Hanebeck_2020,
-  address      = {Paris, France},
-  title        = {Highly Parallelizable Plane Extraction for Organized Point Clouds Using Spherical Convex Hulls},
-  isbn         = {978-1-72817-395-5},
-  url          = {https://ieeexplore.ieee.org/document/9197139/},
-  doi          = {10.1109/ICRA40945.2020.9197139},
-  abstractnote = {We present a novel region growing algorithm for plane extraction of organized point clouds using the spherical convex hull. Instead of explicit plane parameterization, our approach interprets potential underlying planes as a series of geometric constraints on the sphere that are reﬁned during region growing. Unlike existing schemes relying on downsampling for sequential execution in real time, our approach enables pixelwise plane extraction that is highly parallelizable. We further test the proposed approach with a fully parallel implementation on a GPU. Evaluation based on public data sets has shown state-of-the-art extraction accuracy and superior speed compared to existing approaches, while guaranteeing realtime processing at full input resolution of a typical RGB-D camera.},
-  booktitle    = {2020 IEEE International Conference on Robotics and Automation (ICRA)},
-  publisher    = {IEEE},
-  author       = {Mols, Hannes and Li, Kailai and Hanebeck, Uwe D.},
-  year         = {2020},
-  month        = {May},
-  pages        = {7920–7926},
-  language     = {en}
+  title     = {Highly Parallelizable Plane Extraction for Organized Point Clouds Using Spherical Convex Hulls},
+  booktitle = {IEEE International Conference on Robotics and Automation },
+  publisher = {IEEE},
+  author    = {Mols, Hannes and Li, Kailai and Hanebeck, Uwe D.},
+  year      = {2020},
+  pages     = {7920–7926}
 }
 
 @article{Vera_Lucio_Fernandes_Velho_2018,
-  title        = {Hough Transform for real-time plane detection in depth images},
-  volume       = {103},
-  issn         = {01678655},
-  doi          = {10.1016/j.patrec.2017.12.027},
-  abstractnote = {The automatic detection of planes in depth images plays an important role in computer vision. Plane detection from unorganized point clouds usually require complex data structures to pre-organize the points. On the other hand, existing detection approaches tailored to depth images use the structure of the image and the 2.5-D projection of the scene to simplify the task. However, they are sensitive to noise and to discontinuities caused by occlusion. We present a real-time deterministic technique for plane detection in depth images that uses an implicit quadtree to identify clusters of approximately coplanar points in the 2.5-D space. The detection is performed by an eﬃcient Hough-transform voting scheme that models the uncertainty associated with the best-ﬁtting plane with respect to each cluster as a Gaussian distribution. Experiments shows that our approach is fast, scalable, and robust even in the presence of noise, partial occlusion, and discontinuities.},
-  journal      = {Pattern Recognition Letters},
-  author       = {Vera, Eduardo and Lucio, Djalma and Fernandes, Leandro A.F. and Velho, Luiz},
-  year         = {2018},
-  month        = {Feb},
-  pages        = {8–15},
-  language     = {en}
+  title   = {Hough Transform for real-time plane detection in depth images},
+  volume  = {103},
+  journal = {Pattern Recognition Letters},
+  author  = {Vera, Eduardo and Lucio, Djalma and Fernandes, Leandro A.F. and Velho, Luiz},
+  year    = {2018},
+  pages   = {8–15}
 }
 
 
 
 
 @inproceedings{Liu_Yang_Ceylan_Yumer_Furukawa_2018,
-  address      = {Salt Lake City, UT},
-  title        = {PlaneNet: Piece-Wise Planar Reconstruction from a Single RGB Image},
-  isbn         = {978-1-5386-6420-9},
-  url          = {https://ieeexplore.ieee.org/document/8578371/},
-  doi          = {10.1109/CVPR.2018.00273},
-  abstractnote = {This paper proposes a deep neural network (DNN) for piece-wise planar depthmap reconstruction from a single RGB image. While DNNs have brought remarkable progress to single-image depth prediction, piece-wise planar depthmap reconstruction requires a structured geometry representation, and has been a difﬁcult task to master even for DNNs. The proposed end-to-end DNN learns to directly infer a set of plane parameters and corresponding plane segmentation masks from a single RGB image. We have generated more than 50,000 piece-wise planar depthmaps for training and testing from ScanNet, a largescale RGBD video database. Our qualitative and quantitative evaluations demonstrate that the proposed approach outperforms baseline methods in terms of both plane segmentation and depth estimation accuracy. To the best of our knowledge, this paper presents the ﬁrst end-to-end neural architecture for piece-wise planar reconstruction from a single RGB image. Code and data are available at https: //github.com/art-programmer/PlaneNet.},
-  booktitle    = {2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  publisher    = {IEEE},
-  author       = {Liu, Chen and Yang, Jimei and Ceylan, Duygu and Yumer, Ersin and Furukawa, Yasutaka},
-  year         = {2018},
-  month        = {Jun},
-  pages        = {2579–2588},
-  language     = {en}
+  title     = {PlaneNet: Piece-Wise Planar Reconstruction from a Single RGB Image},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  publisher = {IEEE},
+  author    = {Liu, Chen and Yang, Jimei and Ceylan, Duygu and Yumer, Ersin and Furukawa, Yasutaka},
+  year      = {2018},
+  pages     = {2579–2588}
 }
 
 @article{Xie_Shu_Rambach_Pagani_Stricker_2022,
-  title        = {PlaneRecNet: Multi-Task Learning with Cross-Task Consistency for Piece-Wise Plane Detection and Reconstruction from a Single RGB Image},
-  url          = {http://arxiv.org/abs/2110.11219},
-  abstractnote = {Piece-wise 3D planar reconstruction provides holistic scene understanding of man-made environments, especially for indoor scenarios. Most recent approaches focused on improving the segmentation and reconstruction results by introducing advanced network architectures but overlooked the dual characteristics of piece-wise planes as objects and geometric models. Different from other existing approaches, we start from enforcing cross-task consistency for our multi-task convolutional neural network, PlaneRecNet, which integrates a single-stage instance segmentation network for piece-wise planar segmentation and a depth decoder to reconstruct the scene from a single RGB image. To achieve this, we introduce several novel loss functions (geometric constraint) that jointly improve the accuracy of piece-wise planar segmentation and depth estimation. Meanwhile, a novel Plane Prior Attention module is used to guide depth estimation with the awareness of plane instances. Exhaustive experiments are conducted in this work to validate the effectiveness and efficiency of our method.},
-  note         = {number: arXiv:2110.11219
-                  arXiv:2110.11219 [cs]},
-  number       = {arXiv:2110.11219},
-  publisher    = {arXiv},
-  author       = {Xie, Yaxu and Shu, Fangwen and Rambach, Jason and Pagani, Alain and Stricker, Didier},
-  year         = {2022},
-  month        = {Jan},
-  language     = {en}
+  title     = {PlaneRecNet: Multi-Task Learning with Cross-Task Consistency for Piece-Wise Plane Detection and Reconstruction from a Single RGB Image},
+  note      = {number: arXiv:2110.11219
+               arXiv:2110.11219 [cs]},
+  number    = {arXiv:2110.11219},
+  publisher = {arXiv},
+  author    = {Xie, Yaxu and Shu, Fangwen and Rambach, Jason and Pagani, Alain and Stricker, Didier},
+  year      = {2022}
 }
 
 @inproceedings{Liu_Kim_Gu_Furukawa_Kautz_2019,
-  address      = {Long Beach, CA, USA},
-  title        = {PlaneRCNN: 3D Plane Detection and Reconstruction From a Single Image},
-  isbn         = {978-1-72813-293-8},
-  url          = {https://ieeexplore.ieee.org/document/8953257/},
-  doi          = {10.1109/CVPR.2019.00458},
-  abstractnote = {This paper proposes a deep neural architecture, PlaneRCNN, that detects and reconstructs piecewise planar surfaces from a single RGB image. PlaneRCNN employs a variant of Mask R-CNN to detect planes with their plane parameters and segmentation masks. PlaneRCNN then jointly reﬁnes all the segmentation masks with a novel loss enforcing the consistency with a nearby view during training. The paper also presents a new benchmark with more ﬁne-grained plane segmentations in the ground-truth, in which, PlaneRCNN outperforms existing state-of-theart methods with signiﬁcant margins in the plane detection, segmentation, and reconstruction metrics. PlaneRCNN makes an important step towards robust plane extraction, which would have an immediate impact on a wide range of applications including Robotics, Augmented Reality, and Virtual Reality. Code and data are available at https://research.nvidia.com/publication/2019-06 PlaneRCNN.},
-  booktitle    = {2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-  publisher    = {IEEE},
-  author       = {Liu, Chen and Kim, Kihwan and Gu, Jinwei and Furukawa, Yasutaka and Kautz, Jan},
-  year         = {2019},
-  month        = {Jun},
-  pages        = {4445–4454},
-  language     = {en}
+  title     = {PlaneRCNN: 3D Plane Detection and Reconstruction From a Single Image},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  publisher = {IEEE},
+  author    = {Liu, Chen and Kim, Kihwan and Gu, Jinwei and Furukawa, Yasutaka and Kautz, Jan},
+  year      = {2019},
+  pages     = {4445–4454}
 }
 
  @article{Yang_Forstner,
-  title        = {Plane Detection in Point Cloud Data},
-  abstractnote = {Plane detection is a prerequisite to a wide variety of vision tasks. RANdom SAmple Consensus (RANSAC) algorithm is widely used for plane detection in point cloud data. Minimum description length (MDL) principle is used to deal with several competing hypothesis. This paper presents a new approach to the plane detection by integrating RANSAC and MDL. The method could avoid detecting wrong planes due to the complex geometry of the 3D data. The paper tests the performance of proposed method on both synthetic and real data.},
-  author       = {Yang, Michael Ying and Forstner, Wolfgang},
-  pages        = {16},
-  language     = {en},
-  year         = {2010},
-  month        = {02},
-  volume       = {1},
-  journal      = {Proceedings of the 2nd int conf on machine control guidance}
+  author  = {Yang, Michael Ying and Forstner, Wolfgang},
+  title   = {Plane Detection in Point Cloud Data},
+  journal = {Proceedings of the 2nd int conf on machine control guidance},
+  pages   = {16},
+  volume  = {1},
+  year    = {2010}
 }
 
 
  @article{Ashraf_Ahmed_2017,
-  title        = {FRANSAC: Fast RANdom Sample Consensus for 3D Plane Segmentation},
-  volume       = {167},
-  issn         = {09758887},
-  doi          = {10.5120/ijca2017914558},
-  abstractnote = {Scene analysis is a prior stage in many computer vision and robotics applications. Thanks to recent depth camera, we propose a fast plane segmentation approach for obstacle detection in indoor environments. The proposed method Fast RANdom Sample Consensus (FRANSAC) involves three steps: data input, data preprocessing and 3D RANSAC. Firstly, range data, obtained from 3D camera, is converted into 3D point clouds. Next, a preprocessing stage is introduced where a pass through and voxel grid filters are applied. Finally, planes are estimated using a modified 3D RANSAC. The experimental results demonstrate that our approach can segment planes and detect obstacles about 7 times faster than the standard RANSAC without losing the discriminative power.},
-  number       = {13},
-  journal      = {International Journal of Computer Applications},
-  author       = {Ashraf, Ramy and Ahmed, Nawal},
-  year         = {2017},
-  month        = {Jun},
-  pages        = {30–36},
-  language     = {en}
+  author  = {Ashraf, Ramy and Ahmed, Nawal},
+  title   = {FRANSAC: Fast RANdom Sample Consensus for 3D Plane Segmentation},
+  journal = {International Journal of Computer Applications},
+  volume  = {167},
+  number  = {13},
+  pages   = {30–36},
+  year    = {2017}
 }
 
  @inproceedings{Malek_Rahman_Yasiran_Jumaat_Jalil_2012,
-  address      = {Langkawi, Kedah, Malaysia},
-  title        = {Seed point selection for seed-based region growing in segmenting microcalcifications},
-  isbn         = {978-1-4673-1582-1},
-  url          = {http://ieeexplore.ieee.org/document/6396580/},
-  doi          = {10.1109/ICSSBE.2012.6396580},
-  abstractnote = {Seed-based region growing (SBRG) has been widely used as a segmentation method for medical images. The selection of initial seed point in SBRG is the crucial part before the segmentation process is carried out. Most of the region growing methods identify the seed point manually which involve human interaction and require prior information about the image. In this paper, an automated initial seed point selection for SBRG algorithm is proposed. The proposed method is tested on 50 mammogram images confirmed by a radiologist to consist microcalcifications. The performance is evaluated using Receiving Operator Curve (ROC) based on level of detection. Experimental results show that the method has successfully segmented the microcalcifications with 0.98 accuracy.},
-  booktitle    = {2012 International Conference on Statistics in Science, Business and Engineering (ICSSBE)},
-  publisher    = {IEEE},
-  author       = {Malek, Aminah Abdul and Rahman, Wan Eny Zarina Wan Abdul and Yasiran, Siti Salmah and Jumaat, Abdul Kadir and Jalil, Ummu Mardhiah Abdul},
-  year         = {2012},
-  month        = {Sep},
-  pages        = {1–5},
-  language     = {en}
-}
-
- @article{Labbé_Michaud_2019,
-  title        = {RTAB-Map as an open-source lidar and visual simultaneous localization and mapping library for large-scale and long-term online operation: LABBÉ and MICHAUD},
-  volume       = {36},
-  issn         = {15564959},
-  doi          = {10.1002/rob.21831},
-  abstractnote = {Distributed as an open‐source library since 2013, real‐time appearance‐based mapping (RTAB‐Map) started as an appearance‐based loop closure detection approach with memory management to deal with large‐scale and long‐term online operation. It then grew to implement simultaneous localization and mapping (SLAM) on various robots and mobile platforms. As each application brings its own set of constraints on sensors, processing capabilities, and locomotion, it raises the question of which SLAM approach is the most appropriate to use in terms of cost, accuracy, computation power, and ease of integration. Since most of SLAM approaches are either visual‐ or lidar‐based, comparison is difficult. Therefore, we decided to extend RTAB‐Map to support both visual and lidar SLAM, providing in one package a tool allowing users to implement and compare a variety of 3D and 2D solutions for a wide range of applications with different robots and sensors. This paper presents this extended version of RTAB‐Map and its use in comparing, both quantitatively and qualitatively, a large selection of popular real‐world datasets (e.g., KITTI, EuRoC, TUM RGB‐D, MIT Stata Center on PR2 robot), outlining strengths, and limitations of visual and lidar SLAM configurations from a practical perspective for autonomous navigation applications.},
-  number       = {2},
-  journal      = {Journal of Field Robotics},
-  author       = {Labbé, Mathieu and Michaud, François},
-  year         = {2019},
-  month        = {Mar},
-  pages        = {416–446},
-  language     = {en}
-}
-
- @article{Borrmann_Elseberg_Lingemann_Nüchter_2011,
-  title        = {The 3D Hough Transform for plane detection in point clouds: A review and a new accumulator design},
-  volume       = {2},
-  issn         = {2092-6731},
-  doi          = {10.1007/3DRes.02(2011)3},
-  abstractnote = {The Hough Transform is a well-known method for detecting parameterized objects. It is the de facto standard for detecting lines and circles in 2-dimensional data sets. For 3D it has attained little attention so far. Even for the 2D case high computational costs have lead to the development of numerous variations for the Hough Transform. In this article we evaluate different variants of the Hough Transform with respect to their applicability to detect planes in 3D point clouds reliably. Apart from computational costs, the main problem is the representation of the accumulator. Usual implementations favor geometrical objects with certain parameters due to uneven sampling of the parameter space. We present a novel approach to design the accumulator focusing on achieving the same size for each cell and compare it to existing designs.},
-  number       = {2},
-  journal      = {3D Research},
-  author       = {Borrmann, Dorit and Elseberg, Jan and Lingemann, Kai and Nüchter, Andreas},
-  year         = {2011},
-  month        = {Jun},
-  pages        = {3},
-  language     = {en}
+  title     = {Seed point selection for seed-based region growing in segmenting microcalcifications},
+  booktitle = {International Conference on Statistics in Science, Business and Engineering (ICSSBE)},
+  publisher = {IEEE},
+  author    = {Malek, Aminah Abdul and Rahman, Wan Eny Zarina Wan Abdul and Yasiran, Siti Salmah and Jumaat, Abdul Kadir and Jalil, Ummu Mardhiah Abdul},
+  year      = {2012},
+  pages     = {1–5}
 }
 
 @article{Fernandes_Oliveira_2008,
-  title        = {Real-time line detection through an improved Hough transform voting scheme},
-  volume       = {41},
-  issn         = {00313203},
-  doi          = {10.1016/j.patcog.2007.04.003},
-  abstractnote = {The Hough transform (HT) is a popular tool for line detection due to its robustness to noise and missing data. However, the computational cost associated to its voting scheme has prevented software implementations to achieve real-time performance, except for very small images. Many dedicated hardware designs have been proposed, but such architectures restrict the image sizes they can handle. We present an improved voting scheme for the HT that allows a software implementation to achieve real-time performance even on relatively large images. Our approach operates on clusters of approximately collinear pixels. For each cluster, votes are cast using an oriented elliptical-Gaussian kernel that models the uncertainty associated with the best-ﬁtting line with respect to the corresponding cluster. The proposed approach not only signiﬁcantly improves the performance of the voting scheme, but also produces a much cleaner voting map and makes the transform more robust to the detection of spurious lines.},
-  number       = {1},
-  journal      = {Pattern Recognition},
-  author       = {Fernandes, Leandro A.F. and Oliveira, Manuel M.},
-  year         = {2008},
-  month        = {Jan},
-  pages        = {299–314},
-  language     = {en}
+  author  = {Fernandes, Leandro A.F. and Oliveira, Manuel M.},
+  title   = {Real-time line detection through an improved Hough transform voting scheme},
+  journal = {Pattern Recognition},
+  volume  = {41},
+  number  = {1},
+  pages   = {299-314},
+  year    = {2008}
 }
 
  @inproceedings{Kerl_Sturm_Cremers_2013,
-  address      = {Tokyo},
-  title        = {Dense visual SLAM for RGB-D cameras},
-  isbn         = {978-1-4673-6358-7},
-  url          = {http://ieeexplore.ieee.org/document/6696650/},
-  doi          = {10.1109/IROS.2013.6696650},
-  abstractnote = {In this paper, we propose a dense visual SLAM method for RGB-D cameras that minimizes both the photometric and the depth error over all pixels. In contrast to sparse, feature-based methods, this allows us to better exploit the available information in the image data which leads to higher pose accuracy. Furthermore, we propose an entropy-based similarity measure for keyframe selection and loop closure detection. From all successful matches, we build up a graph that we optimize using the g2o framework. We evaluated our approach extensively on publicly available benchmark datasets, and found that it performs well in scenes with low texture as well as low structure. In direct comparison to several stateof-the-art methods, our approach yields a signiﬁcantly lower trajectory error. We release our software as open-source.},
-  booktitle    = {2013 IEEE/RSJ International Conference on Intelligent Robots and Systems},
-  publisher    = {IEEE},
-  author       = {Kerl, Christian and Sturm, Jurgen and Cremers, Daniel},
-  year         = {2013},
-  month        = {Nov},
-  pages        = {2100–2106},
-  language     = {en}
-}
-
-@inproceedings{1238654,
-  author    = {Davison},
-  booktitle = {Proceedings Ninth IEEE International Conference on Computer Vision},
-  title     = {Real-time simultaneous localisation and mapping with a single camera},
-  year      = {2003},
-  volume    = {},
-  number    = {},
-  pages     = {1403-1410 vol.2},
-  doi       = {10.1109/ICCV.2003.1238654}
+  author    = {Kerl, Christian and Sturm, Jurgen and Cremers, Daniel},
+  title     = {Dense visual SLAM for RGB-D cameras},
+  booktitle = {IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  publisher = {IEEE},
+  year      = {2013},
+  pages     = {2100-2106}
 }
 
 @article{10.1145/361237.361242,
@@ -538,41 +267,31 @@
   year       = {1972},
   issue_date = {Jan. 1972},
   publisher  = {Association for Computing Machinery},
-  address    = {New York, NY, USA},
   volume     = {15},
   number     = {1},
-  issn       = {0001-0782},
-  url        = {https://doi.org/10.1145/361237.361242},
-  doi        = {10.1145/361237.361242},
   abstract   = {Hough has proposed an interesting and computationally efficient procedure for detecting lines in pictures. This paper points out that the use of angle-radius rather than slope-intercept parameters simplifies the computation further. It also shows how the method can be used for more general curve fitting, and gives alternative interpretations that explain the source of its efficiency.},
   journal    = {Commun. ACM},
-  month      = {jan},
   pages      = {11–15},
   numpages   = {5},
   keywords   = {curve detection, line detection, pattern recognition, Hough transformation, picture processing, point-line transformation, colinear points}
 }
 
  @article{osti_4746348,
-  title        = {METHOD AND MEANS FOR RECOGNIZING COMPLEX PATTERNS},
-  author       = {Hough, P V.C.},
-  abstractnote = {This patent relates to a method and means for recognizing a complex pattern in a picture. The picture is divided into framelets, each framelet being sized so that any segment of the complex pattern therewithin is essentially a straight line. Each framelet is scanned to produce an electrical pulse for each point scanned on the segment therewithin. Each of the electrical pulses of each segment is then transformed into a separate strnight line to form a plane transform in a pictorial display. Each line in the plane transform of a segment is positioned laterally so that a point on the line midway between the top and the bottom of the pictorial display occurs at a distance from the left edge of the pictorial display equal to the distance of the generating point in the segment from the left edge of the framelet. Each line in the plane transform of a segment is inclined in the pictorial display at an angle to the vertical whose tangent is proportional to the vertical displacement of the generating point in the segment from the center of the framelet. The coordinate position of the point of intersection of the lines in the pictorial display for each segment is determined and recorded. The sum total of said recorded coordinate positions being representative of the complex pattern. (AEC)},
-  doi          = {},
-  journal      = {},
-  number       = {},
-  volume       = {},
-  place        = {United States},
-  year         = {1962},
-  month        = {12}
+  title   = {METHOD AND MEANS FOR RECOGNIZING COMPLEX PATTERNS},
+  author  = {Hough, P V.C.},
+  journal = {},
+  number  = {},
+  volume  = {},
+  place   = {United States},
+  year    = {1962}
 } 
 
 @inproceedings{schaefer19icra,
   author       = {Alexander Schaefer and Johan Vertens and Daniel B{\"u}scher and Wolfram Burgard},
-  booktitle    = {2019 IEEE/RSJ International Conference on Robotics and Automation (ICRA)},
+  booktitle    = {2019 IEEE/RSJ International Conference on Robotics and Automation  },
   title        = {A Maximum Likelihood Approach to Extract Finite Planes from 3-{D} Laser Scans},
   year         = {2019},
-  month        = {May},
-  organization = {IEEE},
-  url          = {http://ais.informatik.uni-freiburg.de/publications/papers/schaefer19icra.pdf}
+  organization = {IEEE}
 }
 
 @inproceedings{10.1007/978-3-642-33715-4_54,
@@ -589,44 +308,33 @@
   booktitle = {Computer Vision -- ECCV 2012},
   year      = {2012},
   publisher = {Springer Berlin Heidelberg},
-  address   = {Berlin, Heidelberg},
   pages     = {746--760},
-  abstract  = {We present an approach to interpret the major surfaces, objects, and support relations of an indoor scene from an RGBD image. Most existing work ignores physical interactions or is applied only to tidy rooms and hallways. Our goal is to parse typical, often messy, indoor scenes into floor, walls, supporting surfaces, and object regions, and to recover support relationships. One of our main interests is to better understand how 3D cues can best inform a structured 3D interpretation. We also contribute a novel integer programming formulation to infer physical support relations. We offer a new dataset of 1449 RGBD images, capturing 464 diverse indoor scenes, with detailed annotations. Our experiments demonstrate our ability to infer support relations in complex scenes and verify that our 3D scene cues and inferred support lead to better object segmentation.},
-  isbn      = {978-3-642-33715-4}
+  abstract  = {We present an approach to interpret the major surfaces, objects, and support relations of an indoor scene from an RGBD image. Most existing work ignores physical interactions or is applied only to tidy rooms and hallways. Our goal is to parse typical, often messy, indoor scenes into floor, walls, supporting surfaces, and object regions, and to recover support relationships. One of our main interests is to better understand how 3D cues can best inform a structured 3D interpretation. We also contribute a novel integer programming formulation to infer physical support relations. We offer a new dataset of 1449 RGBD images, capturing 464 diverse indoor scenes, with detailed annotations. Our experiments demonstrate our ability to infer support relations in complex scenes and verify that our 3D scene cues and inferred support lead to better object segmentation.}
 }
 
 @inproceedings{handa:etal:ICRA2014,
   author    = {A. Handa and T. Whelan and J.B. McDonald and A.J. Davison},
   title     = {A Benchmark for {RGB-D} Visual Odometry, {3D} Reconstruction and {SLAM}},
   booktitle = {IEEE Intl. Conf. on Robotics and Automation, ICRA},
-  address   = {Hong Kong, China},
-  month     = {May},
   year      = {2014}
 }
 @article{article,
   author  = {Hoover, Adam and Jean-Baptiste, Gillian and Flynn, Patrick and Bunke, Horst and Goldgof, Dmitry and Bowyer, Kevin and Eggert, David and Fitzgibbon, Andrew and Fisher, Robert},
   year    = {1996},
-  month   = {07},
   pages   = {673-689},
   title   = {An Experimental Comparison of Range Image Segmentation Algorithms},
   volume  = {18},
-  journal = {IEEE Trans. Pattern Anal. Mach. Intell.},
-  doi     = {10.1109/34.506791}
+  journal = {IEEE Trans. Pattern Anal. Mach. Intell.}
 }
 
  @article{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015,
-  title        = {A Comparative Study of Parallel RANSAC Implementations in 3D Space},
-  volume       = {43},
-  issn         = {0885-7458, 1573-7640},
-  doi          = {10.1007/s10766-014-0316-7},
-  abstractnote = {RANSAC (RAndom SAmple Consensus) is an iterative method for estimating the parameters of a certain mathematical model from a set of data which may contain a large number of outliers (noisy points). The main problem of the RANSAC algorithm is that it is too expensive in terms of execution time when real-time processing is needed (30 fps). In view of the importance of this algorithm and the rise of parallelism-based technologies, we analyze and compare in this work various parallel implementations based on different techniques (OpenMP, POSIX Threads, and CUDA). To the best of our knowledge, no other articles have attempted a similar study. In order to make this ﬁrst study, we have used some standard metrics in parallelism (Runtime and Speedup) and some speciﬁc metrics used in evaluating search strategies (Precision, Recall, and F-Score). Furthermore, the experiments have been executed in different hardware alternatives in order to present a more complete study. The conclusions of our study show the advantages and disadvantages of the different parallel implementations.},
-  number       = {5},
-  journal      = {International Journal of Parallel Programming},
-  author       = {Hidalgo-Paniagua, Alejandro and Vega-Rodríguez, Miguel A. and Pavón, Nieves and Ferruz, Joaquín},
-  year         = {2015},
-  month        = {Oct},
-  pages        = {703–720},
-  language     = {en}
+  title   = {A Comparative Study of Parallel RANSAC Implementations in 3D Space},
+  volume  = {43},
+  number  = {5},
+  journal = {International Journal of Parallel Programming},
+  author  = {Hidalgo-Paniagua, Alejandro and Vega-Rodríguez, Miguel A. and Pavón, Nieves and Ferruz, Joaquín},
+  year    = {2015},
+  pages   = {703–720}
 }
 
 @inproceedings{7298655,
@@ -636,16 +344,14 @@
   year      = {2015},
   volume    = {},
   number    = {},
-  pages     = {567-576},
-  doi       = {10.1109/CVPR.2015.7298655}
+  pages     = {567-576}
 }
 
 @inproceedings{sturm12iros,
   author    = {J. Sturm and N. Engelhard and F. Endres and W. Burgard and D. Cremers},
   title     = {A Benchmark for the Evaluation of RGB-D SLAM Systems},
   booktitle = {Proc. of the International Conference on Intelligent Robot Systems (IROS)},
-  year      = {2012},
-  month     = {Oct.}
+  year      = {2012}
 }
 
 @article{5230799,
@@ -655,34 +361,15 @@
   year    = {2009},
   volume  = {26},
   number  = {6},
-  pages   = {18-22},
-  doi     = {10.1109/MSP.2009.934181}
+  pages   = {18-22}
 }
 
- @article{Borrmann_Elseberg_Lingemann_Nüchter_2011,
-  title        = {The 3D Hough Transform for plane detection in point clouds: A review and a new accumulator design},
-  volume       = {2},
-  issn         = {2092-6731},
-  doi          = {10.1007/3DRes.02(2011)3},
-  abstractnote = {The Hough Transform is a well-known method for detecting parameterized objects. It is the de facto standard for detecting lines and circles in 2-dimensional data sets. For 3D it has attained little attention so far. Even for the 2D case high computational costs have lead to the development of numerous variations for the Hough Transform. In this article we evaluate different variants of the Hough Transform with respect to their applicability to detect planes in 3D point clouds reliably. Apart from computational costs, the main problem is the representation of the accumulator. Usual implementations favor geometrical objects with certain parameters due to uneven sampling of the parameter space. We present a novel approach to design the accumulator focusing on achieving the same size for each cell and compare it to existing designs.},
-  number       = {2},
-  journal      = {3D Research},
-  author       = {Borrmann, Dorit and Elseberg, Jan and Lingemann, Kai and Nüchter, Andreas},
-  year         = {2011},
-  month        = {Jun},
-  pages        = {3},
-  language     = {en}
-}
-
- @inproceedings{Carranza_Estrella_Zaidi_Carranza_2021,
-  title        = {Plane Detection Based Object Recognition for Augmented Reality},
-  url          = {https://avestia.com/CDSR2021_Proceedings/files/paper/CDSR_305.pdf},
-  doi          = {10.11159/cdsr21.305},
-  abstractnote = {Machine Learning and Deep Learning; subfields of Artificial Intelligence have been implemented in applications that can detect and label objects and figures such as a chair, a person or even some kinds of animals. We have developed an application that makes use of Augmented Reality, a more modest goal of Plane Detection. The purpose of this app is to label detected objects with tags and relay the information to people who are visually impaired. A significant first step towards our goal is to concentrate on Plane Detection. This technology can benefit individuals in public places by helping them reach their destination safely. The app will guide individuals in need to prevent from colliding with walls and objects by recognizing and navigating plane surfaces and physical objects.},
-  author       = {Carranza, Aparicio and Estrella, Juan and Zaidi, Syed R. and Carranza, Harrison},
-  year         = {2021},
-  month        = {May},
-  language     = {en}
+@inproceedings{Carranza_Estrella_Zaidi_Carranza_2021,
+  author = {Carranza, Aparicio and Estrella, Juan and Zaidi, Rashid and Carranza, Harrison},
+  title  = {Plane Detection Based Object Recognition for Augmented Reality},
+  year   = {2021},
+  month  = {05},
+  doi    = {10.11159/cdsr21.305}
 }
 
 @inproceedings{6913908,
@@ -692,24 +379,16 @@
   year      = {2014},
   volume    = {},
   number    = {},
-  pages     = {981-986},
-  doi       = {10.1109/BIOROB.2014.6913908}
+  pages     = {981-986}
 }
 
 @inproceedings{Roychoudhury_Missura_Bennewitz_2021,
-  address      = {Xi’an, China},
-  title        = {Plane Segmentation in Organized Point Clouds using Flood Fill},
-  isbn         = {978-1-72819-077-8},
-  url          = {https://ieeexplore.ieee.org/document/9561325/},
-  doi          = {10.1109/ICRA48506.2021.9561325},
-  abstractnote = {The segmentation of a point cloud into planar primitives is a popular approach to ﬁrst-line scene interpretation and is particularly useful in mobile robotics for the extraction of drivable or walkable surfaces and for tabletop segmentation for manipulation purposes. Unfortunately, the planar segmentation task becomes particularly challenging when the point clouds are obtained from an inherently noisy, robot-mounted sensor that is often in motion, therefor requiring real time processing capabilities. We present a real time-capable plane segmentation technique based on a region growing algorithm that exploits the organized structure of point clouds obtained from RGB-D sensors. In order to counteract the sensor noise, we invest into careful selection of seeds that start the region growing and avoid the computation of surface normals whenever possible. We implemented our algorithm in C++ and thoroughly tested it in both simulated and real-world environments where we are able to compare our approach against existing state-of-the-art methods implemented in the Point Cloud Library. The experiments presented here suggest that our approach is accurate and fast, even in the presence of considerable sensor noise.},
-  booktitle    = {2021 IEEE International Conference on Robotics and Automation (ICRA)},
-  publisher    = {IEEE},
-  author       = {Roychoudhury, Arindam and Missura, Marcell and Bennewitz, Maren},
-  year         = {2021},
-  month        = {May},
-  pages        = {13532–13538},
-  language     = {en}
+  title     = {Plane Segmentation in Organized Point Clouds using Flood Fill},
+  booktitle = {2021 IEEE International Conference on Robotics and Automation  },
+  publisher = {IEEE},
+  author    = {Roychoudhury, Arindam and Missura, Marcell and Bennewitz, Maren},
+  year      = {2021},
+  pages     = {13532–13538}
 }
 
 @article{wang2020solov2,
@@ -722,60 +401,38 @@
 }
 
 @inproceedings{Nguyen_Martinelli_Tomatis_Siegwart_2005,
-  title        = {A comparison of line extraction algorithms using 2D laser rangefinder for indoor mobile robotics},
-  issn         = {2153-0866},
-  doi          = {10.1109/IROS.2005.1545234},
-  abstractnote = {This paper presents an experimental evaluation of different line extraction algorithms on 2D laser scans for indoor environment. Six popular algorithms in mobile robotics and computer vision are selected and tested. Experiments are performed on 100 real data scans collected in an office environment with a map size of 80m /spl times/ 50m. Several comparison criteria are proposed and discussed to highlight the advantages and drawbacks of each algorithm, including speed, complexity, correctness and precision. The results of the algorithms are compared with the ground truth using standard statistical methods.},
-  booktitle    = {2005 IEEE/RSJ International Conference on Intelligent Robots and Systems},
-  author       = {Nguyen, V. and Martinelli, A. and Tomatis, N. and Siegwart, R.},
-  year         = {2005},
-  month        = {Aug},
-  pages        = {1929–1934}
+  title     = {A comparison of line extraction algorithms using 2D laser rangefinder for indoor mobile robotics},
+  booktitle = {2005 IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  author    = {Nguyen, V. and Martinelli, A. and Tomatis, N. and Siegwart, R.},
+  year      = {2005},
+  pages     = {1929–1934}
 }
 
 @inproceedings{Roychoudhury_Missura_Bennewitz_2021_new,
-  address      = {Prague, Czech Republic},
-  title        = {Plane Segmentation Using Depth-Dependent Flood Fill},
-  isbn         = {978-1-66541-714-3},
-  url          = {https://ieeexplore.ieee.org/document/9635930/},
-  doi          = {10.1109/IROS51168.2021.9635930},
-  abstractnote = {The detection of planar surfaces in a point cloud is a popular technique for the extraction of drivable or walkable surfaces and for tabletop segmentation. Unfortunately, RGB-D sensors are quite noisy and provide incomplete data, which makes the extraction of surfaces more challenging. Also, it is desirable to process the point cloud data in real time, which at a rate of approximately 30 Hz, leaves only a small amount of computation time per frame. We have already developed a real time-capable plane segmentation method [1] that exploits the organized structure of RGB-D point clouds in order to implement a computationally efﬁcient region growing algorithm. It uses the point-plane distance to assign points to their segments rather than inherently unreliable surface normals. Now we are presenting an improvement where we adapt thresholds and other parameters of our algorithm to the measured depth in order to account for an increasing scatter of the points at larger distances from the camera. We estimate a minimum detectable plane size in pixels dependent on the measured depth. This enables us to stride in pixel coordinates with larger steps that are adaptive to the measured depth and to implement more robust sanity checks of depth-dependent size. Apart from a speed-up of the runtime of our algorithm, the segmentation quality also increased. We show a comparison between our improvement, our previous version, and other state-of-the-art methods evaluated on multiple commonly available datasets.},
-  booktitle    = {2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  publisher    = {IEEE},
-  author       = {Roychoudhury, Arindam and Missura, Marceli and Bennewitz, Maren},
-  year         = {2021},
-  month        = {Sep},
-  pages        = {2210–2216},
-  language     = {en}
+  title     = {Plane Segmentation Using Depth-Dependent Flood Fill},
+  booktitle = {2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  publisher = {IEEE},
+  author    = {Roychoudhury, Arindam and Missura, Marceli and Bennewitz, Maren},
+  year      = {2021},
+  pages     = {2210–2216}
 }
 
 @inproceedings{Roychoudhury_Missura_Bennewitz_2021_old,
-  address      = {Xi’an, China},
-  title        = {Plane Segmentation in Organized Point Clouds using Flood Fill},
-  isbn         = {978-1-72819-077-8},
-  url          = {https://ieeexplore.ieee.org/document/9561325/},
-  doi          = {10.1109/ICRA48506.2021.9561325},
-  abstractnote = {The segmentation of a point cloud into planar primitives is a popular approach to ﬁrst-line scene interpretation and is particularly useful in mobile robotics for the extraction of drivable or walkable surfaces and for tabletop segmentation for manipulation purposes. Unfortunately, the planar segmentation task becomes particularly challenging when the point clouds are obtained from an inherently noisy, robot-mounted sensor that is often in motion, therefor requiring real time processing capabilities. We present a real time-capable plane segmentation technique based on a region growing algorithm that exploits the organized structure of point clouds obtained from RGB-D sensors. In order to counteract the sensor noise, we invest into careful selection of seeds that start the region growing and avoid the computation of surface normals whenever possible. We implemented our algorithm in C++ and thoroughly tested it in both simulated and real-world environments where we are able to compare our approach against existing state-of-the-art methods implemented in the Point Cloud Library. The experiments presented here suggest that our approach is accurate and fast, even in the presence of considerable sensor noise.},
-  booktitle    = {2021 IEEE International Conference on Robotics and Automation (ICRA)},
-  publisher    = {IEEE},
-  author       = {Roychoudhury, Arindam and Missura, Marcell and Bennewitz, Maren},
-  year         = {2021},
-  month        = {May},
-  pages        = {13532–13538},
-  language     = {en}
+  title     = {Plane Segmentation in Organized Point Clouds using Flood Fill},
+  booktitle = {2021 IEEE International Conference on Robotics and Automation  },
+  publisher = {IEEE},
+  author    = {Roychoudhury, Arindam and Missura, Marcell and Bennewitz, Maren},
+  year      = {2021},
+  pages     = {13532–13538}
 }
 
 @article{Proenca_Gao_2018,
-  title        = {Probabilistic RGB-D Odometry based on Points, Lines and Planes Under Depth Uncertainty},
-  url          = {http://arxiv.org/abs/1706.04034},
-  abstractnote = {This work proposes a robust visual odometry method for structured environments that combines point features with line and plane segments, extracted through an RGB-D camera. Noisy depth maps are processed by a probabilistic depth fusion framework based on Mixtures of Gaussians to denoise and derive the depth uncertainty, which is then propagated throughout the visual odometry pipeline. Probabilistic 3D plane and line ﬁtting solutions are used to model the uncertainties of the feature parameters and pose is estimated by combining the three types of primitives based on their uncertainties.},
-  note         = {arXiv:1706.04034 [cs]},
-  number       = {arXiv:1706.04034},
-  publisher    = {arXiv},
-  author       = {Proenca, Pedro F. and Gao, Yang},
-  year         = {2018},
-  month        = {Jan},
-  language     = {en}
+  title     = {Probabilistic RGB-D Odometry based on Points, Lines and Planes Under Depth Uncertainty},
+  note      = {arXiv:1706.04034 [cs]},
+  number    = {arXiv:1706.04034},
+  publisher = {arXiv},
+  author    = {Proenca, Pedro F. and Gao, Yang},
+  year      = {2018}
 }
 
 @article{dlib09,
@@ -796,48 +453,53 @@
 @inproceedings{Rusu_ICRA2011_PCL,
   author    = {Radu Bogdan Rusu and Steve Cousins},
   title     = {{3D is here: Point Cloud Library (PCL)}},
-  booktitle = {{IEEE International Conference on Robotics and Automation (ICRA)}},
-  month     = {May 9-13},
-  year      = {2011},
-  address   = {Shanghai, China}
+  booktitle = {{IEEE International Conference on Robotics and Automation  }},
+  year      = {2011}
 }
 @article{He_Zhang_Ren_Sun_2015,
-  title        = {Deep Residual Learning for Image Recognition},
-  url          = {http://arxiv.org/abs/1512.03385},
-  abstractnote = {Deeper neural networks are more difﬁcult to train. We present a residual learning framework to ease the training of networks that are substantially deeper than those used previously. We explicitly reformulate the layers as learning residual functions with reference to the layer inputs, instead of learning unreferenced functions. We provide comprehensive empirical evidence showing that these residual networks are easier to optimize, and can gain accuracy from considerably increased depth. On the ImageNet dataset we evaluate residual nets with a depth of up to 152 layers—8× deeper than VGG nets [41] but still having lower complexity. An ensemble of these residual nets achieves 3.57% error on the ImageNet test set. This result won the 1st place on the ILSVRC 2015 classiﬁcation task. We also present analysis on CIFAR-10 with 100 and 1000 layers.},
-  note         = {arXiv:1512.03385 [cs]},
-  number       = {arXiv:1512.03385},
-  publisher    = {arXiv},
-  author       = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
-  year         = {2015},
-  month        = {Dec},
-  language     = {en}
+  title     = {Deep Residual Learning for Image Recognition},
+  note      = {arXiv:1512.03385 [cs]},
+  number    = {arXiv:1512.03385},
+  publisher = {arXiv},
+  author    = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  year      = {2015}
 }
 
 @article{Lin_Dollár_Girshick_He_Hariharan_Belongie_2017,
-  title        = {Feature Pyramid Networks for Object Detection},
-  url          = {http://arxiv.org/abs/1612.03144},
-  abstractnote = {Feature pyramids are a basic component in recognition systems for detecting objects at different scales. But recent deep learning object detectors have avoided pyramid representations, in part because they are compute and memory intensive. In this paper, we exploit the inherent multi-scale, pyramidal hierarchy of deep convolutional networks to construct feature pyramids with marginal extra cost. A topdown architecture with lateral connections is developed for building high-level semantic feature maps at all scales. This architecture, called a Feature Pyramid Network (FPN), shows signiﬁcant improvement as a generic feature extractor in several applications. Using FPN in a basic Faster R-CNN system, our method achieves state-of-the-art singlemodel results on the COCO detection benchmark without bells and whistles, surpassing all existing single-model entries including those from the COCO 2016 challenge winners. In addition, our method can run at 6 FPS on a GPU and thus is a practical and accurate solution to multi-scale object detection. Code will be made publicly available.},
-  note         = {arXiv:1612.03144 [cs]},
-  number       = {arXiv:1612.03144},
-  publisher    = {arXiv},
-  author       = {Lin, Tsung-Yi and Dollár, Piotr and Girshick, Ross and He, Kaiming and Hariharan, Bharath and Belongie, Serge},
-  year         = {2017},
-  month        = {Apr},
-  language     = {en}
+  title     = {Feature Pyramid Networks for Object Detection},
+  note      = {arXiv:1612.03144 [cs]},
+  number    = {arXiv:1612.03144},
+  publisher = {arXiv},
+  author    = {Lin, Tsung-Yi and Dollár, Piotr and Girshick, Ross and He, Kaiming and Hariharan, Bharath and Belongie, Serge},
+  year      = {2017}
+}
+
+@conference{Huber-2011-7211,
+  author    = {Daniel Huber},
+  title     = {The ASTM E57 File Format for 3D Imaging Data Exchange},
+  booktitle = {Proceedings of SPIE Electronics Imaging Science and Technology Conference, 3D Imaging Metrology},
+  year      = {2011},
+  volume    = {7864}
+}
+
+@article{davison2007monoslam,
+  author    = {Davison, Andrew J and Reid, Ian D and Molton, Nicholas D and Stasse, Olivier},
+  title     = {MonoSLAM: Real-time single camera SLAM},
+  journal   = {IEEE transactions on pattern analysis and machine intelligence},
+  volume    = {29},
+  number    = {6},
+  pages     = {1052--1067},
+  year      = {2007},
+  publisher = {IEEE}
 }
 
 @article{Huynh_Nguyen-Ha_Matas_Rahtu_Heikkila_2020,
-  title        = {Guiding Monocular Depth Estimation Using Depth-Attention Volume},
-  url          = {http://arxiv.org/abs/2004.02760},
-  abstractnote = {Recovering the scene depth from a single image is an ill-posed problem that requires additional priors, often referred to as monocular depth cues, to disambiguate different 3D interpretations. In recent works, those priors have been learned in an end-to-end manner from large datasets by using deep neural networks. In this paper, we propose guiding depth estimation to favor planar structures that are ubiquitous especially in indoor environments. This is achieved by incorporating a non-local coplanarity constraint to the network with a novel attention mechanism called depth-attention volume (DAV). Experiments on two popular indoor datasets, namely NYU-Depth-v2 and ScanNet, show that our method achieves state-of-the-art depth estimation results while using only a fraction of the number of parameters needed by the competing methods.},
-  note         = {arXiv:2004.02760 [cs]},
-  number       = {arXiv:2004.02760},
-  publisher    = {arXiv},
-  author       = {Huynh, Lam and Nguyen-Ha, Phong and Matas, Jiri and Rahtu, Esa and Heikkila, Janne},
-  year         = {2020},
-  month        = {Aug},
-  language     = {en}
+  title     = {Guiding Monocular Depth Estimation Using Depth-Attention Volume},
+  note      = {arXiv:2004.02760 [cs]},
+  number    = {arXiv:2004.02760},
+  publisher = {arXiv},
+  author    = {Huynh, Lam and Nguyen-Ha, Phong and Matas, Jiri and Rahtu, Esa and Heikkila, Janne},
+  year      = {2020}
 }
 
 @inproceedings{yu2017dilated,
@@ -849,28 +511,18 @@
 }
 
 @inproceedings{he2017mask,
-  title={Mask r-cnn},
-  author={He, Kaiming and Gkioxari, Georgia and Doll{\'a}r, Piotr and Girshick, Ross},
-  booktitle={Proceedings of the IEEE international conference on computer vision},
-  pages={2961--2969},
-  year={2017}
+  title     = {Mask r-cnn},
+  author    = {He, Kaiming and Gkioxari, Georgia and Doll{\'a}r, Piotr and Girshick, Ross},
+  booktitle = {Proceedings of the IEEE international conference on computer vision},
+  pages     = {2961--2969},
+  year      = {2017}
 }
 
 @inproceedings{ronneberger2015u,
-  title={U-net: Convolutional networks for biomedical image segmentation},
-  author={Ronneberger, Olaf and Fischer, Philipp and Brox, Thomas},
-  booktitle={International Conference on Medical image computing and computer-assisted intervention},
-  pages={234--241},
-  year={2015},
-  organization={Springer}
-}
-
-@inproceedings{huber2011astm,
-  title={The ASTM E57 file format for 3D imaging data exchange},
-  author={Huber, Daniel},
-  booktitle={Three-Dimensional Imaging, Interaction, and Measurement},
-  volume={7864},
-  pages={88--96},
-  year={2011},
-  organization={SPIE}
+  title        = {U-net: Convolutional networks for biomedical image segmentation},
+  author       = {Ronneberger, Olaf and Fischer, Philipp and Brox, Thomas},
+  booktitle    = {International Conference on Medical image computing and computer-assisted intervention},
+  pages        = {234--241},
+  year         = {2015},
+  organization = {Springer}
 }
