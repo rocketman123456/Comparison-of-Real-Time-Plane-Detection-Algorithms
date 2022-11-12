@@ -85,40 +85,70 @@ Another often used plane output format is the cartesian equation of a plane desc
 
 In methods that work on image data, found planes are often described by a segmentation mask (SM) or regions of pixels that belong together.
 
-Finally, some methods use plane detection as a means to an end, e.g., for reconstructing a scene.
-% FIXME FIX table sodass maske oder da steht
+Finally, some methods use plane detection as a means to an end, e.g., for the reconstruction of a scene or the integration into
+a SLAM architecture.
+
+\paragraph{Hardware Requirements}
+Another important aspect to consider is the hardware required by an algorithm.
+Many applications in the field of robotics are limited in their processing power, often restricted to microcontrollers like
+a Raspberry Pi\footnote{\href{https://www.raspberrypi.com/}{https://www.raspberrypi.com/}} or an Arduino\footnote{\href{https://www.arduino.cc/}{https://www.arduino.cc/}}.
+Thus, most plane detection algorithms run on the \textit{CPU}, some even implement some form of \textit{CPU} parallelism, e.g., 3D-KHT uses OpenMP\footnote{\href{https://www.openmp.org/}{https://www.openmp.org/}}
+to speed up the octree construction~\cite[Section~4]{LimbergerOliveira2015HT3D}.
+However, some methods are implemented either completely or partially on the \textit{GPU}.
+\citeauthor{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}\cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015} compare different
+implementations of the RANSAC algorithm, whereas three versions are processed entirely on the \textit{CPU}, and the last one is offloaded
+to the \textit{GPU} via CUDA\footnote{\href{https://developer.nvidia.com/cuda-toolkit}{https://developer.nvidia.com/cuda-toolkit}}.
+
+To summarize, we differentiate between algorithms that run solely on the \textit{CPU}, and algorithms that, additionally, employ the
+machine's \textit{GPU}.
+\textbf{\textcolor{red}{sicher gehen dass die neue spalte stimmt}}
+\paragraph{Availability}
+Lastly, to use an algorithm, one has to be able to implement it. Some implementations are published alongside the corresponding paper.
+Moreover, the availability of an implementation may be restricted by certain legalities.
+While other publications are limited to the paper, the level of detail regarding the implementation details varies.
+
+For further reference, we consider a plane detection algorithm to be \textit{available} if its implementation is successful, and
+that the implementation does not involve a form of legal transaction.
+\textbf{\textcolor{red}{die formulierung muss im grund aussagen, dass man seine seele nicht verkaufen muss um da ran zu kommen, dh
+        im zweifel selber impl können, oder eine geg. nehmen. PEAC: formular ausfüllen wäre ne grauzone, aber daten sind ja kein geld oder? :')}}
+\textbf{\textcolor{red}{dementsprechend sicher stellen dass die Y/N richtig sind}}
 
 \subsection{Plane Detection Algorithms}
 \label{subsec:pdaselect}
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
-The table shows the input type and the output format of all algorithms.
-Note, that the final output of PlaneRecNet is a piecewise-planar reconstruction of a scene (see Subsection~\ref{subsec:planerecnet}).
-However, modifying the architecture to return the segmentation masks would require minimal
+The table shows the input type and the output format of all algorithms, as well as the required hardware, and the availability.
+Note, that we consider all algorithms to be available, however, we are not aware of public implementations of OBRG and SCH-RG.
+However, the respective publications outline their methods in high detail, thereby guiding a re-implementation.
+\textbf{\textcolor{red}{PEAC?}}
+Note, that the final output of PlaneRecNet is a piecewise-planar reconstruction of a scene (see Subsection~\ref{subsec:bg-planerecnet}).
+However, modifying the architecture to return the segmentation masks and plane normals would require minimal
 effort (see Figure~\ref{fig:planerecnet}).
-\textbf{\textcolor{red}{explain table further?}}
-% Im folgenden werden aus den zuvor aufgestellten kriterien die für diese arbeit sinnvollsten werte(?\textcolor{red}{"ich nehme UPC aus {UPC, OPC, DI}... idk wie ich das nennen soll}) ausgewählt und anhand dessen unpassende algorithmen von der evaluierung ausgeschlossen.
-% \textbf{\textcolor{red}{output types mit BG abgleichen}}
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|c|c|c}
-        \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Section}            \\ \hline %& \textbf{Learning-Based} \\ \hline%& \textbf{Availability} \\ \hline
-        \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               & \ref{subsec:bg-rspd}        \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               & \ref{subsec:bg-ops}         \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{3DKHT} \cite{LimbergerOliveira2015HT3D}                  & UPC                 & inliers               & \ref{subsec:bg-3dkht}       \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               & \ref{subsec:bg-obrg}        \\  %& N                       \\ %& Y                   \\ \hline
-        \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               & \ref{subsec:bg-peac}        \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & $n, d$                & \ref{subsec:bg-cape}        \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers               & \ref{subsec:bg-schrg}       \\  %& N                       \\ %& N                     \\ \hline
-        \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               & \ref{subsec:bg-dkht}        \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & \ref{subsec:bg-ddff}        \\  %& N                       \\ %& Y                     \\ \hline
-        \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & $n, d$                & \ref{subsec:bg-planenet}    \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & SM                    & \ref{subsec:bg-planerecnet} \\  %& Y                       \\ %& Y                     \\ \hline
-        \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & $n, d$                & \ref{subsec:bg-planercnn}   \\  %& Y                       \\ %& Y                     \\ \hline
-    \end{tabular}
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{c|c|c|c|c|c}
+            \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Hardware} & \textbf{Available} & \textbf{Section}            \\ \hline
+            \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-rspd}        \\
+            \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-ops}         \\
+            \textbf{3DKHT} \cite{LimbergerOliveira2015HT3D}                  & UPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-3dkht}       \\
+            \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-obrg}        \\
+            \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-peac}        \\
+            \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & $(n, d)$              & CPU               & Y                  & \ref{subsec:bg-cape}        \\
+            \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-schrg}       \\
+            \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               & CPU               & Y                  & \ref{subsec:bg-dkht}        \\
+            \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & CPU               & Y                  & \ref{subsec:bg-ddff}        \\
+            \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & SM, $(n, d)$          & GPU               & Y                  & \ref{subsec:bg-planenet}    \\
+            \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & SM, $n$               & GPU               & Y                  & \ref{subsec:bg-planerecnet} \\
+            \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & SM, $(n, d)$          & GPU               & Y                  & \ref{subsec:bg-planercnn}   \\
+        \end{tabular}
+    }
     \caption{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of input.
         The rightmost column provides the placement within this work.}
     \label{tab:algos}
 \end{table}
+
+\textbf{\textcolor{red}{diesen abschnitt erweitern mit den oben genannten kriterien}}
+
 Addressing the criterion of input type, we are only interested in performing plane detection in complete environments.
 Each update published by RTAB-MAP is the union of new data and the current state of the recorded map. RTAB-MAP publishes this update
 in form of an \textit{unorganized} point cloud (see Figure~\ref{fig:rtabmap}).
