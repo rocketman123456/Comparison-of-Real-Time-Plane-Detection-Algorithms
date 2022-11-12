@@ -190,24 +190,23 @@ Through extensive research of current literature, we compiled a list of popular 
         \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                      & UPC                   & Y             & Y               & objects     & \ref{subsec:bg-stanford} \\
         \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      & \ref{subsec:bg-Leica}    \\
         \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      & \ref{subsec:bg-Kinect}   \\
-        \textbf{SYNBEP}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      & \ref{subsec:bg-SYNBEP}   \\
+        \textbf{SYNPEB}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      & \ref{subsec:bg-SYNPEB}   \\
         \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           & \ref{subsec:bg-ARCO}     \\
         \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      & \ref{subsec:bg-segcomp}  \\
         \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     & \ref{subsec:bg-NYU}      \\
         \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  & \ref{subsec:bg-ICL}      \\
-        \textbf{SUN}         \cite{7298655}                                                                                                                                                   & DI                    & Y             & Y               & objects     & \ref{subsec:bg-SUN}      \\
+        \textbf{SUNRGB-D}         \cite{7298655}                                                                                                                                              & DI                    & Y             & Y               & objects     & \ref{subsec:bg-SUN}      \\
         \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & DI                    & Y             & Y               & trajectory  & \ref{subsec:bg-TUM}      \\ \hline
         \textbf{FIN (ours)}                                                                                                                                                                   & UPC                   & Y             & Y               & planes      & \ref{sec:finimpl}
     \end{tabular}
     \caption[Popular Datasets]{Plane detection Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
-        Note, that the synthetic datasets (e.g., SegComp and SYNBEP) represent neither indoor nor outdoor scenes, hence the "/" in
+        Note, that the synthetic datasets (e.g., SegComp and SYNPEB) represent neither indoor nor outdoor scenes, hence the "/" in
         the respective table entries. The datasets are clustered by their type of format. Moreover, the remaining order is arbitrary.
         The rightmost column provides the placement within this work.
         Note, that we include our dataset (FIN) in this table for completeness reasons.
     }
     \label{tab:datasets}
 \end{table}
-\textbf{\textcolor{red}{strich drunter, ours (FIN)}}
 In Subsection~\ref{subsec:pdaselect}, we determine \textit{unorganized} point clouds as the type of input. Furthermore, we focus on plane detection in real environments in this work.
 Because most datasets do not conform to these two requirements, only \textit{2D-3D-S} and \textit{Leica} remain.
 Since we focus on plane detection in indoor environments, \textit{Leica} ceases to be an option.
