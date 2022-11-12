@@ -70,7 +70,7 @@ for i, algo in enumerate(data.keys()):
     ax = fig.add_subplot(len(data.keys()), 1, i+1)
     if algo == '3DKHT':
         algo = "3D-KHT"
-    ax.set_title(algo)
+    ax.set_title(algo, fontdict={'size':80})
     # ax.set_yscale('log')
     # ax2 = ax.twinx()
     # ax.set_xscale('log')
@@ -96,24 +96,27 @@ for i, algo in enumerate(data.keys()):
     # print(ticks)
     # ax.set_yticks(ticks)
     # ax.set_yticks([0, 10, 100, 200,500, 1000])
-    # ax.set_yticklabels(["0","1","10","100",f'{max(max_calc,max_pre)}'])
     ax.set_yscale('log')
-    ax.set_yticks([min(min_pre, min_calc), 1, 10,100,700]) #round(max(max_calc, max_pre)*1.1)])
+    ax.set_yticks([0.01, 1, 10,100,700]) #round(max(max_calc, max_pre)*1.1)])
+    ax.set_yticklabels(["$\\leq0.01$","1","10","100",'700'])
     print(ax.get_yticks())
-    ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
-    ax.set_ylim(min(min_pre, min_calc),700)
+    # ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    # ax.set_ylim(min(min_pre, min_calc),700)
+    ax.set_ylim(0.01,700)
     ax.grid(axis='y')
 
     # ax.ticklabel_format(useOffset=False)
     if i != 3:
         ax.get_xaxis().set_visible(False)
+    ax.tick_params(labelsize=60)
+    
     # ax.set_xscale('log')
-fig.text(0.06, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
-         ha='center', va='center', rotation='vertical', fontdict={'fontsize':40 })
+fig.text(0.045, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
+         ha='center', va='center', rotation='vertical',fontdict={'size':80})
 fig.text(0.5, 0, 'File Size(mb)', ha='center',
-         va='bottom', rotation='horizontal')
+         va='bottom', rotation='horizontal',fontdict={'size':80})
 
-fig.axes[0].legend(loc='lower right', fancybox=True, shadow=True, ncol=5)
+fig.axes[0].legend(loc='lower right', fancybox=True, shadow=True, ncol=5,prop={'size':80})
 
 plt.savefig("stanfordsvg.svg", format="svg")
 

@@ -224,7 +224,7 @@ def whatevs(path: str, algos=ALGOS):
             else:
                 data.append([time,pr,po, int(file[6:10])])
         ax = fig.add_subplot(len(algos),1, i+1)
-        ax.set_title(algo, loc='left',y=0.9, x=0.01, pad=-16)
+        ax.set_title(algo, loc='left',y=0.9, x=0.01, pad=-16, fontdict={'size':80})
         ax2 = ax.twinx()
         times = np.array(list(sorted(times)))
         data.sort(key = lambda x : x[3])
@@ -253,12 +253,11 @@ def whatevs(path: str, algos=ALGOS):
         ax.set_yscale('log')
         ax2.set_yscale('log')
         ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
-
         # ax2.legend()
-    fig.text(0.06, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
-         ha='center', va='center', rotation='vertical')
-    fig.text(0.96, 0.5, '$size(mb)$', ha='center', va='center', rotation='vertical')
-    fig.text(0.5,0, 'Individual Time Frames', ha='center', va='bottom', rotation='horizontal')
+    fig.text(0.045, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
+         ha='center', va='center', rotation='vertical', fontdict={'size':80})
+    fig.text(0.96, 0.5, '$size(mb)$', ha='center', va='center', rotation='vertical',fontdict={'size':80})
+    fig.text(0.5,0, 'Individual Time Frames', ha='center', va='bottom', rotation='horizontal',fontdict={'size':80})
     box = fig.axes[0].get_position()
     # fig.axes[0].set_position([box.x0, box.y0 + box.height * 0.1,
     #                 box.width, box.height * 0.9])
@@ -267,21 +266,22 @@ def whatevs(path: str, algos=ALGOS):
     # fig.axes[0].legend(loc='center right', fancybox=True, shadow=True, ncol=5)
     lines_labels = [fig.axes[0].get_legend_handles_labels()]
     lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
-    fig.legend(lines, labels, loc='upper center', fancybox=True, shadow=True, ncol=5)
+    fig.legend(lines, labels, loc='upper center', fancybox=True, shadow=True, ncol=5, prop={'size':70})
     maxlim = max([ax.get_ylim() for ax in fig.axes[::2]], key=lambda x: x[1])
     minlim = min([ax.get_ylim() for ax in fig.axes[::2] if ax.get_ylim()[0] > 0],key=lambda x: x[0])
     print(minlim, maxlim)    
     for i, ax in enumerate(fig.axes):
+        ax.tick_params(labelsize=60)
         if i %2 == 0:
             ax.set_yscale('log')
             ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
-            ax.set_yticks([0.1,1,10,round(maxlim[1])])
-            ax.set_yticklabels([r'$\leq$0.1', "1","10",f'{round(maxlim[1])}'])
+            ax.set_yticks([0.01,1,10,round(maxlim[1])])
+            ax.set_yticklabels([r'$\leq$0.01', "1","10",f'{round(maxlim[1])}'])
             ax.grid(axis='y')
-            ax.set_ylim(0.1,round(maxlim[1]))    
+            ax.set_ylim(0.01,round(maxlim[1]))    
         else:
             ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
-
+    
     plt.savefig('dynaudi.svg',format='svg')
     # plt.show()
     # plt.close()

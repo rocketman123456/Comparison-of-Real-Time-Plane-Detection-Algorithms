@@ -16,8 +16,9 @@ First, we present the metrics used for comparison, followed by an outline of the
 
 \subsection{Metrics}
 \label{subsec:metrics}
-The following two paragraphs detail the metrics we use in this evaluation. Note, that by using the term "time frame" or "time step", we refer to 
-an the state of the point
+The following two paragraphs detail the metrics we use in this evaluation. Note, that by using the term "time frame $t$" or "time step $t$", we refer to 
+the state of the point cloud at a given time $t$.
+
 \paragraph{Accuracy}
 To quantify the accuracy of the plane detection algorithms, we use the detected planes and the created ground truth to calculate the three following
 metrics: Precision, \textit{Recall}, and the F1-Score.
@@ -254,7 +255,7 @@ For each scene of the \textit{2D-3D-S} dataset, the pairs of processing times an
 %         scaled logarithmically to the base of ten.}
 %     \label{fig:sizetimestanford}
 % \end{figure}
-\begin{figure}[H]
+\begin{figure}[]
     \centering
     \def\svgwidth{0.9\textwidth}
     \input{images/stanfordpdf.pdf_tex}
@@ -263,8 +264,6 @@ For each scene of the \textit{2D-3D-S} dataset, the pairs of processing times an
         Note, that the y-axis is scaled logarithmically to the base of ten.}
     \label{fig:sizetimestanford}
 \end{figure}
-\textbf{\textcolor{red}{tpre in seconds}}
-\textbf{\textcolor{red}{figure noch höher machen!}}
 The computation times of 3D-KHT do not seem to strongly relate to the size of the point cloud.
 Both the duration of the pre-processing and the duration of the plane detection initially grow linearly
 but do not show a large growth even with large jumps in point cloud size.
@@ -385,10 +384,9 @@ recording, and thus contains the most data.
     \input{images/dynaudi_crop.pdf_tex}
     \caption[Time Results Auditorium]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, post-processing
         $t_{post}$, and total calculation time $t_{tot}$ of the auditorium scene and cloud sizes $size$ of each time frame.
-        Note, that both y-axes are scaled logarithmically to the base of ten.}
+        Note, that both y-axes are scaled logarithmically to the base of ten. \textit{Time Frames} are defined in Subsection~\ref{subsec:metrics}.}
     \label{fig:dynaudi}
 \end{figure}
-\textbf{\textcolor{red}{time frames erklären!}}
 The pre-processing times of RSPD and OBRG are noticeably proportional to the point cloud size.
 In contrast, for OPS and 3D-KHT, the pre-processing times seem to correlate with the plane detection times since
 both show similar spikes. The plane detection steps of OPS and 3D-KHT do not seem to depend on the point cloud size,
