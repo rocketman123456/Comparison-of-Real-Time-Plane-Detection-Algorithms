@@ -284,9 +284,8 @@ $10s-100s$,
 even for smaller cloud sizes at ${\sim}25mb$.
 The $t_{calc}$ values of OBRG do not appear to be dependent on the size of the point cloud, as the computation
 times tend to decrease with growing point clouds. A possible reason could be the fixed value of the octree levels $l_{max}$.
-An adaptive determination of octree size would likely lead to a more balanced curve.
-Since the post-processing phase operates on the unrefined regions returned by the plane detection phase, the curve behaves similarly,
-supporting the sub-optimal parameterization argument. \textbf{\textcolor{red}{schwierig das zu behaupten. SISO prinzip}}
+As this parameter is vital for the calculations in all phases, all calculation times of OBRG are likely to show improvement
+upon applying a parameter optimization of $l_{max}$ based on the dataset. 
 From our experience, the mid-sized scenes in the \textit{2D-3D-S} dataset are often long and narrow hallways. Assuming an inappropriate
 octree depth parameter, the subdivision could effectively split the hallway, returning a set of chunks that are in no
 way to be considered planar. This would consequently lead to an early termination due to failed thresholds, thus reducing
