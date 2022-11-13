@@ -99,14 +99,14 @@ Usually, the data representation of the recorded environment falls into one of t
 
 The input types are compared in Table~\ref{tab:inputs}. Both the organized and the unorganized point cloud store 3D coordinates.
 The fundamental difference between UPC and OPC is their format,
-In the popular point-cloud-library (PCL) data format\footnote{\href{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}}, 
+In the popular point-cloud-library (PCL) data format\footnote{\href{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}},
 each point cloud has a \textit{width} and a \textit{height}.
 The \textit{width} of a UPC is the number of included points, while the \textit{height} equals 1.
 In contrast, the \textit{width} and \textit{height} of an OPC depend on the resolution of the recording camera.
-For instance, recording the environment with an arbitrary camera with a resolution of 640x480, each organized point cloud 
+For instance, recording the environment with an arbitrary camera with a resolution of 640x480, each organized point cloud
 would have a \textit{width} and \textit{height} of $640$ and $480$, respectively. Another distinguishing factor is that the organized
-point cloud can only represent the environment from one angle, which leads to missing points due to sensor limitations, and occlusion
-of points that lie behind other points. Conversely, UPCs are neither limited to a specific viewport nor do they allow for missing points. 
+point cloud can only represent the environment from one angle, which leads to missing data due to sensor limitations and the occlusion
+of points that lie behind other points. Conversely, UPCs are neither limited to a specific viewport nor do they allow for missing points.
 
 When considering images, a differentiation between RGB images and depth images has to be made.
 Depth mages are inherently similar to organized point clouds, given their resolution and two-dimensional structure.
@@ -129,6 +129,8 @@ color by the amount of included red, green, and blue.
     \label{tab:inputs}
 \end{table}
 It is worth noting that, in the literature, the terms "depth image", "depth map" and "organized point cloud" are used interchangeably.
+
+\textbf{\textcolor{red}{lidar?}}
 
 \subsection{Common Output Formats}
 \label{subsec:output}
@@ -167,7 +169,7 @@ Most methods of detecting planar regions in unorganized point clouds are based o
     \item Region Growing (RG)
 \end{itemize}
 
-\subsection*{Hough Transform}
+\subsection{Hough Transform}
 The original motivation behind the Hough transform was detecting lines in images~\cite{5230799}. All points are sequentially processed via a voting procedure to detect the best-fitting line over a set of 2d points.
 Multiple lines with different orientations are fit through each given point $p$.
 Because a line in slope-intercept form parallel to the y-axis would lead to an infinite slope, the Hesse normal form is chosen as the primary line representation\cite{10.1145/361237.361242}.
@@ -182,14 +184,14 @@ In the context of plane detection in 3D point clouds, a plane would be uniquely 
 Since more parameters are needed to describe a plane in 3D, the accumulator must be adapted.
 Therefore, a three-dimensional accumulator is used, whereas the specific shape has been discussed~\cite*{Borrmann_Elseberg_Lingemann_Nüchter_2011}.
 
-\subsection*{RANSAC}
+\subsection{RANSAC}
 RANSAC (RAndom SAmple Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{Sun_Mordohai_2019, Yang_Forstner, Ashraf_Ahmed_2017}.
 RANSAC is an iterative process. Each iteration randomly samples a certain amount of data points and fits a mathematical model through them. The level of outliers determines the quality of the obtained model and preserves the best overall model.
 
 Within the context of plane detection in 3D point clouds, an approach could involve random sampling of 3 points, fitting a plane through them,
 and counting the number of points within a certain range of the plane\cite{Yang_Forstner}. The model, in that case, could be a cartesian plane equation.
 
-\subsection*{Region Growing}
+\subsection{Region Growing}
 Region Growing methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}.
 RG-based segmentation methods aim to grow a set of disjoint regions from an initial selection of seed points. The regions increase in size by inserting neighboring values based on an inclusion criterion.
 The quality of the resulting regions depends on the choice of seed points, e.g., a very noisy seed point could decrease overall quality  \cite{Malek_Rahman_Yasiran_Jumaat_Jalil_2012}.
@@ -199,24 +201,30 @@ In the context of this work, a criterion for region growth could be the distance
 The following subsections detail the necessary background knowledge of all the plane detection algorithms mentioned in this paper.
 Aside from the functionality of a method, we give relevant higher-level information, e.g., the expected input format and the proposed output format.
 
-
 \subsection{Robust Statistics approach for Plane Detection}
 \label{subsec:bg-rspd}
 
-\textbf{\textcolor{red}{Parameter: $l_O, \varepsilon, MOR, k, MND, MDP$}}
 
-Robust Statistics approach for Plane Detection (RSPD)~\cite{Araújo_Oliveira_2020} is based on region growing. After taking an unorganized point cloud as input, the procedure is divided into three phases;
-\textit{Split, Grow and Merge}.
+Robust Statistics approach for Plane Detection (RSPD)~\cite{Araújo_Oliveira_2020} is based on region growing.
+After taking an unorganized point cloud as input, the procedure is divided into three phases:
+\textit{Split, Grow and Merge} (see Figure~\ref{fig:rspd}).
 
-\paragraph*{Split}
-The authors propose to use an octree to recursively subdivide the point cloud. The subdivision is repeated until every leaf node contains less than $0.1\%$ of the total amount
-of points.
-This is followed by a planarity test, during which the octree is traversed bottom-up. If all eight children of a node $n$ are leaf nodes and fail the planarity test, $n$ replaces its children
+\paragraph{Split}
+The authors propose to use an octree to recursively subdivide the point cloud. 
+The subdivision is repeated until every leaf node contains less than a threshold $\varepsilon$ corresponding to the 
+minimum number of points per leaf. The authors propose a value of $\varepsilon = 0.1\%$. Alternatively, the subdivision terminates
+if a node reaches the maximum depth level $l_O = 10$. Note, that this parameter is not referenced in~\cite{Araújo_Oliveira_2020}. 
+However, it is used in the official implementation\footnote{\href{keyhttps://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}.
+The subdivision is followed by a planarity test~\cite[Section~3.2]{Araújo_Oliveira_2020}, during which the octree is traversed bottom-up. 
+If all eight children of a node $n$ are leaf nodes and fail the planarity test, $n$ replaces its children
 and becomes a leaf node of its own. This procedure is repeated until the root of the octree is reached.
 
-\paragraph*{Grow}
-In preparation for the growth phase, a neighborhood graph (NG) over the entire point cloud is created. Every node of NG represents one point and an edge between two nodes exists only if
-a k-nearest-neighbor search detects both points being in the same neighborhood.
+\paragraph{Grow}
+In preparation for the growth phase, a neighborhood graph (NG) over the entire point cloud is created. 
+Every node of NG represents one point, and an edge between two nodes exists only if
+a nearest-neighbor search with a neighborhood size $k$ detects both points being in the same neighborhood. 
+The authors use a neighborhood size of $k=50$.
+
 
 The graph construction is subsequently followed by a breadth-first-search, during which a point $x$ is inserted into a planar patch $p$ if it satisfies the following conditions:
 \begin{itemize}
@@ -247,25 +255,38 @@ In the last phase, the previously grown patches are merged. Two planar patches $
 
 This phase returns all maximally merged planar patches, i.e. the final planes.
 
+\begin{figure}[]
+    \centering
+    \includegraphics[width=\textwidth]{images/rspd.png}
+    \caption[RSPD Pipeline]{The RSPD plane detection pipeline. Taken from~\cite[Figure~2]{Araújo_Oliveira_2020}.}
+    \label{fig:rspd}
+\end{figure}
+
 \subsection{Oriented Point Sampling}
 \label{subsec:bg-ops}
 Oriented Point Sampling (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized point cloud as input.
 
-\textbf{\textcolor{red}{more detail}}
-\textbf{\textcolor{red}{parameters: $\alpha_s, KNN, \theta_h, \theta_N, p$}}
 
-First, a sample of points is uniformly selected. The normal vectors of these points are estimated using SVD and the k nearest neighbors, which had been obtained using a k-d tree.
+First, a sample of points is uniformly selected. Sample sizes of $\alpha_s \in [0.3\%,3\%]$ are used in the Evaluation in~\cite[Table~3]{Sun_Mordohai_2019}.
+The normal vectors of these points are estimated using SVD and the k nearest neighbors ($KNN$), which are obtained using a k-d tree. 
 An inverse distance weight function is employed to prioritize neighboring points that are closer to the sample of which the normal vector is currently being estimated.
 
 
-After normal estimation, one-point-RANSAC is used to find the largest plane. Usual RANSAC implementations sample three points to fit a plane. However, OPS fits a plane with only one sample point and its normal vector.
+After normal estimation, one-point-RANSAC is performed. Usual RANSAC implementations sample three points to fit a plane. 
+However, OPS fits a plane with only one sample point and its normal vector and counts the number of points where the distance to
+the plane is smaller than a \textit{minimum-distance parameter} $\theta_h$. Moreover, this number of inliers must exceed a 
+\textit{minimum plane size} threshold $\theta_N$, for a plane to be accepted.
 Once a plane with the most inliers is obtained, its normal vector is re-estimated using SVD on all inliers, and all inliers are removed from the point cloud.
+Furthermore, the number of needed iterations $I$ is adaptively determined in each iteration, see Equation~\ref{eq:ops}. 
+\begin{equation}
+    \label{eq:ops}
+    I = \frac{\log(1-p)}{\log(1-(1-e))},
+\end{equation}
+where $e$ is the ratio of outliers left in the point cloud, and $p$ is a tuneable parameter that corresponds to the likelihood
+that a random sample includes no outliers.
 This process is repeated until the number of remaining points falls below a predefined threshold $\theta_N$.
-
-\begin{itemize}
-    \item merge smaller planes if they pass a coplanarity test
-    \item re-estimate normals after merge
-\end{itemize}
+After termination, smaller detected planes are merged if they pass a coplanarity test. After a successful merging of planes,
+the normal of the resulting plane is calculated via singular value decomposition (SVD).
 
 \subsection{3D Kernel-based Hough Transform}
 \label{subsec:bg-3dkht}
@@ -336,10 +357,16 @@ Saliency features are calculated for every leaf node in preparation for the regi
 component analysis (PCA) on the points inside each leaf node. The best-fitting plane of each leaf is defined by the mean normal vector and its center point.
 A residual value is obtained by taking the RMS of the distance of all included points to the plane.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/obrg.png}
+    \caption[OBRG Pipeline]{The OBRG plane detection pipeline. Taken from~\cite[Figure~1]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.}
+    \label{fig:obrg}
+\end{figure}
+
 For the region growing phase, all leaf nodes are selected as individual seed points. Starting from the seed with the lowest residual value, which relates to a low amount of noise,
 a neighboring leaf node $n$ is inserted into the region if $n$ does not belong to any region and the angular divergence between both normal vectors is smaller than
 a predefined threshold.
-% FIXME explain inlier criteria, mention thresholds
 Lastly, a refinement step is employed.
 Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% of included points fit the best plane~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. FR is leaf-based, and all previously unallocated neighboring nodes that satisfy an inlier criterion are added to the region.
 General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore,
