@@ -37,9 +37,9 @@ RTAB-MAP's general workflow is shown below in Figure~\ref{fig:rtabmap}:
 \begin{figure}[!h]
     \centering
     \includegraphics[width=15 cm]{images/rtabmap.png}
-    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's main node. Note, that the \textit{Point Cloud} returned by the \textit{Global Map Assembling} 
-    is an unorganized point cloud (see Section~\ref{sec:dataformats}).   
-    Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
+    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's main node. Note, that the \textit{Point Cloud} returned by the \textit{Global Map Assembling}
+        is an unorganized point cloud (see Section~\ref{sec:dataformats}).
+        Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
     \label{fig:rtabmap}
 \end{figure}
 
@@ -69,12 +69,13 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System \footn
 
 
 \section{Data Formats}
-In the following chapters, we often refer to different data representations. Specifically, the data that is given into a plane detection algorithm, and 
+\label{sec:dataformats}
+In the following chapters, we often refer to different data representations. Specifically, the data that is given into a plane detection algorithm, and
 the exportation format of the planes are vital. The following subsections provide necessary information and further distinctions.
 
 
-\label{sec:dataformats}
 \subsection{Common Input Types}
+\label{subsec:input}
 Usually, the data representation of the recorded environment falls into one of three categories:
 \begin{itemize}
     \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
@@ -117,10 +118,33 @@ omit such values. Possible reasons for invalid pixels include points too far awa
 \end{table}
 It is worth noting that, in the literature, the terms "depth image" and "organized point cloud" are used interchangeably.
 
-\subsection{Common Plane Formats}
+\subsection{Common Output Formats}
+\label{subsec:output}
+The format of the detected planes has to conform to the specific application. For instance, an architectural remodeling application
+would require the output to be able to contain non-rectangular shapes and holes.
+An algorithm that returns a set of planes represented by their convex hull would not be appropriate because it
+would fail to correctly represent planes like the top of a corner desk or a wall with a doorway.
 
-% FIXME 
-\textbf{\textcolor{red}{TODO}}
+Being related to the input format, the output of plane detection algorithms can be clustered as follows:
+\begin{itemize}
+    \item The cartesian plane equation parameterized by its normal vector and/or its distance to the origin ($n/+d$), \textit{and}
+    \item Plane inliers:
+          \begin{itemize}
+              \item $3D$ inliers (3D-IN), $and$
+              \item $2D$ inliers (2D-IN).
+          \end{itemize}
+\end{itemize}
+
+A common output format is a plane parameterized by its normal vector $n$ and its distance to the origin $d$. This representation
+describes a plane as infinitely dense and unbound, if no further information is provided, e.g. extents in certain directions.
+
+We differentiate between the plane inliers according to the way, individual values are accessed.
+3D inliers are a set of 3D coordinates that represent a plane in an unorganized point cloud. Like the point cloud itself,
+the inliers are accessed through their 1D index within the set.
+In contrast, 2D inliers are a set of indices that correspond to values in an organized point cloud, depth image, or RGB image.
+Moreover, some methods return a set of segmentation masks, which we also refer to as 2D inliers.
+Note, that we include organized point clouds in the 2D case of inliers even though the values inside are three-dimensional,
+as the access thereof is still grid-like.
 
 \section{Plane Detection}
 The field of plane detection has been around for decades.
@@ -132,14 +156,14 @@ Most methods of detecting planar regions in unorganized point clouds are based o
 \end{itemize}
 
 \subsection*{Hough Transform}
-The original motivation behind the Hough transform was detecting lines in images~\cite{5230799}. All points are sequentially processed via a voting procedure to detect the best fitting line over a set of 2d points.
+The original motivation behind the Hough transform was detecting lines in images~\cite{5230799}. All points are sequentially processed via a voting procedure to detect the best-fitting line over a set of 2d points.
 Multiple lines with different orientations are fit through each given point $p$.
 Because a line in slope-intercept form parallel to the y-axis would lead to an infinite slope, the Hesse normal form is chosen as the primary line representation\cite{10.1145/361237.361242}.
 
 In Hesse normal form, an individual line can be parameterized with a pair $(r, \theta)$, with $r$  being the orthogonal distance origin to the plane and $\theta$ being the angle between the x-axis and the line that connects the origin to the closest point on the line.
 This pair is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding value of $\theta$, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
 votes to each $\theta$ is called an \textit{accumulator}.
-Finally, the best fitting line is determined by the number of votes it received.
+Finally, the best-fitting line is determined by the number of votes it received.
 
 % FIXME besser schreiben
 In the context of plane detection in 3D point clouds, a plane would be uniquely identified by the triple $(\rho, \theta, \phi)$, with $\rho$ being the orthogonal distance from the origin to the plane, $\theta$ being the azimuthal angle, and $\phi$ being the inclination.
@@ -481,11 +505,11 @@ Two things are necessary to perform the voting step:
 Given the mean point $\mu_{(x,y,z)}$ and the unit normal vector $\overrightarrow{n}=(n_x,n_y,n_z)^T$ of a cluster,
 the center of the gaussian kernel is calculated:
 \def\A{
-\begin{pmatrix}
-    \mu_x \\
-    \mu_y \\
-    \mu_z 
-\end{pmatrix}
+    \begin{pmatrix}
+        \mu_x \\
+        \mu_y \\
+        \mu_z
+    \end{pmatrix}
 }
 \def\B{
     \begin{matrix}
@@ -506,44 +530,44 @@ The covariance matrix of the gaussian kernel can then be calculated through firs
 where $J$ is the Jacobi-Matrix of Equation~\ref{eq:kht-kernel}.
 
 An unbiased spherical accumulator, like in \cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, is used to store votes.
-The axes of the accumulator range are in the following ranges: 
+The axes of the accumulator range are in the following ranges:
 $$\theta \in [-\pi , +\pi], \phi \in [0, \pi], \rho \in [0, \rho_{high}]$$,
 where $\rho_{high}$ is determined by the farthest distance between the camera and a point of the input image.
-The discretization of $\theta$ and $\phi$ are pre-determined by the user and should be based on the expected 
+The discretization of $\theta$ and $\phi$ are pre-determined by the user and should be based on the expected
 granularity of detected planes. Most likely, this also relates to the expected amount of noise.
 During the voting itself, the accumulator bins are incremented if they are within two standard deviations of the
-kernel mean $\mu_{(\rho,\phi,\theta)}$. 
+kernel mean $\mu_{(\rho,\phi,\theta)}$.
 
 \paragraph{Peak Detection}
-The voting step fills the bins of the accumulator with votes. A smoothing of the bins is performed to avoid 
-oversegmentation or the detection of multiple equivalent planes.  
-\citeauthor{Vera_Lucio_Fernandes_Velho_2018}\cite[Section~3.5]{Vera_Lucio_Fernandes_Velho_2018} compute a convolution of the 
+The voting step fills the bins of the accumulator with votes. A smoothing of the bins is performed to avoid
+oversegmentation or the detection of multiple equivalent planes.
+\citeauthor{Vera_Lucio_Fernandes_Velho_2018}\cite[Section~3.5]{Vera_Lucio_Fernandes_Velho_2018} compute a convolution of the
 accumulator, as well as a 6-connected filter with a central weight of $0.2002$ and neighbor weights of $0.1333$.
-A hill-climbing strategy is then adopted to detect peaks in the accumulator. Each peak represents the 
-parameterization of a detected plane. These planes are then sorted by relevance, whereas the relevance of a plane 
-is determined by a weighted sum of the clusters that voted for the corresponding peak. The weights therein 
+A hill-climbing strategy is then adopted to detect peaks in the accumulator. Each peak represents the
+parameterization of a detected plane. These planes are then sorted by relevance, whereas the relevance of a plane
+is determined by a weighted sum of the clusters that voted for the corresponding peak. The weights therein
 depend more on the number of corresponding pixels of a cluster, rather than the number of samples.
 
-All planes, parameterized by $(\rho,\phi,\theta)$, are then transformed back into cartesian coordinates. 
-Moreover, they are parameterized by a center point, which is defined by $\rho$, and a normal vector $\overrightarrow{n}$: 
+All planes, parameterized by $(\rho,\phi,\theta)$, are then transformed back into cartesian coordinates.
+Moreover, they are parameterized by a center point, which is defined by $\rho$, and a normal vector $\overrightarrow{n}$:
 \def\C{
     \begin{pmatrix}
         n_x \\
         n_y \\
-        n_z 
+        n_z
     \end{pmatrix}
 }
 \def\D{
     \begin{pmatrix}
         \sin\phi\cos\theta \\
         \sin\phi\sin\theta \\
-         \cos\phi
+        \cos\phi
     \end{pmatrix}
 }
 
 \begin{equation}
-        \overrightarrow{n}  = \C = \D
-\end{equation} 
+    \overrightarrow{n}  = \C = \D
+\end{equation}
 
 
 \subsection{Depth Dependent Flood Fill}
@@ -614,17 +638,17 @@ PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} is a deep learning-based app
 \end{figure}
 
 
-The method implements a \textit{Dilated Residual Networks} (DRNs)~\cite{yu2017dilated} as a precursor for a total of three output branches. 
-These three branches predict 
+The method implements a \textit{Dilated Residual Networks} (DRNs)~\cite{yu2017dilated} as a precursor for a total of three output branches.
+These three branches predict
 \begin{enumerate}
-    \item A set of plane parameters, 
+    \item A set of plane parameters,
     \item a set of corresponding segmentation masks, \textit{and}
     \item a non-planar depthmap,
 \end{enumerate}
 as portrayed in Figure~\ref{fig:planenet}. The DRN is followed by a global pooling, or a pyramid pooling step, depending on the prediction branch.
-To obtain a set of plane parameters, the global pooling is followed by a fully connected layer, which produces $K$ parameter triples. $K$ corresponds to the number of 
+To obtain a set of plane parameters, the global pooling is followed by a fully connected layer, which produces $K$ parameter triples. $K$ corresponds to the number of
 expected planes within a scene. \citeauthor{Liu_Yang_Ceylan_Yumer_Furukawa_2018}\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} use $K=10$ during their experiments.
-A convolution layer is placed after the pyramid pooling the output of which is returned by the \textit{non-planar depthmap} branch. 
+A convolution layer is placed after the pyramid pooling the output of which is returned by the \textit{non-planar depthmap} branch.
 An additional dense conditional random field (DCRF) is applied to obtain the segmentation masks.
 
 \subsection{PlaneRecNet}
@@ -646,12 +670,12 @@ Both branches obtain their input from a common precursor which is a \textit{ResN
 The \textit{Plane segmentation} branch is a lightweight configuration of SOLOV2~\cite{wang2020solov2} that has been modified to
 fit the context of plane detection.
 The \textit{Depth estimation} branch is a lightweight \textit{Feature Pyramid Network} (FPN)~\cite{Lin_Dollár_Girshick_He_Hariharan_Belongie_2017}.
-Within the \textit{Depth estimation} branch, a so-called \textit{Plane Prior Attention} (PPA) module is used to introduce 
+Within the \textit{Depth estimation} branch, a so-called \textit{Plane Prior Attention} (PPA) module is used to introduce
 the mask candidates from the \textit{Plane segmentation} branch into the depth estimation. The PPA module is based
 on the \textit{Depth Attention Volume}~\cite{Huynh_Nguyen-Ha_Matas_Rahtu_Heikkila_2020}.
 
-The estimated depth values and the segmentation masks, and classes, are then combined into a piecewise planar 
-scene reconstruction of the input image. No further refinement is implemented. 
+The estimated depth values and the segmentation masks, and classes, are then combined into a piecewise planar
+scene reconstruction of the input image. No further refinement is implemented.
 
 \subsection{PlaneRCNN}
 \label{subsec:bg-planercnn}
@@ -671,15 +695,15 @@ The architecture of PlaneRCNN, as seen in Figure~\ref{fig:planercnn}, consists o
     \item a segmentation refinement network, \textit{and}
     \item a warping loss module.
 \end{enumerate}
-The first module is built upon the semantic segmentation network MaskRCNN~\cite{he2017mask}. The module is modified to differentiate between "planar" and "non-planar" 
-object instances. In contrast to \textit{PlaneNet} (see Subsection~\ref{subsec:bg-planenet}), the number of planes to detect is not pre-determined. Moreover, 
+The first module is built upon the semantic segmentation network MaskRCNN~\cite{he2017mask}. The module is modified to differentiate between "planar" and "non-planar"
+object instances. In contrast to \textit{PlaneNet} (see Subsection~\ref{subsec:bg-planenet}), the number of planes to detect is not pre-determined. Moreover,
 plane parameters and segmentation masks are calculated.
 
 The second module, namely the \textit{segmentation refinement network}, refines the extracted segmentation masks obtained from the \textit{plane detection network}.
 This is done by introducing non-locality into a U-Net~\cite{ronneberger2015u} by combining a convolution layer with an accumulation of feature volumes. The authors name this
 particular step the \textit{ConvAccu} module~\cite[Section~3.2]{Liu_Kim_Gu_Furukawa_Kautz_2019}.
 
-The \textit{warping loss module} implements a refinement step.  This module uses a second angle of the same view to ensure consistency. A view from 20 frames ahead is 
+The \textit{warping loss module} implements a refinement step.  This module uses a second angle of the same view to ensure consistency. A view from 20 frames ahead is
 projected into the current view to further refine the segmentation process. It is worth noting, that this is only performed during training to improve the accuracy.
 
 \section{Datasets}
@@ -697,23 +721,23 @@ Furthermore, the average amount of points per scene is ${\sim}10^6$ with an aver
 \subsection{Leica}
 \label{subsec:bg-Leica}
 The Leica\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}
-dataset is a collection of 23 scans of outdoor environments. 
+dataset is a collection of 23 scans of outdoor environments.
 Each scan consists of a dense unorganized point cloud which has been recorded by the \textit{Leica BLK360}
-LiDAR Scanner\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360}{https://shop.leica-geosystems.com/de/leica-blk/blk360}}. 
+LiDAR Scanner\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360}{https://shop.leica-geosystems.com/de/leica-blk/blk360}}.
 The dataset is saved in \textit{ASTM E57}~\cite{Huber-2011-7211}, which is a general-purpose file format usually used for the
 storage of 3D data, e.g., point clouds, laser scans or images.
 
 \subsection{Kinect}
 \label{subsec:bg-Kinect}
-The \textit{Kinect}~\cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011} dataset is a set of 30 organized point clouds. The recording was performed, as the 
+The \textit{Kinect}~\cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011} dataset is a set of 30 organized point clouds. The recording was performed, as the
 dataset's name suggests, with a Microsoft Kinect camera with a 640x480 resolution.
 A ground truth that focuses on plane and cylinder segmentation is provided in addition to the point clouds.
 
 \subsection{SYNPEB}
 \label{subsec:bg-SYNPEB}
-The \textit{SYNPEB} dataset was introduced by \citeauthor{schaefer19icra}\cite{schaefer19icra} to improve upon the popular 
-\textit{SegComp} dataset. The synthetic dataset includes a 6x7x3m room with various geometric objects inside (see Figure~\ref{fig:SYNPEB}). 
-Moreover, a total of 40 scans from different views within the room are provided as organized point clouds with 
+The \textit{SYNPEB} dataset was introduced by \citeauthor{schaefer19icra}\cite{schaefer19icra} to improve upon the popular
+\textit{SegComp} dataset. The synthetic dataset includes a 6x7x3m room with various geometric objects inside (see Figure~\ref{fig:SYNPEB}).
+Moreover, a total of 40 scans from different views within the room are provided as organized point clouds with
 a resolution of 500x500. Lastly, the provided ground truth represents a planar segmentation of the scene.
 
 \begin{figure}[H]
@@ -733,23 +757,23 @@ We are not aware of the existence of a ground truth.
 \subsection{SegComp}
 \label{subsec:bg-segcomp}
 The \textit{SegComp}~\cite{article} dataset
-includes a collection of over 400 depth images, as well as a corresponding ground truth. Additionally, a complete 
+includes a collection of over 400 depth images, as well as a corresponding ground truth. Additionally, a complete
 evaluation package is provided on the corresponding website\footnote{\href{http://www.eng.usf.edu/cvprg/range/seg-comp/SegComp.html}{http://www.eng.usf.edu/cvprg/range/seg-comp/SegComp.html}}.
-The images are saved in their own file format, namely \textit{gt-seq}. 
+The images are saved in their own file format, namely \textit{gt-seq}.
 
 \subsection{NYU V2}
 \label{subsec:bg-NYU}
 The \textit{NYU-V2}~\cite{10.1007/978-3-642-33715-4_54} dataset is an improvement of the preceding version, namely \textit{NYU-V1}\footnote{\href{https://cs.nyu.edu/\~silberman/datasets/nyu\_depth\_v1.html}{https://cs.nyu.edu/\~silberman/datasets/nyu\_depth\_v1.html}}.
 The dataset consists of 1449 RGB-D images, 464 scenes from 3 cities, and more than $400,000$ unlabeled frames.
-A ground truth in form of labeled objects is provided, as well as a toolbox for arbitrary manipulation of data. Everything 
-was recorded with the Microsoft Kinect camera. 
+A ground truth in form of labeled objects is provided, as well as a toolbox for arbitrary manipulation of data. Everything
+was recorded with the Microsoft Kinect camera.
 
 \subsection{ICL-NUIM}
 \label{subsec:bg-ICL}
-The \textit{ICL-NUIM}~\cite{Handa_Whelan_McDonald_Davison_2014} dataset was introduced for the benchmarking of RGB-D, VO and SLAM algorithms. 
+The \textit{ICL-NUIM}~\cite{Handa_Whelan_McDonald_Davison_2014} dataset was introduced for the benchmarking of RGB-D, VO and SLAM algorithms.
 Eight scenes are included, which are comprised of a surface ground truth, depth images, and the trajectory of the camera.
-The dataset includes a total of over 8000 images over these four scenes, whereas four have been recorded two 
-indoor environments, namely a living room, and an office. 
+The dataset includes a total of over 8000 images over these four scenes, whereas four have been recorded two
+indoor environments, namely a living room, and an office.
 
 \subsection{SUNRGB-D}
 \label{subsec:bg-SUN}
@@ -764,7 +788,7 @@ under "Other Materials".
 \label{subsec:bg-TUM}
 The \textit{TUM}~\cite{sturm12iros} dataset was created for the evaluation of VO and Visual-SLAM systems.
 A Microsoft Kinect sensor with a resolution of 640x480 is used to record a total of 39 scenes in indoor environments.
-While the dataset is primarily focused on trajectories, organized point clouds are provided as well. A ground 
+While the dataset is primarily focused on trajectories, organized point clouds are provided as well. A ground
 truth trajectory is provided for each scene.
 The dataset can be found on the project website \footnote{\href{https://vision.in.tum.de/data/datasets/rgbd-dataset/download}{.https://vision.in.tum.de/data/datasets/rgbd-dataset/download}}.
 

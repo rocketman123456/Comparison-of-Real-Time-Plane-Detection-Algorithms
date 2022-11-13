@@ -49,6 +49,7 @@ for the context of this work.
 
 
 \subsection{Criteria}
+\label{subsec:criteria}
 In the following paragraphs, we outline appropriate criteria for the objective assessment of plane detection algorithms.
 
 \paragraph{Type of Input}\label{par:input}
@@ -89,19 +90,20 @@ Finally, some methods use plane detection as a means to an end, e.g., for the re
 a SLAM architecture.
 
 \paragraph{Hardware Requirements}
+\label{par:hardware}
 Another important aspect to consider is the hardware required by an algorithm.
 Many applications in the field of robotics are limited in their processing power, often restricted to microcontrollers like
 a Raspberry Pi\footnote{\href{https://www.raspberrypi.com/}{https://www.raspberrypi.com/}} or an Arduino\footnote{\href{https://www.arduino.cc/}{https://www.arduino.cc/}}.
-Thus, most plane detection algorithms run on the \textit{CPU}, some even implement some form of \textit{CPU} parallelism, e.g., 3D-KHT uses OpenMP\footnote{\href{https://www.openmp.org/}{https://www.openmp.org/}}
+Thus, most plane detection algorithms run on the \textit{CPU}, while some even implement some form of \textit{CPU} parallelism, e.g., 3D-KHT uses OpenMP\footnote{\href{https://www.openmp.org/}{https://www.openmp.org/}}
 to speed up the octree construction~\cite[Section~4]{LimbergerOliveira2015HT3D}.
 However, some methods are implemented either completely or partially on the \textit{GPU}.
-\citeauthor{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}\cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015} compare different
+For instance, \citeauthor{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}\cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015} compare different
 implementations of the RANSAC algorithm, whereas three versions are processed entirely on the \textit{CPU}, and the last one is offloaded
 to the \textit{GPU} via CUDA\footnote{\href{https://developer.nvidia.com/cuda-toolkit}{https://developer.nvidia.com/cuda-toolkit}}.
 
-To summarize, we differentiate between algorithms that run solely on the \textit{CPU}, and algorithms that, additionally, employ the
+To summarize, we differentiate between algorithms that run solely on the \textit{CPU} and algorithms that, additionally, employ the
 machine's \textit{GPU}.
-\textbf{\textcolor{red}{sicher gehen dass die neue spalte stimmt}}
+
 \paragraph{Availability}
 Lastly, to use an algorithm, one has to be able to implement it. Some implementations are published alongside the corresponding paper.
 Moreover, the availability of an implementation may be restricted by certain legalities.
@@ -115,41 +117,51 @@ that the implementation does not involve a form of legal transaction.
 
 \subsection{Plane Detection Algorithms}
 \label{subsec:pdaselect}
+\textbf{\textcolor{red}{irgendwas zu "das ist logischerweise nicht alles, aber algorithmen die minuten brauchen haben wir gekonnt ignoriert"}}
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
 The table shows the input type and the output format of all algorithms, as well as the required hardware, and the availability.
 Note, that we consider all algorithms to be available, however, we are not aware of public implementations of OBRG and SCH-RG.
 However, the respective publications outline their methods in high detail, thereby guiding a re-implementation.
+
 \textbf{\textcolor{red}{PEAC?}}
-Note, that the final output of PlaneRecNet is a piecewise-planar reconstruction of a scene (see Subsection~\ref{subsec:bg-planerecnet}).
-However, modifying the architecture to return the segmentation masks and plane normals would require minimal
-effort (see Figure~\ref{fig:planerecnet}).
+
+The final output of \textit{PLaneNet, PlaneRecNet} and \textit{PlaneRCNN} is a piecewise-planar depth map of the input
+image. Since modifying the architecture to return the segmentation masks and plane parameters would require minimal effort,
+we adjusted the output types in the table accordingly. Similarly, \textit{RSPD} returns a set of planes parameterized by
+its normal vector $n$, distance to origin $d$, and two additional extents. Modifying the output to return inliers requires
+minimal effort as well.
 \begin{table}[H]
     \centering
     \resizebox{\textwidth}{!}{%
         \begin{tabular}{c|c|c|c|c|c}
             \textbf{Plane Detection Algorithm}                               & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Hardware} & \textbf{Available} & \textbf{Section}            \\ \hline
-            \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-rspd}        \\
-            \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-ops}         \\
-            \textbf{3DKHT} \cite{LimbergerOliveira2015HT3D}                  & UPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-3dkht}       \\
-            \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-obrg}        \\
-            \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-peac}        \\
+            \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & UPC                 & 3D-IN, $(n,d)$        & CPU               & Y                  & \ref{subsec:bg-rspd}        \\
+            \textbf{OPS} \cite{Sun_Mordohai_2019}                            & UPC                 & 3D-IN                 & CPU               & Y                  & \ref{subsec:bg-ops}         \\
+            \textbf{3DKHT} \cite{LimbergerOliveira2015HT3D}                  & UPC                 & 3D-IN                 & CPU               & Y                  & \ref{subsec:bg-3dkht}       \\
+            \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & UPC                 & 3D-IN                 & CPU               & Y                  & \ref{subsec:bg-obrg}        \\
+            \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & OPC                 & 2D-IN                 & CPU               & Y                  & \ref{subsec:bg-peac}        \\
             \textbf{CAPE} \cite{Proença_Gao_2018}                            & OPC                 & $(n, d)$              & CPU               & Y                  & \ref{subsec:bg-cape}        \\
-            \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & inliers               & CPU               & Y                  & \ref{subsec:bg-schrg}       \\
-            \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & inliers               & CPU               & Y                  & \ref{subsec:bg-dkht}        \\
-            \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & inliers               & CPU               & Y                  & \ref{subsec:bg-ddff}        \\
-            \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & SM, $(n, d)$          & GPU               & Y                  & \ref{subsec:bg-planenet}    \\
-            \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & SM, $n$               & GPU               & Y                  & \ref{subsec:bg-planerecnet} \\
-            \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & SM, $(n, d)$          & GPU               & Y                  & \ref{subsec:bg-planercnn}   \\
+            \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & OPC                 & 2D-IN                 & GPU               & Y                  & \ref{subsec:bg-schrg}       \\
+            \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & DI                  & 2D-IN                 & CPU               & Y                  & \ref{subsec:bg-dkht}        \\
+            \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021}         & DI                  & 2D-IN                 & CPU               & Y                  & \ref{subsec:bg-ddff}        \\
+            \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & RGBI                & 2D-IN, $(n, d)$       & GPU               & Y                  & \ref{subsec:bg-planenet}    \\
+            \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & RGBI                & 2D-IN, $(n)$            & GPU               & Y                  & \ref{subsec:bg-planerecnet} \\
+            \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & RGBI                & 2D-IN, $(n, d)$       & GPU               & Y                  & \ref{subsec:bg-planercnn}   \\
         \end{tabular}
     }
     \caption{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of input.
-        The rightmost column provides the placement within this work.}
+        The rightmost column provides the placement within this work. We refer to Subsection~\ref{subsec:criteria} for details regarding the specific namings.}
     \label{tab:algos}
 \end{table}
 
-\textbf{\textcolor{red}{diesen abschnitt erweitern mit den oben genannten kriterien}}
+As mentioned above, we consider all presented algorithms available even if \textit{SCH-RG} and \textit{OBRG} do not seem to have an official implementation.
+Therefore, while necessary, the \textit{availability} criterion does not constrain the selection of algorithms in this case.
 
-Addressing the criterion of input type, we are only interested in performing plane detection in complete environments.
+As stated in Paragraph~\ref{par:hardware}, mobile robotics applications or AR/VR systems are often limited in their processing power.
+Moreover, integrating an external GPU into the system poses an additional cost factor.
+We exclude algorithms that require an external GPU, namely \textit{SCH-RG, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
+
+Addressing the criterion of \textit{input type}, we are only interested in performing plane detection in complete environments.
 Each update published by RTAB-MAP is the union of new data and the current state of the recorded map. RTAB-MAP publishes this update
 in form of an \textit{unorganized} point cloud (see Figure~\ref{fig:rtabmap}).
 To perform plane detection with an algorithm that expects an \textit{organized} point cloud as input, the UPC has to be transformed into an OPC.
@@ -158,11 +170,14 @@ An exemplary implementation thereof is included in the lidar toolbox of MATLAB\f
 However, this transformation neglects the global structure of the environment, as it returns a two-dimensional representation of the environment.
 Therefore, we focus on \textit{unorganized} point clouds in this work and exclude \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
 
-Secondly, the detected planes need to be in the same format because, even for the same plane, different representations could very well lead to different results.
-Assume a plane in cartesian form and a plane represented by its inliers. The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
+The detected planes need to be in the same format because, even for the same plane, different representations could very well lead to different results.
+Assume a plane in cartesian form ($n,d$) and a plane represented by its inliers (3D/2D). The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
 Conversely, the plane described by its inliers allows for holes and non-rectangular shapes, e.g., doorways or a round table, respectively.
-Being able to represent planes of any shape is important for many applications.
-We thereby determine \textit{inliers} as the preferred plane format and exclude all methods which do not comply, namely \textit{CAPE, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
+Being able to represent planes of any shape is important for many applications. Moreover, only the 3D inliers $3D-IN$ conform to
+the determined input type of $UPC$ (see Section~\ref{subsec:output}).
+We thereby determine \textit{three-dimensional inliers} (3D-IN) as the preferred \textit{plane format} and exclude all methods which do not comply, namely \textit{CAPE, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
+
+Note, that 3D inliers are henceforth referred to solely as \textit{inliers}. 
 
 
 Applying these restrictions, we end up with, and thus include, the following plane detection algorithms in our evaluation:
