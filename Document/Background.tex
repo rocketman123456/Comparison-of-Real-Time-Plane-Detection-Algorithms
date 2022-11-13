@@ -38,9 +38,9 @@ popular RGB-D SLAM methods.
 Real-Time Appearance-Based Mapping (RTAB-MAP) is a $VSLAM$ system with an optional IMU input, making it a \textit{visual-intertial} SLAM.
 RTAB-MAP's general workflow is shown in Figure~\ref{fig:rtabmap}.
 All these inputs are combined during a synchronization step, and the results thereof are passed to RTAB-MAP's Short-Term-Memory (STM).
-The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to 
+The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to
 determine if the current location has already been visited earlier, also known as \textit{loop closure}.
-If a loop closure is detected, i.e., RTAB-MAP detects the re-visiting of a known location, the map graph is optimized and thus minimized. 
+If a loop closure is detected, i.e., RTAB-MAP detects the re-visiting of a known location, the map graph is optimized and thus minimized.
 In addition, the global map is reassembled in correspondence with the new information.
 The resulting map is published in the form of an \textit{unorganized point cloud} (see Subsection~\ref{subsec:input}).
 
@@ -80,8 +80,8 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System \footn
 
 \section{Data Formats}
 \label{sec:dataformats}
-In the following chapters, we often refer to different data representations. Specifically, the data that is given into a plane detection algorithm, and
-the exportation format of the planes are vital. The following subsections provide necessary information and further distinctions.
+In the following chapters, we often refer to different data representations, namely the data that is given into a plane detection algorithm, and
+the exportation format of the planes. The following subsections provide necessary information and further distinctions.
 
 
 \subsection{Common Input Types}
@@ -97,22 +97,24 @@ Usually, the data representation of the recorded environment falls into one of t
           \end{itemize}
 \end{itemize}
 
-The differences between these input types are summarized in Table~\ref{tab:inputs}.
-The fundamental difference between UPC and OPC is their format. Each point cloud has a \textit{width} and a \textit{height} parameter.
-An unorganized point cloud $c$ is generally equal to an unordered 1D array of 3D coordinates, i.e., $width = |c|$ and $height=1$.
-In contrast, the memory layout of an organized point cloud is a 2D matrix, where the width and height depend on the resolution of the used sensor.
-Intuitively, the value at index (0,0) would be in the top-left corner, and the value at index (\textit{width,height}) would be in the bottom-right corner.
-% FIXME bild selber machen: 2xmatrix mit eintrag, einmal (0,0)=XYZ, einmal (0,0) = d_0,0 
+The input types are compared in Table~\ref{tab:inputs}. Both the organized and the unorganized point cloud store 3D coordinates.
+The fundamental difference between UPC and OPC is their format,
+In the popular point-cloud-library (PCL) data format\footnote{\href{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}}, 
+each point cloud has a \textit{width} and a \textit{height}.
+The \textit{width} of a UPC is the number of included points, while the \textit{height} equals 1.
+In contrast, the \textit{width} and \textit{height} of an OPC depend on the resolution of the recording camera.
+For instance, recording the environment with an arbitrary camera with a resolution of 640x480, each organized point cloud 
+would have a \textit{width} and \textit{height} of $640$ and $480$, respectively. Another distinguishing factor is that the organized
+point cloud can only represent the environment from one angle, which leads to missing points due to sensor limitations, and occlusion
+of points that lie behind other points. Conversely, UPCs are neither limited to a specific viewport nor do they allow for missing points. 
 
 When considering images, a differentiation between RGB images and depth images has to be made.
-Depth images are inherently similar to organized point clouds, given their resolution and two-dimensional structure.
+Depth mages are inherently similar to organized point clouds, given their resolution and two-dimensional structure.
 The primary difference is that the matrix stores distances to the sensor instead of 3D coordinates.
-RGB-images are, like Depth images, stored as a 2D Matrix but instead of distances or coordinates, the matrix stores
+RGB images are, like Depth images, stored as a 2D Matrix but instead of distances or coordinates, the matrix stores
 values that describe the color of a pixel. Usually, this means that each pixel stores a triple that describes a specific
 color by the amount of included red, green, and blue.
 
-Another important aspect is that OPC or images can have 0, empty or \textit{not-a-number} (NaN) entries, while unorganized point clouds
-omit such values. Possible reasons for invalid pixels include points too far away from the sensor, or even windows or mirrors.
 \begin{table}[H]
     \centering
     \begin{tabular}{c|c|c|c}
@@ -126,7 +128,7 @@ omit such values. Possible reasons for invalid pixels include points too far awa
         the input type allows for invalid values.}
     \label{tab:inputs}
 \end{table}
-It is worth noting that, in the literature, the terms "depth image" and "organized point cloud" are used interchangeably.
+It is worth noting that, in the literature, the terms "depth image", "depth map" and "organized point cloud" are used interchangeably.
 
 \subsection{Common Output Formats}
 \label{subsec:output}
@@ -194,9 +196,6 @@ The quality of the resulting regions depends on the choice of seed points, e.g.,
 In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
 
 \section{Plane Detection Algorithms}
-\textbf{\textcolor{red}{Disclaimer: bin grade noch dabei die algorithmen anzupassen. ich schreibe zuerst
-        die erklärungen zuende und gleiche das level of detail dann an (+ andere todos, siehe todoist)}}
-
 The following subsections detail the necessary background knowledge of all the plane detection algorithms mentioned in this paper.
 Aside from the functionality of a method, we give relevant higher-level information, e.g., the expected input format and the proposed output format.
 
