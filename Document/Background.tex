@@ -216,6 +216,15 @@ minimum number of points per leaf. The authors propose a value of $\varepsilon =
 if a node reaches the maximum depth level $l_O = 10$. Note, that this parameter is not referenced in~\cite{Araújo_Oliveira_2020}. 
 However, it is used in the official implementation\footnote{\href{keyhttps://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}.
 The subdivision is followed by a planarity test~\cite[Section~3.2]{Araújo_Oliveira_2020}, during which the octree is traversed bottom-up. 
+The planarity test is comprised of three individual tests: 
+\begin{enumerate}
+    \item A distance test,
+    \item a normal divergence test, \textit{and}
+    \item an inlier to outlier ratio test.
+\end{enumerate}
+Therein, the tests are influenced by corresponding parameters. The distance test is passed, if the point-to-plane distance is smaller than 
+the \textit{Maximum Distance to Plane} (MDP). If the normals of a patch deviate less than the \textit{Maximum Normal Deviation},
+the second test is passed. Lastly, a patch is discarded if its percentage of outliers exceeds the \textit{Maximum Outlier Ratio}. 
 If all eight children of a node $n$ are leaf nodes and fail the planarity test, $n$ replaces its children
 and becomes a leaf node of its own. This procedure is repeated until the root of the octree is reached.
 
