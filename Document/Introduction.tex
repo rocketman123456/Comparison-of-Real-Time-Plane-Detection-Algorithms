@@ -2,13 +2,38 @@
 \begin{document}
 \chapter{Introduction}\label{chap:Introduction}
 
-Man-made environments usually contain planar structures to a large extent.
-They are a central component in numerous use cases in the fields of Augmented and Virtual Reality, as well as robotics.
-% FIXME "sprung zu gross!" 
+Man-made environments usually contain planar structures to a large extent. 
+They are a central component in numerous use cases in the fields of Augmented and Virtual Reality (AR/VR), as well as robotics.
+In these applications, it is common to record an environment with specific sensors, 
+process the data separately, and finally try to detect planes within the data. 
+Naturally, each of these individual steps has the potential for improvement. 
+Moreover, an improvement of the sensor often results in a subsequent improvement of the remaining steps.
+However, a problem arises: With an increasing demand for sensor quality, the cost of this technology 
+increases as well. For instance, the starting price of the \textit{Leica BLK360} laser scanner starts at $19,000$ euro,
+ and the price of a \textit{Microsoft HoloLens 2} begins at ${\sim}3,400$ euro. In the case of the \textit{HoloLens},
+a plane detection process is already integrated. 
+The problem remains that some hardware, while high quality, is not affordable for the average consumer.
 
+Another important aspect is that many applications include some form of temporal component. For instance, 
+an autonomous robot cannot have significant delays, since it is otherwise likely to crash into an obstacle.
+Similarly, the user experience is dramatically decreased if the application in use takes a long time to process 
+an update. In the context of plane detection, this could mean that the user looks in a new direction but has 
+to wait until the update is processed and new planes are detected.
+
+Naturally, with sensors that provide integrated plane detection, the additional temporal component leads to a higher price.
+
+This raises the question as to what the limits of plane detection on "off-the-shelf" hardware are, especially including the 
+temporal component. 
+
+In the following section, we introduce the primary focus of this work: \textit{Real-Time Plane detection.}
 \section{Real-Time Plane Detection}
 
-\paragraph*{introduction}
+\textit{Real-Time Plane detection} is a broad term for algorithms, systems, or entire applications, that 
+perform the detection of planar regions under a certain temporal constraint. Depending on the underlying 
+use case, this temporal constraint varies. For instance, an architect that needs a digital model of a basement has 
+a smaller constraint than a digital VR chatroom like \textit{VRChat}\footnote{\href{https://hello.vrchat.com/}{,https://hello.vrchat.com/}}.
+
+
 \begin{enumerate}
     \item aktueller stand: gute und schnelle ebenenfindung wird oft gebraucht, gibt es auch schon/ist möglich
     \item problem: oft sind die speziellen sensoren sehr kostenspielig
