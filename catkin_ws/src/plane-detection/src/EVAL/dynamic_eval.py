@@ -282,7 +282,7 @@ def whatevs(path: str, algos=ALGOS):
         else:
             ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
     
-    plt.savefig('dynaudi.svg',format='svg')
+    plt.savefig('dynhallway.svg',format='svg')
     # plt.show()
     # plt.close()
     # return A

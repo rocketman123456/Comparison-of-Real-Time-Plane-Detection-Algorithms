@@ -145,7 +145,7 @@ Both modifications are highlighted in bold in the second row of Table~\ref{tab:o
 \paragraph{2D-3D-S}
 The parameter configuration is shown in Table~\ref{tab:3dkht-param}. We use an accumulator discretization of 30 and 200 for $\phi$ and $\rho$, respectively.
 Starting to check for planarity at an octree level $s_{level}$ of 2 seems to yield the best results.
-\citeauthor{LimbergerOliveira2015HT3D}\cite{LimbergerOliveira2015HT3D} propose
+\citeauthor{LimbergerOliveira2015HT3D}~\cite{LimbergerOliveira2015HT3D} propose
 a minimum of 30 samples per cluster $s_{ps}$, however, we use $0.2\%$ of the total point cloud due to the wide ranges of point cloud sizes in the dataset (see Subsection~\ref{subsec:bg-stanford}).
 Lastly, we set the plane isotropy tolerance $s_\beta$ to 6, as proposed in~\cite[Section~3.1]{LimbergerOliveira2015HT3D}.
 In contrast, using a plane thickness tolerance $s_\alpha$ value of 18 seemed to yield better results than the proposed 25.
@@ -370,7 +370,7 @@ In Figure~\ref{fig:dynaudi}, we compare the processing times of each time step t
 \textit{auditorium} scene of the FIN data set.
 
 Note, that we created similar graphs for the other scenes of the FIN dataset.
-However, they do not introduce new information into the argumentation and are presented in the appendix \textbf{\textcolor{red}{\$REF}} for completeness
+However, they do not introduce new information into the argumentation and are presented in Appendix~\ref{app:fin} for completeness
 and spatial reasons.
 The auditorium scene was selected as the most representative because it contains the longest
 recording, and thus contains the most data.
@@ -381,7 +381,7 @@ recording, and thus contains the most data.
     % \input{images/dynaudi.pdf_tex}
     \input{images/dynaudi_crop.pdf_tex}
     \caption[Time Results Auditorium]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, post-processing
-        $t_{post}$, and total calculation time $t_{tot}$ of the auditorium scene and cloud sizes $size$ of each time frame.
+        $t_{post}$, and total calculation time $t_{tot}$ of the $auditorium$ scene and cloud sizes $size$ of each time frame.
         Note, that both y-axes are scaled logarithmically to the base of ten. \textit{Time Frames} are defined in Subsection~\ref{subsec:metrics}.}
     \label{fig:dynaudi}
 \end{figure}
