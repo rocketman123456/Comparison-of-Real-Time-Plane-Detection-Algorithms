@@ -8,6 +8,7 @@
 \usepackage{graphics}
 \graphicspath{ {images/} }
 \usepackage[maxbibnames=100,firstinits=false]{biblatex}
+\usepackage[bottom]{footmisc}
 \usepackage{caption}
 \usepackage{subcaption}
 \addbibresource{refs.bib}
@@ -27,6 +28,7 @@
 \usepackage{hyperref}
 \usepackage{array}
 \newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
+\raggedbottom
 \begin{document}
 \subfile{Title}
 \subfile{TOC}
@@ -44,7 +46,6 @@
 \subfile{Appendix}
 
 \subfile{References}
-
 
 
 \newpage

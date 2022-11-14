@@ -861,18 +861,18 @@ In general, \textit{Precision} describes how many of the results are relevant, i
 the likelihood of a result being relevant(see Eq.~\ref{eq:rec}). Lastly, the \textit{F1-Score} is the harmonic mean of the former two metrics (see Eq.~\ref{eq:f1}).
 
 \begin{equation}
-    Precision = \frac{\text{True Positive}}{\text{True Positive + False Positive}}
     \label{eq:prec}
+    Precision = \frac{\text{True Positive}}{\text{True Positive + False Positive}}
 \end{equation}
 
 \begin{equation}
-    Recall = \frac{\text{True Positive}}{\text{True Positive + False Negative}}
     \label{eq:rec}
+    Recall = \frac{\text{True Positive}}{\text{True Positive + False Negative}}
 \end{equation}
 
 \begin{equation}
-    \text{\textit{F1-Score}} = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}
     \label{eq:f1}
+    \text{\textit{F1-Score}} = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}
 \end{equation}
 
 
@@ -893,10 +893,8 @@ $$v_i \in gt_j \land v_i \notin a_k \Rightarrow v_{i} \in FN$$
 $$v_i \notin gt_j \land v_i \in a_k \Rightarrow v_{i} \in FP$$
 % TODO not needed right? $$v_i \notin gt_j \land v_i \notin a_k \Rightarrow v_{i} \in TN$$  , True Negative(TN)} 
 
-With those rules, we can calculate the Precision, Recall and F1 score like this:
-$$Precision = \frac{|TP|}{|TP|+|FP|}$$
-$$Recall = \frac{|TP|}{|TP|+|FN|}$$
-
+With those rules, we can calculate the Precision, Recall:
+$$Precision = \frac{|TP|}{|TP|+|FP|} \hspace{1cm} and \hspace{1cm} Recall = \frac{|TP|}{|TP|+|FN|}$$
 \end{document}
 
 
