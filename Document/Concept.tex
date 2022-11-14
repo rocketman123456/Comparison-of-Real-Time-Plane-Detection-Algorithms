@@ -97,7 +97,7 @@ a Raspberry Pi\footnote{\href{https://www.raspberrypi.com/}{https://www.raspberr
 Thus, most plane detection algorithms run on the \textit{CPU}, while some even implement some form of \textit{CPU} parallelism, e.g., 3D-KHT uses OpenMP\footnote{\href{https://www.openmp.org/}{https://www.openmp.org/}}
 to speed up the octree construction~\cite[Section~4]{LimbergerOliveira2015HT3D}.
 However, some methods are implemented either completely or partially on the \textit{GPU}.
-For instance, \citeauthor{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}\cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015} compare different
+For instance, \citeauthor{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015}~\cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015} compare different
 implementations of the RANSAC algorithm, whereas three versions are processed entirely on the \textit{CPU}, and the last one is offloaded
 to the \textit{GPU} via CUDA\footnote{\href{https://developer.nvidia.com/cuda-toolkit}{https://developer.nvidia.com/cuda-toolkit}}.
 
@@ -236,7 +236,7 @@ Through extensive research of current literature, we compiled a list of popular 
         \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & UPC                   & Y             & N               & planes      & \ref{subsec:bg-Leica}    \\
         \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & OPC                   & Y             & Y               & planes      & \ref{subsec:bg-Kinect}   \\
         \textbf{SYNPEB}      \cite{schaefer19icra}                                                                                                                                            & OPC                   & N             & /               & planes      & \ref{subsec:bg-SYNPEB}   \\
-        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           & \ref{subsec:bg-ARCO}     \\
+        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015}                                                                                                         & OPC                   & Y             & Y               & /           & \ref{subsec:bg-ARCO}     \\
         \textbf{SegComp}     \cite{article}                                                                                                                                                   & DI                    & N             & /               & planes      & \ref{subsec:bg-segcomp}  \\
         \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & DI                    & Y             & Y               & classes     & \ref{subsec:bg-NYU}      \\
         \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & DI                    & Y             & Y               & trajectory  & \ref{subsec:bg-ICL}      \\

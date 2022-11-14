@@ -291,23 +291,31 @@ the normal of the resulting plane is calculated via singular value decomposition
 \subsection{3D Kernel-based Hough Transform}
 \label{subsec:bg-3dkht}
 With the 3D Kernel-based Hough Transform (3D-KHT),
-\citeauthor{LimbergerOliveira2015HT3D}\cite{LimbergerOliveira2015HT3D} propose a hough transform-based plane detection method,
-which accepts unorganized point clouds as input \cite{LimbergerOliveira2015HT3D}.
-
-\textbf{\textcolor{red}{parameters: $\phi_{num}$  $\rho_{num}$  $s_{level}$  $s_{ps}$  $d_{max}$     $s_\alpha$  $s_\beta$}}
+\citeauthor{LimbergerOliveira2015HT3D}~\cite{LimbergerOliveira2015HT3D} propose a hough transform-based plane detection method,
+that accepts unorganized point clouds as input.
 
 The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in creation and manipulation.
 Furthermore, the octree succeeds in capturing the shapes inside the point cloud, while the k-d tree does not.
+The octree level, at which the algorithm starts to check for approximate coplanarity under nodes is adjusted through 
+the corresponding parameter $s_{level}$.
 
-Each leaf inside the octree continues subdividing until the points inside a leaf node are considered approximately coplanar, or the number of points is less than a predefined threshold.
-The authors recommend this threshold to value 30 for large point clouds.
+Approximate coplanarity of a point cluster is evaluated based on its eigenvalues and two parameters $s_\alpha, s_\beta$.
+Therein, $s_\alpha$ corresponds to the tolerance regarding noise, and $s_\beta$ corresponds to the tolerance regarding the 
+anisotropy of the included points. The authors report good results with $s_\alpha=25$ and $s_\beta=6$.
+
+Each leaf inside the octree continues subdividing until the points inside a leaf node are considered approximately coplanar, 
+or the number of points is smaller than a minimum-points threshold $s_{ps}$.
+The authors recommend $s_{ps}=30$ for large point clouds. However, no definition of large in 
+this context is given.
 After the approximately coplanar nodes are refined by removing outliers, a plane is fit through the remaining points.
 
 
 This plane $\pi$ can, in polar coordinates, be uniquely described by a triple $(\rho, \theta, \phi)$.
-Inspired by \citeauthor{Borrmann_Elseberg_Lingemann_Nüchter_2011}\cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, an accumulator ball (Fig.~\ref{fig:accball}) is used for the voting procedure because the cells in polar regions are smaller (and therefore
+Inspired by \citeauthor{Borrmann_Elseberg_Lingemann_Nüchter_2011}~\cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, an accumulator ball (Fig.~\ref{fig:accball}) is used for the voting procedure because the cells in polar regions are smaller (and therefore
 contain fewer normal vectors) in three-dimensional accumulator arrays, as portrayed in Figure~\ref{fig:accarr}.
-
+Furthermore, the discretization of the accumulator is determined by tuneable parameters, namely $\phi_{num}$ and $\rho_{num}$.
+No additional parameter is employed for the discretization of $\rho$, as this is allocated as needed during the voting procedure.
+The authors use $\phi_{num}=30$ and $\rho_{num}=300$ during their evaluation.
 
 \begin{figure}[H]
     \centering
@@ -346,16 +354,14 @@ Finally, the detected planes are sorted by the number of different clusters that
 
 \subsection{Octree-based Region Growing}
 \label{subsec:bg-obrg}
-Octree-Based Region Growing (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} is also a method that employs region growing.
-
-\textbf{\textcolor{red}{parameters: $l_{max}$ $\theta_{res}$  $\theta_{d}$  $\theta_{ang}$  $\theta_M$  $\theta_p$}}
+Octree-Based Region Growing (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} employs region growing to detect planes in UPC.
 
 First, an unorganized point cloud is recursively subdivided using an octree.
 An octree node $n$ repeatedly subdivides itself into eight children until the level of $n$ supersedes a predefined maximum subdivision value or if the
-amount of contained points in $n$ is less than a predefined minimum of included points.
-Saliency features are calculated for every leaf node in preparation for the region growing step. A normal vector is obtained by performing a principle
+amount of contained points in $n$ is less than a predefined minimum of included points. 
+Saliency features are calculated for every leaf node in preparation for the region growing step: A normal vector is obtained by performing a principle
 component analysis (PCA) on the points inside each leaf node. The best-fitting plane of each leaf is defined by the mean normal vector and its center point.
-A residual value is obtained by taking the RMS of the distance of all included points to the plane.
+A residual value is obtained by taking the root-mean-square (RMS) of the distance of all included points to the plane.
 
 \begin{figure}[H]
     \centering
@@ -364,11 +370,21 @@ A residual value is obtained by taking the RMS of the distance of all included p
     \label{fig:obrg}
 \end{figure}
 
-For the region growing phase, all leaf nodes are selected as individual seed points. Starting from the seed with the lowest residual value, which relates to a low amount of noise,
-a neighboring leaf node $n$ is inserted into the region if $n$ does not belong to any region and the angular divergence between both normal vectors is smaller than
-a predefined threshold.
-Lastly, a refinement step is employed.
-Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% of included points fit the best plane~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. FR is leaf-based, and all previously unallocated neighboring nodes that satisfy an inlier criterion are added to the region.
+For the region growing phase, all leaf nodes are selected as individual seed points. 
+Starting from the seed with the lowest residual value, a neighboring leaf node $n$ is inserted into the region if $n$ 
+does not belong to any region and the angular divergence between both normal vectors is smaller than a predefined threshold 
+$\theta_{ang}$. Values between $3.5$ degree and $15$ degree were used during the  evaluation~\cite[Tables~1,4,7]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.
+Furthermore, if a leaf node is inserted into a region, it is also considered a starting point for a future iteration, 
+if its residual value is lower than the corresponding threshold $\theta_{res}$. Small values at a maximum of $0.05$(m)
+are reported. If a region cannot be expanded, it is marked as \textit{detected}, if its number of inliers exceeds a 
+threshold $\theta_M$.
+  
+Lastly, a refinement step is employed. 
+For efficiency reasons, it is only performed on voxels at the edge of segments.
+Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% ($\theta_p$) 
+of included points fit the best plane~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. 
+FR is leaf-based, and all previously unallocated neighboring nodes are added to the region if the point-to-plane distance is smaller 
+than a distance threshold $\theta_d$.
 General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore,
 points from neighboring and previously unallocated leaf nodes are considered and inserted into the region if they, too, satisfy the inlier criterion.
 The refinement process returns a complete set of planar regions.
@@ -577,7 +593,7 @@ kernel mean $\mu_{(\rho,\phi,\theta)}$.
 \paragraph{Peak Detection}
 The voting step fills the bins of the accumulator with votes. A smoothing of the bins is performed to avoid
 oversegmentation or the detection of multiple equivalent planes.
-\citeauthor{Vera_Lucio_Fernandes_Velho_2018}\cite[Section~3.5]{Vera_Lucio_Fernandes_Velho_2018} compute a convolution of the
+\citeauthor{Vera_Lucio_Fernandes_Velho_2018}~\cite[Section~3.5]{Vera_Lucio_Fernandes_Velho_2018} compute a convolution of the
 accumulator, as well as a 6-connected filter with a central weight of $0.2002$ and neighbor weights of $0.1333$.
 A hill-climbing strategy is then adopted to detect peaks in the accumulator. Each peak represents the
 parameterization of a detected plane. These planes are then sorted by relevance, whereas the relevance of a plane
@@ -683,7 +699,7 @@ These three branches predict
 \end{enumerate}
 as portrayed in Figure~\ref{fig:planenet}. The DRN is followed by a global pooling, or a pyramid pooling step, depending on the prediction branch.
 To obtain a set of plane parameters, the global pooling is followed by a fully connected layer, which produces $K$ parameter triples. $K$ corresponds to the number of
-expected planes within a scene. \citeauthor{Liu_Yang_Ceylan_Yumer_Furukawa_2018}\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} use $K=10$ during their experiments.
+expected planes within a scene. \citeauthor{Liu_Yang_Ceylan_Yumer_Furukawa_2018}~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} use $K=10$ during their experiments.
 A convolution layer is placed after the pyramid pooling the output of which is returned by the \textit{non-planar depthmap} branch.
 An additional dense conditional random field (DCRF) is applied to obtain the segmentation masks.
 
@@ -771,7 +787,7 @@ A ground truth that focuses on plane and cylinder segmentation is provided in ad
 
 \subsection{SYNPEB}
 \label{subsec:bg-SYNPEB}
-The \textit{SYNPEB} dataset was introduced by \citeauthor{schaefer19icra}\cite{schaefer19icra} to improve upon the popular
+The \textit{SYNPEB} dataset was introduced by \citeauthor{schaefer19icra}~\cite{schaefer19icra} to improve upon the popular
 \textit{SegComp} dataset. The synthetic dataset includes a 6x7x3m room with various geometric objects inside (see Figure~\ref{fig:SYNPEB}).
 Moreover, a total of 40 scans from different views within the room are provided as organized point clouds with
 a resolution of 500x500. Lastly, the provided ground truth represents a planar segmentation of the scene.
@@ -785,7 +801,7 @@ a resolution of 500x500. Lastly, the provided ground truth represents a planar s
 
 \subsection{ARCO}
 \label{subsec:bg-ARCO}
-The \textit{ARCO}~\cite{Hidalgo-Paniagua_Vega-Rodríguez_Pavón_Ferruz_2015} dataset consists of 6 organized point clouds that have been recorded with a Microsoft Kinect camera.
+The \textit{ARCO}~\cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015} dataset consists of 6 organized point clouds that have been recorded with a Microsoft Kinect camera.
 All scenes show real indoor spaces, including a living room, a kitchen, a saloon, a hallway, furniture, and an ordinary room.
 They are saved in the popular \textit{.pcd}\footnote{\href{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}} file format.
 We are not aware of the existence of a ground truth.
