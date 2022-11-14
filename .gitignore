@@ -80,3 +80,5 @@ catkin_ws/src/plane-detection/src/EVAL/RSPD/test.geo
 catkin_ws/src/plane-detection/src/EVAL/test.py
 catkin_ws/src/plane-detection/src/EVAL/test_dyn.py
 *.pgf
+*.svg
+*.pdf_tex
