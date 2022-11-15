@@ -3,28 +3,71 @@
 \chapter{Introduction}
 \label{chap:Introduction}
 
-\begin{itemize}
-    \item planes are found everywhere in man-made environments.
-    \item numerous applications integrate an automatic detection thereof into their system.
-    \item therein, specific sensors give data representation of the environment, which is used to detect planes
-    \item many of these systems have a temporal constraint which is often called real-time
-    \item real-time plane detection is already possible, but good quality is often not affordable for the average consumer
-\end{itemize}
+\textbf{\textcolor{red}{ist noch ein wenig scrambled. grundlegende toc:}}
+\begin{enumerate}
+    \item \textbf{Motivation}
+    \begin{itemize}
+        \item ebenen sind überall
+        \item plane detection ist voll oft genutzt und voll cool!
+        \item PD wird in diversen applikationen benutzt
+        \item manche dieser applikationen sind zeitlich eingeschränkt -> realtime
+        \item problem 1: sensor noise, grade indoors
+        \item ansatz 1: sensor improvement
+        \item problem 2: is' teuer, kann sich nicht jeder leisten
+        \item ansatz 2: bezahlbare sensoren -> intel RS, bester algorithmus / wie gut geht das ganze
+        \item problem 3: PDAs sind nicht vergleichbar
+    \end{itemize}
+    \item \textbf{Goals}
+    \begin{itemize}
+        \item plan: einheitlicher vergleich
+        \item ergbnis: wie gut geht PD auf OTS hardware, welcher algo ist der beste
+        \item einschänkungen auf indoor, ganze environments
+    \end{itemize}
+    \item \textbf{structure}
+\end{enumerate}
+Menschen gemachte Umgebungen bestehen aus einem Großteil aus planaren strukturen. Planare strukturen finden sich oft in den Grundbausteinen von Gebäuden wieder,
+ ein Großteil der Innenausstattung hat flache Oberflächen, sogar das Lesen dieser Arbeit findet wahrscheinlich über ein planares Medium statt.
+Durch den großen anteil an planaren strukturen in alltäglichen umgebungen, besonders indoor, gewinnt das automatische erkennen von diesen ebenen an relevanz:
+Plane detection ist ein wichtiger bestandteil in vielen applikationen unter anderem in der robotik, der Virtual oder Augmented Reality (AR/VR). 
+
+Viele dieser Systeme arbeiten dazu unter gewissen zeitlichen einschränkungen, was ebenso die maximal verfügbare berechnungszeit der plane detection beeinflusst.
+Man spricht auch oft von real-time, wenn so eine applikation ihre berechnungen innerhalb einer festen zeitvorgabe ausführen muss.
+Eine der haupt challenges der plane detection ist, dass die sensoren oft ein hohes mass an noise haben, was die berechnungen kompliziert, die präzision der 
+algorithmen vermindert, oder sogar die berechnung ganz unmöglich macht. Das level der noise hängt stark von der benutzung der kamera ab. 
+Die meisten AR/VR applikationen, sowie viele SLAMs werden in indoor umgebungen ausgeführt. Durch schnelle bewegung in räumlich engen umgebungen sinkt die 
+präzision der aufgenommenen daten schnell.
+
+Ein möglicher lösungsansatz ist natürlich, die sensorik zu verbessern, mit der die umgebung aufgenommen wird. Mit steigender sensor präzision steigt aber auch schnell der preis des sensors.
+Beispielsweise kann die microsoft hololens plane detection ausführen. Dies passiert direkt intern als teil des sogenannten spatial mappings.   
+Die berechnungszeit und präzision davon ist gut, was man für ehr als $3000$ Euro neupreis auch erwarten kann. ein weiteres beispiel wären sensoren wie der leica blk360. welcher zwar keine plane
+detection durchführt, dafür liefert dieser aber sehr dichte und präzise punktwolken.
+Auch wenn diese technik sehr präzise daten liefert, wird sie sich der durchschnittliche benutzer nicht leisten können.
+
+Das wirft die Frage auf, wie gut plane detection sein kann, wenn man bezahlbare Sensoren benutzt. 
+Mit insgesamt \textbf{\textcolor{red}{600?}} euro sind die T256 und D455 der intel realsense reihe ein beispiel für bezahlbare sensorik. 
+Neben den sensoren ist natürlich auch der plane detection algorithmus selbst von zentraler bedeutung. Über jahrzehnte der forschung wurden viele algorithmen entworfen.
+Das resultiert aber in dem nächsten problem; Die meisten algorithmen sind nicht objektiv mit einander vergleichbar. Das kann verschiedene Gründe haben, oft 
+wurden algorithmen auf verschiedenen datensätzen getestet, es wurden verschiedene metriken benutzt, oder die Daten, auf denen die algorithmen arbeiten sind einfach grundlegend
+nicht vergleichbar. 
+
 
 \section{Goals}
-\begin{itemize}
-    \item The question arises, to what extent real-time plane detection is possible under the usage of affordable hardware
-    \item the intel realsense is such affordable hardware.
-    \item the selection of the best algorithm requires a uniform comparison, though
-    \item problem: the comparison of most algorithms is non-trivial, bc …
-    \item therefore, this work aims to achieve the following:
-    \begin{itemize}
-        \item Compare the current state of the art in the field of plane detection through quantitative analysis, and 
-        \item find the best slam algorithm 
-        \item with the additional constraints of real-time and OTS hardware, like the intel realsense.
-    \end{itemize}  
-\end{itemize}
+
+Diese Arbeit beschäftigt sich mit einen einheitlichen Vergleich ausgewählter plane detection algorithmen.
+Durch diesen Vergleich soll zu, einen die Frage bewertet werden, in welchem Ausmass präzise real-time plane detection auf 
+bezahlbarer hardware wie der Intel RealSense möglich ist. Durch die beantwortung davon ergibt sich im zuge auch, welcher Algorithmus 
+am besten geeignet ist.
+Dazu sei gesagt, dass wir uns hierbei auf die plane detection in vollständigen 3D Umgebunden fokussieren. Ferner beschränken wir uns auf die plane detection in 
+indoor umgebungen, die Daten werden also hauptsächlich im inneren von Gebäuden aufgenommen. 
 
 \section{Structure}
-Chapters and what not.
+Chapter 2 präsentiert nötiges Hintergrundwissen für diese Arbeit.
+
+Im Konzept (chapter 3) wird der grundsätzliche Leitfaden dieser arbeit Festgelegt.
+
+Chapter 4 detailliert die implementations details.
+
+Der einheitliche Vergleich wird in Kapitel 5 stattfinden. Darüber hinaus werden die Ergebnisse ausgewertet.
+
+Wir werden das Fazit ziehen und somit die Frage dieser arbeit im letzten kapitel (chapter 6) beantworten.
 \end{document}
