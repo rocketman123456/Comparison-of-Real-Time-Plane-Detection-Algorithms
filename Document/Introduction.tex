@@ -3,62 +3,62 @@
 \chapter{Introduction}
 \label{chap:Introduction}
 
-\textbf{\textcolor{red}{ist noch ein wenig scrambled. grundlegende toc:}}
-\begin{enumerate}
-    \item \textbf{Motivation}
-    \begin{itemize}
-        \item ebenen sind überall
-        \item plane detection ist voll oft genutzt und voll cool!
-        \item PD wird in diversen applikationen benutzt
-        \item manche dieser applikationen sind zeitlich eingeschränkt -> realtime
-        \item problem 1: sensor noise, grade indoors
-        \item ansatz 1: sensor improvement
-        \item problem 2: is' teuer, kann sich nicht jeder leisten
-        \item ansatz 2: bezahlbare sensoren -> intel RS, bester algorithmus / wie gut geht das ganze
-        \item problem 3: PDAs sind nicht vergleichbar
-    \end{itemize}
-    \item \textbf{Goals}
-    \begin{itemize}
-        \item plan: einheitlicher vergleich
-        \item ergbnis: wie gut geht PD auf OTS hardware, welcher algo ist der beste
-        \item einschänkungen auf indoor, ganze environments
-    \end{itemize}
-    \item \textbf{structure}
-\end{enumerate}
-Menschen gemachte Umgebungen bestehen aus einem Großteil aus planaren strukturen. Planare strukturen finden sich oft in den Grundbausteinen von Gebäuden wieder,
- ein Großteil der Innenausstattung hat flache Oberflächen, sogar das Lesen dieser Arbeit findet wahrscheinlich über ein planares Medium statt.
-Durch den großen anteil an planaren strukturen in alltäglichen umgebungen, besonders indoor, gewinnt das automatische erkennen von diesen ebenen an relevanz:
-Plane detection ist ein wichtiger bestandteil in vielen applikationen unter anderem in der robotik, der Virtual oder Augmented Reality (AR/VR). 
+% \textbf{\textcolor{red}{ist noch ein wenig scrambled. grundlegende toc:}}
+% \begin{enumerate}
+%     \item \textbf{Motivation}
+%     \begin{itemize}
+%         \item ebenen sind überall
+%         \item plane detection ist voll oft genutzt und voll cool!
+%         \item PD wird in diversen applikationen benutzt
+%         \item manche dieser applikationen sind zeitlich eingeschränkt -> realtime
+%         \item problem 1: sensor noise, grade indoors
+%         \item ansatz 1: sensor improvement
+%         \item problem 2: is' teuer, kann sich nicht jeder leisten
+%         \item ansatz 2: bezahlbare sensoren -> intel RS, bester algorithmus / wie gut geht das ganze
+%         \item problem 3: PDAs sind nicht vergleichbar
+%     \end{itemize}
+%     \item \textbf{Goals}
+%     \begin{itemize}
+%         \item plan: einheitlicher vergleich
+%         \item ergbnis: wie gut geht PD auf OTS hardware, welcher algo ist der beste
+%         \item einschänkungen auf indoor, ganze environments
+%     \end{itemize}
+%     \item \textbf{structure}
+% \end{enumerate}
+Man-made environments usually consist, to a large extent, of planar structures. 
+Planar structures are often found in the basic structure of buildings, and much of the interior design has flat surfaces; 
+even the reading of this work is likely to take place over a planar medium. 
+Due to this large amount of planar structures in everyday environments, especially indoor environments, automatic detection of these planes is growing in relevance: 
+Plane detection is an essential component in applications of numerous fields,  including robotics, virtual or augmented reality (AR/VR), and X. 
 
-Viele dieser Systeme arbeiten dazu unter gewissen zeitlichen einschränkungen, was ebenso die maximal verfügbare berechnungszeit der plane detection beeinflusst.
-Man spricht auch oft von real-time, wenn so eine applikation ihre berechnungen innerhalb einer festen zeitvorgabe ausführen muss.
-Eine der haupt challenges der plane detection ist, dass die sensoren oft ein hohes mass an noise haben, was die berechnungen kompliziert, die präzision der 
-algorithmen vermindert, oder sogar die berechnung ganz unmöglich macht. Das level der noise hängt stark von der benutzung der kamera ab. 
-Die meisten AR/VR applikationen, sowie viele SLAMs werden in indoor umgebungen ausgeführt. Durch schnelle bewegung in räumlich engen umgebungen sinkt die 
-präzision der aufgenommenen daten schnell.
+Many of these systems operate under specific time constraints, which also influences the maximum available calculation time of plane detection. 
+It is often referred to as real-time when such an application has to perform its calculations within a strict time limit. 
+One of the main challenges of plane detection is that the sensors often have a high level of noise, which complicates the calculations, 
+reduces the precision of the algorithms, or even renders the detection impossible altogether. The noise level depends strongly on the use of the camera. 
+Most AR/VR applications, as well as many SLAMs, are performed in indoor environments. 
+Due to fast movement in spatially confined environments, the precision of the recorded data decreases rapidly.
 
-Ein möglicher lösungsansatz ist natürlich, die sensorik zu verbessern, mit der die umgebung aufgenommen wird. Mit steigender sensor präzision steigt aber auch schnell der preis des sensors.
-Beispielsweise kann die microsoft hololens plane detection ausführen. Dies passiert direkt intern als teil des sogenannten spatial mappings.   
-Die berechnungszeit und präzision davon ist gut, was man für ehr als $3000$ Euro neupreis auch erwarten kann. ein weiteres beispiel wären sensoren wie der leica blk360. welcher zwar keine plane
-detection durchführt, dafür liefert dieser aber sehr dichte und präzise punktwolken.
-Auch wenn diese technik sehr präzise daten liefert, wird sie sich der durchschnittliche benutzer nicht leisten können.
+A viable approach is, of course, to improve the sensors used to record the environment. However, as sensor precision increases, so does the price of the sensor. 
+For instance, the Microsoft HoloLens can perform plane detection as part of its spatial mapping process. 
+The calculation time and precision are very good, which is to be expected for a price of around 3500. Another example would be sensors such as the Leica blk360. 
+Although this does not perform plane detection, it does provide very dense and precise point clouds. Even if this technology delivers precise data, 
+the average user will not be able to afford it.
 
-Das wirft die Frage auf, wie gut plane detection sein kann, wenn man bezahlbare Sensoren benutzt. 
-Mit insgesamt \textbf{\textcolor{red}{600?}} euro sind die T256 und D455 der intel realsense reihe ein beispiel für bezahlbare sensorik. 
-Neben den sensoren ist natürlich auch der plane detection algorithmus selbst von zentraler bedeutung. Über jahrzehnte der forschung wurden viele algorithmen entworfen.
-Das resultiert aber in dem nächsten problem; Die meisten algorithmen sind nicht objektiv mit einander vergleichbar. Das kann verschiedene Gründe haben, oft 
-wurden algorithmen auf verschiedenen datensätzen getestet, es wurden verschiedene metriken benutzt, oder die Daten, auf denen die algorithmen arbeiten sind einfach grundlegend
-nicht vergleichbar. 
+This raises the question of how good plane detection can be when using affordable sensors. 
+At a total of \textbf{\textcolor{red}{600?}} euros, the T256 and D455 from the Intel RealSense series are an example of affordable sensor technology. 
+In addition to the sensors, the plane detection algorithm is important. Many algorithms have been designed over decades of research. 
+However, this results in the next problem; most algorithms are not objectively comparable with each other. 
+This can be due to various reasons, often algorithms have been tested on different data sets, different metrics have been used, 
+or the data on which the algorithms work are simply not fundamentally comparable. 
 
 
 \section{Goals}
 
-Diese Arbeit beschäftigt sich mit einen einheitlichen Vergleich ausgewählter plane detection algorithmen.
-Durch diesen Vergleich soll zu, einen die Frage bewertet werden, in welchem Ausmass präzise real-time plane detection auf 
-bezahlbarer hardware wie der Intel RealSense möglich ist. Durch die beantwortung davon ergibt sich im zuge auch, welcher Algorithmus 
-am besten geeignet ist.
-Dazu sei gesagt, dass wir uns hierbei auf die plane detection in vollständigen 3D Umgebunden fokussieren. Ferner beschränken wir uns auf die plane detection in 
-indoor umgebungen, die Daten werden also hauptsächlich im inneren von Gebäuden aufgenommen. 
+This thesis deals with a uniform comparison of selected plane detection algorithms. 
+This comparison aims to evaluate the extent to which precise real-time plane detection is possible on affordable hardware such as the Intel RealSense. 
+The answer to this question will also determine which algorithm is most suitable.
+Note, that we are focusing on plane detection in complete 3D environments in this work. 
+Furthermore, we restrict ourselves to plane detection in indoor environments, thereby, the data is primarily recorded inside buildings. 
 
 \section{Structure}
 Chapter 2 präsentiert nötiges Hintergrundwissen für diese Arbeit.
