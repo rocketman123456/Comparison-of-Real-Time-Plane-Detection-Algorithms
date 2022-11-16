@@ -28,37 +28,46 @@
 Man-made environments usually consist, to a large extent, of planar structures. 
 Planar structures are often found in the basic structure of buildings, and much of the interior design has flat surfaces; 
 even the reading of this work is likely to take place over a planar medium. 
-Due to this large amount of planar structures in everyday environments, especially indoor environments, automatic detection of these planes is growing in relevance: 
-Plane detection is an essential component in applications of numerous fields,  including robotics, virtual or augmented reality (AR/VR), and X. 
+Due to this large amount of planes in everyday environments, especially indoor environments, automatic detection of these planes is growing in relevance: 
+Plane detection is an essential component in applications of numerous fields, including robotics~\cite{Zhang_Wang_Xianyu_Ziwei_Wei_2019}
+and virtual or augmented reality (AR/VR)~\cite{Jurado_Jurado_Ortega_Feito_2021}. \textbf{\textcolor{red}{more sources!}}
 
 Many of these systems operate under specific time constraints, which also influences the maximum available calculation time of plane detection. 
 It is often referred to as real-time when such an application has to perform its calculations within a strict time limit. 
 One of the main challenges of plane detection is that the sensors often have a high level of noise, which complicates the calculations, 
-reduces the precision of the algorithms, or even renders the detection impossible altogether. The noise level depends strongly on the use of the camera. 
-Most AR/VR applications, as well as many SLAMs, are performed in indoor environments. 
+reduces the precision of the algorithms, or even renders the detection impossible altogether. 
+The level of noise depends strongly on the movement of the sensors. 
+Most AR/VR applications, as well as many SLAM algorithms (see Section~\ref{sec:bg-slam}), are performed in indoor environments. 
 Due to fast movement in spatially confined environments, the precision of the recorded data decreases rapidly.
+Moreover, large amounts of clutter are likely to occur in indoor environments, posing further challenges 
+to the recording sensor as the observable surface gains complexity.
 
+\paragraph{Problemabsatz so far}
 A viable approach is, of course, to improve the sensors used to record the environment. However, as sensor precision increases, so does the price of the sensor. 
-For instance, the Microsoft HoloLens can perform plane detection as part of its spatial mapping process. 
-The calculation time and precision are very good, which is to be expected for a price of around 3500. Another example would be sensors such as the Leica blk360. 
-Although this does not perform plane detection, it does provide very dense and precise point clouds. Even if this technology delivers precise data, 
+For instance, the AR device \textit{Microsoft HoloLens 2} internally performs plane detection as part of its spatial mapping process. 
+The calculation time and precision are very good, which is to be expected for a price of around 3500. Another example would be sensors such as the \textit{Leica BLK360} 
+laser scanner. Although it does not perform plane detection, it does provide very dense and precise point clouds. Even if this technology delivers precise data, 
 the average user will not be able to afford it.
 
-This raises the question of how good plane detection can be when using affordable sensors. 
-At a total of \textbf{\textcolor{red}{600?}} euros, the T256 and D455 from the Intel RealSense series are an example of affordable sensor technology. 
-In addition to the sensors, the plane detection algorithm is important. Many algorithms have been designed over decades of research. 
-However, this results in the next problem; most algorithms are not objectively comparable with each other. 
-This can be due to various reasons, often algorithms have been tested on different data sets, different metrics have been used, 
-or the data on which the algorithms work are simply not fundamentally comparable. 
+This lack of affordability raises the question as to what are the extents of real-time plane detection under the use of affordable hardware.
+At a total of around 600 euros, the T256 and D455 from the \textit{Intel RealSense} series are an example of affordable sensor technology (see Section~\ref{sec:bg-intel}).
+\textbf{\textcolor{red}{ist ein wenig kurz mmn}}
 
+
+In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well. 
+Many algorithms have been designed over decades of research. 
+However, most algorithms are not objectively comparable with each other. 
+Possible reasons for this revolve around differences in the datasets and metrics used 
+during their evaluation or that the data input of the algorithms is fundamentally incomparable.
 
 \section{Goals}
 
 This thesis deals with a uniform comparison of selected plane detection algorithms. 
-This comparison aims to evaluate the extent to which precise real-time plane detection is possible on affordable hardware such as the Intel RealSense. 
-The answer to this question will also determine which algorithm is most suitable.
-Note, that we are focusing on plane detection in complete 3D environments in this work. 
-Furthermore, we restrict ourselves to plane detection in indoor environments, thereby, the data is primarily recorded inside buildings. 
+Through this comparison, we aim to evaluate to what extent precise real-time plane detection is possible on affordable 
+hardware such as the \textit{Intel RealSense}. The answer to this question will also determine which algorithm is most suitable. 
+Note that this work focuses on plane detection in complete 3D environments. 
+Furthermore, we restrict ourselves to plane detection in indoor environments. 
+Thereby, the data is primarily recorded inside buildings. 
 
 \section{Structure}
 Chapter 2 präsentiert nötiges Hintergrundwissen für diese Arbeit.
