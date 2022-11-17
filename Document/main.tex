@@ -1,4 +1,7 @@
-\documentclass[fontsize=12pt, paper=a4, headinclude, twoside=true, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=right, toc=listof, toc=bibliography]{scrreprt}
+\documentclass[fontsize=12pt, paper=a4, headinclude, twoside=true, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=left, toc=listof, toc=bibliography]{scrreprt}
+\usepackage[automark]{scrlayer-scrpage}
+\pagestyle{scrheadings}
+\ohead{\rightmark}
 \usepackage[utf8]{inputenc}
 \setcounter{secnumdepth}{3}
 \usepackage{newfloat}
@@ -30,6 +33,7 @@
 \newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
 \raggedbottom
 \begin{document}
+\pgfplotsset{compat=1.16}
 \subfile{Title}
 \subfile{TOC}
 \subfile{Figures}
