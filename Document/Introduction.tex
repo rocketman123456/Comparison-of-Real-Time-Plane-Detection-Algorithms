@@ -2,55 +2,33 @@
 \chapter{Introduction}
 \label{chap:Introduction}
 
-% \textbf{\textcolor{red}{ist noch ein wenig scrambled. grundlegende toc:}}
-% \begin{enumerate}
-%     \item \textbf{Motivation}
-%     \begin{itemize}
-%         \item ebenen sind überall
-%         \item plane detection ist voll oft genutzt und voll cool!
-%         \item PD wird in diversen applikationen benutzt
-%         \item manche dieser applikationen sind zeitlich eingeschränkt -> realtime
-%         \item problem 1: sensor noise, grade indoors
-%         \item ansatz 1: sensor improvement
-%         \item problem 2: is' teuer, kann sich nicht jeder leisten
-%         \item ansatz 2: bezahlbare sensoren -> intel RS, bester algorithmus / wie gut geht das ganze
-%         \item problem 3: PDAs sind nicht vergleichbar
-%     \end{itemize}
-%     \item \textbf{Goals}
-%     \begin{itemize}
-%         \item plan: einheitlicher vergleich
-%         \item ergbnis: wie gut geht PD auf OTS hardware, welcher algo ist der beste
-%         \item einschänkungen auf indoor, ganze environments
-%     \end{itemize}
-%     \item \textbf{structure}
-% \end{enumerate}
 Man-made environments usually consist, to a large extent, of planar structures.
 These planar structures, or planes, are often found in the basic geometry and alignment of buildings~\cite{Coughlan_Yuille_1999}, and much of the design of interior furniture has flat surfaces~\cite{Zhao_Zong_Cao_Chen_Liu_Xu_Xin_2020};
 even the reading of this work is likely to take place over a planar medium.
 Due to this large amount of planes in everyday environments, especially indoors, automatic detection of these planes is growing in relevance:
 Plane detection is an essential component in applications of numerous fields, including robotics~\cite{Zhang_Wang_Xianyu_Ziwei_Wei_2019, Yunus2021ManhattanSLAMRP, Zhang_Zeng_Zha_2017}
-and virtual or augmented reality (AR/VR)~\cite{Jurado_Jurado_Ortega_Feito_2021, sridhar2020instant}.
+and virtual or augmented reality (AR/VR)~\cite{Jurado_Jurado_Ortega_Feito_2021, sridhar2020instant}.% TODO , \textbf{\textcolor{red}{und XY [source]}}.
 
 % https://apps.apple.com/us/app/ar-plan-3d-camera-to-plan/id1459846158 <- beispiel applikation
-% NOTE \textbf{\textcolor{red}{mache ich mich angreifbar, wenn die meisten quellen zu slams (im gegensatz zu slam UND AR/VR)sind? }}
 
 % FIXME mich stört es dass hier tausend mal often, usually, most etc steht
-Many of these applications`' operate under specific time constraints. These constraints are often broadly referred to as \textit{real-time}. 
-The definition of \textit{real-time} usually derives from the frequency of new sensor updates~\cite{Davison_2003}. 
+Many of these applications operate under specific time constraints. These constraints are often broadly referred to as \textit{real-time}.
+The definition of \textit{real-time} usually derives from the frequency of new sensor updates~\cite{Davison_2003}.
 Since the process of plane detection is often an integral part of these systems ~\cite{Wang_Bu_Zhang_Cheng_2022, Dai_Lund_Gao_2022, Kaess_2015}, these constraints also apply there.
 
 % FIXME hier harter cut :/
 
-\textit{Real-time plane detection} is already possible. 
+\textit{Real-time plane detection} is already possible, aber auf teurer hardware (hübsch).
 However, as sensor precision increases, so does the price of the sensor.
-For instance, AR devices like the \textit{Microsoft HoloLens 2} or imaging laser scanners like the \textit{Leica BLK360} produce very precise representations of the surrounding environment, and 
-in the former case, even provide the functionality to perform plane detection internally. However, with starting prices of ${\sim}3.5k$\$ and ${\sim}19k$\$, respectively, these devices are likely 
+For instance, AR devices like the \textit{Microsoft HoloLens 2} or imaging laser scanners like the \textit{Leica BLK360} produce very precise representations of the surrounding environment, and
+in the former case, even provide the functionality to perform plane detection internally. Nevertheless, with starting prices of ${\sim}3.5k$\$ and ${\sim}19k$\$, respectively, these devices are likely
 not affordable for the average consumer.
 
 Through this lack of affordability of high-end sensors, the usage of \textit{off-the-shelf} hardware is gaining interest.
 % This lack of affordability raises the question as to what are the extents of \textit{Real-time plane detection} under the use of affordable hardware.
-At a total of ${\sim}600\$$ euros, \textit{Intel RealSense} cameras T265 and D455 are an example of more affordable sensor technology (see Section~\ref{sec:bg-intel}).
+At a total of ${\sim}600\$$, the \textit{Intel RealSense} cameras T265 and D455 are an example of more affordable sensor technology (see Section~\ref{sec:bg-intel}).
 % FIXME ist ein wenig kurt mmn
+% FIXME auch hier ein härterer cut
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
 Many algorithms have been designed over decades of research.
