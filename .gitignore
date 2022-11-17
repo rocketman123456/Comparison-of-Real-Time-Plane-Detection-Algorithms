@@ -83,3 +83,6 @@ catkin_ws/src/plane-detection/src/EVAL/test_dyn.py
 *.svg
 *.pdf_tex
 catkin_ws/src/plane-detection/src/EVAL/dynaudi.svg
+Document/main.mtc0
+Document/main.maf
+Document/main.mtc
