@@ -11,24 +11,18 @@ and virtual or augmented reality (AR/VR)~\cite{Jurado_Jurado_Ortega_Feito_2021, 
 
 % https://apps.apple.com/us/app/ar-plan-3d-camera-to-plan/id1459846158 <- beispiel applikation
 
-% FIXME mich stört es dass hier tausend mal often, usually, most etc steht
 Many of these applications operate under specific time constraints. These constraints are often broadly referred to as \textit{real-time}.
 The definition of \textit{real-time} usually derives from the frequency of new sensor updates~\cite{Davison_2003}.
 Since the process of plane detection is often an integral part of these systems ~\cite{Wang_Bu_Zhang_Cheng_2022, Dai_Lund_Gao_2022, Kaess_2015}, these constraints also apply there.
 
-% FIXME hier harter cut :/
-
-\textit{Real-time plane detection} is already possible, aber auf teurer hardware (hübsch).
-However, as sensor precision increases, so does the price of the sensor.
+\textit{Real-time plane detection} is already possible, though expensive hardware is often needed as a sensor's price increases 
+with its precision.
 For instance, AR devices like the \textit{Microsoft HoloLens 2} or imaging laser scanners like the \textit{Leica BLK360} produce very precise representations of the surrounding environment, and
 in the former case, even provide the functionality to perform plane detection internally. Nevertheless, with starting prices of ${\sim}3.5k$\$ and ${\sim}19k$\$, respectively, these devices are likely
 not affordable for the average consumer.
 
 Through this lack of affordability of high-end sensors, the usage of \textit{off-the-shelf} hardware is gaining interest.
-% This lack of affordability raises the question as to what are the extents of \textit{Real-time plane detection} under the use of affordable hardware.
 At a total of ${\sim}600\$$, the \textit{Intel RealSense} cameras T265 and D455 are an example of more affordable sensor technology (see Section~\ref{sec:bg-intel}).
-% FIXME ist ein wenig kurt mmn
-% FIXME auch hier ein härterer cut
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
 Many algorithms have been designed over decades of research.
