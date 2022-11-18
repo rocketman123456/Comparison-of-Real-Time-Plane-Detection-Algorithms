@@ -3,8 +3,7 @@
 \label{chap:Introduction}
 
 Man-made environments usually consist, to a large extent, of planar structures.
-These planar structures, or planes, are often found in the basic geometry and alignment of buildings~\cite{Coughlan_Yuille_1999}, and much of the design of interior furniture has flat surfaces~\cite{Zhao_Zong_Cao_Chen_Liu_Xu_Xin_2020};
-even the reading of this work is likely to take place over a planar medium.
+These planar structures, or planes, are often found in the basic geometry and alignment of buildings~\cite{Coughlan_Yuille_1999}, and much of the design of interior furniture has flat surfaces~\cite{Zhao_Zong_Cao_Chen_Liu_Xu_Xin_2020}.
 Due to this large amount of planes in everyday environments, especially indoors, automatic detection of these planes is growing in relevance:
 Plane detection is an essential component in applications of numerous fields, including robotics~\cite{Zhang_Wang_Xianyu_Ziwei_Wei_2019, Yunus2021ManhattanSLAMRP, Zhang_Zeng_Zha_2017}
 and virtual or augmented reality (AR/VR)~\cite{Jurado_Jurado_Ortega_Feito_2021, sridhar2020instant}.% TODO , \textbf{\textcolor{red}{und XY [source]}}.
@@ -18,17 +17,18 @@ Since the process of plane detection is often an integral part of these systems 
 \textit{Real-time plane detection} is already possible, though expensive hardware is often needed as a sensor's price increases 
 with its precision.
 For instance, AR devices like the \textit{Microsoft HoloLens 2} or imaging laser scanners like the \textit{Leica BLK360} produce very precise representations of the surrounding environment, and
-in the former case, even provide the functionality to perform plane detection internally. Nevertheless, with starting prices of ${\sim}3.5k$\$ and ${\sim}19k$\$, respectively, these devices are likely
+in the former case, even provide the functionality to perform plane detection internally. Nevertheless, with starting prices of ${\sim}\$3.5k$ and ${\sim}\$19k$, respectively, these devices are likely
 not affordable for the average consumer.
 
 Through this lack of affordability of high-end sensors, the usage of \textit{off-the-shelf} hardware is gaining interest.
-At a total of ${\sim}600\$$, the \textit{Intel RealSense} cameras T265 and D455 are an example of more affordable sensor technology (see Section~\ref{sec:bg-intel}).
+At a total of ${\sim}\$600$, the \textit{Intel RealSense} cameras T265 and D455 are an example of more affordable sensor technology (see Section~\ref{sec:bg-intel}).
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
 Many algorithms have been designed over decades of research.
 However, most are not objectively comparable with each other.
 Possible reasons for this revolve around differences in the datasets and metrics used
 during their evaluation or that the data input of the algorithms is fundamentally incomparable.
+This lack of comparability renders the selection process of a suitable algorithm difficult. 
 
 \section{Goals}
 
@@ -42,9 +42,10 @@ Thereby, the data is primarily recorded inside buildings.
 \section{Structure}
 The following chapter presents the basics or background information necessary for this work.
 
-In Chapter~\ref{chap:Concept}, our concept of achieving the goals mentioned above is detailed.
+In Chapter~\ref{chap:Concept}, our concept of achieving the goals mentioned above is detailed. 
+Therein, we prepare the evaluation by selecting suitable algorithms and datasets. A definition of \textit{real-time} closes the chapter.
 
-Chapter~\ref{chap:impl} details the implementation of the concept described in the previous chapter.
+Chapter~\ref{chap:impl} specifies the implementation details for the concept in the previous chapter. We outline the general system setup, the necessary steps included in the implementation of each algorithm, and the dataset modifications needed to conduct quantitative experiments.
 
 The uniform comparison of the selected algorithms is conducted in Chapter~\ref{chap:eval}. Moreover, the results thereof
 are presented and analyzed.

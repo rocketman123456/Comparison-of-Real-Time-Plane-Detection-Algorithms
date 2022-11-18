@@ -10,12 +10,12 @@ which runs Linux Ubuntu 20.04.5. The laptop has an AMD Ryzen 7 5800H CPU and 16 
 
 We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}\footnote{\href{http://wiki.ros.org/noetic}{http://wiki.ros.org/noetic}}, as well as 
 \textit{realsense-ros}\footnote{\href{https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy}{https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy}} with all additional dependencies.
-Note, that the version of \textit{realsense-ros} changed over the course of this work. 
+Note that the version of \textit{realsense-ros} changed over the course of this work. 
  
 \section{Plane Detection Algorithms}
 In Chapter~\ref{chap:Background}, we provide detailed information about the algorithms we select in Section~\ref{sec:pdaselection}.
 The following subsections deal with the implementation details thereof. 
-Note, that the subsections of RSPD and OPS are joined due to a lack of noticeable difference in implementation details.
+Note that the subsections of RSPD and OPS are joined due to a lack of noticeable difference in implementation details.
 
 \subsection{RSPD \& OPS}
 We implement RSPD\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} and OPS\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}} using their respective open source implementations on GitHub.
@@ -107,7 +107,7 @@ are included in the dataset.
         \end{tabular}
     }
     \caption[2S-3D-S Statistics]{2D-3D-S dataset statistics. Shown are the number of scenes per category and for how many we created a ground truth ($\#GT/\#Total$).
-        Note, that the rightmost column reports the number of segmented planes per scene category and does \textit{not} 
+        Note that the rightmost column reports the number of segmented planes per scene category and does \textit{not} 
         correspond to other columns in this table.  }
     \label{tab:stanfordStats}
 \end{table}

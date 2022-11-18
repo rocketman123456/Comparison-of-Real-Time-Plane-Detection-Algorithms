@@ -1,101 +1,23 @@
 \documentclass[main.tex]{subfiles}\begin{document}
 \chapter{Background}\label{chap:Background}
 In this chapter, we present relevant literature needed to completely understand the proposed concept of \autoref{chap:Concept}.
-
-\section{SLAM}
-\label{sec:bg-slam}
-SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics;
-A robot finds itself in an unknown environment and attempts to build a coherent map while keeping track of its location.
-The robot uses use-case-specific sensors to obtain a snapshot of its current surroundings, which it then uses to update and enhance its known map (Mapping).
-The robot simultaneously attempts to accurately estimate its position based on the updated map ($Localization$).
-The new information about its position is processed during the next map update.
-
-Over decades of research, varieties of different (combinations of) sensors have been employed to solve this problem more accurately and efficiently.
-Internal odometry sensors alone can be unreliable if the robot moves over uneven or slippery surfaces.
-Visual sensors are, therefore, integrated into many SLAM methods, making them a Visual-SLAM (VSLAM) method. Therein, the methods can be
-further divided into \textit{visual-only, visual-intertial}, and \textit{RGB-D} SLAM~\cite{vslamsurvey}.
-
-\textit{Visual-only} SLAM algorithms are solely based on the input of a camera.
-Popular VSLAM algorithms include \textit{ORB-SLAM2}~\cite{Mur-Artal_Tardós_2017}, $MonoSLAM$~\cite{davison2007monoslam},
-and DSO-SLAM~\cite{engel2017direct}.
-
-\textit{Visual-intertial} SLAM methods integrate additional sensor information from an \textit{Inertial Measurement Unit} (IMU).
-The IMU provides information about the rotation, acceleration, and magnetic field around the device. These types of information
-generally aid the estimations based on visual input. However, the IMU data needs additional estimations,
-which increases the SLAM's complexity. \textit{ORBSLAM3}~\cite{campos2021orb} and \textit{Robust Visual Inertial Odometry} (ROVIO)~\cite{bloesch2017iterated}
-are \textit{visual-intertial}-based SLAM methods.
-
-Lastly, RGB-D SLAM methods combine a monocular RGB camera and a depth sensor. This combination removes additional calculations
-initially needed to obtain depth information. \textit{Dense Visual Odometry} (DVO)~\cite{Kerl_Sturm_Cremers_2013} and $RGBDSLAMv2$~\cite{endres20133} are instances of
-popular RGB-D SLAM methods.
-
-% FIXME top-level Diagram!
-
-
-
-\subsection*{Real-Time Appearance-Based Mapping}
-% RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
-Real-Time Appearance-Based Mapping (RTAB-MAP) is a $VSLAM$ system with an optional IMU input, making it a \textit{visual-intertial} SLAM.
-RTAB-MAP's general workflow is shown in Figure~\ref{fig:rtabmap}.
-All these inputs are combined during a synchronization step, and the results thereof are passed to RTAB-MAP's Short-Term-Memory (STM).
-The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to
-determine if the current location has already been visited earlier, also known as \textit{loop closure}.
-If a loop closure is detected, i.e., RTAB-MAP detects the re-visiting of a known location, the map graph is optimized and thus minimized.
-In addition, the global map is reassembled in correspondence with the new information.
-The resulting map is published in the form of an \textit{unorganized point cloud} (see Subsection~\ref{subsec:input}).
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=15 cm]{images/rtabmap.png}
-    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's system architecture. Note, that the \textit{Point Cloud} returned by the \textit{Global Map Assembling}
-        is an unorganized point cloud (see Section~\ref{sec:dataformats}).
-        Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
-    \label{fig:rtabmap}
-\end{figure}
-
-\section{Intel Realsense}
-\label{sec:bg-intel}
-In this work, we use the Intel RealSense tracking camera T265 and the RGB-Depth(RGB-D) camera D455.
-A tracking camera is generally used to observe the environment and usually has a wider field of view (FOV). The primary motivation for using RGB-D cameras is depth perception.
-The primary differences and similarities between the T265 and the D455 are reported in Table~\ref{tab:cameraspecs}.
-Beide Kameras sind stereo, die T265 hat 2 fisheye lenses und die D455 hat 2 imagers. Dazu hat die D455 noch einen RGB sensor und einen infrarot sensor. Mit dem IR sensor und den beiden imagern wird ein tiefenbild berechnet.
-Durch die fisheye lenses hat die T265 mit 163° ein deutlich breiteres Sichtfeld  als die D455 mit nur 111°. Die maximale FPS anzahl der D455 ergibt sich aus den individuellen FPS werten der imager sensoren und dem RGB sensor, welche beide einen maximalwert von 90 haben.
-Dazu sei gesagt, dass bei steigender auflösung die maximale Framerate sinkt und 90FPS nur mit einer maximalen auflösung von 640x480 möglich ist.
-Furthermore, both cameras have an integrated Inertial Measurement Unit (IMU) which is used to compute its position in combination with visual input.
-% FIXME explain tracking and RGB-D
-
-Intel provides a software development kit, namely RealSense SDK, which allows easy and efficient use of the cameras.
-The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System \footnote{\href{https://www.ros.org/}{https://www.ros.org/}}) adaptation is also provided in Intel's Github repository \footnote{\href{https://github.com/IntelRealSense/realsense-ros}{https://github.com/IntelRealSense/realsense-ros}}.
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{c|ccccccc}
-             & Image  & Type     & max. Resolution & D-FOV & Shutter & Price & max. FPS \\ \hline
-        D455 & Stereo & RGB-D    & 1280x720        & 111°  & global  & 419\$ & 90       \\ \hline
-        T265 & Stereo & Tracking & 848 x 800       & 163°  & global  & 199\$ & 30
-    \end{tabular}
-    \caption[Intel RealSense T265 & D455 Specification]{Intel RealSense T265 and D455 camera specifications. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
-    \label{tab:cameraspecs}
-\end{table}
+The structure is inspired by the system overview pictured in Figure~\ref{fig:concept}: First, we explain different formats of data, clustered by input and output. Then, we provide details about the used sensors, followed by a general introduction to SLAM algorithms, and a subsequent outline of the SLAM algorithm used in this work (see Subsection~\ref{subsec:bg-rtabmap}). Thereafter, we detail the plane detection algorithms that resulted from our review of the current literature after introducing three categories of plane detection methods. Lastly, we outline the list of datasets we took into consideration, and finish with an explanation of metrics used in the evaluation of Chapter~\ref{chap:eval}.
 
 
 \section{Data Formats}
 \label{sec:dataformats}
-In the following chapters, we often refer to different data representations, namely the data that is given into a plane detection algorithm, and
-the exportation format of the planes. The following subsections provide necessary information and further distinctions.
+In the following chapters, we often refer to different data representations. This section provides detailled information about these data representations while differentiating between the \textit{input} and \textit{output} of a plane detection algorithm. It is worth noting that the \textit{input} of an algorithm is, in this work, equivalent to the output of the camera or SLAM algorithm.
 
 
 \subsection{Common Input Types}
 \label{subsec:input}
-Usually, the data representation of the recorded environment falls into one of three categories:
+As described in Chapter~\ref{chap:Introduction}, specialized sensors are needed to record the environment. As the exported data, the input for the plane detection algorithm differs.
+Usually, this data representation of the recorded environment falls into one of the following categories:
 \begin{itemize}
     \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
     \item \textit{organized} or \textit{structured point cloud} (OPC)
-    \item image:
-          \begin{itemize}
-              \item Depth (DI)
-              \item RGB (RGBI)
-          \end{itemize}
+    \item Depth-Image (DI)
+    \item RGB-Image (RGBI)
 \end{itemize}
 
 The input types are compared in Table~\ref{tab:inputs}. Both the organized and the unorganized point cloud store 3D coordinates.
@@ -131,7 +53,7 @@ color by the amount of included red, green, and blue.
 \end{table}
 It is worth noting that, in the literature, the terms "depth image", "depth map" and "organized point cloud" are used interchangeably.
 
-\textbf{\textcolor{red}{lidar?}}
+Furthermore, some methods are specifically designed to accept \textit{Light Detection And Ranging} (LiDAR) point clouds. Since the underlying data is, essentially, an unorganized point cloud, we do not differentiate between these two types of data.
 
 \subsection{Common Output Formats}
 \label{subsec:output}
@@ -142,7 +64,7 @@ would fail to correctly represent planes like the top of a corner desk or a wall
 
 Being related to the input format, the output of plane detection algorithms can be clustered as follows:
 \begin{itemize}
-    \item The cartesian plane equation parameterized by its normal vector and/or its distance to the origin ($n/+d$), \textit{and}
+    \item The cartesian plane equation parameterized by its normal vector $n$ and/or its distance to the origin $d$, \textit{and}
     \item Plane inliers:
           \begin{itemize}
               \item $3D$ inliers (3D-IN), $or$
@@ -158,17 +80,100 @@ We differentiate between the plane inliers according to the way, individual valu
 the inliers are accessed through their 1D index within the set.
 In contrast, 2D inliers are a set of indices that correspond to values in an organized point cloud, depth image, or RGB image.
 Moreover, some methods return a set of segmentation masks, which we also refer to as 2D inliers.
-Note, that we include organized point clouds in the 2D case of inliers even though the values inside are three-dimensional,
+Note that we include organized point clouds in the 2D case of inliers even though the values inside are three-dimensional,
 as the access thereof is still grid-like.
+
+
+\section{Intel Realsense}
+\label{sec:bg-intel}
+In this work, we use the Intel RealSense tracking camera T265 and the RGB-Depth(RGB-D) camera D455.
+A tracking camera is generally used to observe the environment and usually has a wider field of view (FOV). The primary motivation for using RGB-D cameras is depth perception.
+The primary differences and similarities between the T265 and the D455 are reported in Table~\ref{tab:cameraspecs}.
+With two fisheye lenses and two imaging sensors, the T265 and D455, respectively, are considered stereo cameras.
+Moreover, the D455 has an additional RGB and infrared (IR) sensor. The combination of IR and two imaging sensors is used to produce depth images. 
+The T265 has a much wider field of view (FOV) of 163° than the D455, which only has an FOV of 111°. The maximum frames per second (FPS) of the D455 is determined by the individual FPS of both its imaging sensors, and its IR sensor, which equals $90$. It is worth noting that the FPS decreases with increasing sensor resolution, and that 90 FPS is only reached with a resolution of 640x480. In contrast, the T265 has a maximum FPS of $30$.
+Furthermore, both cameras have an integrated Inertial Measurement Unit (IMU) which is used to compute their position in combination with visual input.
+% FIXME explain tracking and RGB-D
+
+Intel provides a software development kit, namely RealSense SDK, which allows easy and efficient use of the cameras.
+The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System\footnote{\href{https://www.ros.org/}{https://www.ros.org/}}) adaptation is also provided in Intel's Github repository\footnote{\href{https://github.com/IntelRealSense/realsense-ros}{https://github.com/IntelRealSense/realsense-ros}}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|ccccccc}
+             & Image  & Type     & max. Resolution & D-FOV & Shutter & Price & max. FPS \\ \hline
+        D455 & Stereo & RGB-D    & 1280x720        & 111°  & global  & 419\$ & 90       \\ \hline
+        T265 & Stereo & Tracking & 848 x 800       & 163°  & global  & 199\$ & 30
+    \end{tabular}
+    \caption[Intel RealSense T265 & D455 Specification]{Intel RealSense T265 and D455 camera specifications. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
+    \label{tab:cameraspecs}
+\end{table}
+
+\section{SLAM}
+\label{sec:bg-slam}
+SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics;
+A robot finds itself in an unknown environment and attempts to build a coherent map while keeping track of its location.
+The robot uses use-case-specific sensors to obtain a snapshot of its current surroundings, which it then uses to update and enhance its known map (Mapping).
+The robot simultaneously attempts to accurately estimate its position based on the updated map ($Localization$).
+The new information about its position is processed during the next map update.
+
+Over decades of research, varieties of different (combinations of) sensors have been employed to solve this problem more accurately and efficiently.
+Internal odometry sensors alone can be unreliable if the robot moves over uneven or slippery surfaces.
+Visual sensors are, therefore, integrated into many SLAM methods, making them a Visual-SLAM (VSLAM) method. Therein, the methods can be
+further divided into \textit{visual-only, visual-intertial}, and \textit{RGB-D} SLAM~\cite{vslamsurvey}.
+
+\textit{Visual-only} SLAM algorithms are solely based on the input of a camera.
+Popular VSLAM algorithms include \textit{ORB-SLAM2}~\cite{Mur-Artal_Tardós_2017}, $MonoSLAM$~\cite{davison2007monoslam},
+and DSO-SLAM~\cite{engel2017direct}.
+
+\textit{Visual-intertial} SLAM methods integrate additional sensor information from an \textit{Inertial Measurement Unit} (IMU).
+The IMU provides information about the rotation, acceleration, and magnetic field around the device. These types of information
+generally aid the estimations based on visual input. However, the IMU data needs additional estimations,
+which increases the SLAM's complexity. \textit{ORBSLAM3}~\cite{campos2021orb} and \textit{Robust Visual Inertial Odometry} (ROVIO)~\cite{bloesch2017iterated}
+are \textit{visual-intertial}-based SLAM methods.
+
+Lastly, RGB-D SLAM methods combine a monocular RGB camera and a depth sensor. This combination removes additional calculations
+initially needed to obtain depth information. \textit{Dense Visual Odometry} (DVO)~\cite{Kerl_Sturm_Cremers_2013} and $RGBDSLAMv2$~\cite{endres20133} are instances of
+popular RGB-D SLAM methods.
+
+% FIXME top-level Diagram!
+
+
+
+\paragraph{Real-Time Appearance-Based Mapping}
+\label{subsec:bg-rtabmap}
+% RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
+Real-Time Appearance-Based Mapping (RTAB-MAP) is a $VSLAM$ system with an optional IMU input, making it a \textit{visual-intertial} SLAM.
+RTAB-MAP's general workflow is shown in Figure~\ref{fig:rtabmap}.
+All these inputs are combined during a synchronization step, and the results thereof are passed to RTAB-MAP's Short-Term-Memory (STM).
+The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to
+determine if the current location has already been visited earlier, also known as \textit{loop closure}.
+If a loop closure is detected, i.e., RTAB-MAP detects the re-visiting of a known location, the map graph is optimized and thus minimized.
+In addition, the global map is reassembled in correspondence with the new information.
+The resulting map is published in the form of an \textit{unorganized point cloud} (see Subsection~\ref{subsec:input}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15 cm]{images/rtabmap.png}
+    \caption[RTAB-MAP Block Diagram]{Block diagram of RTAB-MAP's system architecture. Note that the \textit{Point Cloud} returned by the \textit{Global Map Assembling}
+        is an unorganized point cloud (see Section~\ref{sec:dataformats}).
+        Taken from \cite[Figure~1]{Labbé_Michaud_2019}}
+    \label{fig:rtabmap}
+\end{figure}
+
+
 
 \section{Plane Detection}
 The field of plane detection has been around for decades.
-Most methods of detecting planar regions in unorganized point clouds are based on one of three main categories \cite{LimbergerOliveira2015HT3D, Araújo_Oliveira_2020}:
+Most methods of detecting planar regions are based on one of three main categories \cite{LimbergerOliveira2015HT3D, Araújo_Oliveira_2020}:
 \begin{itemize}
-    \item Hough Transform (HT)
-    \item RANSAC (RC)
-    \item Region Growing (RG)
+    \item Hough Transform (HT),
+    \item RANSAC (RC), \textit{and}
+    \item Region Growing (RG).
 \end{itemize}
+
+These categories of algorithms are fundamentally different. Hence, it is helpful to explain the difference. 
+In the following subsections, we detail each one by providing general information and a subsequent explanation in the context of plane detection. 
 
 \subsection{Hough Transform}
 The original motivation behind the Hough transform was detecting lines in images~\cite{5230799}. All points are sequentially processed via a voting procedure to detect the best-fitting line over a set of 2d points.
@@ -193,7 +198,7 @@ Within the context of plane detection in 3D point clouds, an approach could invo
 and counting the number of points within a certain range of the plane\cite{Yang_Forstner}. The model, in that case, could be a cartesian plane equation.
 
 \subsection{Region Growing}
-Region Growing methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}.
+Region Growing (RG) methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}.
 RG-based segmentation methods aim to grow a set of disjoint regions from an initial selection of seed points. The regions increase in size by inserting neighboring values based on an inclusion criterion.
 The quality of the resulting regions depends on the choice of seed points, e.g., a very noisy seed point could decrease overall quality  \cite{Malek_Rahman_Yasiran_Jumaat_Jalil_2012}.
 In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
@@ -214,7 +219,7 @@ After taking an unorganized point cloud as input, the procedure is divided into 
 The authors propose to use an octree to recursively subdivide the point cloud. 
 The subdivision is repeated until every leaf node contains less than a threshold $\varepsilon$ corresponding to the 
 minimum number of points per leaf. The authors propose a value of $\varepsilon = 0.1\%$. Alternatively, the subdivision terminates
-if a node reaches the maximum depth level $l_O = 10$. Note, that this parameter is not referenced in~\cite{Araújo_Oliveira_2020}. 
+if a node reaches the maximum depth level $l_O = 10$. Note that this parameter is not referenced in~\cite{Araújo_Oliveira_2020}. 
 However, it is used in the official implementation\footnote{\href{keyhttps://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}.
 The subdivision is followed by a planarity test~\cite[Section~3.2]{Araújo_Oliveira_2020}, during which the octree is traversed bottom-up. 
 The planarity test is comprised of three individual tests: 
@@ -674,7 +679,7 @@ The graph is traversed in a breadth-first manner, merging two connected nodes, $
     \item the perpendicular distance between the segments is less than threshold $\tau_{merge}$.
 \end{enumerate}
 If $a$ fails the membership test with its neighbor $b$, the membership test is repeated between $b$ and all planes $a$
-has merged with. If this fails, the unidirectional edge $(ab)$ is removed from the graph. Note, that the edge $(ba)$ will
+has merged with. If this fails, the unidirectional edge $(ab)$ is removed from the graph. Note that the edge $(ba)$ will
 be validated later, as b is subject to change through merges with other neighbors.
 
 After a successful merge, a new centroid and normal are obtained by adding both plane normals and centroids together,
@@ -856,9 +861,9 @@ The dataset can be found on the project website \footnote{\href{https://vision.i
 
 \section{Evaluation Metrics}
 \label{sec:metrics}
-Wenn man sachen segmentiert oder muster erkennen möchte usw. benutzt man oft zur evaluierung metriken, die die qualität der benutzten methode beschreiben.
-Usual metrics are \textit{Precision, Recall} and the \textit{F1-Score}.
-In general, \textit{Precision} describes how many of the results are relevant, i.e., the percentage of correctly calculated values(see Eq.~\ref{eq:prec}). \textit{Recall} describes the ratio of relevant results to all relevant data, i.e.
+In fields that revolve around the detection or the segmentation of particular objects, metrics that describe the quality of detection or segmentation, respectively, are helpful. 
+Prevalently used metrics include the \textit{Precision, Recall}, and the \textit{F1-Score}.
+\textit{Precision} generally describes how many of the results are relevant, i.e., the percentage of correctly calculated values(see Eq.~\ref{eq:prec}). \textit{Recall} describes the ratio of relevant results to all relevant data, i.e.
 the likelihood of a result being relevant(see Eq.~\ref{eq:rec}). Lastly, the \textit{F1-Score} is the harmonic mean of the former two metrics (see Eq.~\ref{eq:f1}).
 
 \begin{equation}

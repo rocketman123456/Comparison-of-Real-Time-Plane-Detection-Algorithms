@@ -15,7 +15,7 @@ First, we present the metrics used for comparison, followed by an outline of the
 
 \subsection{Metrics}
 \label{subsec:metrics}
-The following two paragraphs detail the metrics we use in this evaluation. Note, that by using the term "time frame $t$" or "time step $t$", we refer to 
+The following two paragraphs detail the metrics we use in this evaluation. Note that by using the term "time frame $t$" or "time step $t$", we refer to 
 the state of the point cloud at a given time $t$.
 
 \paragraph{Accuracy}
@@ -210,7 +210,7 @@ have no post-processing steps and, therefore, "per default" spend less time in t
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|cccccc|c}
+    \begin{tabular}{c|ccc|ccc|c}
         Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$     & $t_{calc}$    & $t_{post}$ & $t_{tot}$     \\ \hline
         RSPD      & 84.80\%          & \textbf{89.79\%} & \textbf{86.84\%} & 62.65         & 1.04          & /          & 63.69         \\
         OPS       & \textbf{88.98\%} & 70.45\%          & 77.68\%          & 13.12         & 10.97         & 1.01       & 25.10         \\
@@ -220,7 +220,7 @@ have no post-processing steps and, therefore, "per default" spend less time in t
     \caption[Overall 2D-3D-S Results]{Average results of each algorithm over the \textit{2D-3D-S} dataset. The right half of the inner columns shows the average time spent in
         pre-processing ($t_{pre}$), the average time spent in the plane detection ($t_{calc}$), and the average time spent in post-processing steps ($t_{post}$).
         The rightmost column shows the average total calculation time $t_{tot}$.
-        Note, that the absence of post-processing steps is denoted as "/". All times are measured in seconds.}
+        Note that the absence of post-processing steps is denoted as "/". All times are measured in seconds.}
     \label{tab:res-3d2ds-total}
 \end{table}
 
@@ -249,7 +249,7 @@ For each scene of the \textit{2D-3D-S} dataset, the pairs of processing times an
 %     \centering
 %     \includegraphics[width=\textwidth]{images/SDsizetime.png}
 %     \caption[Time per Cloud size 2D-3D-S]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$,
-%         and post-processing $t_{post}$ per point cloud file size of the \textit{2D-3D-S} dataset. Note, that both y-axes are
+%         and post-processing $t_{post}$ per point cloud file size of the \textit{2D-3D-S} dataset. Note that both y-axes are
 %         scaled logarithmically to the base of ten.}
 %     \label{fig:sizetimestanford}
 % \end{figure}
@@ -259,7 +259,7 @@ For each scene of the \textit{2D-3D-S} dataset, the pairs of processing times an
     \input{images/stanfordpdf.pdf_tex}
     \caption[Time per Cloud size 2D-3D-S]{The time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$,
         post-processing $t_{post}$, and the total calculation time $t_{tot}$ per point cloud file size of the \textit{2D-3D-S} dataset.
-        Note, that the y-axis is scaled logarithmically to the base of ten.}
+        Note that the y-axis is scaled logarithmically to the base of ten.}
     \label{fig:sizetimestanford}
 \end{figure}
 The computation times of 3D-KHT do not seem to strongly relate to the size of the point cloud.
@@ -326,7 +326,7 @@ total time.
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|cccccc|c}
+    \begin{tabular}{c|ccc|ccc|c}
         Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$     & $t_{calc}$    & $t_{post}$ & $t_{tot}$     \\ \hline
         RSPD      & 57.30\%          & \textbf{60.75\%} & \textbf{58.70\%} & 14.36         & \textbf{0.19} & /          & 14.55         \\
         OPS       & \textbf{69.38\%} & 29.23\%          & 39.43\%          & 4.61          & 0.89          & 0.13       & 5.63          \\
@@ -337,7 +337,7 @@ total time.
         algorithm. The right half of the columns shows the average time spent in pre-processing ($t_{pre}$), the average time spent in the plane
         detection itself ($t_{calc}$), and the average time spent in post-processing steps ($t_{post}$).
         The rightmost column shows the average total calculation time $s_{tot}$.
-        Note, that the absence of post-processing steps is denoted as "/".
+        Note that the absence of post-processing steps is denoted as "/".
         All times are measured in seconds.}
     \label{tab:res-fin-total}
 \end{table}
@@ -368,7 +368,7 @@ As mentioned before, we consider the relationship between the size of the point 
 In Figure~\ref{fig:dynaudi}, we compare the processing times of each time step to the file size of the
 \textit{auditorium} scene of the FIN data set.
 
-Note, that we created similar graphs for the other scenes of the FIN dataset.
+Note that we created similar graphs for the other scenes of the FIN dataset.
 However, they do not introduce new information into the argumentation and are presented in Appendix~\ref{app:fin} for completeness
 and spatial reasons.
 The auditorium scene was selected as the most representative because it contains the longest
@@ -381,7 +381,7 @@ recording, and thus contains the most data.
     \input{images/dynaudi_crop.pdf_tex}
     \caption[Time Results Auditorium]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, post-processing
         $t_{post}$, and total calculation time $t_{tot}$ of the $auditorium$ scene and cloud sizes $size$ of each time frame.
-        Note, that both y-axes are scaled logarithmically to the base of ten. \textit{Time Frames} are defined in Subsection~\ref{subsec:metrics}.}
+        Note that both y-axes are scaled logarithmically to the base of ten. \textit{Time Frames} are defined in Subsection~\ref{subsec:metrics}.}
     \label{fig:dynaudi}
 \end{figure}
 The pre-processing times of RSPD and OBRG are noticeably proportional to the point cloud size.
@@ -473,7 +473,7 @@ These \textit{real-time} applicabilities of all algorithms are summarized in Tab
         FIN        & $RT_{calc}$  & $RT_{calc}$* & $RT_{tot}$   & /
     \end{tabular}
     \caption{Real-time applicabilities of the selected plane detection algorithms given the results from both experiments.
-        Note, that $RT_{tot}$ implies $RT_{calc}$. "/" denotes no real-time applicability.
+        Note that $RT_{tot}$ implies $RT_{calc}$. "/" denotes no real-time applicability.
         "*" denotes that the given real-time applicability is coupled with a restriction. We refer to the text for details.}
     \label{tab:algo-rt}
 \end{table}

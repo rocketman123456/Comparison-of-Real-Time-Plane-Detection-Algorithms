@@ -57,18 +57,14 @@ Allowing vastly different input types is likely to render the evaluation more co
 between two input types is not always possible.
 
 We detail the different types of input in Section~\ref{sec:dataformats}. To reiterate, the data representation of the recorded
-environment falls into one of three categories:
+environment falls into one of four categories:
 \begin{itemize}
-    \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
-    \item \textit{organized} or \textit{structured point cloud} (OPC)
-    \item image:
-          \begin{itemize}
-              \item Depth (DI)
-              \item RGB (RGBI)
-          \end{itemize}
+    \item \textit{unorganized} or \textit{unstructured point cloud} (UPC),
+    \item \textit{organized} or \textit{structured point cloud} (OPC),
+    \item Depth-Image (DI), \textit{and}
+    \item RGB-Image (RGBI),
 \end{itemize}
-
-OPC and UPC both describe point clouds in the cartesian coordinate system. The primary difference is that the 3D coordinates inside
+whereas OPC and UPC both describe point clouds in the cartesian coordinate system. The primary difference is that the 3D coordinates inside
 an \textit{organized} point cloud are saved in a 2D grid, while the \textit{unorganized} point cloud resembles an unsorted 1D array.\\
 Like OPC, depth images are a 2D grid of values. However, in contrast to the 3D coordinates of an OPC, the data points of depth images
 are the distances to the sensor.
@@ -119,7 +115,7 @@ that the implementation does not involve a form of legal transaction.
 \label{subsec:pdaselect}
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
 The table shows the input type and the output format of all algorithms, as well as the required hardware, and the availability.
-Note, that we consider all algorithms to be available, however, we are not aware of public implementations of OBRG and SCH-RG.
+Note that we consider all algorithms to be available, however, we are not aware of public implementations of OBRG and SCH-RG.
 However, the respective publications outline their methods in high detail, thereby guiding a re-implementation.
 
 The final output of \textit{PLaneNet, PlaneRecNet} and \textit{PlaneRCNN} is a piecewise-planar depth map of the input
@@ -174,7 +170,7 @@ Being able to represent planes of any shape is important for many applications. 
 the determined input type of $UPC$ (see Section~\ref{subsec:output}).
 We thereby determine \textit{three-dimensional inliers} (3D-IN) as the preferred \textit{plane format} and exclude all methods which do not comply, namely \textit{CAPE, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
 
-Note, that 3D inliers are henceforth referred to solely as \textit{inliers}.
+Note that 3D inliers are henceforth referred to solely as \textit{inliers}.
 
 
 Applying these restrictions, we end up with, and thus include, the following plane detection algorithms in our evaluation:
@@ -189,7 +185,7 @@ Applying these restrictions, we end up with, and thus include, the following pla
 \paragraph{Temporal Subdivision in Phases}
 \label{par:prepostalgos}
 To enable a precise evaluation, we subdivide these plane detection algorithms into three phases:
-The pre-processing phase, the plane detection phase, and the post-processing phase. Note, that
+The pre-processing phase, the plane detection phase, and the post-processing phase. Note that
 we use the terms "phase" and "step" interchangeably in this work. In the following, we outline
 the pre-processing and post-processing steps taken by the selected algorithms. To avoid redundancy,
 we refer the reader to the Subsections~\ref{subsec:bg-rspd}-\ref{subsec:bg-obrg} for a detailed explanation of each
@@ -269,7 +265,7 @@ These two options are emphasized in Figure~\ref{fig:ds_realism}.
     \hspace{\fill}
     \caption[Synthetic and Realistic Dataset Comparison]{A synthetic dataset (a) and a real office scene (b).
         The former is from the \textit{SegComp}~\cite{article} dataset, and the latter is from the \textit{2D-3D-S}~\cite{2017arXiv170201105A} dataset.
-        Note, that we cropped the office point cloud for visualization purposes.}
+        Note that we cropped the office point cloud for visualization purposes.}
     \label{fig:ds_realism}
 \end{figure}
 
@@ -277,7 +273,7 @@ These two options are emphasized in Figure~\ref{fig:ds_realism}.
 \paragraph{Recorded Environment}
 Since \textit{realistic} datasets are created through manual recording, it is useful to
 differentiate between \textit{indoor} and \textit{outdoor} environments.
-Note, that we consider this criterion only to apply for \textit{real} datasets as \textit{synthetic}
+Note that we consider this criterion only to apply for \textit{real} datasets as \textit{synthetic}
 datasets are not recorded manually.
 
 \paragraph{Ground Truth}
@@ -327,7 +323,7 @@ Furthermore, we are not aware of a \textit{ground truth} for the \textit{ARCO} d
     \caption[Popular Datasets]{Plane detection Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
         The datasets are clustered by their type of format. The remaining order is arbitrary.
         The second column "Section" provides the placement within this work.
-        Note, that we include our dataset (FIN) in this table for completeness reasons.
+        Note that we include our dataset (FIN) in this table for completeness reasons.
     }
     \label{tab:datasets}
 \end{table}
