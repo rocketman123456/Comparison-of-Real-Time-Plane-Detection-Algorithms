@@ -15,19 +15,19 @@ First, we present the metrics used for comparison, followed by an outline of the
 
 \subsection{Metrics}
 \label{subsec:metrics}
-The following two paragraphs detail the metrics we use in this evaluation. Note that by using the term "time frame $t$" or "time step $t$", we refer to 
+The following two paragraphs detail the metrics we use in this evaluation. Note that by using the term "time frame $t$" or "time step $t$", we refer to
 the state of the point cloud at a given time $t$.
 
 \paragraph{Accuracy}
 To quantify the accuracy of the plane detection algorithms, we use the detected planes and the created ground truth to calculate the three following
 metrics: Precision, \textit{Recall}, and the F1-Score.
 We calculate the \textit{Precision}, as this reports the percentage of correctly detected points within the planes an algorithm returned.
-Similarly, we calculate the \textit{Recall} because it gives information about the percentage of correctly detected points in comparison to the number of 
+Similarly, we calculate the \textit{Recall} because it gives information about the percentage of correctly detected points in comparison to the number of
 points that \textit{could} be detected.
-Using these metrics separately is problematic as we cannot expect the distribution of "plane" to "non-plane" to be even. 
+Using these metrics separately is problematic as we cannot expect the distribution of "plane" to "non-plane" to be even.
 The \textit{F1-Score} is the harmonic mean of the \textit{Precision} and the \textit{Recall} and therefore measures the balance between the \textit{Precision} and
-\textit{Recall}. Intuitively, this means that an algorithmhas to yield sufficient \textit{Precision} and \textit{Recall} results to score 
-a sufficient \textit{F1-Score}. The \textit{F1-Score}, thereby, is the primary metric for the quantitative comparison of algorithms in this work. 
+\textit{Recall}. Intuitively, this means that an algorithmhas to yield sufficient \textit{Precision} and \textit{Recall} results to score
+a sufficient \textit{F1-Score}. The \textit{F1-Score}, thereby, is the primary metric for the quantitative comparison of algorithms in this work.
 However, we report the \textit{Precision} and the \textit{Recall} for thorough analysis.
 The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed in Section~\ref{sec:metrics}.
 Note that we use the detected planes for the calculation, however, we are not using them directly as a measure of performance due to the subjective
@@ -42,22 +42,22 @@ Furthermore, we consider an algorithm to achieve \textit{real-time plane detecti
 excluding the pre-processing step runs faster than $1s.$
 
 
-A simple approach to measuring calculation times could involve reporting the average total calculation time over a dataset. 
+A simple approach to measuring calculation times could involve reporting the average total calculation time over a dataset.
 However, when recording a real environment, the point clouds likely grow incrementally with each map update.
 Therefore, the average calculation time alone is of limited significance, as we expect shorter times for the start of a recording
 and longer times for the most recent point cloud. Based on this assumption, it is necessary to analyze the
 relationship between the point cloud size and the calculation time as well.
 
-Following the separation of algorithms into phases (see Section~\ref{par:prepostalgos}), 
-we divide the calculation time into the pre-processing time $t_{pre}$, 
+Following the separation of algorithms into phases (see Section~\ref{par:prepostalgos}),
+we divide the calculation time into the pre-processing time $t_{pre}$,
 the time spent during plane detection $t_{calc}$, and the duration of post-processing steps $t_{post}$.
 This separation enables an in-depth analysis of both average results and the results per time frame.
 Since we have two definitions of real-time, we introduce two metrics of calculation time:
 
 \begin{enumerate}
-    \item Focusing on $t_{calc}$ and $t_{post}$ allows us to determine whether an algorithm is \textit{real-time plane detection} applicable, \textit{and}
-    \item to determine whether an algorithm is \textit{totally real-time} applicable, we consider the total computation time 
-    $t_{tot}$, which is the sum of the individual times:
+    \item The sum of $t_{calc}$ and $t_{post}$ allows us to determine whether an algorithm is \textit{real-time plane detection} applicable, \textit{and}
+    \item to determine whether an algorithm is \textit{totally real-time} applicable, we consider the total computation time
+          $t_{tot}$, which is the sum of the individual times:
 \end{enumerate}
 
 
@@ -177,7 +177,7 @@ The modification of parameters is highlighted in bold in Table~\ref{tab:3dkht-pa
 
 \paragraph{2D-3D-S}
 The used configurations for the experiments are shown in Table~\ref{tab:obrg-param}.
-Since the specific values of 
+Since the specific values of
 The parameterization was determined during the implementation process and showed a reasonable compromise between
 efficiency and accuracy.
 Due to the low level of noise, we assign a very small tolerance to the residual threshold $\theta_{res}$ and the distance threshold $\theta_d$.
@@ -283,7 +283,7 @@ even for smaller cloud sizes at ${\sim}25mb$.
 The $t_{calc}$ values of OBRG do not appear to be dependent on the size of the point cloud, as the computation
 times tend to decrease with growing point clouds. A possible reason could be the fixed value of the octree levels $l_{max}$.
 As this parameter is vital for the calculations in all phases, all calculation times of OBRG are likely to show improvement
-upon applying a parameter optimization of $l_{max}$ based on the dataset. 
+upon applying a parameter optimization of $l_{max}$ based on the dataset.
 From our experience, the mid-sized scenes in the \textit{2D-3D-S} dataset are often long and narrow hallways. Assuming an inappropriate
 octree depth parameter, the subdivision could effectively split the hallway, returning a set of chunks that are in no
 way to be considered planar. This would consequently lead to an early termination due to failed thresholds, thus reducing
@@ -320,11 +320,11 @@ Additionally, we measured the computation times of each time frame for all algor
 plane detection $t_{calc}$, and post-processing $t_{post}$.
 
 The average results over all time steps of all scenes of the FIN experiment are presented in Table~\ref{tab:res-fin-total}.
-The highest values are written in bold for \textit{Precision, Recall,} and the \textit{F1-Score}, as are the lowest times of each calculation step and the 
+The highest values are written in bold for \textit{Precision, Recall,} and the \textit{F1-Score}, as are the lowest times of each calculation step and the
 total time.
 
 
-\begin{table}[H]
+\begin{table}[]
     \centering
     \begin{tabular}{c|ccc|ccc|c}
         Algorithm & Precision        & Recall           & F1-Score         & $t_{pre}$     & $t_{calc}$    & $t_{post}$ & $t_{tot}$     \\ \hline
@@ -359,7 +359,7 @@ takes the longest overall to compute a time step with more than $20s$.
 RSPD and 3D-KHT achieve \textit{real-time plane detection} applicability. Additionally, 3D-KHT also achieves \textit{total real-time} applicability,
 with an average total time of $0.43s$. OPS can almost be considered to be in $RT_{calc}$ with a subtotal
 calculation time of $1.02s$, thereby taking $0.02s$ too long.
-With an average pre-processing time of ${\sim}6s$ and an average of ${\sim}15s$ spent in plane detection, OBRG qualifies for 
+With an average pre-processing time of ${\sim}6s$ and an average of ${\sim}15s$ spent in plane detection, OBRG qualifies for
 neither of the introduced definitions of \textit{real-time}.
 
 
@@ -426,7 +426,7 @@ When comparing Table~\ref{tab:res-3d2ds-total} and Table~\ref{tab:res-fin-total}
 OPS has the highest \textit{Precision} value, RSPD yields the highest \textit{Recall} and \textit{F1-Score}, and 3D-KHT has the lowest
 average total processing time.
 
-Observing Figure~\ref{fig:dynaudi} and Figure~\ref{fig:sizetimestanford}, common features are noticeable: 
+Observing Figure~\ref{fig:dynaudi} and Figure~\ref{fig:sizetimestanford}, common features are noticeable:
 The curve shape of RSPD is very similar for both experiments, linearly dependent on the point cloud size, and the
 $t_{pre}$ accounts for $99\%$ of the total calculation time $t_{tot}$.
 In both experiments, the post-processing time of OPS fluctuates.
@@ -451,7 +451,7 @@ The results of neither experiment show a \textit{real-time} applicability of OBR
 
 
 \section{Summary}
-OBRG does not achieve the highest or lowest values in any experiment.
+OBRG achieves neither the highest nor lowest values in any experiment.
 OPS has the highest \textit{Precision} in both experiments.
 Due to \textit{Recall} and the \textit{F1-Score}, RSPD has the highest overall accuracy in both experiments.
 The pre-processing of RSPD takes the longest time of all algorithms. In contrast, RSPD has the smallest average $t_{calc}$
@@ -468,9 +468,9 @@ These \textit{real-time} applicabilities of all algorithms are summarized in Tab
 \begin{table}[H]
     \centering
     \begin{tabular}{c|cccc}
-        Experiment & RSPD         & OPS          & 3D-KHT       & OBRG \\ \hline
-        2D-3D-S    & $RT_{calc}$* & /            & $RT_{calc}$* & /    \\
-        FIN        & $RT_{calc}$  & $RT_{calc}$* & $RT_{tot}$   & /
+        Experiment & RSPD         & OPS          & 3D-KHT              & OBRG \\ \hline
+        2D-3D-S    & $RT_{calc}$* & /            & $RT_{calc}$*        & /    \\
+        FIN        & $RT_{calc}$  & $RT_{calc}$* & $\mathbf{RT_{tot}}$ & /
     \end{tabular}
     \caption{Real-time applicabilities of the selected plane detection algorithms given the results from both experiments.
         Note that $RT_{tot}$ implies $RT_{calc}$. "/" denotes no real-time applicability.

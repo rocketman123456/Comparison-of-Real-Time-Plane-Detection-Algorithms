@@ -857,7 +857,7 @@ The \textit{TUM}~\cite{sturm12iros} dataset was created for the evaluation of VO
 A Microsoft Kinect sensor with a resolution of 640x480 is used to record a total of 39 scenes in indoor environments.
 While the dataset is primarily focused on trajectories, organized point clouds are provided as well. A ground
 truth trajectory is provided for each scene.
-The dataset can be found on the project website \footnote{\href{https://vision.in.tum.de/data/datasets/rgbd-dataset/download}{.https://vision.in.tum.de/data/datasets/rgbd-dataset/download}}.
+The dataset can be found on the project website\footnote{\href{https://vision.in.tum.de/data/datasets/rgbd-dataset/download}{https://vision.in.tum.de/data/datasets/rgbd-dataset/download}}.
 
 \section{Evaluation Metrics}
 \label{sec:metrics}
@@ -866,26 +866,9 @@ Prevalently used metrics include the \textit{Precision, Recall}, and the \textit
 \textit{Precision} generally describes how many of the results are relevant, i.e., the percentage of correctly calculated values(see Eq.~\ref{eq:prec}). \textit{Recall} describes the ratio of relevant results to all relevant data, i.e.
 the likelihood of a result being relevant(see Eq.~\ref{eq:rec}). Lastly, the \textit{F1-Score} is the harmonic mean of the former two metrics (see Eq.~\ref{eq:f1}).
 
-\begin{equation}
-    \label{eq:prec}
-    Precision = \frac{\text{True Positive}}{\text{True Positive + False Positive}}
-\end{equation}
-
-\begin{equation}
-    \label{eq:rec}
-    Recall = \frac{\text{True Positive}}{\text{True Positive + False Negative}}
-\end{equation}
-
-\begin{equation}
-    \label{eq:f1}
-    \text{\textit{F1-Score}} = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}
-\end{equation}
-
-
-
-In the context of this work, we calculate \textit{Precision, Recall} and the \textit{F1-Score} as follows.
+In the context of this work, we calculate \textit{Precision, Recall} and the \textit{F1-Score} based on voxel sets.
 Required are the original point cloud $PC$, the corresponding list of ground truth planes $GT$ and the planes obtained from a plane detection algorithm $A$.
-First, we regularize the $PC$ to reduce complexity and to avoid proximity bias, because of the inverse relationship
+First, we regularize $PC$ to reduce complexity and to avoid proximity bias, because of the inverse relationship
 between distance to sensor and cloud density. This regularization is obtained through voxelization of the point cloud.
 With this voxel grid, we can now calculate corresponding sets of voxels for each list of points that represent a plane.
 In the next step, we compare our planes from $GT$ with $A$ to obtain a list of corresponding pairs of ground truth and found planes.
@@ -897,10 +880,23 @@ For a given ground truth plane $gt_j$ and a corresponding detected plane $a_k$ w
 $$v_i \in gt_j \land v_i \in a_k \Rightarrow v_{i} \in TP$$
 $$v_i \in gt_j \land v_i \notin a_k \Rightarrow v_{i} \in FN$$
 $$v_i \notin gt_j \land v_i \in a_k \Rightarrow v_{i} \in FP$$
-% TODO not needed right? $$v_i \notin gt_j \land v_i \notin a_k \Rightarrow v_{i} \in TN$$  , True Negative(TN)} 
 
-With those rules, we can calculate the Precision, Recall:
-$$Precision = \frac{|TP|}{|TP|+|FP|} \hspace{1cm} and \hspace{1cm} Recall = \frac{|TP|}{|TP|+|FN|}$$
+With those rules, we can calculate the \textit{Precision, Recall}, and \textit{F1-Score}:
+
+\begin{equation}
+    \label{eq:prec}
+    Precision = \frac{\text{\textit{True Positive}}}{\text{\textit{True Positive + False Positive}}}
+\end{equation}
+
+\begin{equation}
+    \label{eq:rec}
+    Recall = \frac{\text{\textit{True Positive}}}{\text{\textit{True Positive + False Negative}}}
+\end{equation}
+
+\begin{equation}
+    \label{eq:f1}
+    \text{\textit{F1-Score}} = 2 \cdot\frac{Precision\cdot Recall}{Precision + Recall}
+\end{equation}
 \end{document}
 
 

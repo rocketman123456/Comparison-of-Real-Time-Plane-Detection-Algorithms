@@ -3,120 +3,156 @@
 \chapter{Conclusion and Future Work}
 \label{chap:concl}
 
-\paragraph{intro summary}
-\begin{itemize}
-    \item modern man-made environments contain a large number of planar structures, especially indoors
-    \item automatic plane detection has become a vital part of many applications and systems   
-    \item if a time constraint for the calculations exist, it is often referred to as real-time 
-    \item real-time plane detection does exist. However, the sensors that enable real-time plane detection are usually not affordable for the general user
-    \item In this thesis, we compared a selection of plane detection algorithms to evaluate the extents of real-time plane detection on affordable hardware like intel realsense 
-\end{itemize}
+% \paragraph{intro summary}
+% \begin{itemize}
+%     \item modern man-made environments contain a large number of planar structures, especially indoors
+%     \item automatic plane detection has become a vital part of many applications and systems   
+%     \item if a time constraint for the calculations exist, it is often referred to as real-time 
+%     \item real-time plane detection does exist. However, the sensors that enable real-time plane detection are usually not affordable for the general user
+%     \item In this thesis, we compared a selection of plane detection algorithms to evaluate the extents of real-time plane detection on affordable hardware like intel realsense 
+% \end{itemize}
+Modern man-made environments especially indoors, contain a large number of planar structures. 
+The automatic detection thereof has become a vital part of many applications in different fields, such as robotics and Augmented or Virtual Reality. Underlying temporal constraints often dictate the processing times of these applications and, therein, the process of plane detection. \textit{Real-time plane detection} is already possible, although the hardware cost that enables efficient and precise detection is likely not affordable to the general user. 
+Therefore, the extent of \textit{real-time plane detection} on affordable hardware has gained interest.
 
+% \paragraph{concept summary}
+% \begin{itemize}
+%     \item A set of algorithms, appropriate datasets, and a definition of real-time are needed to perform this evaluation.
+%     \item in subsection X we introduced relevant criteria for the selection of algorithms.
+%     \item Based on these criteria, we filtered the current state of the art and stuck with four algorithms, namely XY
+%     \item We proceeded to select suitable datasets for our evaluation, starting with a set of requirements. 
+%     \item We selected the 2D-3D-S dataset and, because our research did not yield a sufficient incrementally growing dataset with plane-focused ground truth, we created the FIN dataset
+%     \item Closing Chapter 3, we gave two definitions of realtime
+% \end{itemize}
 
-\paragraph{concept summary}
-\begin{itemize}
-    \item A set of algorithms, appropriate datasets, and a definition of real-time are needed to perform this evaluation.
-    \item in subsection X we introduced relevant criteria for the selection of algorithms.
-    \item Based on these criteria, we filtered the current state of the art and stuck with four algorithms, namely XY
-    \item We proceeded to select suitable datasets for our evaluation, starting with a set of requirements. 
-    \item We selected the 2D-3D-S dataset and, because our research did not yield a sufficient match, we created the FIN dataset
-    \item Closing Chapter 3, we gave two definitions of realtime
-\end{itemize}
-\paragraph{evaluation summary}
-\paragraph{results summary}
-\paragraph{conclusion}
+A set of plane detection algorithms, appropriate datasets, and a definition of \textit{real-time} are needed to perform this evaluation. In the \textit{Concept}, we first introduced a set of helpful criteria for the subsequent selection of plane detection algorithms. We followed a similar approach for the selection of datasets. Lastly, we introduced two definitions of \textit{real-time}, wherein we differentiate between \textit{real-time} calculation time with and without pre-processing.
+
+% \paragraph{impl summary}
+% \begin{itemize}
+%     \item we gave details regarding the implementation processes and requirements therein
+%     \item Moreover, since the ground truth of the datasets needed modification, we manually segmented planes, which is outlined as well in chapter~4
+% \end{itemize}
+In Chapter~\ref{chap:impl}, we provided details regarding the implementation of the selected algorithms. Moreover, since its provided ground truth does not focus on planes, we described our manual segmentation process of the 2D-3D-S dataset. Lastly, we outlined how the ground truth for the FIN dataset is dynamically created based on a single ground truth of the last recorded point cloud.
+
+% \paragraph{evaluation summary}
+% \begin{itemize}
+%     \item We started the evaluation with the protocol. therin, we give the metrics the eval is based on.
+%     \item additionally, we specify the parameterizations each algorithm used for the different experiments  
+%     \item we presented the individual results and compared the experiments
+% \end{itemize}
+We enter the Evaluation Chapter with the \textbf{\textcolor{purple}{intended}} protocol. Therein, we outline the evaluation metrics to calculate and specify the algorithm parameterizations of each experiment. We presented the individual results and subsequently concluded with a comparison thereof. 
+
+% results
+% \begin{itemize}
+%     \item Without additional modifications, 3D-KHT is the fastest out of the algorithms, on average 32x faster total times
+%     \item Nonetheless, RSPD has the overall highest accuracy with ca 87\% in the 2D-3D-S and 58\% in the FIN exp. (F1)
+%     \item RPSD has the overall longest pre-processing time, taking on avg 63 and 15 seconds for the normal estimation
+%     \item OPS has the overall highest precision, OBRG overcomes no other algorithm in a metric. 
+% \end{itemize}
+
+% accuracy
+In both experiments, RSPD has the overall best accuracy among the algorithms. While OPS and OBRG achieve similar \textit{Precision} values, no other algorithm yields comparable values for \textit{Recall} nor \textit{F1-Score} (see Tables~\ref{tab:res-3d2ds-total} and \ref{tab:res-fin-total}).
+
+% times
+The results uniformly show that 3D-KHT is the fastest among the selected algorithms. The \textit{Hough Transform}-based algorithm proposed by \citeauthor{LimbergerOliveira2015HT3D}~\cite{LimbergerOliveira2015HT3D} ran, on average, 32x faster. As Table~\ref{tab:algo-rt} indicates, 3D-KHT is the only algorithm that achieves $RT_{tot}$ in the \textit{FIN} experiment, which is supported by the apparent upper limit shown in Figure~\ref{fig:dynaudi}. RSPD achieves $RT_{calc}$, and OPS \textbf{\textcolor{purple}{borders on \textit{real-time plane detection} as well}}. RSPD has the longest pre-processing times with an average of ${\sim}63s$ for the \textit{2D-3D-S} experiment and ${\sim}15s$ for the \textit{FIN} experiment, respectively. In contrast, RSPD has the shortest average plane detection times in the \textit{FIN} experiment, and taking only a tenth of a second longer than 3D-KHT's plane detection phase in the \textit{2D-3D-S} experiment.
+
+% Summary 
+We can conclude that 3D-KHT is the only algorithm that is \textit{totally real-time} applicable. However, considering accuracy, it is comparatively inferior to RSPD. 
+
 \subsection{Limitations}
+
+
 \subsection{Future Work}
 
 
-\paragraph{Use case, scenario, real-world application, current problem}
-Viele AR/VR anwendungen benutzen plane detection..
-Echtzeit ist wichtig..
-Es werden spezielle Sensoren benötigt, ein SLAM algo und ein geeigneter plane detection algo..
-Die Auswahl des besten plane detection algorithmus ist nicht trivial..
+% \paragraph{Use case, scenario, real-world application, current problem}
+% Viele AR/VR anwendungen benutzen plane detection..
+% Echtzeit ist wichtig..
+% Es werden spezielle Sensoren benötigt, ein SLAM algo und ein geeigneter plane detection algo..
+% Die Auswahl des besten plane detection algorithmus ist nicht trivial..
 
-\paragraph{Daher das thema dieser arbeit}
-Wir vergleichen algorithmen mit fokus auf die echtzeitfähigkeit
-wir haben 2 definitionen für echtzeit angegeben..
-Wir beschränken uns in dieser arbeit auf plane detection mit intel realsense technologie
- das beinhaltet 2 kameras und die dazugehörige software (+SLAM)
+% \paragraph{Daher das thema dieser arbeit}
+% Wir vergleichen algorithmen mit fokus auf die echtzeitfähigkeit
+% wir haben 2 definitionen für echtzeit angegeben..
+% Wir beschränken uns in dieser arbeit auf plane detection mit intel realsense technologie
+%  das beinhaltet 2 kameras und die dazugehörige software (+SLAM)
 
-\paragraph{algorithmen}
-Es wurde die aktuelle literatur gelesen und eine liste aus algorithmen erstellt.
-Es wurden metriken zum objektiven und oberflächlichen Vergleich der algorithmen angegeben
-basierend auf den metriken wurden vier algorithmen für einen vergleich ausgewählt
+% \paragraph{algorithmen}
+% Es wurde die aktuelle literatur gelesen und eine liste aus algorithmen erstellt.
+% Es wurden metriken zum objektiven und oberflächlichen Vergleich der algorithmen angegeben
+% basierend auf den metriken wurden vier algorithmen für einen vergleich ausgewählt
 
-\paragraph{Testscenario / datensatz}
-Da die ausgewählten algorithmen nicht auf dem selben Datensatz getestet wurden haben wir 
-geeignete ausgesucht.
-Wir haben uns für den \textit{2D-3D-S} Datensatz entschieden..
-motiviert durch die abwesenheit eines datensatzes mit temporaler komponente
- haben wir einen eigenen datensatz erstellt
+% \paragraph{Testscenario / datensatz}
+% Da die ausgewählten algorithmen nicht auf dem selben Datensatz getestet wurden haben wir 
+% geeignete ausgesucht.
+% Wir haben uns für den \textit{2D-3D-S} Datensatz entschieden..
+% motiviert durch die abwesenheit eines datensatzes mit temporaler komponente
+%  haben wir einen eigenen datensatz erstellt
 
-\paragraph{Experimentaufbau}
-Da wir zwei datensätze haben haben wir auch zwei experimente
-Zunächst wurden bewertungsmetriken der datensätze eingeführt:
-precision, recall, f1, 
-dazu wurden die berechnungszeiten genau gemessen und es wird unterschieden in pre-processing,
-plane detection und post-processing. 
-diese experimente wurden seperat durchgeführt und ausgewertet
-im anschluss darauf wurden die ergebnisse beider Experimente verglichen
+% \paragraph{Experimentaufbau}
+% Da wir zwei datensätze haben haben wir auch zwei experimente
+% Zunächst wurden bewertungsmetriken der datensätze eingeführt:
+% precision, recall, f1, 
+% dazu wurden die berechnungszeiten genau gemessen und es wird unterschieden in pre-processing,
+% plane detection und post-processing. 
+% diese experimente wurden seperat durchgeführt und ausgewertet
+% im anschluss darauf wurden die ergebnisse beider Experimente verglichen
 
-\paragraph{Ergebnisse der Experimente }
-die ergebnisse lassen sich zusammenfassen in:
-3D-KHT ist der insgesamt schnellste
-RSPD ist der insgesamt präziseste
+% \paragraph{Ergebnisse der Experimente }
+% die ergebnisse lassen sich zusammenfassen in:
+% 3D-KHT ist der insgesamt schnellste
+% RSPD ist der insgesamt präziseste
  
-wir haben zwei definitionen von echtzeit
-gemäß dieser definitionen und anhand der ergebnisse aus dem letzten kapitel gilt:
-(in einem realwelt environment)
-\begin{itemize}
-    \item 3D-KHT $\in RT_{tot}$, da $t_{tot} < 1$
-    \item RSPD $\in RT_{calc}$ , da $t_{calc}< 1$
-\end{itemize}
+% wir haben zwei definitionen von echtzeit
+% gemäß dieser definitionen und anhand der ergebnisse aus dem letzten kapitel gilt:
+% (in einem realwelt environment)
+% \begin{itemize}
+%     \item 3D-KHT $\in RT_{tot}$, da $t_{tot} < 1$
+%     \item RSPD $\in RT_{calc}$ , da $t_{calc}< 1$
+% \end{itemize}
 
-\subsection{Fazit}
+% \subsection{Fazit}
 
-OBRG ist nicht echtzeitfähig.
+% OBRG ist nicht echtzeitfähig.
 
-Da das pre-processing von RSPD viel zu lange dauert ist RSPD insgesamt nicht total echtzeitfähig,
-die echtzeitfähigkeit beschränkt sich somit auf die plane detection phase.
+% Da das pre-processing von RSPD viel zu lange dauert ist RSPD insgesamt nicht total echtzeitfähig,
+% die echtzeitfähigkeit beschränkt sich somit auf die plane detection phase.
 
-OPS erzielt im FIN experiment so grade werte die für eine plane detection echtzeit sprechen würden.
-Auch hier dauert das pre-processing zu lange um von einer totalen echtzeit sprechen zu können.
+% OPS erzielt im FIN experiment so grade werte die für eine plane detection echtzeit sprechen würden.
+% Auch hier dauert das pre-processing zu lange um von einer totalen echtzeit sprechen zu können.
 
-3D-KHT ist im FIN experiment deutlich unter der Schranke von einer sekunde, damit in einem realen 
-enviroment total echtzeitfähig. 
-
-
-\paragraph{Limitationen der ergebnisse}
-Ein Faktor der langsamen laufzeit von OBRG ist definitiv die implementation. Python ist aus diversen
-Gründen magnituden langsamer als C++ und es wurde bei der anfertigung der implementation die 
-präzision priorosiert da durch die wahl der programmiersprache sowieso nicht von echtzeitfähigkeit 
-ausgegangen wurde.
-
-3D-KHT ist der schnellste algorithmus, lässt aber leider in sachen accuracy viele prozente liegen.
-
-\paragraph{Algo x ist der beste, mögl verbesserungen}
+% 3D-KHT ist im FIN experiment deutlich unter der Schranke von einer sekunde, damit in einem realen 
+% enviroment total echtzeitfähig. 
 
 
+% \paragraph{Limitationen der ergebnisse}
+% Ein Faktor der langsamen laufzeit von OBRG ist definitiv die implementation. Python ist aus diversen
+% Gründen magnituden langsamer als C++ und es wurde bei der anfertigung der implementation die 
+% präzision priorosiert da durch die wahl der programmiersprache sowieso nicht von echtzeitfähigkeit 
+% ausgegangen wurde.
 
-Das einzige was RPSD von einer eindeutigen dominanz trennt ist die Dauer des preprocessings.
-In RPSD's pre-processing phase werden die normalen der Punktwolke berechnet. 
-Es ist möglich dass die normalen noch vor der plane detection phase aus Figure~\ref{fig:concept}
-berechnet werden. Zb kann sogar die intel realsense technologie die normalen exportieren.
-Dies würde nach angemessenen anpassungen des algorithmuses die Berechnungszeiten auf $t_{calc}$
-reduzieren. Somit würde RSPD ebenfalls total echtzeitfähig sein. 
+% 3D-KHT ist der schnellste algorithmus, lässt aber leider in sachen accuracy viele prozente liegen.
+
+% \paragraph{Algo x ist der beste, mögl verbesserungen}
 
 
-Diese anpassung des experiments würde einen bias gegenüber RSPD darstellen, weswegen wir das 
-unterlassen haben und als weitere aufgabe nach dem abschluss dieser arbeit ansehen.
 
-Ebenso interessant sind die Laufzeiten einer optimierten implementierung von OBRG in C++.
+% Das einzige was RPSD von einer eindeutigen dominanz trennt ist die Dauer des preprocessings.
+% In RPSD's pre-processing phase werden die normalen der Punktwolke berechnet. 
+% Es ist möglich dass die normalen noch vor der plane detection phase aus Figure~\ref{fig:concept}
+% berechnet werden. Zb kann sogar die intel realsense technologie die normalen exportieren.
+% Dies würde nach angemessenen anpassungen des algorithmuses die Berechnungszeiten auf $t_{calc}$
+% reduzieren. Somit würde RSPD ebenfalls total echtzeitfähig sein. 
 
-Die parametrisierung von 3D-KHT ist definitiv die komplizierteste aus den algorithmen und hat daher
-das größte optimierungspotential. Das ist in dem fall ein doppelschneidiges schwert, da zuerst eine
-optimale/ausreichende parametrisierung gefunden werden muss, bevor der algorithmus das volle potential 
-entfaltet. 
+
+% Diese anpassung des experiments würde einen bias gegenüber RSPD darstellen, weswegen wir das 
+% unterlassen haben und als weitere aufgabe nach dem abschluss dieser arbeit ansehen.
+
+% Ebenso interessant sind die Laufzeiten einer optimierten implementierung von OBRG in C++.
+
+% Die parametrisierung von 3D-KHT ist definitiv die komplizierteste aus den algorithmen und hat daher
+% das größte optimierungspotential. Das ist in dem fall ein doppelschneidiges schwert, da zuerst eine
+% optimale/ausreichende parametrisierung gefunden werden muss, bevor der algorithmus das volle potential 
+% entfaltet. 
 
 \end{document}
