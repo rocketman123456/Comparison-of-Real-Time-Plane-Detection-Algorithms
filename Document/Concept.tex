@@ -13,11 +13,13 @@
     \label{fig:concept}
 \end{figure}
 
+\textbf{\textcolor{red}{what about robotic? in der intro gehe ich mehr auf robotik ein}}
+
 Many AR and VR Systems integrate plane detection into their software, some use it only to calculate the ground floor while others use plane detection to
 build a smaller model of the environment.
 Figure~\ref{fig:concept} shows a generic block diagram of such a VR/AR system including plane detection.
-In general, the environment is continuously recorded by a specialized sensor which is usually a camera([1]). A SLAM algorithm then integrates the new data into its already existing map([2]). The map, in form of a point cloud,
-is subsequently passed to a plane detection algorithm([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application([4]).
+In general, the environment is continuously recorded by a specialized sensor which is usually a camera ([1]). A SLAM algorithm then integrates the new data into its already existing map ([2]). The map, in form of a point cloud,
+is subsequently passed to a plane detection algorithm ([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application ([4]).
 The application would then further process those planes, e.g., by creating a live visualization of them or by assisting the movement of visually impaired people~\cite{Carranza_Estrella_Zaidi_Carranza_2021}.
 
 To remove any noticeable delay in the application, the plane detection step has to run under a temporal restriction, henceforth referred to as \textit{real-time}.
@@ -118,7 +120,7 @@ The table shows the input type and the output format of all algorithms, as well 
 Note that we consider all algorithms to be available, however, we are not aware of public implementations of OBRG and SCH-RG.
 However, the respective publications outline their methods in high detail, thereby guiding a re-implementation.
 
-The final output of \textit{PLaneNet, PlaneRecNet} and \textit{PlaneRCNN} is a piecewise-planar depth map of the input
+The final output of \textit{PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} is a piecewise-planar depth map of the input
 image. Since modifying the architecture to return the segmentation masks and plane parameters would require minimal effort,
 we adjusted the output types in the table accordingly. Similarly, \textit{RSPD} returns a set of planes parameterized by
 its normal vector $n$, distance to origin $d$, and two additional extents. Modifying the output to return inliers requires
@@ -170,7 +172,7 @@ Being able to represent planes of any shape is important for many applications. 
 the determined input type of $UPC$ (see Section~\ref{subsec:output}).
 We thereby determine \textit{three-dimensional inliers} (3D-IN) as the preferred \textit{plane format} and exclude all methods which do not comply, namely \textit{CAPE, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
 
-Note that 3D inliers are henceforth referred to solely as \textit{inliers}.
+Note that 3D inliers are hereafter referred to solely as \textit{inliers}.
 
 
 Applying these restrictions, we end up with, and thus include, the following plane detection algorithms in our evaluation:

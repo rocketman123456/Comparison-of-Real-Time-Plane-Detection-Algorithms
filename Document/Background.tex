@@ -257,9 +257,8 @@ The graph construction is subsequently followed by a breadth-first-search, durin
 \end{equation}
 \begin{equation}
     \label{eq:incond2}
-    \phi = acos(|x.normal, p.normal|) < \theta_a
+    \phi = \arccos(|x.normal, p.normal|) < \theta_a
 \end{equation}
-
 \paragraph*{Merge}
 In the last phase, the previously grown patches are merged. Two planar patches $P_1$ and $P_2$ can be merged, if the following conditions are met:
 \begin{itemize}
@@ -532,9 +531,9 @@ discarded. If $n$ is located inside of the spherical convex hull of the region o
 it is added to the region, and its neighbors are inserted into the queue. If $n$ is not inside a
 convex hull, it is necessary to check whether $n$ is outside of the so-called \textit{cluster-permissible region} (CPR):
 \begin{equation}
-    CPR(p) = \{q \in \mathbb{S} | \angle(p,q)\leq 2\theta\},
+    \text{CPR}(p) = \{q \in \mathbb{S} | \angle(p,q)\leq 2\theta\},
 \end{equation}
-where $\theta$ is an angular threshold. Note that the CPR of multiple points, e.g., a region, is determined by
+where $p$ is a normal on the sphere, and $\theta$ is an angular threshold. Note that the CPR of multiple points, e.g., a region, is determined by
 the intersection of all individual points.
 If $n$ is outside the CPR of the current region, it is discarded. Otherwise, the convex hull is updated with $n$,
 $n$ is added into the set of points included in the region, and its neighbors are inserted into the queue.
