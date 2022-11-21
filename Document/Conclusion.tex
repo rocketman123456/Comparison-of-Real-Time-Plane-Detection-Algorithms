@@ -78,6 +78,7 @@ Another limitation of the results is the subjective nature of the manual segment
     \caption[Possible Plane Orientations]{Possible Plane Orientations. A wall from the \textit{conference room} scene of the \textit{FIN} dataset is shown on the left. The colored point clouds indicate different possible plane orientations.}
     \label{fig:poss-planes}
 \end{figure}
+
 \section{Future Work}
 % \begin{itemize}
 %     \item some sensors or SLAM algorithms (including Intels/RTABMAP) are capable of exporting normal vectors. The algorithms would not need to estimate them during their pre-processing phase. 
@@ -86,11 +87,17 @@ Another limitation of the results is the subjective nature of the manual segment
 %     \item For RSPD, this would essentially reduce the pre-processing times to a minimum and with it, the total processing time as well. We consider this the most promising endeavor. however this would of course require the normal exportation from sensor, or SLAM. intel kann das, wäre also nicht zwangsweise mit extra kosten verbunden.
 % \end{itemize}
 
-\begin{itemize}
-    \item C++ impl von OBRG
-    \item reduzierung der plane detection auf 6m circumference und merging danach
-    \item normal export durch SLAM, experimente wiederholen
-    \item \textbf{\textcolor{red}{dynamische generierung verbessern? $\rightarrow$ }}
-\end{itemize}
+\paragraph{Normal Estimation}
+We see the most potential for improvement in the pre-processing steps of the algorithms. Specifically, the extent of the normal vector estimation influences the pre-processing time. RSPD estimates the normal vectors of the entire point cloud, whereas OPS only estimates $\alpha_s$\% of the point cloud. This temporal difference raises the question of what the extents of \textit{real-time plane detection} are if the normal vectors of the point cloud are known before the plane detection step in the application. For instance, RTAB-MAP can estimate and export the normal vectors of the point cloud. Therefore, RSPD would not need to estimate the normal vectors, reducing the pre-processing time greatly. However, this would require further research.
+
+\paragraph{Cloud Size Reduction}
+When recording environments similar to the hallway or the auditorium scene, it is often the case that the spatial dimension of the point cloud grows beyond the distance limitations of the sensor, e.g., the recorded hallway spans longer than the sensor can "see". It is, therefore, not necessary to re-calculate the planes in areas past the sensor's reach. We are interested in a plane detection method that restricts the plane detection to a certain radius around the sensor's position and a subsequent merging of old and new planes. Additionally, this could be the basis for a plane-based SLAM approach.
+
+% \begin{itemize}
+%     \item C++ impl von OBRG
+%     \item reduzierung der plane detection auf 6m circumference und merging danach
+%     \item normal export durch SLAM, experimente wiederholen
+%     \item \textbf{\textcolor{red}{dynamische generierung verbessern? $\rightarrow$ }}
+% \end{itemize}
 
 \end{document}
