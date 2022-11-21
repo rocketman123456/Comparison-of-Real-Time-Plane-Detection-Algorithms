@@ -2,34 +2,33 @@
 \chapter{Introduction}
 \label{chap:Introduction}
 
-Man-made environments usually consist, to a large extent, of planar structures.
-These planar structures, or planes, are often found in the basic geometry and alignment of buildings~\cite{Coughlan_Yuille_1999}, and much of the design of interior furniture has flat surfaces~\cite{Zhao_Zong_Cao_Chen_Liu_Xu_Xin_2020}.
+Man-made environments usually consist, to a large extent, of planar structures. 
+As the \textit{Manhattan-world} assumption dictates, the general alignment of most urban scenes, both indoors and outdoors, is based on a three-dimensional cartesian grid~\cite{Coughlan_Yuille_1999}. Thus, the assumption indicates that urban scenes are primarily comprised of planar structures which lie orthogonal to each other.
 Due to this large amount of planes in everyday environments, especially indoors, automatic detection of these planes is growing in relevance:
 Plane detection is an essential component in applications of numerous fields, including robotics~\cite{Zhang_Wang_Xianyu_Ziwei_Wei_2019, Yunus2021ManhattanSLAMRP, Zhang_Zeng_Zha_2017}
 and virtual or augmented reality (AR/VR)~\cite{Jurado_Jurado_Ortega_Feito_2021, sridhar2020instant}.% TODO , \textbf{\textcolor{red}{und XY [source]}}.
+For instance, a plane-based \textit{Simultaneous Localization and Mapping} (SLAM, see Section~\ref{sec:bg-slam}) algorithm would take the new sensory input, perform plane detection, and would then try to precisely estimate the current location with respect to a concurrently assembled map. In another example, the Augmented Reality development kit \textit{ARKit}\footnote{\href{https://developer.apple.com/augmented-reality/}{https://developer.apple.com/augmented-reality/}} provides surface or plane detection which can be used for the creation of a digital floor plan, e.g. with \textit{ARKit}'s Swift API for single-room floor plan creation, namely \textit{RoomPlan}\footnote{\href{https://developer.apple.com/augmented-reality/roomplan/}{https://developer.apple.com/augmented-reality/roomplan/}}.
 
-% https://apps.apple.com/us/app/ar-plan-3d-camera-to-plan/id1459846158 <- beispiel applikation
-
-Many of these applications operate under specific time constraints. These constraints are often broadly referred to as \textit{real-time}.
+Many of these applications operate under specific time constraints. 
+\textbf{\textcolor{red}{For instance, every second is vital when a police task force is creating a 3D ground floor of a building during a hostage situation.}}
+Strict temporal constraints are often broadly referred to as real-time.
 The definition of \textit{real-time} usually derives from the frequency of new sensor updates~\cite{Davison_2003}.
 Since the process of plane detection is often an integral part of these systems ~\cite{Wang_Bu_Zhang_Cheng_2022, Dai_Lund_Gao_2022, Kaess_2015}, these constraints also apply there.
 
 \textit{Real-time plane detection} is already possible, though expensive hardware is often needed as a sensor's price increases 
-with its precision.
-For instance, AR devices like the \textit{Microsoft HoloLens 2} or imaging laser scanners like the \textit{Leica BLK360} produce very precise representations of the surrounding environment, and
-in the former case, even provide the functionality to perform plane detection internally. Nevertheless, with starting prices of ${\sim}\$3.5k$ and ${\sim}\$19k$, respectively, these devices are likely
-not affordable for the average consumer.
+with its precision and included functionality. 
+For instance, AR devices like the \textit{Microsoft HoloLens 2} and imaging laser scanners like the \textit{Leica BLK360} produce very precise representations of the surrounding environment.
+Moreover, the \textit{HoloLens 2} can perform \textit{plane detection} as part of its \textit{Scene Understanding SDK}\footnote{\href{https://learn.microsoft.com/en-us/windows/mixed-reality/design/scene-understanding}{https://learn.microsoft.com/en-us/windows/mixed-reality/design/scene-understanding}}. Therein, a recorded environment is represented as a dense triangle mesh in which planes are detected and subsequently assigned a plane category, e.g., walls, ceilings, and floors. 
+Nevertheless, with starting prices of ${\sim}\$3.5k$ for the \textit{HoloLens 2} and ${\sim}\$19k$ for the \textit{BLK360}, respectively, the affordability of these devices is questionable.
 
-Through this lack of affordability of high-end sensors, the usage of \textit{off-the-shelf} hardware is gaining interest.
+Through this lack of affordability of high-end sensors, the usage of \textit{off-the-shelf} hardware is gaining interest. 
 At a total of ${\sim}\$600$, the \textit{Intel RealSense} cameras T265 and D455 are an example of more affordable sensor technology (see Section~\ref{sec:bg-intel}).
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
-Many algorithms have been designed over decades of research.
-However, most are not objectively comparable with each other.
-Possible reasons for this revolve around differences in the datasets and metrics used
-during their evaluation or that the data input of the algorithms is fundamentally incomparable.
-This lack of comparability renders the selection process of a suitable algorithm difficult. 
-
+Decades of research on plane detection yielded numerous algorithms, and many are declared to be \textit{real-time} applicable by the respective authors \textbf{\textcolor{red}{quelle}}. While generally achieving the same goal, i.e., the detection of planar structures, noteable differences in methodology exist: Algorithms can generally differentiated by their type of input, the format of detected planes, the basic structure the method is based on, and the hardware required to run the algorithm. \textbf{\textcolor{red}{diese unterschiede gemeint?}}
+Furthermore, most algorithms have been evaluated on different datasets with different metrics.
+Due to these differences and variables, the objective comparison of algorithms is usually impossible.
+This renders the selection process of a suitable algorithm difficult. Moreover, the applicability in a realistic scenario is guaranteed, as we are not aware of scientific literature that focuses specifically on the practical side of plane detection.  
 \section{Goals}
 
 This thesis deals with a uniform comparison of selected plane detection algorithms.
@@ -41,15 +40,12 @@ Thereby, the data is primarily recorded inside buildings.
 
 \section{Structure}
 The following chapter presents the basics or background information necessary for this work.
-
 In Chapter~\ref{chap:Concept}, our concept of achieving the goals mentioned above is detailed. 
 Therein, we prepare the evaluation by selecting suitable algorithms and datasets. A definition of \textit{real-time} closes the chapter.
-
 Chapter~\ref{chap:impl} specifies the implementation details for the concept in the previous chapter. We outline the general system setup, the necessary steps included in the implementation of each algorithm, and the dataset modifications needed to conduct quantitative experiments.
-
 The uniform comparison of the selected algorithms is conducted in Chapter~\ref{chap:eval}. Moreover, the results thereof
 are presented and analyzed.
-
 Based on the obtained results, we conclude in Chapter~\ref{chap:concl}. Lastly, the limitations thereof are
 considered, and this work closes with the prospects of future research.
 \end{document}
+
