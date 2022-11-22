@@ -23,21 +23,19 @@ Nevertheless, the affordability of the \textit{BLK360} is questionable with a st
 
 Through this lack of affordability and practicability of high-end sensors, the usage of consumer \textit{off-the-shelf} hardware is gaining interest. 
 With AR development platforms like \textit{ARKit}\footnote{\href{https://developer.apple.com/augmented-reality/arkit/}{https://developer.apple.com/augmented-reality/arkit/}} or \textit{ARCore}\footnote{\href{https://developers.google.com/ar}{https://developers.google.com/ar}}, it is generally possible to perform AR \textit{plane detection} on mobile phones\footnote{\href{https://developers.google.com/ar/devices\#google\_play\_devices}{Supported devices of ARCore: https://developers.google.com/ar/devices\#google\_play\_devices}}. However, the choice of development environment and the used sensor is arbitrary. 
-Being representatives for consumer off-the-shelf hardware, we use the \textit{Intel RealSense} cameras T265 and D455 (see Section~\ref{sec:bg-intel}) in this work. The cameras have a combined starting price of ${\sim}\$600$ and an open source software development kit (SDK), namely \textit{librealsense}, is provided. 
+Being representatives for consumer off-the-shelf (OTS) hardware, we use the \textit{Intel RealSense} cameras T265 and D455 (see Section~\ref{sec:bg-intel}) in this work. The cameras have a combined starting price of ${\sim}\$600$ and an open source software development kit (SDK), namely \textit{librealsense}, is provided. 
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
-Decades of research on plane detection yielded numerous algorithms, and many are declared to be \textit{real-time} applicable by the respective authors \textbf{\textcolor{red}{quelle}}. While generally achieving the same goal, i.e., the detection of planar structures, noteable differences in methodology exist: Algorithms can generally be differentiated by their type of input, the format of detected planes, the basic structure the method is based on, and the hardware required to run the algorithm. \textbf{\textcolor{red}{diese unterschiede gemeint?}}
-Furthermore, most algorithms have been evaluated on different datasets with different metrics.
-Due to these differences and variables, the objective comparison of algorithms is usually impossible.
-This renders the selection process of a suitable algorithm difficult. Moreover, the applicability in a realistic scenario is guaranteed, as we are not aware of scientific literature that focuses specifically on the practical side of plane detection.  
+Decades of research on plane detection yielded numerous algorithms, and many are reported to be \textit{real-time} applicable by the respective authors \textbf{\textcolor{red}{quellen?}}.
+While generally achieving the same goal, i.e., the detection of planar structures, notable differences in methodology exist: We can usually differentiate between algorithms by their type of input, the format of detected planes, additional hardware requirements, and core functionality (see Section~\ref{sec:bg-pdintro}). Furthermore, most algorithms have been evaluated using different datasets and metrics. 
+It is, therefore, impossible to assess the real-world applicability of most algorithms through the reported findings because the corresponding authors evaluated them in a scientific context and environment.
+
 \section{Goals}
 
-This thesis deals with a uniform comparison of selected plane detection algorithms.
-Through this comparison, we aim to evaluate to what extent precise real-time plane detection is possible on affordable
-hardware such as the \textit{Intel RealSense}. The answer to this question will also determine which algorithm is most suitable.
+This thesis deals with a uniform comparison of plane detection algorithms.
+Through this comparison, we aim to evaluate the applicability of real-time plane detection on consumer OTS hardware such as the \textit{Intel RealSense}. The answer to this question will consequently determine which algorithm is most suitable.
 Note that this work focuses on plane detection in complete 3D environments.
 Furthermore, we restrict ourselves to plane detection in indoor environments.
-Thereby, the data is primarily recorded inside buildings.
 
 \section{Structure}
 The following chapter presents the basics or background information necessary for this work.

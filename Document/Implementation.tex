@@ -36,7 +36,7 @@ Lastly, the multi-processing API OpenMP\footnote{\href{https://www.openmp.org/}{
 To our knowledge, no open-source implementation is available for the algorithm.
 We, therefore, use our own implementation, which can be found on our Github repository\footnote{\href{https://github.com/lupeterm/OBRG}{https://github.com/lupeterm/OBRG}}.
 
-We implement the algorithm using python. We choose to write our own octree implementation for spatial subdivision of our point cloud, since
+We implement the algorithm using Python. We choose to write our own octree implementation for spatial subdivision of our point cloud, since
 the implementation of public libraries like \textit{open3d}~\cite{Zhou2018} are limited in terms of leaf node functionality.
 The subdivision is followed by calculating the saliency features using \textit{open3d}'s normal estimation function.
 We follow the pseudocode as stated in \cite[Algorithm~1]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. We modify the insertion into the set

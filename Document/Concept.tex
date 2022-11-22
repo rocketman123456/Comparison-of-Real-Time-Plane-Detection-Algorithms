@@ -13,12 +13,10 @@
     \label{fig:concept}
 \end{figure}
 
-Many AR and VR Systems integrate plane detection into their software, some use it only to calculate the ground floor while others use plane detection to
-build a smaller model of the environment.
+Many AR and VR Systems integrate plane detection into their software. Some use it only to calculate the ground floor while others use plane detection to build a smaller model of the environment.
 Figure~\ref{fig:concept} shows a generic block diagram of such a VR/AR system including plane detection.
-In general, the environment is continuously recorded by a specialized sensor which is usually a camera ([1]). A SLAM algorithm then integrates the new data into its already existing map ([2]). The map, in form of a point cloud,
-is subsequently passed to a plane detection algorithm ([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application ([4]).
-The application would then further process those planes, e.g., by creating a live visualization of them or by assisting the movement of visually impaired people~\cite{Carranza_Estrella_Zaidi_Carranza_2021}.
+The environment is continuously recorded by a specialized sensor, which is usually a camera, a depth sensor, or a combination thereof ([1]). A SLAM algorithm then integrates the new data into its already existing map ([2]). The map, in form of a point cloud, is subsequently passed to a plane detection algorithm ([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application ([4]).
+The application then further processes those planes follwing the implied requirements of the system's use case.
 
 To remove any noticeable delay in the application, the plane detection step has to run under a temporal restriction, henceforth referred to as \textit{real-time}.
 We introduce a thorough definition of \textit{real-time} in Section~\ref{sec:realtime}.
@@ -82,9 +80,8 @@ In this work, we differentiate between the following:
     \item the plane's normal vector and distance to origin ($n,d$),
 \end{itemize}
 whereas the \textit{3D-inliers} of a plane are a set of 3D points in the format of an $UPC$.
-In contrast, \textit{2D-inliers} are two-dimensional representations of a plane. These include sets of indices, pixels or 
-segmentation masks, i.e. all methods to describe a plane in a two-dimensional manner. These \textit{plane formats} generally
-correspond to two-dimensional input formats like \textit{organized point clouds} or \textit{(depth-) images}.
+In contrast, \textit{2D-inliers} are two-dimensional representations of a plane. 
+This includes all methods to describe a plane in a two-dimensional manner, e.g., sets of indices, pixels or segmentation masks. These \textit{plane formats} generally correspond to two-dimensional input formats like \textit{organized point clouds} or \textit{(depth-) images}.
 
 Lastly, planes are often described mathematically over their normal vector $n$ and distance to the origin $d$.
 
