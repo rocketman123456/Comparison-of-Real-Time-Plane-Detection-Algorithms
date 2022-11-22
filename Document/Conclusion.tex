@@ -3,6 +3,7 @@
 \chapter{Conclusion and Future Work}
 \label{chap:concl}
 \textbf{\textcolor{red}{fahrplan: mehr oder weniger chapter-wise summary}}
+
 % \paragraph{intro summary}
 % \begin{itemize}
 %     \item modern man-made environments contain a large number of planar structures, especially indoors
@@ -11,7 +12,8 @@
 %     \item real-time plane detection does exist. However, the sensors that enable real-time plane detection are usually not affordable for the general user
 %     \item In this thesis, we compared a selection of plane detection algorithms to evaluate the extents of real-time plane detection on affordable hardware like intel realsense 
 % \end{itemize}
-Modern man-made environments, especially indoors, contain a large number of planar structures. The automatic detection thereof has become a vital part of many applications in different fields, such as robotics and Augmented or Virtual Reality. Underlying temporal constraints often dictate the processing times of these applications and, therein, the process of plane detection. \textit{Real-time plane detection} is already possible, although the hardware cost that enables efficient and precise detection is likely not affordable to the general user.
+\textbf{\textcolor{red}{da intro noch nicht steht werden sich teile hiervon noch ändern müssen}}
+Modern man-made environments, especially indoors, contain a large number of planar structures. The automatic detection thereof has become a vital part of many Augmented or Virtual Reality systems. Underlying temporal constraints often dictate the processing times of these applications and, therein, the process of plane detection. \textit{Real-time plane detection} is already possible, although the hardware cost that enables efficient and precise detection is likely not affordable to the general consumer.
 Therefore, the extent of \textit{real-time plane detection} on affordable hardware has gained interest.
 
 % \paragraph{concept summary}
@@ -39,7 +41,7 @@ In Chapter~\ref{chap:impl}, we provided details regarding the implementation of 
 %     \item additionally, we specify the parameterizations each algorithm used for the different experiments  
 %     \item we presented the individual results and compared the experiments
 % \end{itemize}
-We enter the Evaluation Chapter with the \textbf{\textcolor{purple}{intended}} protocol. Therein, we outline the evaluation metrics to calculate and specify the algorithm parameterizations of each experiment. We presented the individual results and subsequently concluded with a comparison thereof.
+We enter Chapter~\ref{chap:eval} with the evaluation protocol. Therein, we outline the evaluation metrics to calculate and specify the algorithm parameterizations of each experiment. We presented the individual results and subsequently concluded with a comparison thereof.
 
 % results
 % \begin{itemize}
@@ -53,10 +55,11 @@ We enter the Evaluation Chapter with the \textbf{\textcolor{purple}{intended}} p
 In both experiments, RSPD has the overall best accuracy among the algorithms. While OPS and OBRG achieve a similar average \textit{Precision}, no other algorithm yields comparable values for \textit{Recall} nor \textit{F1-Score} (see Tables~\ref{tab:res-3d2ds-total} and \ref{tab:res-fin-total}). The accuracy metrics of all algorithms drop by roughly $30\%$ from the \textit{2D-3D-S} experiment to the \textit{FIN} experiment.
 
 % times
-The results uniformly show that 3D-KHT is the fastest among the selected algorithms. The \textit{Hough Transform}-based algorithm proposed by \citeauthor{LimbergerOliveira2015HT3D}~\cite{LimbergerOliveira2015HT3D} ran, on average, 32x faster. As Table~\ref{tab:algo-rt} indicates, 3D-KHT is the only algorithm that achieves $RT_{tot}$ in the \textit{FIN} experiment, which is supported by the apparent upper limit shown in Figure~\ref{fig:dynaudi}. RSPD achieves $RT_{calc}$, and OPS \textbf{\textcolor{purple}{borders on \textit{real-time plane detection} as well}}. RSPD has the longest pre-processing times with an average of ${\sim}63s$ for the \textit{2D-3D-S} experiment and ${\sim}15s$ for the \textit{FIN} experiment, respectively. In contrast, RSPD has the shortest average plane detection times in the \textit{FIN} experiment, and taking only a tenth of a second longer than 3D-KHT's plane detection phase in the \textit{2D-3D-S} experiment.
+The results uniformly show that 3D-KHT is the fastest among the selected algorithms. The \textit{Hough Transform}-based algorithm proposed by \citeauthor{LimbergerOliveira2015HT3D}~\cite{LimbergerOliveira2015HT3D} ran, on average, 32x faster as the other algorithms. As Table~\ref{tab:algo-rt} indicates, 3D-KHT is the only algorithm that achieves $RT_{tot}$ in the \textit{FIN} experiment, which is supported by the apparent upper limit shown in Figure~\ref{fig:dynaudi}. RSPD achieves $RT_{calc}$, and OPS borders on \textit{real-time plane detection} as well. RSPD has the longest pre-processing times with an average of ${\sim}63s$ for the \textit{2D-3D-S} experiment and ${\sim}15s$ for the \textit{FIN} experiment, respectively. In contrast, RSPD has the shortest average plane detection times in the \textit{FIN} experiment, and takes only a tenth of a second longer than 3D-KHT's plane detection phase in the \textit{2D-3D-S} experiment.
 
 % Summary 
-We can conclude that 3D-KHT is the only algorithm that is \textit{totally real-time} applicable. However, considering accuracy, it is comparatively inferior to RSPD.
+We can conclude that 3D-KHT is the only algorithm that is \textit{totally real-time} applicable. However, considering accuracy, 3D-KHT is inferior to RSPD.
+
 
 \section{Limitations}
 \textbf{\textcolor{red}{fahrplan: je ein paragraph pro sache die mir einfällt, die die ergebnisse eingeschränken könnte}}
@@ -70,16 +73,13 @@ This section deals with the limitations of the concept, evaluation, and results 
 \paragraph{Algorithm Parameterization}
 Since the focus of this work is not the optimization of plane detection algorithms but rather the evaluation thereof, the parameterizations used during the experiments are likely non-optimal. Furthermore, the required effort would go beyond the scope of this work. Integrating a plane detection algorithm into an application would require extensive parameter optimization w.r.t. the expected environment, the used sensors, and the general use case.
 
-\paragraph{OBRG}
-
-
 \paragraph{Manual Segmentation}
 Another limitation of the results is the subjective nature of the manual segmentation process described in Section~\ref{sec:gtseg}, which influences the evaluation. The effect thereof does not seem significant for the \textit{2D-3D-S} experiment. However, the segmentation can lead to errors due to the level of noise in the \textit{FIN} dataset. For instance, with increasing "thickness" of planes, the number of possible orientations of a detected plane also increases (see Figure~\ref{fig:poss-planes}). The red segment in the figure represents the ground truth we selected to represent the plane. If an algorithm detected a plane in one of the four other variants, both the voxel overlap and the accuracy would decrease, even if both planes correspond.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{images/possible_planes.png}
-    \caption[Possible Plane Orientations]{Possible Plane Orientations. A wall from the \textit{conference room} scene of the \textit{FIN} dataset is shown on the left. The colored point clouds indicate different possible plane orientations.}
+    \caption[Possible Plane Orientations]{Possible Plane Orientations. A wall with a width of ${\sim}1$m from the \textit{conference room} scene of the \textit{FIN} dataset is shown on the left. The colored point clouds indicate different possible plane orientations.}
     \label{fig:poss-planes}
 \end{figure}
 

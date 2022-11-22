@@ -3,14 +3,14 @@
 \label{chap:Introduction}
 
 Man-made environments usually consist, to a large extent, of planar structures. 
-As the \textit{Manhattan-world} assumption dictates, the general alignment of most urban scenes, both indoors and outdoors, is based on a three-dimensional cartesian grid~\cite{Coughlan_Yuille_1999}. Thus, the assumption indicates that urban scenes are primarily comprised of planar structures which lie orthogonal to each other.
-Due to this large amount of planes in everyday environments, especially indoors, automatic detection of these planes is growing in relevance:
-Plane detection is an essential component in applications of numerous fields, including robotics~\cite{Zhang_Wang_Xianyu_Ziwei_Wei_2019, Yunus2021ManhattanSLAMRP, Zhang_Zeng_Zha_2017}
-and virtual or augmented reality (AR/VR)~\cite{Jurado_Jurado_Ortega_Feito_2021, sridhar2020instant}.% TODO , \textbf{\textcolor{red}{und XY [source]}}.
-For instance, a plane-based \textit{Simultaneous Localization and Mapping} (SLAM, see Section~\ref{sec:bg-slam}) algorithm would take the new sensory input, perform plane detection, and would then try to precisely estimate the current location with respect to a concurrently assembled map. In another example, the Augmented Reality development kit \textit{ARKit}\footnote{\href{https://developer.apple.com/augmented-reality/}{https://developer.apple.com/augmented-reality/}} provides surface or plane detection which can be used for the creation of a digital floor plan, e.g. with \textit{ARKit}'s Swift API for single-room floor plan creation, namely \textit{RoomPlan}\footnote{\href{https://developer.apple.com/augmented-reality/roomplan/}{https://developer.apple.com/augmented-reality/roomplan/}}.
+As the \textit{Manhattan-world} assumption dictates, the general alignment of most urban scenes, both indoors and outdoors, is based on a three-dimensional cartesian grid~\cite{Coughlan_Yuille_1999}. Thus, the assumption indicates that urban scenes are primarily comprised of planar surfaces which lie orthogonal to each other.
 
-Many of these applications operate under specific time constraints. 
-\textbf{\textcolor{red}{For instance, every second is vital when a police task force is creating a 3D ground floor of a building during a hostage situation.}}
+Due to this large amount of planes in everyday environments, automatic detection of these planes is growing in relevance:
+Plane detection is an essential component in numerous virtual or augmented reality (AR/VR) applications and systems~\cite{Jurado_Jurado_Ortega_Feito_2021, sridhar2020instant}.
+Therein, planes are vital for general scene understanding as they lay the foundation for scene reconstruction~\cite{agarwala2022planeformers}, object recognition~\cite{Peternell_Steiner_2004, Qian_Ye_2014}, video games~\cite{ninja}, and are even used in applications that support people with disabilities, e.g. with a visual impairment~\cite{visimpaired, Schwarze_Lauer_Schwaab_Romanovas_Bohm_Jurgensohn_2015}.
+
+
+Many of these applications operate under specific time constraints: The application could navigate a visually impaired person into a nearby wall if the plane detection is delayed, just as a noticeable lag in a video game caused by plane detection could spoil the user experience.     
 Strict temporal constraints are often broadly referred to as real-time.
 The definition of \textit{real-time} usually derives from the frequency of new sensor updates~\cite{Davison_2003}.
 Since the process of plane detection is often an integral part of these systems ~\cite{Wang_Bu_Zhang_Cheng_2022, Dai_Lund_Gao_2022, Kaess_2015}, these constraints also apply there.
@@ -19,13 +19,14 @@ Since the process of plane detection is often an integral part of these systems 
 with its precision and included functionality. 
 For instance, AR devices like the \textit{Microsoft HoloLens 2} and imaging laser scanners like the \textit{Leica BLK360} produce very precise representations of the surrounding environment.
 Moreover, the \textit{HoloLens 2} can perform \textit{plane detection} as part of its \textit{Scene Understanding SDK}\footnote{\href{https://learn.microsoft.com/en-us/windows/mixed-reality/design/scene-understanding}{https://learn.microsoft.com/en-us/windows/mixed-reality/design/scene-understanding}}. Therein, a recorded environment is represented as a dense triangle mesh in which planes are detected and subsequently assigned a plane category, e.g., walls, ceilings, and floors. 
-Nevertheless, with starting prices of ${\sim}\$3.5k$ for the \textit{HoloLens 2} and ${\sim}\$19k$ for the \textit{BLK360}, respectively, the affordability of these devices is questionable.
+Nevertheless, the affordability of the \textit{BLK360} is questionable with a starting price of ${\sim}\$19k$. While the starting price of the \textit{HoloLens 2} may be affordable at ${\sim}\$3.5k$, due to the software being closed source, we still consider the \textit{HoloLens 2} non-practical. 
 
-Through this lack of affordability of high-end sensors, the usage of \textit{off-the-shelf} hardware is gaining interest. 
-At a total of ${\sim}\$600$, the \textit{Intel RealSense} cameras T265 and D455 are an example of more affordable sensor technology (see Section~\ref{sec:bg-intel}).
+Through this lack of affordability and practicability of high-end sensors, the usage of consumer \textit{off-the-shelf} hardware is gaining interest. 
+With AR development platforms like \textit{ARKit}\footnote{\href{https://developer.apple.com/augmented-reality/arkit/}{https://developer.apple.com/augmented-reality/arkit/}} or \textit{ARCore}\footnote{\href{https://developers.google.com/ar}{https://developers.google.com/ar}}, it is generally possible to perform AR \textit{plane detection} on mobile phones\footnote{\href{https://developers.google.com/ar/devices\#google\_play\_devices}{Supported devices of ARCore: https://developers.google.com/ar/devices\#google\_play\_devices}}. However, the choice of development environment and the used sensor is arbitrary. 
+Being representatives for consumer off-the-shelf hardware, we use the \textit{Intel RealSense} cameras T265 and D455 (see Section~\ref{sec:bg-intel}) in this work. The cameras have a combined starting price of ${\sim}\$600$ and an open source software development kit (SDK), namely \textit{librealsense}, is provided. 
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
-Decades of research on plane detection yielded numerous algorithms, and many are declared to be \textit{real-time} applicable by the respective authors \textbf{\textcolor{red}{quelle}}. While generally achieving the same goal, i.e., the detection of planar structures, noteable differences in methodology exist: Algorithms can generally differentiated by their type of input, the format of detected planes, the basic structure the method is based on, and the hardware required to run the algorithm. \textbf{\textcolor{red}{diese unterschiede gemeint?}}
+Decades of research on plane detection yielded numerous algorithms, and many are declared to be \textit{real-time} applicable by the respective authors \textbf{\textcolor{red}{quelle}}. While generally achieving the same goal, i.e., the detection of planar structures, noteable differences in methodology exist: Algorithms can generally be differentiated by their type of input, the format of detected planes, the basic structure the method is based on, and the hardware required to run the algorithm. \textbf{\textcolor{red}{diese unterschiede gemeint?}}
 Furthermore, most algorithms have been evaluated on different datasets with different metrics.
 Due to these differences and variables, the objective comparison of algorithms is usually impossible.
 This renders the selection process of a suitable algorithm difficult. Moreover, the applicability in a realistic scenario is guaranteed, as we are not aware of scientific literature that focuses specifically on the practical side of plane detection.  

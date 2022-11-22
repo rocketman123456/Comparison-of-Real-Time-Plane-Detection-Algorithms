@@ -111,11 +111,12 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System\footno
 
 \section{SLAM}
 \label{sec:bg-slam}
-SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics;
+SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics:
 A robot finds itself in an unknown environment and attempts to build a coherent map while keeping track of its location.
 The robot uses use-case-specific sensors to obtain a snapshot of its current surroundings, which it then uses to update and enhance its known map (Mapping).
 The robot simultaneously attempts to accurately estimate its position based on the updated map ($Localization$).
 The new information about its position is processed during the next map update.
+This functionality of building a comprehensive map of the recorded environment is also employed by many modern AR systems to gain spatial awareness.
 
 Over decades of research, varieties of different (combinations of) sensors have been employed to solve this problem more accurately and efficiently.
 Internal odometry sensors alone can be unreliable if the robot moves over uneven or slippery surfaces.
