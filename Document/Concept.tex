@@ -80,7 +80,7 @@ In this work, we differentiate between the following:
     \item the plane's normal vector and distance to origin ($n,d$),
 \end{itemize}
 whereas the \textit{3D-inliers} of a plane are a set of 3D points in the format of an $UPC$.
-In contrast, \textit{2D-inliers} are two-dimensional representations of a plane. 
+In contrast, \textit{2D-inliers} are two-dimensional representations of a plane.
 This includes all methods to describe a plane in a two-dimensional manner, e.g., sets of indices, pixels or segmentation masks. These \textit{plane formats} generally correspond to two-dimensional input formats like \textit{organized point clouds} or \textit{(depth-) images}.
 
 Lastly, planes are often described mathematically over their normal vector $n$ and distance to the origin $d$.
@@ -122,25 +122,28 @@ its normal vector $n$, distance to origin $d$, and two additional extents. Modif
 minimal effort as well.
 \begin{table}[H]
     \centering
-    \resizebox{\textwidth}{!}{%
-        \begin{tabular}{c|c|c|c|c|c}
-            \textbf{Plane Detection Algorithm}                               & \textbf{Section}            & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Hardware} & \textbf{Available} \\ \hline
-            \textbf{RSPD} \cite{Araújo_Oliveira_2020}                        & \ref{subsec:bg-rspd}        & UPC                 & 3D-IN, $(n,d)$        & CPU               & Y                  \\
-            \textbf{OPS} \cite{Sun_Mordohai_2019}                            & \ref{subsec:bg-ops}         & UPC                 & 3D-IN                 & CPU               & Y                  \\
-            \textbf{3DKHT} \cite{LimbergerOliveira2015HT3D}                  & \ref{subsec:bg-3dkht}       & UPC                 & 3D-IN                 & CPU               & Y                  \\
-            \textbf{OBRG} \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & \ref{subsec:bg-obrg}        & UPC                 & 3D-IN                 & CPU               & Y                  \\
-            \textbf{PEAC} \cite{Feng_Taguchi_Kamat_2014}                     & \ref{subsec:bg-peac}        & OPC                 & 2D-IN                 & CPU               & Y                  \\
-            \textbf{CAPE} \cite{Proença_Gao_2018}                            & \ref{subsec:bg-cape}        & OPC                 & $(n, d)$              & CPU               & Y                  \\
-            \textbf{SCH-RG} \cite{Mols_Li_Hanebeck_2020}                     & \ref{subsec:bg-schrg}       & OPC                 & 2D-IN                 & GPU               & Y                  \\
-            \textbf{D-KHT}  \cite{Vera_Lucio_Fernandes_Velho_2018}           & \ref{subsec:bg-dkht}        & DI                  & 2D-IN                 & CPU               & Y                  \\
-            \textbf{DDFF} \cite{Roychoudhury_Missura_Bennewitz_2021_new}     & \ref{subsec:bg-ddff}        & DI                  & 2D-IN                 & CPU               & Y                  \\
-            \textbf{PlaneNet} \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & \ref{subsec:bg-planenet}    & RGBI                & 2D-IN, $(n, d)$       & GPU               & Y                  \\
-            \textbf{PlaneRecNet} \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & \ref{subsec:bg-planerecnet} & RGBI                & 2D-IN, $(n)$          & GPU               & Y                  \\
-            \textbf{PlaneRCNN} \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & \ref{subsec:bg-planercnn}   & RGBI                & 2D-IN, $(n, d)$       & GPU               & Y                  \\
-        \end{tabular}
-    }
     \caption{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of input.
         The second column "Section" provides the placement within this work. We refer to Subsection~\ref{subsec:criteria} for details regarding the specific namings.}
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{c|c|c|c|c|c}
+            \toprule
+            \textbf{Plane Detection Algorithm}                      & \textbf{Section}            & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Hardware} & \textbf{Available} \\
+            \midrule
+            RSPD \cite{Araújo_Oliveira_2020}                        & \ref{subsec:bg-rspd}        & UPC                 & 3D-IN, $(n,d)$        & CPU               & Y                  \\
+            OPS \cite{Sun_Mordohai_2019}                            & \ref{subsec:bg-ops}         & UPC                 & 3D-IN                 & CPU               & Y                  \\
+            3DKHT \cite{LimbergerOliveira2015HT3D}                  & \ref{subsec:bg-3dkht}       & UPC                 & 3D-IN                 & CPU               & Y                  \\
+            OBRG \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & \ref{subsec:bg-obrg}        & UPC                 & 3D-IN                 & CPU               & Y                  \\
+            PEAC \cite{Feng_Taguchi_Kamat_2014}                     & \ref{subsec:bg-peac}        & OPC                 & 2D-IN                 & CPU               & Y                  \\
+            CAPE \cite{Proença_Gao_2018}                            & \ref{subsec:bg-cape}        & OPC                 & $(n, d)$              & CPU               & Y                  \\
+            SCH-RG \cite{Mols_Li_Hanebeck_2020}                     & \ref{subsec:bg-schrg}       & OPC                 & 2D-IN                 & GPU               & Y                  \\
+            D-KHT  \cite{Vera_Lucio_Fernandes_Velho_2018}           & \ref{subsec:bg-dkht}        & DI                  & 2D-IN                 & CPU               & Y                  \\
+            DDFF \cite{Roychoudhury_Missura_Bennewitz_2021_new}     & \ref{subsec:bg-ddff}        & DI                  & 2D-IN                 & CPU               & Y                  \\
+            PlaneNet \cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018}     & \ref{subsec:bg-planenet}    & RGBI                & 2D-IN, $(n, d)$       & GPU               & Y                  \\
+            PlaneRecNet \cite{Xie_Shu_Rambach_Pagani_Stricker_2022} & \ref{subsec:bg-planerecnet} & RGBI                & 2D-IN, $(n)$          & GPU               & Y                  \\
+            PlaneRCNN \cite{Liu_Kim_Gu_Furukawa_Kautz_2019}         & \ref{subsec:bg-planercnn}   & RGBI                & 2D-IN, $(n, d)$       & GPU               & Y                  \\
+            \bottomrule
+        \end{tabular}
+    }
     \label{tab:algos}
 \end{table}
 
@@ -200,13 +203,18 @@ previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|cccc}
-             & RSPD & OPS   & 3D-KHT & OBRG       \\ \hline
-        Pre  & NE   & NE    & OC     & OC + NE    \\
-        Post & /    & Merge & /      & Refinement
-    \end{tabular}
-    \caption{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of
-        a pre-/post-processing step.}
+    \parbox{0.7\textwidth}{\caption{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of
+            a pre-/post-processing step.}}
+    \resizebox{0.7\textwidth}{!}{%
+        \begin{tabular}{ccccc}
+            \toprule
+            \textbf{Step} & \textbf{RSPD} & \textbf{OPS} & \textbf{3D-KHT} & \textbf{OBRG} \\
+            \midrule
+            Pre           & NE            & NE           & OC              & OC + NE       \\
+            Post          & /             & Merge        & /               & Refinement    \\
+            \bottomrule
+        \end{tabular}
+    }
     \label{tab:pre-post}
 \end{table}
 
@@ -300,27 +308,35 @@ Table~\ref{tab:datasets} summarizes datasets currently prevalent in the scientif
 Most of the datasets therein are used in the corresponding papers of the plane detection algorithms presented in Table~\ref{tab:algos}.
 However, this does not influence the selection process. The table shows the respective classifications of each algorithm according to the criteria above.
 Note that \textit{SYNPEB} and \textit{SegComp} are \textit{synthetic} datasets and, therefore, are neither \textit{indoor} nor \textit{outdoor}.
-Furthermore, we are not aware of a \textit{ground truth} for the \textit{ARCO} dataset. 
+Furthermore, we are not aware of a \textit{ground truth} for the \textit{ARCO} dataset.
+
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|c|c|c|c|c}
-        \textbf{Dataset}                                                                                                                                                                      & \textbf{Section}         & \textbf{Scene Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\ \hline
-        \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                      & \ref{subsec:bg-stanford} & UPC                   & Y             & Y               & classes     \\
-        \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & \ref{subsec:bg-Leica}    & UPC                   & Y             & N               & planes      \\
-        \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & \ref{subsec:bg-Kinect}   & OPC                   & Y             & Y               & planes      \\
-        \textbf{SYNPEB}      \cite{schaefer19icra}                                                                                                                                            & \ref{subsec:bg-SYNPEB}   & OPC                   & N             & /               & planes      \\
-        \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015}                                                                                                         & \ref{subsec:bg-ARCO}     & OPC                   & Y             & Y               & /           \\
-        \textbf{SegComp}     \cite{article}                                                                                                                                                   & \ref{subsec:bg-segcomp}  & DI                    & N             & /               & planes      \\
-        \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & \ref{subsec:bg-NYU}      & DI                    & Y             & Y               & classes     \\
-        \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & \ref{subsec:bg-ICL}      & DI                    & Y             & Y               & trajectory  \\
-        \textbf{SUNRGB-D}         \cite{7298655}                                                                                                                                              & \ref{subsec:bg-SUN}      & DI                    & Y             & Y               & classes     \\
-        \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & \ref{subsec:bg-TUM}      & DI                    & Y             & Y               & trajectory  \\ \hline
-        \textbf{FIN (ours)}                                                                                                                                                                   & \ref{sec:finimpl}        & UPC                   & Y             & Y               & planes
-    \end{tabular}
     \caption[Popular Datasets]{Plane detection Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
         The datasets are clustered by their type of format. The remaining order is arbitrary.
         The second column "Section" provides the placement within this work.
         Note that we include our dataset (FIN) in this table for completeness reasons.
+    }
+
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{cccccc}
+            \toprule
+            \textbf{Dataset}                                                                                                                                                                      & \textbf{Section}         & \textbf{Scene Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\
+            \midrule
+            \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                      & \ref{subsec:bg-stanford} & UPC                   & Y             & Y               & classes     \\
+            \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & \ref{subsec:bg-Leica}    & UPC                   & Y             & N               & planes      \\
+            \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & \ref{subsec:bg-Kinect}   & OPC                   & Y             & Y               & planes      \\
+            \textbf{SYNPEB}      \cite{schaefer19icra}                                                                                                                                            & \ref{subsec:bg-SYNPEB}   & OPC                   & N             & /               & planes      \\
+            \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015}                                                                                                         & \ref{subsec:bg-ARCO}     & OPC                   & Y             & Y               & /           \\
+            \textbf{SegComp}     \cite{article}                                                                                                                                                   & \ref{subsec:bg-segcomp}  & DI                    & N             & /               & planes      \\
+            \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & \ref{subsec:bg-NYU}      & DI                    & Y             & Y               & classes     \\
+            \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & \ref{subsec:bg-ICL}      & DI                    & Y             & Y               & trajectory  \\
+            \textbf{SUNRGB-D}         \cite{7298655}                                                                                                                                              & \ref{subsec:bg-SUN}      & DI                    & Y             & Y               & classes     \\
+            \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & \ref{subsec:bg-TUM}      & DI                    & Y             & Y               & trajectory  \\
+            \midrule
+            \textbf{FIN (ours)}                                                                                                                                                                   & \ref{sec:finimpl}        & UPC                   & Y             & Y               & planes      \\
+            \bottomrule
+        \end{tabular}
     }
     \label{tab:datasets}
 \end{table}

@@ -1,17 +1,16 @@
 \documentclass[main.tex]{subfiles}\begin{document}
 \chapter{Background}\label{chap:Background}
 In this chapter, we present relevant literature needed to completely understand the proposed concept of \autoref{chap:Concept}.
-The structure is inspired by the system overview pictured in Figure~\ref{fig:concept}: First, we explain different formats of data, clustered by input and output. Then, we provide details about the used sensors, followed by a general introduction to SLAM algorithms, and a subsequent outline of the SLAM algorithm used in this work (see Subsection~\ref{subsec:bg-rtabmap}). Thereafter, we detail the plane detection algorithms that resulted from our review of the current literature after introducing three categories of plane detection methods. Lastly, we outline the list of datasets we took into consideration, and finish with an explanation of metrics used in the evaluation of Chapter~\ref{chap:eval}.
+The structure is inspired by the system overview pictured in Figure~\ref{fig:concept}: First, we explain different formats of data, separated by input and output. Then, we provide details about the used sensors, followed by a general introduction to SLAM algorithms, and a subsequent outline of the SLAM algorithm used in this work (see Subsection~\ref{subsec:bg-rtabmap}). Thereafter, we detail the plane detection algorithms that resulted from our review of the current literature after introducing three core functionalities of plane detection. Lastly, we outline the list of datasets we took into consideration, and finish with an explanation of metrics used in the evaluation of Chapter~\ref{chap:eval}.
 
 
 \section{Data Formats}
 \label{sec:dataformats}
-In the following chapters, we often refer to different data representations. This section provides detailled information about these data representations while differentiating between the \textit{input} and \textit{output} of a plane detection algorithm. It is worth noting that the \textit{input} of an algorithm is, in this work, equivalent to the output of the camera or SLAM algorithm.
-
+In the following chapters, we often refer to different data representations. This section provides detailed information about these data representations while differentiating between the \textit{input} and \textit{output} of a plane detection algorithm. In this work, not that an algorithm's \textit{input} is equivalent to the \textit{output} of the sensors or the SLAM algorithm.
 
 \subsection{Common Input Types}
 \label{subsec:input}
-As described in Chapter~\ref{chap:Introduction}, specialized sensors are needed to record the environment. As the exported data, the input for the plane detection algorithm differs.
+As described in Chapter~\ref{chap:Introduction}, specialized sensors are needed to record the environment. Like the exported data, the input for the plane detection algorithm differs.
 Usually, this data representation of the recorded environment falls into one of the following categories:
 \begin{itemize}
     \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
@@ -40,15 +39,19 @@ color by the amount of included red, green, and blue.
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|c|c|c}
-        \textbf{Input Type} & \textbf{Value Types} & \textbf{Memory Layout} & \textbf{0 or NaN} \\ \hline
-        \textbf{OPC}        & 3D Coordinates       & 2D Matrix              & N                 \\
-        \textbf{UPC}        & 3D Coordinates       & 1D Array               & Y                 \\
-        \textbf{DI}         & Distances to Sensor  & 2D Matrix              & Y                 \\
-        \textbf{RGBI}       & RGB                  & 2D Matrix              & Y
-    \end{tabular}
-    \caption{Possible inputs for plane detection algorithms columns dedicated to the stored data, the memory layout, and whether
-        the input type allows for invalid values.}
+    \caption{Possible inputs for plane detection algorithms columns dedicated to the stored data, the memory layout, and whether the input type allows for invalid values.}
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{cccc}
+            \toprule
+            \textbf{Input Type} & \textbf{Value Types} & \textbf{Memory Layout} & \textbf{0 or NaN} \\
+            \midrule
+            OPC                 & 3D Coordinates       & 2D Matrix              & N                 \\
+            UPC                 & 3D Coordinates       & 1D Array               & Y                 \\
+            DI                  & Distances to Sensor  & 2D Matrix              & Y                 \\
+            RGBI                & RGB                  & 2D Matrix              & Y                 \\
+            \bottomrule
+        \end{tabular}
+    }
     \label{tab:inputs}
 \end{table}
 It is worth noting that, in the literature, the terms "depth image", "depth map" and "organized point cloud" are used interchangeably.
@@ -90,7 +93,7 @@ In this work, we use the Intel RealSense tracking camera T265 and the RGB-Depth(
 A tracking camera is generally used to observe the environment and usually has a wider field of view (FOV). The primary motivation for using RGB-D cameras is depth perception.
 The primary differences and similarities between the T265 and the D455 are reported in Table~\ref{tab:cameraspecs}.
 With two fisheye lenses and two imaging sensors, the T265 and D455, respectively, are considered stereo cameras.
-Moreover, the D455 has an additional RGB and infrared (IR) sensor. The combination of IR and two imaging sensors is used to produce depth images. 
+Moreover, the D455 has an additional RGB and infrared (IR) sensor. The combination of IR and two imaging sensors is used to produce depth images.
 The T265 has a much wider field of view (FOV) of 163° than the D455, which only has an FOV of 111°. The maximum frames per second (FPS) of the D455 is determined by the individual FPS of both its imaging sensors, and its IR sensor, which equals $90$. It is worth noting that the FPS decreases with increasing sensor resolution, and that 90 FPS is only reached with a resolution of 640x480. In contrast, the T265 has a maximum FPS of $30$.
 Furthermore, both cameras have an integrated Inertial Measurement Unit (IMU) which is used to compute their position in combination with visual input.
 % FIXME explain tracking and RGB-D
@@ -100,12 +103,17 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System\footno
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{c|ccccccc}
-             & Image  & Type     & max. Resolution & D-FOV & Shutter & Price & max. FPS \\ \hline
-        D455 & Stereo & RGB-D    & 1280x720        & 111°  & global  & 419\$ & 90       \\ \hline
-        T265 & Stereo & Tracking & 848 x 800       & 163°  & global  & 199\$ & 30
-    \end{tabular}
-    \caption[Intel RealSense T265 & D455 Specification]{Intel RealSense T265 and D455 camera specifications. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
+    \caption[Intel RealSense T265 & D455 Specification]{Intel RealSense T265 and D455 camera specifications. The shown \textit{resolution} and \textit{FPS} are the respective maximum values. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{cccccccc}
+            \toprule
+            \textbf{Camera} & \textbf{Image} & \textbf{Type} & \textbf{Resolution} & \textbf{D-FOV} & \textbf{Shutter} & \textbf{Price} & \textbf{FPS} \\
+            \midrule
+            D455            & Stereo         & RGB-D         & 1280x720                 & 111°           & global           & 419\$          & 90                \\ 
+            T265            & Stereo         & Tracking      & 848 x 800                & 163°           & global           & 199\$          & 30                \\
+            \bottomrule
+        \end{tabular}
+    }
     \label{tab:cameraspecs}
 \end{table}
 
@@ -174,8 +182,8 @@ Most methods of detecting planar regions are based on one of three main categori
     \item Region Growing (RG).
 \end{itemize}
 
-These categories of algorithms are fundamentally different. Hence, it is helpful to explain the difference. 
-In the following subsections, we detail each one by providing general information and a subsequent explanation in the context of plane detection. 
+These categories of algorithms are fundamentally different. Hence, it is helpful to explain the difference.
+In the following subsections, we detail each one by providing general information and a subsequent explanation in the context of plane detection.
 
 \subsection{Hough Transform}
 The original motivation behind the Hough transform was detecting lines in images~\cite{5230799}. All points are sequentially processed via a voting procedure to detect the best-fitting line over a set of 2d points.
@@ -218,28 +226,28 @@ After taking an unorganized point cloud as input, the procedure is divided into 
 \textit{Split, Grow and Merge} (see Figure~\ref{fig:rspd}).
 
 \paragraph{Split}
-The authors propose to use an octree to recursively subdivide the point cloud. 
-The subdivision is repeated until every leaf node contains less than a threshold $\varepsilon$ corresponding to the 
+The authors propose to use an octree to recursively subdivide the point cloud.
+The subdivision is repeated until every leaf node contains less than a threshold $\varepsilon$ corresponding to the
 minimum number of points per leaf. The authors propose a value of $\varepsilon = 0.1\%$. Alternatively, the subdivision terminates
-if a node reaches the maximum depth level $l_O = 10$. Note that this parameter is not referenced in~\cite{Araújo_Oliveira_2020}. 
+if a node reaches the maximum depth level $l_O = 10$. Note that this parameter is not referenced in~\cite{Araújo_Oliveira_2020}.
 However, it is used in the official implementation\footnote{\href{keyhttps://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}.
-The subdivision is followed by a planarity test~\cite[Section~3.2]{Araújo_Oliveira_2020}, during which the octree is traversed bottom-up. 
-The planarity test is comprised of three individual tests: 
+The subdivision is followed by a planarity test~\cite[Section~3.2]{Araújo_Oliveira_2020}, during which the octree is traversed bottom-up.
+The planarity test is comprised of three individual tests:
 \begin{enumerate}
     \item A distance test,
     \item a normal divergence test, \textit{and}
     \item an inlier to outlier ratio test.
 \end{enumerate}
-Therein, the tests are influenced by corresponding parameters. The distance test is passed, if the point-to-plane distance is smaller than 
+Therein, the tests are influenced by corresponding parameters. The distance test is passed, if the point-to-plane distance is smaller than
 the \textit{Maximum Distance to Plane} (MDP). If the normals of a patch deviate less than the \textit{Maximum Normal Deviation},
-the second test is passed. Lastly, a patch is discarded if its percentage of outliers exceeds the \textit{Maximum Outlier Ratio}. 
+the second test is passed. Lastly, a patch is discarded if its percentage of outliers exceeds the \textit{Maximum Outlier Ratio}.
 If all eight children of a node $n$ are leaf nodes and fail the planarity test, $n$ replaces its children
 and becomes a leaf node of its own. This procedure is repeated until the root of the octree is reached.
 
 \paragraph{Grow}
-In preparation for the growth phase, a neighborhood graph (NG) over the entire point cloud is created. 
+In preparation for the growth phase, a neighborhood graph (NG) over the entire point cloud is created.
 Every node of NG represents one point, and an edge between two nodes exists only if
-a nearest-neighbor search with a neighborhood size $k$ detects both points being in the same neighborhood. 
+a nearest-neighbor search with a neighborhood size $k$ detects both points being in the same neighborhood.
 The authors use a neighborhood size of $k=50$.
 
 
@@ -284,16 +292,16 @@ Oriented Point Sampling (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized po
 
 
 First, a sample of points is uniformly selected. Sample sizes of $\alpha_s \in [0.3\%,3\%]$ are used in the Evaluation in~\cite[Table~3]{Sun_Mordohai_2019}.
-The normal vectors of these points are estimated using SVD and the k nearest neighbors ($KNN$), which are obtained using a k-d tree. 
+The normal vectors of these points are estimated using SVD and the k nearest neighbors ($KNN$), which are obtained using a k-d tree.
 An inverse distance weight function is employed to prioritize neighboring points that are closer to the sample of which the normal vector is currently being estimated.
 
 
-After normal estimation, one-point-RANSAC is performed. Usual RANSAC implementations sample three points to fit a plane. 
+After normal estimation, one-point-RANSAC is performed. Usual RANSAC implementations sample three points to fit a plane.
 However, OPS fits a plane with only one sample point and its normal vector and counts the number of points where the distance to
-the plane is smaller than a \textit{minimum-distance parameter} $\theta_h$. Moreover, this number of inliers must exceed a 
+the plane is smaller than a \textit{minimum-distance parameter} $\theta_h$. Moreover, this number of inliers must exceed a
 \textit{minimum plane size} threshold $\theta_N$, for a plane to be accepted.
 Once a plane with the most inliers is obtained, its normal vector is re-estimated using SVD on all inliers, and all inliers are removed from the point cloud.
-Furthermore, the number of needed iterations $I$ is adaptively determined in each iteration, see Equation~\ref{eq:ops}. 
+Furthermore, the number of needed iterations $I$ is adaptively determined in each iteration, see Equation~\ref{eq:ops}.
 \begin{equation}
     \label{eq:ops}
     I = \frac{\log(1-p)}{\log(1-(1-e))},
@@ -312,16 +320,16 @@ that accepts unorganized point clouds as input.
 
 The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in creation and manipulation.
 Furthermore, the octree succeeds in capturing the shapes inside the point cloud, while the k-d tree does not.
-The octree level, at which the algorithm starts to check for approximate coplanarity under nodes is adjusted through 
+The octree level, at which the algorithm starts to check for approximate coplanarity under nodes is adjusted through
 the corresponding parameter $s_{level}$.
 
 Approximate coplanarity of a point cluster is evaluated based on its eigenvalues and two parameters $s_\alpha, s_\beta$.
-Therein, $s_\alpha$ corresponds to the tolerance regarding noise, and $s_\beta$ corresponds to the tolerance regarding the 
+Therein, $s_\alpha$ corresponds to the tolerance regarding noise, and $s_\beta$ corresponds to the tolerance regarding the
 anisotropy of the included points. The authors report good results with $s_\alpha=25$ and $s_\beta=6$.
 
-Each leaf inside the octree continues subdividing until the points inside a leaf node are considered approximately coplanar, 
+Each leaf inside the octree continues subdividing until the points inside a leaf node are considered approximately coplanar,
 or the number of points is smaller than a minimum-points threshold $s_{ps}$.
-The authors recommend $s_{ps}=30$ for large point clouds. However, no definition of large in 
+The authors recommend $s_{ps}=30$ for large point clouds. However, no definition of large in
 this context is given.
 After the approximately coplanar nodes are refined by removing outliers, a plane is fit through the remaining points.
 
@@ -374,7 +382,7 @@ Octree-Based Region Growing (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} 
 
 First, an unorganized point cloud is recursively subdivided using an octree.
 An octree node $n$ repeatedly subdivides itself into eight children until the level of $n$ supersedes a predefined maximum subdivision value or if the
-amount of contained points in $n$ is less than a predefined minimum of included points. 
+amount of contained points in $n$ is less than a predefined minimum of included points.
 Saliency features are calculated for every leaf node in preparation for the region growing step: A normal vector is obtained by performing a principle
 component analysis (PCA) on the points inside each leaf node. The best-fitting plane of each leaf is defined by the mean normal vector and its center point.
 A residual value is obtained by taking the root-mean-square (RMS) of the distance of all included points to the plane.
@@ -386,20 +394,20 @@ A residual value is obtained by taking the root-mean-square (RMS) of the distanc
     \label{fig:obrg}
 \end{figure}
 
-For the region growing phase, all leaf nodes are selected as individual seed points. 
-Starting from the seed with the lowest residual value, a neighboring leaf node $n$ is inserted into the region if $n$ 
-does not belong to any region and the angular divergence between both normal vectors is smaller than a predefined threshold 
+For the region growing phase, all leaf nodes are selected as individual seed points.
+Starting from the seed with the lowest residual value, a neighboring leaf node $n$ is inserted into the region if $n$
+does not belong to any region and the angular divergence between both normal vectors is smaller than a predefined threshold
 $\theta_{ang}$. Values between $3.5$ degree and $15$ degree were used during the  evaluation~\cite[Tables~1,4,7]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.
-Furthermore, if a leaf node is inserted into a region, it is also considered a starting point for a future iteration, 
+Furthermore, if a leaf node is inserted into a region, it is also considered a starting point for a future iteration,
 if its residual value is lower than the corresponding threshold $\theta_{res}$. Small values at a maximum of $0.05$(m)
-are reported. If a region cannot be expanded, it is marked as \textit{detected}, if its number of inliers exceeds a 
+are reported. If a region cannot be expanded, it is marked as \textit{detected}, if its number of inliers exceeds a
 threshold $\theta_M$.
-  
-Lastly, a refinement step is employed. 
+
+Lastly, a refinement step is employed.
 For efficiency reasons, it is only performed on voxels at the edge of segments.
-Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% ($\theta_p$) 
-of included points fit the best plane~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. 
-FR is leaf-based, and all previously unallocated neighboring nodes are added to the region if the point-to-plane distance is smaller 
+Fast refinement (FR) is performed on regions that succeed in a planarity test, i.e., 70\%-90\% ($\theta_p$)
+of included points fit the best plane~\cite[Section~3.4]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.
+FR is leaf-based, and all previously unallocated neighboring nodes are added to the region if the point-to-plane distance is smaller
 than a distance threshold $\theta_d$.
 General refinement (GR) is performed on regions that are considered non-planar. In contrast to the fast refinement, GR is point based. Therefore,
 points from neighboring and previously unallocated leaf nodes are considered and inserted into the region if they, too, satisfy the inlier criterion.
@@ -862,7 +870,7 @@ The dataset can be found on the project website\footnote{\href{https://vision.in
 
 \section{Evaluation Metrics}
 \label{sec:metrics}
-In fields that revolve around the detection or the segmentation of particular objects, metrics that describe the quality of detection or segmentation, respectively, are helpful. 
+In fields that revolve around the detection or the segmentation of particular objects, metrics that describe the quality of detection or segmentation, respectively, are helpful.
 Prevalently used metrics include the \textit{Precision, Recall}, and the \textit{F1-Score}.
 \textit{Precision} generally describes how many of the results are relevant, i.e., the percentage of correctly calculated values(see Eq.~\ref{eq:prec}). \textit{Recall} describes the ratio of relevant results to all relevant data, i.e.
 the likelihood of a result being relevant(see Eq.~\ref{eq:rec}). Lastly, the \textit{F1-Score} is the harmonic mean of the former two metrics (see Eq.~\ref{eq:f1}).

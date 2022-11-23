@@ -8,13 +8,13 @@ It is necessary to perform all experiments on the same machine to ensure a consi
 We implement all algorithms and further architecture on a Lenovo IdeaPad 5 Pro,
 which runs Linux Ubuntu 20.04.5. The laptop has an AMD Ryzen 7 5800H CPU and 16 GB of RAM.
 
-We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}\footnote{\href{http://wiki.ros.org/noetic}{http://wiki.ros.org/noetic}}, as well as 
+We install the most recent ROS distribution, \textit{ROS Noetic Ninjemys}\footnote{\href{http://wiki.ros.org/noetic}{http://wiki.ros.org/noetic}}, as well as
 \textit{realsense-ros}\footnote{\href{https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy}{https://github.com/IntelRealSense/realsense-ros/tree/ros1-legacy}} with all additional dependencies.
-Note that the version of \textit{realsense-ros} changed over the course of this work. 
- 
+Note that the version of \textit{realsense-ros} changed over the course of this work.
+
 \section{Plane Detection Algorithms}
 In Chapter~\ref{chap:Background}, we provide detailed information about the algorithms we select in Section~\ref{sec:pdaselection}.
-The following subsections deal with the implementation details thereof. 
+The following subsections deal with the implementation details thereof.
 Note that the subsections of RSPD and OPS are joined due to a lack of noticeable difference in implementation details.
 
 \subsection{RSPD \& OPS}
@@ -27,8 +27,8 @@ and the C++ API of the Point-Cloud Library~\cite{Rusu_ICRA2011_PCL}, \textit{lib
 
 The authors of 3D-KHT, provide an implementation, in form of a Visual Studio project, on their website\footnote{\href{https://www.inf.ufrgs.br/~oliveira/pubs_files/HT3D/HT3D_page.html}
     {https://www.inf.ufrgs.br/~oliveira/pubs\_files/HT3D/HT3D\_page.html}}. Since the laptop we use does not run Windows, we use \textit{cmake-converter}\footnote{\href{https://cmakeconverter.readthedocs.io/en/latest/use.html}{https://cmakeconverter.readthedocs.io/}} to convert
-the solution to a CMake project we can build using \textit{make}. The dependencies of this implementation include the C++ library \textit{Dlib}~\cite{dlib09}, as well as the OpenGL Utility Toolkit 
-\textit{GLUT}\footnote{\href{https://www.opengl.org/resources/libraries/glut/glut\_downloads.php}{https://www.opengl.org/resources/libraries/glut/glut\_downloads.php}}. 
+the solution to a CMake project we can build using \textit{make}. The dependencies of this implementation include the C++ library \textit{Dlib}~\cite{dlib09}, as well as the OpenGL Utility Toolkit
+\textit{GLUT}\footnote{\href{https://www.opengl.org/resources/libraries/glut/glut\_downloads.php}{https://www.opengl.org/resources/libraries/glut/glut\_downloads.php}}.
 Lastly, the multi-processing API OpenMP\footnote{\href{https://www.openmp.org/}{https://www.openmp.org/}} is required as well.
 
 \subsection{OBRG}
@@ -70,7 +70,7 @@ have to view each point cloud and segment the included planes manually. An exemp
             plane detection, the three table tops would form exactly one plane.}
         \label{fig:tables}
     \end{subfigure}
-     \caption[Ground Truth Segmentation figures]{}
+    \caption[Ground Truth Segmentation figures]{}
 \end{figure}
 
 
@@ -89,26 +89,28 @@ are included in the dataset.
 
 \begin{table}[H]
     \centering
+    \caption[2S-3D-S Statistics]{2D-3D-S dataset statistics. Shown are the number of scenes per category and for how many we created a ground truth ($\#GT/\#Total$).
+        Note that the rightmost column reports the number of segmented planes per scene category and does \textit{not}
+        correspond to other columns in this table.  }
     \resizebox{\textwidth}{!}{%
-        \begin{tabular}{c|c|c|c|c|c|c|c||c}
-            Scene Categories & Area\_1 & Area\_2 & Area\_3 & Area\_4 & Area\_5 & Area\_6 & TOTAL            & Planes \\ \hline
-            auditorium       & -       & 2/2     & -       & -       & -       & -       & 2/2              & 70             \\ \hline
-            conference room  & 2/2     & 1/1     & 1 /1    & 3/3     & 3/3     & 1/1     & 11/11            & 375            \\ \hline
-            copy room        & 1/1     & -       & -       & -       & -       & 1/1     & 2/2              & 45             \\ \hline
-            hallway          & 8/8     & 12/12   & 6/6     & 14/14   & 1/15    & 6/6     & 48/61            & 977            \\ \hline
-            lobby            & -       & -       & -       & 2 /2    & 1/1     & -       & 3/3              & 207            \\ \hline
-            lounge           & -       & -       & 2/2     & -       & -       & 1/1     & 3/3              & 101            \\ \hline
-            office           & 16/31   & 5/14    & 10/10   & 9/22    & 4/42    & 3/37    & 48/156           & 1116           \\ \hline
-            open space       & -       & -       & -       & -       & -       & 1 /1    & 1/1              & 10             \\ \hline
-            pantry           & 1/1     & -       & -       & -       & /1      & 1/1     & 3/3              & 73             \\ \hline
-            storage          & -       & 9/9     & 2 /2    & 4/4     & 4/4     & -       & 19/19            & 222            \\ \hline
-            WC               & 1/1     & 2/2     & 2/2     & 4/4     & 4/2     & -       & 11/11            & 214            \\ \hline
-                             &         &         &         &         &         &         & \textbf{139/272} & \textbf{3410}
+        \begin{tabular}{cccccccc|c}
+            \toprule
+            \textbf{Scene Categories} & \textbf{Area 1} & \textbf{Area 2} & \textbf{Area 3} & \textbf{Area 4} & \textbf{Area 5} & \textbf{Area 6} & \textbf{TOTAL}   & \textbf{Planes} \\ \hline
+            Auditorium                & -               & 2/2             & -               & -               & -               & -               & 2/2              & 70              \\ 
+            Conference Room           & 2/2             & 1/1             & 1 /1            & 3/3             & 3/3             & 1/1             & 11/11            & 375             \\ 
+            Copy Room                 & 1/1             & -               & -               & -               & -               & 1/1             & 2/2              & 45              \\ 
+            Hallway                   & 8/8             & 12/12           & 6/6             & 14/14           & 1/15            & 6/6             & 48/61            & 977             \\ 
+            Lobby                     & -               & -               & -               & 2 /2            & 1/1             & -               & 3/3              & 207             \\ 
+            Lounge                    & -               & -               & 2/2             & -               & -               & 1/1             & 3/3              & 101             \\ 
+            Office                    & 16/31           & 5/14            & 10/10           & 9/22            & 4/42            & 3/37            & 48/156           & 1116            \\ 
+            Open Space                & -               & -               & -               & -               & -               & 1 /1            & 1/1              & 10              \\ 
+            Pantry                    & 1/1             & -               & -               & -               & /1              & 1/1             & 3/3              & 73              \\ 
+            Storage                   & -               & 9/9             & 2 /2            & 4/4             & 4/4             & -               & 19/19            & 222             \\ 
+            WC                        & 1/1             & 2/2             & 2/2             & 4/4             & 4/2             & -               & 11/11            & 214             \\ \hline
+                                      &                 &                 &                 &                 &                 &                 & \textbf{139/272} & \textbf{3410}   \\
+            \bottomrule
         \end{tabular}
     }
-    \caption[2S-3D-S Statistics]{2D-3D-S dataset statistics. Shown are the number of scenes per category and for how many we created a ground truth ($\#GT/\#Total$).
-        Note that the rightmost column reports the number of segmented planes per scene category and does \textit{not} 
-        correspond to other columns in this table.  }
     \label{tab:stanfordStats}
 \end{table}
 
@@ -122,23 +124,23 @@ Running \textit{realsense-ros} and holding our cameras, we walk through the corr
 We save each incremental map update to a file for further usage.
 
 Given the differences in spatial dimension, the recordings of each scene also differ in length and size.
-The auditorium scene has a total of 296 individual time frames, the conference room scene has 113, the hallway has a total of 174, 
+The auditorium scene has a total of 296 individual time frames, the conference room scene has 113, the hallway has a total of 174,
 and the office has 125 time frames.
 The FIN dataset, thereby, has a total of 708 time frames.
 
 Since no ground truth exists for a novel dataset like this, we create a set of ground truth planes $gt_{end}$ for only the most recent update of each scene, e.g., for the entire recording.
 By creating a ground truth for only the last frame of each scene, we substantially reduce the time invested in this task.
 To prepare for the evaluation of a point cloud $m_t$ at a given time $t$, we crop all planes in $gt_{end}$ by removing all points that are not present in $m_t$.
-Figure~\ref{fig:dynGT} shows the final point cloud and the manually created ground truth $gt_{end}$ of the \textit{hallway} scene on the far right. 
-On the left thereof, two point clouds of earlier stages of the recording are shown, as well as their dynamically created ground truth. 
+Figure~\ref{fig:dynGT} shows the final point cloud and the manually created ground truth $gt_{end}$ of the \textit{hallway} scene on the far right.
+On the left thereof, two point clouds of earlier stages of the recording are shown, as well as their dynamically created ground truth.
 We speed up this expensive process by employing a KD-Tree neighbor search with a small search radius since we only need to know whether a certain point is present or not.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=15 cm]{images/dynamic_eval.png}
     \caption[Dynamic Ground Truth Generation]{Dynamic ground truth generation shown by the example of three point clouds from the
-    \textit{hallway} scene, as well as the corresponding ground truth. The rightmost pair shows the 
-    final state of the point cloud and its ground truth.}
+        \textit{hallway} scene, as well as the corresponding ground truth. The rightmost pair shows the
+        final state of the point cloud and its ground truth.}
 
     \label{fig:dynGT}
 \end{figure}
