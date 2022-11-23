@@ -26,7 +26,7 @@ Similarly, we calculate the \textit{Recall} because it gives information about t
 points that \textit{could} be detected.
 Using these metrics separately is problematic as we cannot expect the distribution of "plane" to "non-plane" to be even.
 The \textit{F1-Score} is the harmonic mean of the \textit{Precision} and the \textit{Recall} and therefore measures the balance between the \textit{Precision} and
-\textit{Recall}. Intuitively, this means that an algorithmhas to yield sufficient \textit{Precision} and \textit{Recall} results to score
+\textit{Recall}. Intuitively, this means that an algorithm has to yield sufficient \textit{Precision} and \textit{Recall} results to score
 a sufficient \textit{F1-Score}. The \textit{F1-Score}, thereby, is the primary metric for the quantitative comparison of algorithms in this work.
 However, we report the \textit{Precision} and the \textit{Recall} for thorough analysis.
 The procedure of calculation is taken from~\cite[Section~4]{Araújo_Oliveira_2020} and detailed in Section~\ref{sec:metrics}.
@@ -85,7 +85,7 @@ the ranges of which are specified in the respective paragraph of each algorithm.
 \end{table}
 
 \paragraph{2D-3D-S}
-For the \textit{2D-3D-S} experiment, we use the parameters of the provided implementation\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}}. These parameters include the maximum octree level $l_O$,
+We use the parameters of the provided implementation\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} for the \textit{2D-3D-S} experiment. These parameters include the maximum octree level $l_O$,
 the minimum number of samples per leaf node $\varepsilon$, the Maximum Outlier Ratio $MOR$ per plane, the size of the nearest neighborhood $k$,
 the Maximum Normal Deviation $MND$, and the Maximum Distance to Plane $MDP$. Note that while $k=50$ is used in the respective paper~\cite[Section~3.3]{Araújo_Oliveira_2020},
 $k=30$ is used in the official implementation. We adopted the latter because, in our experience, it produces sufficient results while reducing the pre-processing time.
@@ -309,7 +309,7 @@ but consistently spends the longest time in pre-processing.
 Moreover, the pre-processing times of all algorithms seem to be generally dependent on the size of the point cloud.
 The plane detection runtimes of OPS and OBRG fluctuate. However, OPS fluctuates less than OBRG.
 The post-processing runtimes of OPS are negligible overall. The $t_{post}$ values of OBRG are stable at $2.61s$ on average,
-except for medium cloud sizes, see table~\ref{tab:res-3d2ds-total}.
+except for medium cloud sizes, see Table~\ref{tab:res-3d2ds-total}.
 
 Adhering strictly to our definitions of real-time, no algorithm achieves real-time applicability in this experiment.
 However, we might consider RSPD and 3D-KHT to be \textit{real-time plane detection} applicable since

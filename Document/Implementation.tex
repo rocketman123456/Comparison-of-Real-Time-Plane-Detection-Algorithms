@@ -2,7 +2,9 @@
 
 \chapter{Implementation}
 \label{chap:impl}
-This chapter provides the implementation details of the outlined concept of the previous chapter.
+This chapter provides the implementation details of the outlined concept of the previous chapter. 
+The following sections deal with the general system setup, the implementation of the algorithms selected in Section~\ref{sec:pdaselection}, and the creation and segmentation process of the chosen datasets (see Section~\ref{sec:datasets}).
+
 \section{System Setup}
 It is necessary to perform all experiments on the same machine to ensure a consistent comparison.
 We implement all algorithms and further architecture on a Lenovo IdeaPad 5 Pro,
@@ -50,27 +52,30 @@ reduce the total calculation time.
 
 \section{2D-3D-S}
 \label{sec:gtseg}
-The \textit{2D-3D-S} dataset provides a ground truth in form of annotated point clouds corresponding to 13 object classes. Since these annotated objects are not
+The \textit{2D-3D-S} dataset provides a ground truth in form of annotated point clouds corresponding to 13 object classes~\cite[Table~1]{2017arXiv170201105A}. Since these annotated objects are not
 always planar, we cannot use them for the evaluation of plane detection algorithms. Thus, we create a ground truth that focuses on planar structures.
+
 We use the open-source 3D point cloud and mesh processing software \textit{CloudCompare}\footnote{\href{https://www.danielgm.net/cc/}{https://www.danielgm.net/cc/}} to visualize a scene and manually segment included planes.
 Because we cannot assume all walls to be planar or that, e.g., the tops or three adjacent tables always form the same number of planes (see Figure~\ref{fig:tables}), we
 have to view each point cloud and segment the included planes manually. An exemplary before-and after-segmentation is shown below in Figure~\ref{fig:gtseg}.
 \begin{figure} [H]
     \begin{subfigure}{0.5\textwidth}
         \centering
-        \includegraphics[width=.9\linewidth]{images/gtseg.png}
-        \caption[Ground Truth Segmentation]{Ground Truth Segmentation of a hallway in CloudCompare. Shown is the input cloud on the left and segmented planes on the right.
-            Both are cropped and without ceilings for visualization purposes.}
+        \includegraphics[width=\linewidth]{images/gtseg.png}
+        \caption[Ground Truth Segmentation]{}
         \label{fig:gtseg}
     \end{subfigure}
     \begin{subfigure} {0.5\textwidth}
         \centering
         \includegraphics[width=0.9\linewidth]{images/tables.png}
-        \caption[Ground Truth Table Example]{The provided ground truth considers these tables to be three separate objects. Within the context of
-            plane detection, the three table tops would form exactly one plane.}
+        \caption[Ground Truth Table Example]{}
         \label{fig:tables}
     \end{subfigure}
-    \caption[Ground Truth Segmentation figures]{}
+    \caption[Ground Truth Segmentation figures]{(a) Ground Truth Segmentation of a hallway in CloudCompare. Shown is the input cloud on the left and segmented planes on the right.
+    Both are cropped and without ceilings for visualization purposes.
+    (b) The provided ground truth considers these tables to be three separate objects. Within the context of
+    plane detection, the three table tops would form exactly one plane.
+    }
 \end{figure}
 
 
@@ -79,11 +84,10 @@ to the level of subjectivity involved.
 On average, the segmentation of a scene took 8-10 minutes, which, for all 272 scenes,
 would result in a total of 36-45 hours. To reduce the time spent in segmentation, we perform an initial analysis of the scenes in a given area
 and omit scenes that show no noticeable difference compared to others. This analysis reduces the number of segmented scenes to slightly more than half
-of the total, reducing the time to 18-23 hours.
+of the total, thereby reducing the time to 18-23 hours. 
 
-The results of the manual segmentation process are documented in Table~\ref{tab:stanfordStats}.
-The table is inspired by~\cite[Table~7]{2017arXiv170201105A}. Like the original, it shows the amounts of scenes per scene type in each area.
-We extended the table by adding a column dedicated to the planes included in each scene type. According to the table, a total amount of 3410 planes
+The results of the manual segmentation process are documented in Table~\ref{tab:stanfordStats}, which is inspired by~\cite[Table~7]{2017arXiv170201105A}. Like the original, it shows the amounts of scenes per scene type in each area.
+We extended the table with a column dedicated to the planes included in each scene type. According to the table, a total amount of 3410 planes
 are included in the dataset.
 
 
