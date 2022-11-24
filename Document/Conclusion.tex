@@ -76,6 +76,10 @@ Since the focus of this work is not the optimization of plane detection algorith
 \paragraph{Manual Segmentation}
 Another limitation of the results is the subjective nature of the manual segmentation process described in Section~\ref{sec:gtseg}, which influences the evaluation. The effect thereof does not seem significant for the \textit{2D-3D-S} experiment. However, the segmentation can lead to errors due to the level of noise in the \textit{FIN} dataset. For instance, with increasing "thickness" of planes, the number of possible orientations of a detected plane also increases (see Figure~\ref{fig:poss-planes}). The red segment in the figure represents the ground truth we selected to represent the plane. If an algorithm detected a plane in one of the four other variants, both the voxel overlap and the accuracy would decrease, even if both planes correspond.
 
+\paragraph{Used Technology}
+A small caveat to note is that the FIN dataset is recorded using a specific combination of technology, namely Intel's T265, D455, and the corresponding SDK including RTAB-MAP.
+\textbf{\textcolor{red}{unsere ergebnisse zeigen den besten algo für den spezifischen use case, dass jemand ohne großen zeitdruck durch die uni schlendert. würde zb ein spiel hastige bewegungen voraussetzen, würden die aufnahmen anders aussehen und somit möglicherweise andere ergebnisse produzieren.}}
+
 \begin{figure}
     \centering
     \includegraphics[width=0.7\textwidth]{images/possible_planes.png}
@@ -97,6 +101,9 @@ We see the most potential for improvement in the pre-processing steps of the alg
 
 \paragraph{Cloud Size Reduction}
 When recording environments similar to the hallway or the auditorium scene, it is often the case that the spatial dimension of the point cloud grows beyond the distance limitations of the sensor, e.g., the recorded hallway spans longer than the sensor can "see". It is, therefore, not necessary to re-calculate the planes in areas past the sensor's reach. We are interested in a plane detection method that restricts the plane detection to a certain radius around the sensor's position and a subsequent merging of old and new planes. Additionally, this could be the basis for a plane-based SLAM approach.
+
+\paragraph{Outdoor Environment}
+In Chapter~\ref{chap:Introduction}, we limited ourselves to evaluating plane detection algorithms in indoor environments. Therefore, we cannot make any statements about the applicability in outdoor environments. Since we compiled results in a realistic indoor environment, it would be interesting to evaluate the generalization of these algorithms. As discussed throughout this thesis, a comparison needs uniformity. Since we created an indoor dataset, selected datasets, and provided all necessary metrics and definitions, only an appropriate dataset is needed.
 
 % \begin{itemize}
 %     \item C++ impl von OBRG

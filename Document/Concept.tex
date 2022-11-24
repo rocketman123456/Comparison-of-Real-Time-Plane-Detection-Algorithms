@@ -40,7 +40,7 @@ The following sections are dedicated to these requirements.
 \section{Selection of Plane Detection Algorithms}\label{sec:pdaselection}
 
 Since most algorithms differ in certain aspects, it is not possible to compare them all uniformly.
-Furthermore, not all algorithms are created out of the same motivation and, therefore, focus on different things.
+Furthermore, not all algorithms are created from the same motivation and focus on different things.
 Evaluating an algorithm in a scenario it has not been designed for is likely to yield meaningless results.
 It is, therefore, necessary to first define objective criteria to superficially determine which algorithm shows relevance for the context of this work.
 
@@ -70,7 +70,7 @@ are the distances to the sensor.
 
 
 \paragraph{Detected Plane Format} \label{subsec:planeformat}
-Which specific representation the detected planes take the form of is also essential.
+It is essential to determine an appropriate representation of the detected planes. 
 If no uniform output type can be determined, consequently, no uniform metric for comparison can also be found.
 
 In this work, we differentiate between the following:
@@ -108,7 +108,7 @@ For further reference, we consider a plane detection algorithm to be \textit{ava
 \label{subsec:pdaselect}
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
 The table shows the input type and the output format of all algorithms, as well as the required hardware, and the availability.
-Note that we consider all algorithms to be available, however, we are not aware of public implementations of \textit{OBRG} and \textit{SCH-RG}.
+Note that we consider all algorithms to be available. However, we are not aware of public implementations of \textit{OBRG} and \textit{SCH-RG}.
 However, the respective publications outline their methods in high detail, thereby guiding a self-implementation.
 
 The final outputs of \textit{PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} are piecewise-planar depth maps of the input
@@ -118,7 +118,7 @@ its normal vector $n$, distance to origin $d$, and two additional extents. Modif
 minimal effort as well.
 \begin{table}[H]
     \centering
-    \caption{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of \textit{input}.
+    \caption[State-of-The-Art-Plane Detection Algorithms]{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of \textit{input}.
         The \textit{Secion} column provides the placement within this work. We refer to Subsection~\ref{subsec:criteria} for details regarding the specific namings. In the \textit{Hardware} column, note that \textit{GPU} implies the usage of the \textit{CPU}.}
     \resizebox{\textwidth}{!}{%
         \begin{tabular}{c|c|c|c|c|c}
@@ -195,7 +195,7 @@ previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
 
 \begin{table}[H]
     \centering
-    \parbox{0.7\textwidth}{\caption{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of
+    \parbox{0.7\textwidth}{\caption[Pre-processing \& Post-processing Phases of Selected Algorithms]{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of
     a pre-/post-processing step.}
     \label{tab:pre-post}
     }
@@ -273,7 +273,7 @@ datasets are not recorded manually.
 
 \paragraph{Ground Truth}
 Lastly, not all datasets are created out of the same motivation. Therefore, the method of evaluation differs widely over the range of available datasets.
-In general, the \textit{Ground Truth} (GT) of currently popular datasets can fall into one of the following categories:
+In general, the \textit{Ground Truth} (GT) of currently popular datasets can fall into one of the following categories (compare Table~\ref{tab:datasets}):
 
 \begin{itemize}
     \item Planes,
@@ -291,7 +291,7 @@ pixels in the input image.
 
 Lastly, some datasets provide a $GT$ that focuses on the trajectory of the recording sensor.
 
-Naturally, this classification can only apply to datasets that include a \textit{Grund Truth}
+Naturally, this classification can only apply to datasets that include a \textit{Grund Truth}.
 
 \subsection{Datasets}
 Table~\ref{tab:datasets} summarizes datasets currently prevalent in the scientific literature regarding plane detection.
@@ -302,7 +302,7 @@ Furthermore, we are not aware of a \textit{ground truth} for the \textit{ARCO} d
 
 \begin{table}[H]
     \centering
-    \caption[Popular Datasets]{Plane detection Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
+    \caption[State-of-The-Art Datasets]{Plane detection Datasets. The \textit{GT}(Ground Truth) column specifies what the ground truth of each dataset represents.
         The datasets are clustered by their type of format. The remaining order is arbitrary.
         The second column "Section" provides the placement within this work.
         Note that we include our dataset (FIN) in this table for completeness reasons.
@@ -338,7 +338,7 @@ Lastly, we are especially interested in realistic \textit{indoor} environments, 
 Therefore, \textit{Leica} ceases to be an option and we subsequently choose \textit{2D-3D-S} as the dataset for the evaluation.
 
 
-Nevertheless, we cannot use the ground truth included in \textit{2D-3D-S} because it represents the segmented scene at the level of objects instead of focusing on layers within the scene.
+Nevertheless, we cannot use the ground truth included in \textit{2D-3D-S} because it represents the segmented scene at the level of objects~\cite[Section~4.1]{2017arXiv170201105A} instead of focusing on layers within the scene.
 As a consequence thereof, we create a suitable ground truth of the \textit{2D-3D-S} dataset through manual segmentation.
 We provide details of this time-expensive process in Section~\ref{sec:gtseg}.
 
