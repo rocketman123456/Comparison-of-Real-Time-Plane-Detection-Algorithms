@@ -35,10 +35,10 @@ nature of manual ground truth segmentation.
 
 \paragraph{Time Measurements}
 \label{par:time}
-We are also interested in the real-time applicability of an algorithm.
+We are also interested in the \textit{real-time} applicability of an algorithm.
 We introduce two definitions of \textit{real-time} in Section~\ref{sec:realtime}.
 To reiterate, we consider an algorithm to be \textit{totally real-time} ($RT_{tot}$) applicable if its total runtime is below $1s$.
-Furthermore, we consider an algorithm to achieve \textit{real-time plane detection} ($RT_{calc}$) if its plane detection and post-processing steps run faster than $1s.$
+Furthermore, we consider an algorithm to achieve \textit{Real-Time Plane Detection} ($RT_{calc}$) applicability if its plane detection and post-processing steps run faster than $1s.$
 
 When recording a real environment, the point clouds likely grow incrementally with each map update.
 Therefore, the average calculation time alone is of limited significance, as we assume the calculation times to grow with the cloud size.
@@ -47,10 +47,10 @@ Based on this assumption, it is necessary to analyze the relationship between th
 Following the separation of algorithms into phases (see Paragraph~\ref{par:prepostalgos}), we divide the calculation time into the pre-processing time $t_{pre}$,
 the time spent during plane detection $t_{calc}$, and the duration of post-processing steps $t_{post}$.
 This separation enables an in-depth analysis of both average results and the results over time.
-Since we have two definitions of real-time, we introduce two metrics of calculation time:
+Since we have two definitions of \textit{real-time}, we introduce two metrics of calculation time:
 
 \begin{enumerate}
-    \item The sum of $t_{calc}$ and $t_{post}$ allows us to determine whether an algorithm is \textit{real-time plane detection} applicable, \textit{and}
+    \item The sum of $t_{calc}$ and $t_{post}$ allows us to determine whether an algorithm is \textit{Real-Time Plane Detection} applicable, \textit{and}
     \item to determine whether an algorithm is \textit{totally real-time} applicable, we consider the total computation time
           $t_{tot}$, which is the sum of the individual times:
 \end{enumerate}
@@ -244,8 +244,8 @@ With an average of $0.71s$ spent in pre-processing, and an average of $1.03s$ sp
 RSPD is the only algorithm that scores similar $t_{calc}$ values, with an
 average of $1.04s$. However, RSPD's time spent in pre-processing is the highest among the algorithms.
 With an average $t_{tot}$ of ${\sim}25s$ and ${\sim}63s$, OPS and OBRG, respectively, run dramatically slower than the other two algorithms.
-According to these values, no algorithm achieves \textit{total real-time} applicability. RSPD and 3D-KHT are very close
-to falling under the threshold of $1s$ for \textit{real-time plane detection}, exceeding it by only $0.4s$ and $0.3s$, respectively
+According to these values, no algorithm achieves \textit{Total Real-time} applicability. RSPD and 3D-KHT are very close
+to falling under the threshold of $1s$ for \textit{Real-Time Plane Detection} applicability, exceeding it by only $0.4s$ and $0.3s$, respectively
 
 
 \paragraph{Relationship of Time and Size}
@@ -311,12 +311,12 @@ The plane detection runtimes of OPS and OBRG fluctuate. However, OPS fluctuates 
 The post-processing runtimes of OPS are negligible overall. The $t_{post}$ values of OBRG are stable at $2.61s$ on average,
 except for medium cloud sizes, see Table~\ref{tab:res-3d2ds-total}.
 
-Adhering strictly to our definitions of real-time, no algorithm achieves real-time applicability in this experiment.
-However, we might consider RSPD and 3D-KHT to be \textit{real-time plane detection} applicable since
+Adhering strictly to our definitions of \textit{real-time}, no algorithm achieves \textit{real-time} applicability in this experiment.
+However, we might consider RSPD and 3D-KHT to be \textit{Real-Time Plane Detection} applicable since
 the point cloud sizes vary greatly, and the average duration of their plane detection phase is only
 $0.03s-0.04s$ greater than the $1s$ threshold.
 Furthermore, as Figure~\ref{fig:sizetimestanford} suggests, RSPD and 3D-KHT are
-\textit{real-time plane detection} applicable for point clouds with a size ${\lesssim}40mb$, or
+\textit{Real-Time Plane Detection} applicable for point clouds with a size ${\lesssim}40mb$, or
 ${\lesssim}1.5{\cdot}10^6$ points.
 
 \subsection{FIN}
@@ -366,7 +366,7 @@ during plane detection, with an average of $0.19s$. Overall, 3D-KHT needs the sh
 of a time step with an average of $0.43s$. OPS achieves comparatively average total calculation time with ${\sim}6s$, and OBRG
 takes the longest overall to compute a time step with more than $20s$.
 
-RSPD and 3D-KHT achieve \textit{real-time plane detection} applicability. Additionally, 3D-KHT also achieves \textit{total real-time} applicability,
+RSPD and 3D-KHT achieve \textit{Real-Time Plane Detection} applicability. Additionally, 3D-KHT also achieves \textit{Total Real-time} applicability,
 with an average total time of $0.43s$. OPS can almost be considered to be in $RT_{calc}$ with a subtotal
 calculation time of $1.02s$, thereby taking $0.02s$ too long.
 With an average pre-processing time of ${\sim}6s$ and an average of ${\sim}15s$ spent in plane detection, OBRG qualifies for
@@ -402,8 +402,8 @@ between 0 and the duration of plane detection. After the spike in the beginning,
 consistent.
 
 The apparent upper bound of ${\sim}1s$ in the calculation times qualifies 3D-KHT for
-\textit{total real-time} applicability.
-We consider RSPD \textit{real-time plane detection} applicable, as the duration of the
+\textit{Total Real-time} applicability.
+We consider RSPD \textit{Real-Time Plane Detection} applicable, as the duration of the
 plane detection step consistently stays under $1s$.
 
 \paragraph{Summary FIN Experiment}
@@ -422,13 +422,13 @@ The calculation times of OPS and 3D-KHT seem to be independent of the point clou
 However, 3D-KHT has a smaller upper bound than OPS.
 
 The development over time supports the average calculation times of 3D-KHT, as the calculation
-seems independent of the cloud size. Thereby, we determine 3D-KHT to be \textit{total real-time}
+seems independent of the cloud size. Thereby, we determine 3D-KHT to be \textit{Total Real-time}
 applicable.
-Furthermore, RSPD achieves \textit{real-time plane detection} in the FIN experiment, as the
+Furthermore, RSPD achieves \textit{Real-Time Plane Detection} applicability in the FIN experiment, as the
 plane detection step takes $<1s$ for all time frames.
 Lastly, the average subtotal calculation time of OPS is slightly longer than $1s$. However, given
 the apparent upper bound and considerable fluctuations, we cautiously consider OPS to be
-\textit{real-time plane detection} applicable in the FIN experiment.
+\textit{Real-Time Plane Detection} applicable in the FIN experiment.
 
 \subsection{Comparison}
 When comparing Table~\ref{tab:res-3d2ds-total} and Table~\ref{tab:res-fin-total}, a pattern emerges:
@@ -451,7 +451,7 @@ Nonetheless, since Figure~\ref{fig:sizetimestanford} portrays a proportionality,
 different curves is likely the difference of parameterization.
 
 In Paragraph~\ref{par:sumsdexp}, we report that no algorithm is \textit{real-time} applicable. We state, that
-RSPD and 3D-KHT can be considered \textit{real-time plane detection} applicable, since the cloud sizes vary and
+RSPD and 3D-KHT can be considered \textit{Real-Time Plane Detection} applicable since the cloud sizes vary and
 the difference between their average $t_{calc}$ times and the threshold of $1s$ is very small.
 In Paragraph~\ref{par:sumfinexp}, we consider 3D-KHT \textit{totally real-time} applicable due to the observed
 upper bound in calculation time in combination with a low average $t_{tot}$ value of $0.43s$. Additionally,
@@ -467,18 +467,18 @@ The pre-processing of RSPD takes the longest time of all algorithms. In contrast
 value in the FIN experiment. 3D-KHT has the lowest total computation time in both experiments, and in the \textit{2D-3D-S} experiment,
 it outperforms the plane detection time of RSPD.
 
-3D-KHT is \textit{real-time plane detection} applicable in both experiments, \textit{totally real-time} applicable
-in the FIN experiment, even.
-RSPD achieves \textit{real-time plane detection} in both experiments.
-We consider OPS to be \textit{real-time plane detection} applicable.
+3D-KHT is \textit{Real-Time Plane Detection} applicable in the \textit{2D-3D-S} experiment and \textit{totally real-time} applicable
+in the FIN experiment.
+RSPD achieves \textit{Real-Time Plane Detection} applicable in both experiments.
+We consider OPS to be \textit{Real-Time Plane Detection} applicable.
 These \textit{real-time} applicabilities of all algorithms are summarized in Table~\ref{tab:algo-rt}.
 % NOTE 3DKHT kann keine löcher oder non-rectangular ebenen basteln!
 
 \begin{table}[H]
     \centering
     \caption[Real-Time Applicabilities of Selected Algorithms]{Real-time applicabilities of the selected plane detection algorithms given the results from both experiments.
-        Note that $RT_{tot}$ implies $RT_{calc}$. "/" denotes no real-time applicability.
-        "*" denotes that the given real-time applicability is coupled with a restriction. We refer to the text for details.}
+        Note that $RT_{tot}$ implies $RT_{calc}$. "/" denotes no \textit{real-time} applicability.
+        "*" denotes that the given \textit{real-time} applicability is coupled with a restriction. We refer to the text for details.}
     \begin{tabular}{ccccc}
         \toprule
         \textbf{Experiment} & \textbf{RSPD} & \textbf{OPS} & \textbf{3D-KHT}     & \textbf{OBRG} \\

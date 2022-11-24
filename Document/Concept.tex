@@ -57,8 +57,8 @@ between two input types is not always possible.
 We detail the different types of input in Section~\ref{sec:dataformats}. To reiterate, the data representation of the recorded
 environment falls into one of four categories:
 \begin{itemize}
-    \item \textit{unorganized} or \textit{unstructured point cloud} (UPC),
-    \item \textit{organized} or \textit{structured point cloud} (OPC),
+    \item unorganized or unstructured point cloud (UPC),
+    \item unorganized or structured point cloud (OPC),
     \item Depth-Image (DI), \textit{and}
     \item RGB-Image (RGBI),
 \end{itemize}
@@ -121,7 +121,7 @@ minimal effort as well.
     \caption[State-of-The-Art-Plane Detection Algorithms]{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of \textit{input}.
         The \textit{Secion} column provides the placement within this work. We refer to Subsection~\ref{subsec:criteria} for details regarding the specific namings. In the \textit{Hardware} column, note that \textit{GPU} implies the usage of the \textit{CPU}.}
     \resizebox{\textwidth}{!}{%
-        \begin{tabular}{c|c|c|c|c|c}
+        \begin{tabular}{cccccc}
             \toprule
             \textbf{Plane Detection Algorithm}                      & \textbf{Section}            & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Hardware} & \textbf{Available} \\
             \midrule
@@ -395,7 +395,7 @@ Lastly, since this is a novel dataset and thus has no ground truth, we create a 
 
 
 \section{Definition Real-Time}\label{sec:realtime}
-Finally, as mentioned in the beginning of Chapter~\ref{chap:Concept}, we must define the meaning of real-time to determine the \textit{real-time} applicability of a plane detection algorithm.
+Finally, as mentioned in the beginning of Chapter~\ref{chap:Concept}, we must define the meaning of \textit{real-time} to determine the \textit{real-time} applicability of a plane detection algorithm.
 
 
 In Subsection~\ref{subsec:pdaselect}, we introduce the differentiation between pre-processing and post-processing steps.
@@ -412,12 +412,12 @@ calculations to update and publish the map.
 Therefore, the upper limit is the frequency of how often RTAB-MAP publishes those updates, which by default is once per second.
 
 \paragraph{Total Real-Time $\mathbf{RT_{tot}}$}
-According to this upper limit of RTAB-MAP, we consider an algorithm \textit{totally Real-Time} applicable, if it achieves an average frame
-rate of minimum 1, e.g., the total processing time of an algorithm lies under one second. In the remainder of this work, we
-use \textit{total Real-Time} and $RT_{tot}$ interchangeably.
+According to this upper limit of RTAB-MAP, we consider an algorithm to have \textit{Total Real-Time} applicability, if it achieves an average frame
+rate of minimum 1, i.e., the total processing time of an algorithm lies under one second. In the remainder of this work, we
+use \textit{Total Real-Time} and $RT_{tot}$ interchangeably.
 
 \paragraph{Real-Time Plane Calculation $\mathbf{RT_{calc}}$}
-Being a subset of \textit{totally Real-Time applicability, Real-Time Plane Calculation} determines the real-time applicability if the processing time of an algorithm
+Being a subset of \textit{totally Real-Time} applicability, \textit{Real-Time Plane Calculation} determines the \textit{real-time} applicability if the processing time of an algorithm
 \textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. Like $RT_{tot}$, we use
 \textit{Real-Time Plane Calculation} and $RT_{calc}$ interchangeably.
 
@@ -432,10 +432,10 @@ Being a subset of \textit{totally Real-Time applicability, Real-Time Plane Calcu
 \section{Summary}
 Many applications have constraints in the form of a temporal component. Augmented or Virtual Reality applications that include plane detection
 are no exception. In addition to time constraints, good quality is often tightly coupled to expensive or closed technology.
-In this work, we aim to evaluate the quality of real-time plane detection algorithms under the use of more affordable hardware, namely two Intel RealSense sensors. Therein, we are especially interested in the aspect of \textit{real-time} applicability in a realistic environment.
+In this work, we aim to evaluate the quality of \textit{real-time} plane detection algorithms under the use of more affordable hardware, namely two Intel RealSense sensors. Therein, we are especially interested in the aspect of \textit{real-time} applicability in a realistic environment.
 
 At the beginning of this chapter, we state that three aspects are required for this evaluation: A set of plane detection algorithms, useful datasets, and a definition
-of real-time.
+of \textit{real-time}.
 The selection of the best plane detection algorithm, however, is non-trivial. After defining meaningful criteria for objective judgement, we
 select appropriate plane detection algorithms. Moreover, we select realistic datasets, one of which is a novel creation, and present two definitions of \textit{real-time} namely $RT_{tot}$ and $RT_{calc}$.
 \end{document}

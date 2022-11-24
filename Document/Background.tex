@@ -6,29 +6,26 @@ The structure is inspired by the system overview pictured in Figure~\ref{fig:con
 
 \section{Data Formats}
 \label{sec:dataformats}
-In the following chapters, we often refer to different data representations. This section provides detailed information about these data representations while differentiating between the \textit{input} and \textit{output} of a plane detection algorithm. In this work, not that an algorithm's \textit{input} is equivalent to the \textit{output} of the sensors or the SLAM algorithm.
+In the following chapters, we often refer to different data representations. This section provides detailed information about these data representations while differentiating between the input and output of a plane detection algorithm. In this work, not that an algorithm's input is equivalent to the output of the sensors or the SLAM algorithm.
 
 \subsection{Common Input Types}
 \label{subsec:input}
 As described in Chapter~\ref{chap:Introduction}, specialized sensors are needed to record the environment. Like the exported data, the input for the plane detection algorithm differs.
 Usually, this data representation of the recorded environment falls into one of the following categories:
 \begin{itemize}
-    \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
-    \item \textit{organized} or \textit{structured point cloud} (OPC)
+    \item unorganized or unstructured point cloud (UPC)
+    \item organized or structured point cloud (OPC)
     \item Depth-Image (DI)
     \item RGB-Image (RGBI)
 \end{itemize}
 
 The input types are compared in Table~\ref{tab:inputs}. Both the organized and the unorganized point cloud store 3D coordinates.
-The fundamental difference between UPC and OPC is their format,
-In the popular point-cloud-library (PCL) data format\footnote{\href{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}},
-each point cloud has a \textit{width} and a \textit{height}.
-The \textit{width} of a UPC is the number of included points, while the \textit{height} equals 1.
-In contrast, the \textit{width} and \textit{height} of an OPC depend on the resolution of the recording camera.
-For instance, recording the environment with an arbitrary camera with a resolution of 640x480, each organized point cloud
-would have a \textit{width} and \textit{height} of $640$ and $480$, respectively. Another distinguishing factor is that the organized
-point cloud can only represent the environment from one angle, which leads to missing data due to sensor limitations and the occlusion
-of points that lie behind other points. Conversely, UPCs are neither limited to a specific viewport nor do they allow for missing points.
+The fundamental difference between UPC and OPC is their format. For instance, in the popular \textit{point-cloud-library} data format\footnote{\href{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}}, each point cloud has a width and a height.
+The width of a UPC is the number of included points, while the height equals 1.
+In contrast, the width and height of an OPC depend on the resolution of the recording camera.
+For instance, if a camera has a resolution of 640x480, the resulting organized point cloud would have a width and height of $640$ and $480$, respectively. Another distinguishing factor is that the organized point cloud can only represent the environment from one specific viewport at a time, which can lead to point occlusion, e.g., the wall behind a monitor.
+Moreover, an OPC can include missing or invalid data due to the limitations of the sensor.
+In contrast, UPCs are neither limited to a specific viewport nor do they allow for missing points.
 
 When considering images, a differentiation between RGB images and depth images has to be made.
 Depth mages are inherently similar to organized point clouds, given their resolution and two-dimensional structure.
@@ -68,11 +65,8 @@ would fail to correctly represent planes like the top of a corner desk or a wall
 Being related to the input format, the output of plane detection algorithms can be clustered as follows:
 \begin{itemize}
     \item The cartesian plane equation parameterized by its normal vector $n$ and/or its distance to the origin $d$, \textit{and}
-    \item Plane inliers:
-          \begin{itemize}
-              \item $3D$ inliers (3D-IN), $or$
-              \item $2D$ inliers (2D-IN).
-          \end{itemize}
+    \item 2D inliers (2D-IN), $or$
+    \item 3D inliers (3D-IN).
 \end{itemize}
 
 A common output format is a plane parameterized by its normal vector $n$ and its distance to the origin $d$. This representation
@@ -89,12 +83,12 @@ as the access thereof is still grid-like.
 
 \section{Intel Realsense}
 \label{sec:bg-intel}
-In this work, we use the Intel RealSense tracking camera T265 and the RGB-Depth(RGB-D) camera D455.
+In this work, we use the Intel RealSense tracking camera T265 and the RGB-Depth (RGB-D) camera D455.
 A tracking camera is generally used to observe the environment and usually has a wider field of view (FOV). The primary motivation for using RGB-D cameras is depth perception.
 The primary differences and similarities between the T265 and the D455 are reported in Table~\ref{tab:cameraspecs}.
 With two fisheye lenses and two imaging sensors, the T265 and D455, respectively, are considered stereo cameras.
 Moreover, the D455 has an additional RGB and infrared (IR) sensor. The combination of IR and two imaging sensors is used to produce depth images.
-The T265 has a much wider field of view (FOV) of 163° than the D455, which only has an FOV of 111°. The maximum frames per second (FPS) of the D455 is determined by the individual FPS of both its imaging sensors, and its IR sensor, which equals $90$. It is worth noting that the FPS decreases with increasing sensor resolution, and that 90 FPS is only reached with a resolution of 640x480. In contrast, the T265 has a maximum FPS of $30$.
+The T265 has a much wider field of view (FOV) of 163° than the D455, which only has an FOV of 111°. The maximum frames per second (FPS) of the D455 is determined by the individual FPS of both its imaging sensors, and its IR sensor, which equals $90$. It is worth noting that the FPS decreases with increasing sensor resolution and that 90 FPS is only reached with a resolution of 640x480. In contrast, the T265 has a maximum FPS of $30$.
 Furthermore, both cameras have an integrated Inertial Measurement Unit (IMU) which is used to compute their position in combination with visual input.
 % FIXME explain tracking and RGB-D
 
@@ -103,7 +97,7 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System\footno
 
 \begin{table}[H]
     \centering
-    \caption[Intel RealSense T265 \& D455 Specification]{Intel RealSense T265 and D455 camera specifications. The shown \textit{resolution} and \textit{FPS} are the respective maximum values. More information and the complete Datasheets can be found on https://www.intelrealsense.com/.}
+    \caption[Intel RealSense T265 \& D455 Specification]{Intel RealSense T265 and D455 camera specifications. The resolution and FPS columns report the respective maximum values. More information and the complete Datasheets can be found at https://www.intelrealsense.com/.}
     \resizebox{\textwidth}{!}{%
         \begin{tabular}{cccccccc}
             \toprule
@@ -117,11 +111,11 @@ The SDK runs on both Windows and Ubuntu, and a ROS(Robot Operating System\footno
     \label{tab:cameraspecs}
 \end{table}
 
-\section{SLAM}
+\section{Simultaneous Localization and Mapping}
 \label{sec:bg-slam}
-SLAM (Simultaneous Localization And Mapping) algorithms aim to solve a usual problem in the field of unmanned robotics:
+\textit{Simultaneous Localization And Mapping} (SLAM) algorithms aim to solve a usual problem in the field of unmanned robotics:
 A robot finds itself in an unknown environment and attempts to build a coherent map while keeping track of its location.
-The robot uses use-case-specific sensors to obtain a snapshot of its current surroundings, which it then uses to update and enhance its known map (Mapping).
+The robot uses use-case-specific sensors to obtain a snapshot of its current surroundings, which it then uses to update and enhance its known map ($Mapping$).
 The robot simultaneously attempts to accurately estimate its position based on the updated map ($Localization$).
 The new information about its position is processed during the next map update.
 This functionality of building a comprehensive map of the recorded environment is also employed by many modern AR systems to gain spatial awareness.
@@ -149,10 +143,9 @@ popular RGB-D SLAM methods.
 
 
 
-\paragraph{Real-Time Appearance-Based Mapping}
-\label{subsec:bg-rtabmap}
-% RealSense-ROS internally uses a SLAM algorithm for map building, namely RTAB-MAP (Real-Time Appearance-Based Mapping)\cite{Labbé_Michaud_2019}.
-Real-Time Appearance-Based Mapping (RTAB-MAP) is a $VSLAM$ system with an optional IMU input, making it a \textit{visual-intertial} SLAM.
+\subsection*{Real-Time Appearance-Based Mapping}
+\label{subsec:bg-rtabmap} 
+\textit{Real-Time Appearance-Based Mapping} (RTAB-MAP) is a VSLAM system with an optional IMU input, making it a \textit{visual-intertial} SLAM.
 RTAB-MAP's general workflow is shown in Figure~\ref{fig:rtabmap}.
 All these inputs are combined during a synchronization step, and the results thereof are passed to RTAB-MAP's Short-Term-Memory (STM).
 The STM assembles a new node from the new inputs and inserts it into the map graph. Based on the newly inserted node, RTAB-MAP attempts to
@@ -172,14 +165,14 @@ The resulting map is published in the form of an \textit{unorganized point cloud
 
 
 
-\section{Plane Detection}
+\section{Core Algorithms}
 \label{sec:bg-pdintro}
 The field of plane detection has been around for decades.
 Most methods of detecting planar regions are based on one of three main categories \cite{LimbergerOliveira2015HT3D, Araújo_Oliveira_2020}:
 \begin{itemize}
-    \item Hough Transform (HT),
-    \item RANSAC (RC), \textit{and}
-    \item Region Growing (RG).
+    \item Hough Transform,
+    \item RANSAC, \textit{and}
+    \item Region Growing.
 \end{itemize}
 
 These categories of algorithms are fundamentally different. Hence, it is helpful to explain the difference.
@@ -191,7 +184,7 @@ Multiple lines with different orientations are fit through each given point $p$.
 Because a line in slope-intercept form parallel to the y-axis would lead to an infinite slope, the Hesse normal form is chosen as the primary line representation\cite{10.1145/361237.361242}.
 
 In Hesse normal form, an individual line can be parameterized with a pair $(r, \theta)$, with $r$  being the orthogonal distance origin to the plane and $\theta$ being the angle between the x-axis and the line that connects the origin to the closest point on the line.
-This pair is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding value of $\theta$, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
+This tuple is also called a \textit{Hough Space} in this context. Votes are cast on the corresponding value of $\theta$, depending on the number of inliers within a specific \textit{Hough Space} $(r_i,\theta_i)$. The map that connects the
 votes to each $\theta$ is called an \textit{accumulator}.
 Finally, the best-fitting line is determined by the number of votes it received.
 
@@ -201,15 +194,14 @@ Since more parameters are needed to describe a plane in 3D, the accumulator must
 Therefore, a three-dimensional accumulator is used, whereas the specific shape has been discussed~\cite*{Borrmann_Elseberg_Lingemann_Nüchter_2011}.
 
 \subsection{RANSAC}
-RANSAC (RAndom SAmple Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{Sun_Mordohai_2019, Yang_Forstner, Ashraf_Ahmed_2017}.
+RANSAC (Random Sample Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{Sun_Mordohai_2019, Yang_Forstner, Ashraf_Ahmed_2017}.
 RANSAC is an iterative process. Each iteration randomly samples a certain amount of data points and fits a mathematical model through them. The level of outliers determines the quality of the obtained model and preserves the best overall model.
 
 Within the context of plane detection in 3D point clouds, an approach could involve random sampling of 3 points, fitting a plane through them,
 and counting the number of points within a certain range of the plane\cite{Yang_Forstner}. The model, in that case, could be a cartesian plane equation.
 
 \subsection{Region Growing}
-Region Growing (RG) methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}.
-RG-based segmentation methods aim to grow a set of disjoint regions from an initial selection of seed points. The regions increase in size by inserting neighboring values based on an inclusion criterion.
+Region Growing methods are often used in the field of image or point cloud segmentation \cite{Proença_Gao_2018, Vo_Truong-Hong_Laefer_Bertolotto_2015}. Region growing-based segmentation methods aim to grow a set of disjoint regions from an initial selection of seed points. The regions increase in size by inserting neighboring values based on an inclusion criterion.
 The quality of the resulting regions depends on the choice of seed points, e.g., a very noisy seed point could decrease overall quality  \cite{Malek_Rahman_Yasiran_Jumaat_Jalil_2012}.
 In the context of this work, a criterion for region growth could be the distance or curvature between a region and its adjacent data points.
 
@@ -221,7 +213,7 @@ Aside from the functionality of a method, we give relevant higher-level informat
 \label{subsec:bg-rspd}
 
 
-Robust Statistics approach for Plane Detection (RSPD)~\cite{Araújo_Oliveira_2020} is based on region growing.
+\textit{Robust Statistics approach for Plane Detection} (RSPD)~\cite{Araújo_Oliveira_2020} is based on region growing.
 After taking an unorganized point cloud as input, the procedure is divided into three phases:
 \textit{Split, Grow and Merge} (see Figure~\ref{fig:rspd}).
 
@@ -239,14 +231,13 @@ The planarity test is comprised of three individual tests:
     \item an inlier to outlier ratio test.
 \end{enumerate}
 Therein, the tests are influenced by corresponding parameters. The distance test is passed, if the point-to-plane distance is smaller than
-the \textit{Maximum Distance to Plane} (MDP). If the normals of a patch deviate less than the \textit{Maximum Normal Deviation},
-the second test is passed. Lastly, a patch is discarded if its percentage of outliers exceeds the \textit{Maximum Outlier Ratio}.
-If all eight children of a node $n$ are leaf nodes and fail the planarity test, $n$ replaces its children
-and becomes a leaf node of its own. This procedure is repeated until the root of the octree is reached.
+the \textit{Maximum Distance to Plane} (MDP). If the normals of a patch deviate less than the \textit{Maximum Normal Deviation} (MND),
+the second test is passed. Lastly, a patch is discarded if its percentage of outliers exceeds the \textit{Maximum Outlier Ratio} (MOR).
+If all eight children of a node $n$ are leaf nodes that fail the planarity test, $n$ replaces its children and becomes a leaf node itself. This procedure is repeated exhaustively or until the root of the octree is reached.
 
 \paragraph{Grow}
-In preparation for the growth phase, a neighborhood graph (NG) over the entire point cloud is created.
-Every node of NG represents one point, and an edge between two nodes exists only if
+In preparation for the growth phase, a neighborhood graph over the entire point cloud is created.
+Every node within the graph represents one point, and an edge between two nodes exists only if
 a nearest-neighbor search with a neighborhood size $k$ detects both points being in the same neighborhood.
 The authors use a neighborhood size of $k=50$.
 
@@ -288,7 +279,7 @@ This phase returns all maximally merged planar patches, i.e. the final planes.
 
 \subsection{Oriented Point Sampling}
 \label{subsec:bg-ops}
-Oriented Point Sampling (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized point cloud as input.
+\textit{Oriented Point Sampling} (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized point cloud as input.
 
 
 First, a sample of points is uniformly selected. Sample sizes of $\alpha_s \in [0.3\%,3\%]$ are used in the Evaluation in~\cite[Table~3]{Sun_Mordohai_2019}.
@@ -296,7 +287,7 @@ The normal vectors of these points are estimated using SVD and the k nearest nei
 An inverse distance weight function is employed to prioritize neighboring points that are closer to the sample of which the normal vector is currently being estimated.
 
 
-After normal estimation, one-point-RANSAC is performed. Usual RANSAC implementations sample three points to fit a plane.
+After normal estimation, one-point-RANSAC is performed. Usual RANSAC implementations sample three points to fit a plane~\cite{Yang_Forstner, Biswas2011FastSP}.
 However, OPS fits a plane with only one sample point and its normal vector and counts the number of points where the distance to
 the plane is smaller than a \textit{minimum-distance parameter} $\theta_h$. Moreover, this number of inliers must exceed a
 \textit{minimum plane size} threshold $\theta_N$, for a plane to be accepted.
@@ -314,7 +305,7 @@ the normal of the resulting plane is calculated via singular value decomposition
 
 \subsection{3D Kernel-based Hough Transform}
 \label{subsec:bg-3dkht}
-With the 3D Kernel-based Hough Transform (3D-KHT),
+With the \textit{3D Kernel-based Hough Transform} (3D-KHT),
 \citeauthor{LimbergerOliveira2015HT3D}~\cite{LimbergerOliveira2015HT3D} propose a hough transform-based plane detection method,
 that accepts unorganized point clouds as input.
 
@@ -378,7 +369,7 @@ Finally, the detected planes are sorted by the number of different clusters that
 
 \subsection{Octree-based Region Growing}
 \label{subsec:bg-obrg}
-Octree-Based Region Growing (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} employs region growing to detect planes in UPC.
+\textit{Octree-Based Region Growing} (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} employs region growing to detect planes in UPC.
 
 \begin{figure}[H]
     \centering
@@ -400,7 +391,7 @@ does not belong to any region and the angular divergence between both normal vec
 $\theta_{ang}$. Values between $3.5$ degree and $15$ degree were used during the  evaluation~\cite[Tables~1,4,7]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.
 Furthermore, if a leaf node is inserted into a region, it is also considered a starting point for a future iteration,
 if its residual value is lower than the corresponding threshold $\theta_{res}$. Small values at a maximum of $0.05$(m)
-are reported. If a region cannot be expanded, it is marked as \textit{detected}, if its number of inliers exceeds a
+are reported. If a region cannot be expanded, it is marked as detected, if its number of inliers exceeds a
 threshold $\theta_M$.
 
 Lastly, a refinement step is employed.
@@ -415,7 +406,7 @@ The refinement process returns a complete set of planar regions.
 
 \subsection{Probabilistic Agglomerative Hierarchical Clustering}
 \label{subsec:bg-peac}
-Probabilistic Agglomerative Hierarchical Clustering (PEAC)~\cite{Feng_Taguchi_Kamat_2014} is a plane detection algorithm that takes an organized
+\textit{Probabilistic Agglomerative Hierarchical Clustering} (PEAC)~\cite{Feng_Taguchi_Kamat_2014} is a plane detection algorithm that takes an organized
 point cloud as input.
 The agglomerative hierarchical clustering is based on an algorithm called
 \textit{line regression}\cite[Section~III.B]{Nguyen_Martinelli_Tomatis_Siegwart_2005}. The primary difference is
@@ -459,7 +450,7 @@ The region growing is followed by another \textit{agglomerative hierarchical clu
 
 \subsection{Fast Cylinder and Plane Extraction}
 \label{subsec:bg-cape}
-Fast Cylinder and Plane Extraction (CAPE)~\cite{Proença_Gao_2018} is a region growing-based algorithm that detects
+\textit{Fast Cylinder and Plane Extraction} (CAPE)~\cite{Proença_Gao_2018} is a region growing-based algorithm that detects
 planes and cylinders in organized point clouds.
 The authors propose this algorithm as an extension of their Probabilistic Visual Odometry Framework~\cite{Proenca_Gao_2018}.
 
@@ -519,7 +510,7 @@ where $k$ is a constant. The authors use $k=9$ in their work.
 
 \subsection{Plane Extraction using Spherical Convex Hulls}
 \label{subsec:bg-schrg}
-As the name suggests, Plane Extraction using Spherical Convex Hulls (SCH-RG) employs spherical convex hulls to
+As the name suggests, \textit{Plane Extraction using Spherical Convex Hulls} (SCH-RG) employs spherical convex hulls to
 detect planes in organized point clouds.
 The primary concept behind this method is that the planes are not parameterized, but rather represented as
 a set of geometric constraints in the spherical coordinate system.
@@ -554,7 +545,7 @@ Lastly, dilation is performed to eliminate holes in planes. This is not further 
 
 \subsection{Depth Kernel-based Hough Transform}
 \label{subsec:bg-dkht}
-Depth Kernel-based Hough Transform (D-KHT) \cite{Vera_Lucio_Fernandes_Velho_2018} is a Hough transform-based plane detection
+\textit{Depth Kernel-based Hough Transform} (D-KHT) \cite{Vera_Lucio_Fernandes_Velho_2018} is a Hough transform-based plane detection
 algorithm that accepts depth images as input.
 
 The algorithm is performed in three stages: \textit{Clustering, Voting,} and \textit{Peak Detection}.
@@ -648,7 +639,7 @@ Moreover, they are parameterized by a center point, which is defined by $\rho$, 
 
 \subsection{Depth Dependent Flood Fill}
 \label{subsec:bg-ddff}
-Depth Dependent Flood Fill (DDFF)~\cite{Roychoudhury_Missura_Bennewitz_2021_new} is a region growing-based algorithm that detects planes in organized point clouds.
+\textit{Depth Dependent Flood Fill} (DDFF)~\cite{Roychoudhury_Missura_Bennewitz_2021_new} is a region growing-based algorithm that detects planes in organized point clouds.
 The algorithm builds upon and improves their previous method~\cite{Roychoudhury_Missura_Bennewitz_2021_old}.
 
 The algorithm starts by selecting appropriate seeds. First, the organized point cloud gets subdivided into cubes of a
@@ -704,7 +695,7 @@ we mark all unmarked pixels with the same label.
 
 \subsection{PlaneNet}
 \label{subsec:bg-planenet}
-PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} is a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.
+\textit{PlaneNet}~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} is a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.
 
 \begin{figure}[H]
     \centering
@@ -729,7 +720,7 @@ An additional dense conditional random field (DCRF) is applied to obtain the seg
 
 \subsection{PlaneRecNet}
 \label{subsec:bg-planerecnet}
-PlaneRecNet~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images
+\textit{PlaneRecNet}~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images
 as input.
 \begin{figure}[H]
     \centering
@@ -755,7 +746,7 @@ scene reconstruction of the input image. No further refinement is implemented.
 
 \subsection{PlaneRCNN}
 \label{subsec:bg-planercnn}
-RCNN~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019} is a deep neural architecture that detects planar
+\textit{PlaneRCNN}~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019} is a deep neural architecture that detects planar
 regions and reconstructs a piecewise planar depth map from RGB-Images.
 
 \begin{figure}[H]
@@ -796,7 +787,7 @@ Furthermore, the average amount of points per scene is ${\sim}10^6$ with an aver
 
 \subsection{Leica}
 \label{subsec:bg-Leica}
-The Leica\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}
+The \textit{Leica}\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}
 dataset is a collection of 23 scans of outdoor environments.
 Each scan consists of a dense unorganized point cloud which has been recorded by the \textit{Leica BLK360}
 LiDAR Scanner\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360}{https://shop.leica-geosystems.com/de/leica-blk/blk360}}.
@@ -812,16 +803,9 @@ A ground truth that focuses on plane and cylinder segmentation is provided in ad
 \subsection{SYNPEB}
 \label{subsec:bg-SYNPEB}
 The \textit{SYNPEB} dataset was introduced by \citeauthor{schaefer19icra}~\cite{schaefer19icra} to improve upon the popular
-\textit{SegComp} dataset. The synthetic dataset includes a 6x7x3m room with various geometric objects inside (see Figure~\ref{fig:SYNPEB}).
+\textit{SegComp} dataset. The synthetic dataset includes a 6x7x3m room with various geometric objects inside.
 Moreover, a total of 40 scans from different views within the room are provided as organized point clouds with
 a resolution of 500x500. Lastly, the provided ground truth represents a planar segmentation of the scene.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/synpeb_room.jpg}
-    \caption[SYNPEB Dataset]{The \textit{SYNPEB} room, taken from \href{http://synpeb.cs.uni-freiburg.de/}{http://synpeb.cs.uni-freiburg.de/}.}
-    \label{fig:SYNPEB}
-\end{figure}
 
 \subsection{ARCO}
 \label{subsec:bg-ARCO}
@@ -835,7 +819,7 @@ We are not aware of the existence of a ground truth.
 The \textit{SegComp}~\cite{article} dataset
 includes a collection of over 400 depth images, as well as a corresponding ground truth. Additionally, a complete
 evaluation package is provided on the corresponding website\footnote{\href{http://www.eng.usf.edu/cvprg/range/seg-comp/SegComp.html}{http://www.eng.usf.edu/cvprg/range/seg-comp/SegComp.html}}.
-The images are saved in their own file format, namely \textit{gt-seq}.
+The images are saved in their own file format, namely \textit{.gt-seq}.
 
 \subsection{NYU V2}
 \label{subsec:bg-NYU}
@@ -881,7 +865,7 @@ First, we regularize $PC$ to reduce complexity and to avoid proximity bias, beca
 between distance to sensor and cloud density. This regularization is obtained through voxelization of the point cloud.
 With this voxel grid, we can now calculate corresponding sets of voxels for each list of points that represent a plane.
 In the next step, we compare our planes from $GT$ with $A$ to obtain a list of corresponding pairs of ground truth and found planes.
-A ground truth plane $gt_i$ is marked as \textit{detected} if any plane from the list of found planes achieves a minimum voxel overlap of $50\%$.
+A ground truth plane $gt_i$ is marked as detected if any plane from the list of found planes achieves a minimum voxel overlap of $50\%$.
 With this list of correspondences, we calculate \textit{Precision, Recall} and the \textit{F1-Score}.
 
 For a given ground truth plane $gt_j$ and a corresponding detected plane $a_k$ we can sort a given voxel $v_i$ into the categories

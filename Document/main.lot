@@ -4,37 +4,37 @@
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {2.1}{\ignorespaces Common Input Types}}{16}{table.caption.5}%
+\contentsline {table}{\numberline {2.1}{\ignorespaces Common Input Types}}{8}{table.caption.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {2.2}{\ignorespaces Intel RealSense T265 \& D455 Specification}}{18}{table.caption.6}%
-\defcounter {refsection}{0}\relax 
-\addvspace {10\p@ }
-\defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {3.1}{\ignorespaces State-of-The-Art-Plane Detection Algorithms}}{47}{table.caption.27}%
-\defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {3.2}{\ignorespaces Pre-processing \& Post-processing Phases of Selected Algorithms}}{49}{table.caption.29}%
-\defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {3.3}{\ignorespaces State-of-The-Art Datasets}}{51}{table.caption.35}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Intel RealSense T265 \& D455 Specification}}{10}{table.caption.6}%
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {4.1}{\ignorespaces 2S-3D-S Statistics}}{58}{table.caption.40}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces State-of-The-Art-Plane Detection Algorithms}}{37}{table.caption.26}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {3.2}{\ignorespaces Pre-processing \& Post-processing Phases of Selected Algorithms}}{39}{table.caption.28}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {3.3}{\ignorespaces State-of-The-Art Datasets}}{41}{table.caption.34}%
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.1}{\ignorespaces RSPD Parameterization}}{63}{table.caption.44}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces 2S-3D-S Statistics}}{48}{table.caption.39}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.2}{\ignorespaces OPS Parameterization}}{64}{table.caption.47}%
+\addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.3}{\ignorespaces 3D-KHT Parameterization}}{64}{table.caption.50}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces RSPD Parameterization}}{53}{table.caption.43}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.4}{\ignorespaces OBRG Parameterization}}{65}{table.caption.53}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces OPS Parameterization}}{54}{table.caption.46}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.5}{\ignorespaces Average 2D-3D-S Results}}{66}{table.caption.56}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces 3D-KHT Parameterization}}{54}{table.caption.49}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.6}{\ignorespaces Average FIN Results}}{70}{table.caption.62}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces OBRG Parameterization}}{55}{table.caption.52}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.7}{\ignorespaces Real-Time Applicabilities of Selected Algorithms}}{75}{table.caption.68}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Average 2D-3D-S Results}}{56}{table.caption.55}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {5.6}{\ignorespaces Average FIN Results}}{60}{table.caption.61}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {5.7}{\ignorespaces Real-Time Applicabilities of Selected Algorithms}}{65}{table.caption.67}%
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 

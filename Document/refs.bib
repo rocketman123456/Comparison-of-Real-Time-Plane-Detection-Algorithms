@@ -148,16 +148,12 @@
 }
 
  @article{Dai_Lund_Gao_2022,
-  title        = {PlaneSLAM: Plane-based LiDAR SLAM for Motion Planning in Structured 3D Environments},
-  url          = {http://arxiv.org/abs/2209.08248},
-  abstractnote = {LiDAR sensors are a powerful tool for robot simultaneous localization and mapping (SLAM) in unknown environments, but the raw point clouds they produce are dense, computationally expensive to store, and unsuited for direct use by downstream autonomy tasks, such as motion planning. For integration with motion planning, it is desirable for SLAM pipelines to generate lightweight geometric map representations. Such representations are also particularly wellsuited for man-made environments, which can often be viewed as a so-called “Manhattan world” built on a Cartesian grid. In this work we present a 3D LiDAR SLAM algorithm for Manhattan world environments which extracts planar features from point clouds to achieve lightweight, real-time localization and mapping. Our approach generates plane-based maps which occupy signiﬁcantly less memory than their point cloud equivalents, and are suited towards fast collision checking for motion planning. By leveraging the Manhattan world assumption, we target extraction of orthogonal planes to generate maps which are more structured and organized than those of existing plane-based LiDAR SLAM approaches. We demonstrate our approach in the high-ﬁdelity AirSim simulator and in realworld experiments with a ground rover equipped with a Velodyne LiDAR. For both cases, we are able to generate high quality maps and trajectory estimates at a rate matching the sensor rate of 10 Hz.},
-  note         = {arXiv:2209.08248 [cs]},
-  number       = {arXiv:2209.08248},
-  publisher    = {arXiv},
-  author       = {Dai, Adam and Lund, Greg and Gao, Grace},
-  year         = {2022},
-  month        = {Sep},
-  language     = {en}
+  title     = {PlaneSLAM: Plane-based LiDAR SLAM for Motion Planning in Structured 3D Environments},
+  note      = {arXiv:2209.08248 [cs]},
+  number    = {arXiv:2209.08248},
+  publisher = {arXiv},
+  author    = {Dai, Adam and Lund, Greg and Gao, Grace},
+  year      = {2022}
 }
 
  @inproceedings{Kaess_2015,
@@ -338,7 +334,7 @@
   archiveprefix = {arXiv},
   eprint        = {1702.01105},
   primaryclass  = {cs.CV},
-  year          = 2017
+  year          = {2017}
 }
 
  @inproceedings{Feng_Taguchi_Kamat_2014,
@@ -351,11 +347,12 @@
 }
 
 @article{Proença_Gao_2018,
-  title   = {Fast Cylinder and Plane Extraction from Depth Cameras for Visual Odometry},
-  author  = {Pedro F. Proença and Yang Gao},
-  journal = {2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  year    = {2018},
-  pages   = {6813-6820}
+  title     = {Fast Cylinder and Plane Extraction from Depth Cameras for Visual Odometry},
+  author    = {Pedro F. Proença and Yang Gao},
+  journal   = {RSJ International Conference on Intelligent Robots and Systems},
+  publisher = {IEEE},
+  year      = {2018},
+  pages     = {6813-6820}
 }
 
 @inproceedings{Mols_Li_Hanebeck_2020,
@@ -453,18 +450,14 @@
 }
 
 @article{10.1145/361237.361242,
-  author     = {Duda, Richard O. and Hart, Peter E.},
-  title      = {Use of the Hough Transformation to Detect Lines and Curves in Pictures},
-  year       = {1972},
-  issue_date = {Jan. 1972},
-  publisher  = {Association for Computing Machinery},
-  volume     = {15},
-  number     = {1},
-  abstract   = {Hough has proposed an interesting and computationally efficient procedure for detecting lines in pictures. This paper points out that the use of angle-radius rather than slope-intercept parameters simplifies the computation further. It also shows how the method can be used for more general curve fitting, and gives alternative interpretations that explain the source of its efficiency.},
-  journal    = {Commun. ACM},
-  pages      = {11-15},
-  numpages   = {5},
-  keywords   = {curve detection, line detection, pattern recognition, Hough transformation, picture processing, point-line transformation, colinear points}
+  author    = {Duda, Richard O. and Hart, Peter E.},
+  title     = {Use of the Hough Transformation to Detect Lines and Curves in Pictures},
+  year      = {1972},
+  publisher = {Association for Computing Machinery},
+  volume    = {15},
+  number    = {1},
+  journal   = {Commun. ACM},
+  pages     = {11-15}
 }
 
 @article{vslamsurvey,
@@ -475,6 +468,11 @@
   year    = {2022}
 }
 
+@inproceedings{Biswas2011FastSP,
+  title={Fast Sampling Plane Filtering , Polygon Construction and Merging from Depth Images},
+  author={Joydeep Biswas and Manuela M. Veloso},
+  year={2011}
+}
 
  @article{osti_4746348,
   title   = {METHOD AND MEANS FOR RECOGNIZING COMPLEX PATTERNS},
@@ -555,16 +553,13 @@
 }
 
  @article{Mur-Artal_Tardós_2017,
-  title        = {ORB-SLAM2: An Open-Source SLAM System for Monocular, Stereo, and RGB-D Cameras},
-  volume       = {33},
-  issn         = {1941-0468},
-  doi          = {10.1109/TRO.2017.2705103},
-  abstractnote = {We present ORB-SLAM2, a complete simultaneous localization and mapping (SLAM) system for monocular, stereo and RGB-D cameras, including map reuse, loop closing, and relocalization capabilities. The system works in real time on standard central processing units in a wide variety of environments from small hand-held indoors sequences, to drones flying in industrial environments and cars driving around a city. Our back-end, based on bundle adjustment with monocular and stereo observations, allows for accurate trajectory estimation with metric scale. Our system includes a lightweight localization mode that leverages visual odometry tracks for unmapped regions and matches with map points that allow for zero-drift localization. The evaluation on 29 popular public sequences shows that our method achieves state-of-the-art accuracy, being in most cases the most accurate SLAM solution. We publish the source code, not only for the benefit of the SLAM community, but with the aim of being an out-of-the-box SLAM solution for researchers in other fields.},
-  number       = {5},
-  journal      = {IEEE Transactions on Robotics},
-  author       = {Mur-Artal, Raúl and Tardós, Juan D.},
-  year         = {2017},
-  pages        = {12551262}
+  title   = {ORB-SLAM2: An Open-Source SLAM System for Monocular, Stereo, and RGB-D Cameras},
+  volume  = {33},
+  number  = {5},
+  journal = {IEEE Transactions on Robotics},
+  author  = {Mur-Artal, Raúl and Tardós, Juan D.},
+  year    = {2017},
+  pages   = {12551262}
 }
 
 
@@ -623,8 +618,7 @@
 @inproceedings{Carranza_Estrella_Zaidi_Carranza_2021,
   author = {Carranza, Aparicio and Estrella, Juan and Zaidi, Rashid and Carranza, Harrison},
   title  = {Plane Detection Based Object Recognition for Augmented Reality},
-  year   = {2021},
-  doi    = {10.11159/cdsr21.305}
+  year   = {2021}
 }
 
 @inproceedings{6913908,
@@ -746,8 +740,7 @@
   publisher = {Springer-Verlag},
   booktitle = {European Conference on Computer Vision},
   part      = {Part XXVI},
-  pages     = {581–597},
-  numpages  = {17}
+  pages     = {581–597}
 }
 
 @inproceedings{yu2017dilated,
@@ -773,4 +766,22 @@
   pages        = {234--241},
   year         = {2015},
   organization = {Springer}
+}
+
+ @article{Xu_Xie_Chen_Wang_2020,
+  title   = {Real-Time Plane Detection with Consistency from Point Cloud Sequences},
+  author  = {Xu, Jinxuan and Xie, Qian and Chen, Honghua and Wang, Jun},
+  journal = {Sensors},
+  volume  = {21},
+  number  = {1},
+  year    = {2020},
+  pages   = {140}
+}
+
+@inproceedings{yoohyun,
+  title   = {Real-time plane detection based on depth map from Kinect},
+  author  = {Yoo, Hyun and Kim, Woo and Park, Jeong Woo and Lee, Won and Chung, Myung},
+  journal = {Robotics (ISR), 2013 44th International Symposium on},
+  year    = {2013},
+  pages   = {1-4}
 }

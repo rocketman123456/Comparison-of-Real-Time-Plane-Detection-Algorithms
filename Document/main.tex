@@ -36,15 +36,22 @@
 
 \addtokomafont{chapterprefix}{\raggedleft}
 
+
 \renewcommand*{\chapterformat}{%
 \mbox{\chapappifchapterprefix{\nobreakspace}%
 \scalebox{3}{\color{black}\thechapter\autodot}\enskip}}
 
+
+
+
 \begin{document}
 \pgfplotsset{compat=1.16}
+\pagenumbering{roman}
 \subfile{Title}
 \subfile{TOC}
 \subfile{Figures}
+\pagenumbering{arabic}
+
 \subfile{Introduction}
 \subfile{Background}
 
@@ -72,10 +79,10 @@ or tools other than the ones indicated.
 
 \vspace{4em}
 \begin{minipage}{\linewidth}
-    \centering
+	\centering
 	\begin{tabular}{p{11.5em}C{20em}}
-		Datum: &  ...................................................................\\
-		& \centering (Signature)\\
+		Datum: & ................................................................... \\
+		       & \centering (Signature)                                              \\
 	\end{tabular}
 \end{minipage}
 
