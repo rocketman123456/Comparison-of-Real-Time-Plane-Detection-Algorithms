@@ -282,7 +282,7 @@ This phase returns all maximally merged planar patches, i.e. the final planes.
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{images/rspd.png}
-    \caption[RSPD Pipeline]{The RSPD plane detection pipeline. Taken from~\cite[Figure~2]{Araújo_Oliveira_2020}.}
+    \caption[RSPD Algorithm]{The RSPD plane detection pipeline. Taken from~\cite[Figure~2]{Araújo_Oliveira_2020}.}
     \label{fig:rspd}
 \end{figure}
 
@@ -380,6 +380,12 @@ Finally, the detected planes are sorted by the number of different clusters that
 \label{subsec:bg-obrg}
 Octree-Based Region Growing (OBRG) \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015} employs region growing to detect planes in UPC.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/obrg.png}
+    \caption[OBRG Algorithm]{The OBRG plane detection pipeline. Taken from~\cite[Figure~1]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.}
+    \label{fig:obrg}
+\end{figure}
 First, an unorganized point cloud is recursively subdivided using an octree.
 An octree node $n$ repeatedly subdivides itself into eight children until the level of $n$ supersedes a predefined maximum subdivision value or if the
 amount of contained points in $n$ is less than a predefined minimum of included points.
@@ -387,12 +393,6 @@ Saliency features are calculated for every leaf node in preparation for the regi
 component analysis (PCA) on the points inside each leaf node. The best-fitting plane of each leaf is defined by the mean normal vector and its center point.
 A residual value is obtained by taking the root-mean-square (RMS) of the distance of all included points to the plane.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/obrg.png}
-    \caption[OBRG Pipeline]{The OBRG plane detection pipeline. Taken from~\cite[Figure~1]{Vo_Truong-Hong_Laefer_Bertolotto_2015}.}
-    \label{fig:obrg}
-\end{figure}
 
 For the region growing phase, all leaf nodes are selected as individual seed points.
 Starting from the seed with the lowest residual value, a neighboring leaf node $n$ is inserted into the region if $n$
@@ -819,7 +819,7 @@ a resolution of 500x500. Lastly, the provided ground truth represents a planar s
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/synpeb_room.jpg}
-    \caption[SYNPEB]{The \textit{SYNPEB} room, taken from \href{http://synpeb.cs.uni-freiburg.de/}{http://synpeb.cs.uni-freiburg.de/}.}
+    \caption[SYNPEB Dataset]{The \textit{SYNPEB} room, taken from \href{http://synpeb.cs.uni-freiburg.de/}{http://synpeb.cs.uni-freiburg.de/}.}
     \label{fig:SYNPEB}
 \end{figure}
 
