@@ -1,4 +1,4 @@
-\documentclass[fontsize=12pt, paper=a4, headinclude, twoside=true,chapterprefix=true,headings=big, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=right, toc=listof, toc=bibliography]{scrreprt}
+\documentclass[fontsize=12pt, paper=a4, headinclude, twoside=true,chapterprefix=true,headings=big, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=left, toc=listof, toc=bibliography]{scrreprt}
 \usepackage[automark]{scrlayer-scrpage}
 \pagestyle{scrheadings}
 \ohead{\rightmark}
@@ -45,26 +45,27 @@
 
 
 \begin{document}
+\pagenumbering{roman}
 \pgfplotsset{compat=1.16}
 \newpage
 \thispagestyle{empty}
 \mbox{}
 \newpage
 \subfile{Title}
-\pagenumbering{roman}
 % \subfile{Abstract}
+
 \subfile{TOC}
 % \subfile{Abbreviations}
 \subfile{Figures}
 \subfile{Tables}
 
-\clearpage
-\newpage
-\thispagestyle{empty}
-\mbox{}
-\newpage
+% \newpage
+% \thispagestyle{empty}
+% \mbox{}
+% \newpage
 
-\pagenumbering{arabic}
+\cleardoublepage
+% \pagenumbering{arabic}
 \subfile{Introduction}
 \subfile{Background}
 
