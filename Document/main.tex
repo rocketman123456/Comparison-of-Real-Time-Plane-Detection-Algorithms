@@ -1,4 +1,4 @@
-\documentclass[fontsize=12pt, paper=a4, headinclude, twoside=true,chapterprefix=true,headings=big, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=left, toc=listof, toc=bibliography]{scrreprt}
+\documentclass[fontsize=12pt, paper=a4, headinclude, twoside=true,chapterprefix=true,headings=big, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=right, toc=listof, toc=bibliography]{scrreprt}
 \usepackage[automark]{scrlayer-scrpage}
 \pagestyle{scrheadings}
 \ohead{\rightmark}
@@ -29,7 +29,7 @@
 \usepackage{multirow}
 \usepackage{pgfplotstable}
 \usepackage{booktabs}
-\usepackage[]{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{array}
 \newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
 \raggedbottom
@@ -46,12 +46,12 @@
 
 \begin{document}
 \pgfplotsset{compat=1.16}
-% \pagenumbering{roman}
 \newpage
 \thispagestyle{empty}
 \mbox{}
 \newpage
 \subfile{Title}
+\pagenumbering{roman}
 % \subfile{Abstract}
 \subfile{TOC}
 % \subfile{Abbreviations}
@@ -59,8 +59,12 @@
 \subfile{Tables}
 
 \clearpage
-\pagenumbering{arabic}
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
 
+\pagenumbering{arabic}
 \subfile{Introduction}
 \subfile{Background}
 
