@@ -3,6 +3,7 @@
 \pagestyle{scrheadings}
 \ohead{\rightmark}
 \usepackage[utf8]{inputenc}
+\usepackage{makeidx}
 \setcounter{secnumdepth}{3}
 \usepackage{newfloat}
 \usepackage{interval}
@@ -33,17 +34,69 @@
 \usepackage{array}
 \newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
 \raggedbottom
+\RequirePackage[%
+  acronym,
+  nogroupskip,
+  nopostdot,
+  nonumberlist,
+  toc,
+  ]{glossaries}
 
-\addtokomafont{chapterprefix}{\raggedleft}
+  \newglossarystyle{long-mimosis}{%
+  \setglossarystyle{long}
+
+  \renewcommand{\glossentry}[2]{%
+    \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+    \glossentrydesc{##1}\glspostdescription\space ##2\tabularnewline
+  }%
+}
+\newacronymstyle{long-short-mimosis}
+{%
+  \GlsUseAcrEntryDispStyle{long-short}%
+}%
+{%
+  \GlsUseAcrStyleDefs{long-short}%
+  \renewcommand*{\genacrfullformat}[2]{%
+    \glsentrylong{##1}##2~\textup{(\firstacronymfont{\glsentryshort{##1}})}%
+  }%
+  \renewcommand*{\Genacrfullformat}[2]{%
+    \Glsentrylong{##1}##2~\textup{(\firstacronymfont{\glsentryshort{##1}})}%
+  }%
+  \renewcommand*{\genplacrfullformat}[2]{%
+    \glsentrylongpl{##1}##2~\textup{(\firstacronymfont{\glsentryshortpl{##1}})}%
+  }%
+  \renewcommand*{\Genplacrfullformat}[2]{%
+    \Glsentrylongpl{##1}##2~\textup{(\firstacronymfont{\Glsentryshortpl{##1}})}%
+  }%
+}
+\setacronymstyle{long-short-mimosis}
+\setglossarystyle{long-mimosis}
+  \addtokomafont{chapterprefix}{\raggedleft}
 
 
 \renewcommand*{\chapterformat}{%
 \mbox{\chapappifchapterprefix{\nobreakspace}%
 \scalebox{3}{\color{black}\thechapter\autodot}\enskip}}
 
+  
+  \newacronym[description={Principal component analysis}]{PCA}{PCA}{principal component analysis}
+  \newacronym[description={Software Development Kit}]   {SDK}{SDK}{software development kit}
+  \newacronym[description={Augmented Reality}]   {AR}{AR}{Augmented Reality}
+  \newacronym[description={Virtual Reality}]   {VR}{VR}{Virtual Reality}
+  \newacronym[description={Organized Point Cloud}]   {OPC}{OPC}{organized point cloud}
+  \newacronym[description={Unorganized Point Cloud}]   {UPC}{UPC}{unorganized point cloud}
+  \newacronym[description={Simultaneous Localization and Mapping}]   {SLAM}{SLAM}{ simultaneous localization and mapping}
+  \newacronym[description={Singular Value Decomposition}]   {SVD}{SVD}{singular value decomposition}
+  \newacronym[description={Mean Squared Error}]   {MSE}{MSE}{mean squared error}
+  \newacronym[description={Light Detection And Ranging}]   {LiDAR}{LiDAR}{light detection and ranging}
+  \newacronym[description={Ground Truth}]   {GT}{GT}{ground truth}
+  \newacronym[description={Faculty of Informatik}]   {FIN}{FIN}{faculty of informatik}
+  \newacronym[description={Normal Estimation}]   {NE}{NE}{normal estimation}
 
-
-
+   
+\makeindex
+  \makeglossaries
+  
 \begin{document}
 % \pagenumbering{roman}
 \pgfplotsset{compat=1.16}
@@ -97,8 +150,11 @@ or tools other than the ones indicated.
 	\centering
 	\begin{tabular}{p{11.5em}C{20em}}
 		Datum: & ................................................................... \\
-		       & \centering (Signature)                                              \\
+		& \centering (Signature)                                              \\
 	\end{tabular}
 \end{minipage}
 
+% \glsaddall
+% \printglossary[type=\acronymtype]
+% \printindex
 \end{document}

@@ -553,7 +553,7 @@ The algorithm is performed in three stages: \textit{Clustering, Voting,} and \te
 \paragraph{Clustering}
 In the clustering step, a quadtree is constructed to spatially subdivide the image. A node recursively subdivides
 itself, until a minimum of included points $s_{ms}$ is reached, or until the set of points is considered approximately
-coplanar. The latter is determined through a principle component analysis (PCA). Therein, the mean and
+coplanar. The latter is determined through PCA. Therein, the mean and
 a covariance matrix are computed.
 Pre-computing and subsequently referencing Summed-Area-Tables (SATs) is done to increase the efficiency
 of this step, leading to a constant-time calculation of the covariance matrix.
@@ -730,7 +730,7 @@ as input.
 \end{figure}
 
 The entire architecture of PlaneRecNet is portrayed in Figure~\ref{fig:planerecnet}.
-The general approach of this method is to calculate plane parameters through principle component analysis (PCA) or RANSAC
+The general approach of this method is to calculate plane parameters through PCA or RANSAC
 after providing a precisely estimated depth.
 This is achieved by implementing two separate branches, namely \textit{Plane segmentation}, and \textit{Depth estimation}.
 Both branches obtain their input from a common precursor which is a \textit{ResNet}~\cite{He_Zhang_Ren_Sun_2015} backbone.
