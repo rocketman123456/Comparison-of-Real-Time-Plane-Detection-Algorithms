@@ -24,7 +24,7 @@ Nevertheless, the affordability of the \textit{BLK360} is questionable with a st
 
 Through this lack of affordability and practicability of high-end sensors, the usage of consumer off-the-shelf hardware is gaining interest.
 With AR development platforms like \textit{ARKit}\footnote{\href{https://developer.apple.com/augmented-reality/arkit/}{https://developer.apple.com/augmented-reality/arkit/}} or \textit{ARCore}\footnote{\href{https://developers.google.com/ar}{https://developers.google.com/ar}}, it is generally possible to perform AR \textit{plane detection} on mobile phones\footnote{\href{https://developers.google.com/ar/devices\#google\_play\_devices}{Supported devices of ARCore: https://developers.google.com/ar/devices\#google\_play\_devices}}. However, the choice of development environment and the used sensor is arbitrary.
-Being representatives for consumer off-the-shelf (OTS) hardware, we use the \textit{Intel RealSense} cameras T265 and D455 (see Section~\ref{sec:bg-intel}) in this work. The cameras have a combined starting price of ${\sim}\$600$ and an open source software development kit (SDK), namely \textit{librealsense}\footnote{\href{https://github.com/IntelRealSense/librealsense}{https://github.com/IntelRealSense/librealsense}}, is provided.
+Being representatives for consumer off-the-shelf (off-the-shelf) hardware, we use the \textit{Intel RealSense} cameras T265 and D455 (see Section~\ref{sec:bg-intel}) in this work. The cameras have a combined starting price of ${\sim}\$600$ and an open source software development kit (SDK), namely \textit{librealsense}\footnote{\href{https://github.com/IntelRealSense/librealsense}{https://github.com/IntelRealSense/librealsense}}, is provided.
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
 Decades of research on plane detection yielded numerous algorithms, and many are reported to be \textit{real-time} applicable by the respective authors~\cite{LimbergerOliveira2015HT3D, Roychoudhury_Missura_Bennewitz_2021_new, Xu_Xie_Chen_Wang_2020, yoohyun,Feng_Taguchi_Kamat_2014}.
@@ -34,7 +34,7 @@ It is, therefore, impossible to assess the real-world applicability of most algo
 \section{Goals}
 \label{sec:goals}
 This thesis deals with a uniform comparison of plane detection algorithms.
-Through this comparison, we aim to evaluate the applicability of \textit{real-time} plane detection on consumer OTS hardware such as the \textit{Intel RealSense} cameras. The answer to this question will consequently determine which algorithm is most suitable.
+Through this comparison, we aim to evaluate the applicability of \textit{real-time} plane detection on consumer off-the-shelf hardware such as the \textit{Intel RealSense} cameras. The answer to this question will consequently determine which algorithm is most suitable.
 Note that this work focuses on plane detection in complete 3D environments.
 Furthermore, we restrict ourselves to plane detection in indoor environments.
 
