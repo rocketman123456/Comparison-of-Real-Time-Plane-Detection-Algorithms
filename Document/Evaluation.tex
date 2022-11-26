@@ -43,6 +43,7 @@ Furthermore, we consider an algorithm to achieve \textit{Real-Time Plane Detecti
 When recording a real environment, the point clouds likely grow incrementally with each map update.
 Therefore, the average calculation time alone is of limited significance, as we assume the calculation times to grow with the cloud size.
 Based on this assumption, it is necessary to analyze the relationship between the point cloud size and the calculation time in addition to average values.
+Note that we refer to a point cloud's size by its number of contained points in the remainder of this chapter.
 
 Following the separation of algorithms into phases (see Paragraph~\ref{par:prepostalgos}), we divide the calculation time into the pre-processing time $t_{pre}$,
 the time spent during plane detection $t_{calc}$, and the duration of post-processing steps $t_{post}$.
@@ -264,14 +265,14 @@ For each scene of the \textit{2D-3D-S} dataset, the pairs of processing times an
     \def\svgwidth{0.84\textwidth}
     \input{images/stanfordpdf.pdf_tex}
     \caption[Time Results 2D-3D-S]{The time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$,
-        post-processing $t_{post}$, and the total calculation time $t_{tot}$ per point cloud file size of the \textit{2D-3D-S} dataset.
+        post-processing $t_{post}$, and the total calculation time $t_{tot}$ per point cloud size of the \textit{2D-3D-S} dataset.
         Note that the y-axis is scaled logarithmically to the base of ten.}
     \label{fig:sizetimestanford}
 \end{figure}
 The computation times of 3D-KHT do not seem to strongly relate to the size of the point cloud.
 Both the duration of the pre-processing and the duration of the plane detection initially grow linearly
 but do not show a large growth even with large jumps in point cloud size.
-The difference in calculation times between ${\sim}280mb$ and ${>}400mb$ is hardly noticeable.
+The difference in calculation times between ${\sim}7\cdot10^6$ and ${\sim}9\cdot10^6$ is hardly noticeable considering .
 
 The computation times of RPSD show a similar relation, with the difference that the pre-processing of RSPD takes significantly longer.
 As with 3D-KHT, the duration of plane detection seems to have an upper limit.
@@ -285,7 +286,7 @@ environment rather than size alone.
 The duration of the pre-processing of OBRG also shows a linear relationship with respect to the point cloud size.
 The average high $t_{pre}$ values from Table~\ref{tab:res-3d2ds-total} are also reflected here since most values are in the range of
 $10s-100s$,
-even for smaller cloud sizes at ${\sim}25mb$.
+even for smaller cloud sizes at ${\sim}1\cdot10^6$.
 The $t_{calc}$ values of OBRG do not appear to be dependent on the size of the point cloud, as the computation
 times tend to decrease with growing point clouds. A possible reason could be the fixed value of the octree levels $l_{max}$.
 As this parameter is vital for the calculations in all phases, all calculation times of OBRG are likely to show improvement
@@ -316,8 +317,7 @@ However, we might consider RSPD and 3D-KHT to be \textit{Real-Time Plane Detecti
 the point cloud sizes vary greatly, and the average duration of their plane detection phase is only
 $0.03s-0.04s$ greater than the $1s$ threshold.
 Furthermore, as Figure~\ref{fig:sizetimestanford} suggests, RSPD and 3D-KHT are
-\textit{Real-Time Plane Detection} applicable for point clouds with a size ${\lesssim}40mb$, or
-${\lesssim}1.5{\cdot}10^6$ points.
+\textit{Real-Time Plane Detection} applicable for point clouds with ${\lesssim}1\cdot10^6$ points.
 
 \subsection{FIN}
 Each of the total 708 time frames of the FIN data set was processed by each algorithm.
@@ -375,7 +375,7 @@ neither of the introduced definitions of \textit{real-time}.
 
 \paragraph{Relationship of Time and Size}
 As mentioned before in Paragraph~\ref{par:time}, we are interested in the relationship between the size of the point cloud and the corresponding calculation time.
-In Figure~\ref{fig:dynaudi}, we compare the processing times of each time step to the file size of the
+In Figure~\ref{fig:dynaudi}, we compare the processing times of each time step to the number of points in the
 \textit{auditorium} scene of the FIN data set.
 
 \begin{figure}[H]
@@ -384,7 +384,7 @@ In Figure~\ref{fig:dynaudi}, we compare the processing times of each time step t
     % \input{images/dynaudi.pdf_tex}
     \input{images/dynaudi_crop.pdf_tex}
     \caption[Time Results Auditorium Scene]{Time spent in pre-processing $t_{pre}$, plane detection $t_{calc}$, post-processing
-    $t_{post}$, and total calculation time $t_{tot}$ of the $auditorium$ scene and cloud sizes $size$ of each time frame.
+    $t_{post}$, and total calculation time $t_{tot}$ of the $auditorium$ scene, and point cloud size of each time frame.
     Note that both y-axes are scaled logarithmically to the base of ten. \textit{Time Frames} are defined in Subsection~\ref{subsec:metrics}.}
     \label{fig:dynaudi}
 \end{figure}
@@ -446,8 +446,8 @@ between the experiments (${\sim}0.3s$ for the FIN experiment and ${\sim}3s$ for 
 
 However, there are also notable differences.
 Whereas the calculation times of 3D-KHT seem to be proportional to the point cloud size in the \textit{2D-3D-S} experiment, they show no such
-relation during the FIN experiment. It is, however, noteworthy that the cloud sizes widely differ between the experiments, as the
-maximum size of the FIN experiment (${\sim}30mb$) is very small, compared to largest scene of the \textit{2D-3D-S} dataset (${>}400mb$).
+relation during the FIN experiment. It is worth noting that the cloud sizes widely differ between the experiments, as the
+maximum size of the FIN experiment (${\sim}0.75\cdot10^6$) is very small, compared to largest scene of the \textit{2D-3D-S} dataset (${\sim}9\cdot10^6$).
 Nonetheless, since Figure~\ref{fig:sizetimestanford} portrays a proportionality, even for smaller clouds, the reason for
 different curves is likely the difference of parameterization.
 

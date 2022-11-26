@@ -22,8 +22,10 @@ for i in range(1, 7):
         size = os.path.getsize(os.path.join(area, scene, cloudfile))
         # if (size/1000000) > 39:
         #     continue
+        points = None
         with open(os.path.join(area, scene, cloudfile)) as file:
-            st[0] += len(file.readlines())
+            points = len(file.readlines())
+            st[0] += points
             st[1] += (size/1000000)
         k += 1
         # if size/1000000 > 250:
@@ -34,9 +36,9 @@ for i in range(1, 7):
             if result.algorithm =='OBRG' and result.time_per_plane > 1000:
                 continue
             data[algo].append(
-                [size, result.time_total, result.time_per_plane, result.time_per_sample, result.precision, result.recall, result.f1])
+                [points, result.time_total, result.time_per_plane, result.time_per_sample, result.precision, result.recall, result.f1])
 print(f'{st = }')
-print(f'{round(st[0]/k)}/{round(st[1]/k)}')
+print(f'{round(st[0]/k)/round(st[1]/k)}')
 # exit()
 fig = plt.figure(figsize=[45, 60])
 max_pre = -1
@@ -66,7 +68,7 @@ for i, algo in enumerate(data.keys()):
     print(f'{algo:10}:{sum(d[:,4])/len(d)}')
     print(f'{algo:10}:{sum(d[:,5])/len(d)}')
     print(f'{algo:10}:{sum(d[:,6])/len(d)}')
-    d = d * [1/1000000, 1, 1, 1, 1, 1, 1]
+    # d = d * [1/1000000, 1, 1, 1, 1, 1, 1]
     ax = fig.add_subplot(len(data.keys()), 1, i+1)
     if algo == '3DKHT':
         algo = "3D-KHT"
@@ -100,20 +102,23 @@ for i, algo in enumerate(data.keys()):
     ax.set_yticks([0.01, 1, 10,100,700]) #round(max(max_calc, max_pre)*1.1)])
     ax.set_yticklabels(["$\\leq0.01$","1","10","100",'700'])
     print(ax.get_yticks())
-    # ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    ax.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
     # ax.set_ylim(min(min_pre, min_calc),700)
     ax.set_ylim(0.01,700)
-    ax.grid(axis='y')
+    ax.set_xticks([0, 1_000_000, 3_000_000,5_000_000,7_000_000,9_000_000]) #round(max(max_calc, max_pre)*1.1)])
+    ax.set_xticklabels([0, '$1.000.000$', '$3.000.000$','$5.000.000$','$7.000.000$', '$9.000.000$'])
+    ax.grid(True)
 
-    # ax.ticklabel_format(useOffset=False)
+    # ax.ticklabel_format(axis='x',style='plain')
     if i != 3:
-        ax.get_xaxis().set_visible(False)
+        ax.set_xticklabels([])
+        # ax.get_xaxis().set_visible(False)
     ax.tick_params(labelsize=60)
     
     # ax.set_xscale('log')
 fig.text(0.045, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
          ha='center', va='center', rotation='vertical',fontdict={'size':80})
-fig.text(0.5, 0, 'File Size(mb)', ha='center',
+fig.text(0.5, 0, 'Number of Points', ha='center',
          va='bottom', rotation='horizontal',fontdict={'size':80})
 
 fig.axes[0].legend(loc='lower right', fancybox=True, shadow=True, ncol=5,prop={'size':80})

@@ -15,7 +15,7 @@ import sys
 sys.path.append('/home/pedda/Documents/coding/OBRG/')
 import obrg
 import matplotlib
-matplotlib.rcParams.update({'font.size': 40, 'figure.subplot.bottom': 0.06,'figure.subplot.top': 0.95})
+matplotlib.rcParams.update({'font.size': 40, 'figure.subplot.bottom': 0.06,'figure.subplot.top': 0.95, 'figure.subplot.right': 0.88})
 
 
 def dyn_eval(path_to_subclouds: str, binaries_path: str):
@@ -202,7 +202,9 @@ def whatevs(path: str, algos=ALGOS):
     for cfile in os.listdir(path):
         if not cfile.endswith('.txt'):
             continue
-        sizes.append([os.path.getsize(os.path.join(path,cfile))/1000000, int(cfile[6:10])])
+        # sizes.append([os.path.getsize(os.path.join(path,cfile))/1000000, int(cfile[6:10])])
+        with open(os.path.join(path,cfile)) as file:
+            sizes.append([len(file.readlines()), int(cfile[6:10])])
     fig = plt.figure(figsize=[45,60])
     sizes.sort(key= lambda x: x[1])
     sizes = np.array(sizes)
@@ -251,12 +253,17 @@ def whatevs(path: str, algos=ALGOS):
                     marker='.',  label='$t_{tot}$')
         ax.plot(0,0,'--',label="$size$")
         ax.set_yscale('log')
+        ax2.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+
         ax2.set_yscale('log')
+        ax2.set_yticks([1000, 10000, 100000,750000]) #round(max(max_calc, max_pre)*1.1)])
+        ax2.set_yticklabels(['$1.000$','$10.000$','$100.000$','$750.000$'])
+    
         ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
         # ax2.legend()
     fig.text(0.045, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
          ha='center', va='center', rotation='vertical', fontdict={'size':80})
-    fig.text(0.96, 0.5, '$size(mb)$', ha='center', va='center', rotation='vertical',fontdict={'size':80})
+    fig.text(0.99, 0.5, 'Number of Points', ha='center', va='center', rotation='vertical',fontdict={'size':80})
     fig.text(0.5,0, 'Individual Time Frames', ha='center', va='bottom', rotation='horizontal',fontdict={'size':80})
     box = fig.axes[0].get_position()
     # fig.axes[0].set_position([box.x0, box.y0 + box.height * 0.1,
@@ -279,10 +286,10 @@ def whatevs(path: str, algos=ALGOS):
             ax.set_yticklabels([r'$\leq$0.01', "1","10",f'{round(maxlim[1])}'])
             ax.grid(axis='y')
             ax.set_ylim(0.01,round(maxlim[1]))    
-        else:
-            ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+        # else:
+            # ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
     
-    plt.savefig('dynhallway.svg',format='svg')
+    plt.savefig('dynoffice.svg',format='svg')
     # plt.show()
     # plt.close()
     # return A

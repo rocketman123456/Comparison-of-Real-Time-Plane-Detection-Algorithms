@@ -59,12 +59,10 @@ catkin_ws/src/plane-detection/src/EVAL/pointclouds/room.pcl
 catkin_ws/src/plane-detection/src/EVAL/pointclouds/utrecht.con
 catkin_ws/src/plane-detection/src/EVAL/pointclouds/utrecht.pcl
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/classes.cpython-38.pyc
-.gitignore
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/fileio.cpython-38.pyc
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/evaluator.cpython-38.pyc
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/classes.cpython-38.pyc
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/evaluator.cpython-38.pyc
-.gitignore
 catkin_ws/src/**/FIN-Dataset
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/fileio.cpython-38.pyc
 catkin_ws/src/plane-detection/src/EVAL/visualizer.py
@@ -75,8 +73,6 @@ catkin_ws/src/plane-detection/src/EVAL/__pycache__/batchEvaluation.cpython-38.py
 catkin_ws/src/plane-detection/src/EVAL/__pycache__/dynamic_eval.cpython-38.pyc
 catkin_ws/src/plane-detection/src/EVAL/test.geo
 catkin_ws/src/plane-detection/src/EVAL/RSPD/test.geo
-.gitignore
-.gitignore
 catkin_ws/src/plane-detection/src/EVAL/test.py
 catkin_ws/src/plane-detection/src/EVAL/test_dyn.py
 *.pgf
@@ -86,4 +82,13 @@ catkin_ws/src/plane-detection/src/EVAL/dynaudi.svg
 Document/main.mtc0
 Document/main.maf
 Document/main.mtc
+Document/main.lot
+Document/main.ilg
+Document/main.acn
+Document/main.glo
+Document/main.idx
+Document/main.ind
+Document/main.ist
+Document/main.ist
+Document/main.ist
 Document/main.lot
