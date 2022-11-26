@@ -5,8 +5,8 @@
 In this chapter, the previously selected algorithms are uniformly compared. We present and analyze the results.
 Prior to the evaluation, we present the protocol thereof.
 \section{Protocol}
-
-This work aims to determine which plane detection algorithm is the most suitable for an AR/VR system. For this decision, we uniformly compare the algorithms selected in
+\textbf{\textcolor{red}{hier besser formulieren}}
+This work aims to determine the applicability of plane detection algorithms for AR/VR systems in a realistic environment. For this decision, we uniformly compare the algorithms selected in
 Chapter~\ref{chap:Concept}. We split the comparison into two experiments conducted on different datasets: the \textit{2D-3D-S} and the
 self-created \textit{FIN} dataset.
 We conduct both experiments on an AMD Ryzen 7 5800H CPU with 16GB of RAM.
@@ -15,8 +15,8 @@ First, we present the metrics used for comparison, followed by an outline of the
 
 \subsection{Metrics}
 \label{subsec:metrics}
-The following two paragraphs detail the metrics we use in this evaluation. Note that by using the term "time frame $t$" or "time step $t$", we refer to
-the state of the point cloud at a given time $t$.
+The following two paragraphs detail the metrics we use in this evaluation. We introduce our methodology of measuring accuracy, as well as the calculation times. 
+Note that by using the term "time frame $t$" or "time step $t$", we refer to the state of the point cloud at a given time $t$.
 
 \paragraph{Accuracy}
 To quantify the accuracy of the plane detection algorithms, we use the detected planes and the created ground truth to calculate the three following
@@ -392,7 +392,7 @@ In Figure~\ref{fig:dynaudi}, we compare the processing times of each time step t
 Note that we created similar graphs for the other scenes of the FIN dataset.
 However, they do not introduce new information into the argumentation and are presented in Appendix~\ref{app:fin} for completeness
 and spatial reasons.
-We consider the auditorium scene as the most representative because it contains the longest recording, and thus contains the most data.
+We consider the $auditorium$ scene as the most representative because it contains the longest recording, and thus contains the most data.
 
 The pre-processing times of RSPD and OBRG are noticeably proportional to the point cloud size.
 In contrast, for OPS and 3D-KHT, the pre-processing times seem to correlate with the plane detection times since

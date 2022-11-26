@@ -26,8 +26,8 @@ Often different datasets or metrics are used, which precludes a quantitative com
 Moreover, algorithms are often incomparable by internal functionality due to differences in inputs and the format of the detected planes. Plane detection algorithms are, in some cases, developed to run on specific hardware.
 We can safely conclude that selecting a single 'best' algorithm, solely based on the results presented in their respective work, is impossible.
 
-To determine the \textit{real-time} applicability in a realistic environment, we perform a uniform comparison of plane detection algorithms. Therein, we especially pay attention to the accuracy and the calculation times of an algorithm. 
-This comparison will thereby yield the algorithm that produces the best results as well. 
+To determine the \textit{real-time} applicability in a realistic environment, we perform a uniform comparison of plane detection algorithms. Therein, we especially pay attention to the accuracy and the calculation times of an algorithm.
+This comparison will thereby yield the algorithm that produces the best results as well.
 However, to perform this evaluation, we need the following:
 
 \begin{enumerate}
@@ -63,14 +63,14 @@ environment falls into one of four categories:
     \item RGB-Image (RGBI),
 \end{itemize}
 whereas OPC and UPC both describe point clouds in the cartesian coordinate system. The primary difference is that the 3D coordinates inside
-an \textit{organized} point cloud are saved in a 2D grid, while the \textit{unorganized} point cloud resembles an unsorted 1D array. Moreover, the 
+an organized point cloud are saved in a 2D grid, while the unorganized point cloud resembles an unsorted 1D array. Moreover, the
 Like OPC, depth images are a 2D grid of values. However, in contrast to the 3D coordinates of an OPC, the data points of depth images
 are the distances to the sensor.
 
 
 
 \paragraph{Detected Plane Format} \label{subsec:planeformat}
-It is essential to determine an appropriate representation of the detected planes. 
+It is essential to determine an appropriate representation of the detected planes.
 If no uniform output type can be determined, consequently, no uniform metric for comparison can also be found.
 
 In this work, we differentiate between the following:
@@ -79,47 +79,47 @@ In this work, we differentiate between the following:
     \item 2D-inliers (2D-IN), \textit{and}
     \item the plane's normal vector and distance to origin ($n,d$),
 \end{itemize}
-whereas the \textit{3D-inliers} of a plane are a set of 3D points in the format of an $UPC$.
-In contrast, \textit{2D-inliers} are two-dimensional representations of a plane.
-This includes all methods to describe a plane in a two-dimensional manner, e.g., sets of indices, pixels or segmentation masks. These \textit{plane formats} generally correspond to two-dimensional input formats like \textit{organized point clouds} or \textit{(depth-) images}.
+whereas the 3D-inliers of a plane are a set of 3D points in the format of an UPC.
+In contrast, 2D-inliers are two-dimensional representations of a plane.
+This includes all methods to describe a plane in a two-dimensional manner, e.g., sets of indices, pixels or segmentation masks. These plane formats generally correspond to two-dimensional input formats like organized point clouds or (depth-) images.
 
 Lastly, planes are often described mathematically over their normal vector $n$ and distance to the origin $d$.
 
 \paragraph{Hardware Requirements}
 \label{par:hardware}
 Another important aspect to consider is the hardware required by an algorithm.
-Most plane detection algorithms run on the \textit{CPU}, some even implement some form of \textit{CPU} parallelism, e.g., 3D-KHT uses OpenMP\footnote{\href{https://www.openmp.org/}{https://www.openmp.org/}}
+Most plane detection algorithms run on the CPU, some even implement some form of CPU parallelism, e.g., 3D-KHT uses OpenMP\footnote{\href{https://www.openmp.org/}{https://www.openmp.org/}}
 to speed up the octree construction~\cite[Section~4]{LimbergerOliveira2015HT3D}.
-However, some methods are implemented either completely or partially on the \textit{GPU}.
+However, some methods are implemented either completely or partially on the GPU.
 For instance, \citeauthor{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015}~\cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015} compare different
-implementations of the RANSAC algorithm, whereas three versions are processed entirely on the \textit{CPU}, and the last one is offloaded
-to the \textit{GPU} via CUDA\footnote{\href{https://developer.nvidia.com/cuda-toolkit}{https://developer.nvidia.com/cuda-toolkit}}.
+implementations of the RANSAC algorithm, whereas three versions are processed entirely on the CPU, and the last one is offloaded
+to the GPU via CUDA\footnote{\href{https://developer.nvidia.com/cuda-toolkit}{https://developer.nvidia.com/cuda-toolkit}}.
 
-To summarize, we differentiate between algorithms that run solely on the \textit{CPU} and algorithms that, additionally, employ the
-machine's \textit{GPU}.
+To summarize, we differentiate between algorithms that run solely on the CPU and algorithms that, additionally, employ the
+machine's GPU.
 
 \paragraph{Availability}
 Lastly, to evenly compare a set of algorithms, all need to be implemented on the same machine to exclude the used hardware as a factor. Some authors provide a corresponding implementation to the paper in which they propose their novel plane detection technique. While other publications are limited to the paper, the level of detail regarding the implementation varies.
 
 
-For further reference, we consider a plane detection algorithm to be \textit{available} if an implementation is generally possible, i.e.,  the authors provide their implementation or outline the algorithm in a way that enables self-implementation or a corresponding implementation is available online. 
+For further reference, we consider a plane detection algorithm to be \textit{available} if an implementation is generally possible, i.e.,  the authors provide their implementation or outline the algorithm in a way that enables self-implementation or a corresponding implementation is available online.
 
 \subsection{Plane Detection Algorithms}
 \label{subsec:pdaselect}
 A list of state-of-the-art algorithms is compiled through comprehensive research of the current literature on plane detection (see Table~\ref{tab:algos}).
 The table shows the input type and the output format of all algorithms, as well as the required hardware, and the availability.
-Note that we consider all algorithms to be available. However, we are not aware of public implementations of \textit{OBRG} and \textit{SCH-RG}.
+Note that we consider all algorithms to be available. However, we are not aware of public implementations of OBRG and SCH-RG.
 However, the respective publications outline their methods in high detail, thereby guiding a self-implementation.
 
-The final outputs of \textit{PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} are piecewise-planar depth maps of the input
+The final outputs of PlaneNet, PlaneRecNet and PlaneRCNN are piecewise-planar depth maps of the input
 image. Since modifying the architecture to return the segmentation masks and plane parameters would require minimal effort,
-we adjusted the output types in the table accordingly. Similarly, \textit{RSPD} returns a set of planes parameterized by
+we adjusted the output types in the table accordingly. Similarly, RSPD returns a set of planes parameterized by
 its normal vector $n$, distance to origin $d$, and two additional extents. Modifying the output to return inliers requires
 minimal effort as well.
 \begin{table}[H]
     \centering
-    \caption[State-of-The-Art-Plane Detection Algorithms]{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of \textit{input}.
-        The \textit{Secion} column provides the placement within this work. We refer to Subsection~\ref{subsec:criteria} for details regarding the specific namings. In the \textit{Hardware} column, note that \textit{GPU} implies the usage of the \textit{CPU}.}
+    \caption[State-of-The-Art Plane Detection Algorithms]{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of input.
+        The Section column provides the placement within this work. We refer to Subsection~\ref{subsec:criteria} for details regarding the specific namings. In the Hardware column, note that GPU implies the usage of the CPU.}
     \resizebox{\textwidth}{!}{%
         \begin{tabular}{cccccc}
             \toprule
@@ -143,29 +143,27 @@ minimal effort as well.
     \label{tab:algos}
 \end{table}
 
-As mentioned above, we consider all presented algorithms available even if \textit{SCH-RG} and \textit{OBRG} do not seem to have an official implementation.
-Therefore, while necessary, the \textit{availability} criterion does not constrain the selection of algorithms in this case.
+As mentioned above, we consider all presented algorithms available even if SCH-RG and OBRG do not seem to have an official implementation.
+Therefore, while necessary, the criterion of availability does not constrain the selection of algorithms in this case.
 
 Integrating an external GPU into the system poses an additional cost factor. Moreover, the additional weight could have negative effects on the user experience, as AR/VR devices are usually handheld or head-worn.
-We exclude algorithms that require an external GPU, namely \textit{SCH-RG, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
+We exclude algorithms that require an external GPU, namely SCH-RG, PlaneNet, PlaneRecNet, and PlaneRCNN.
 
-Addressing the criterion of \textit{input type}, we are only interested in performing plane detection in complete environments.
-Each update published by RTAB-MAP is the union of new data and the current state of the recorded map. RTAB-MAP publishes this update
-in form of an \textit{unorganized} point cloud (see Figure~\ref{fig:rtabmap}).
-To perform plane detection with an algorithm that expects an \textit{organized} point cloud as input, the UPC has to be transformed into an OPC.
+Addressing the criterion of input type, we are only interested in performing plane detection in complete environments.
+Each update published by RTAB-MAP is the union of new data and the current state of the recorded map. RTAB-MAP publishes this update in form of an unorganized point cloud (see Figure~\ref{fig:rtabmap}).
+To perform plane detection with an algorithm that expects an OPC as input, the UPC has to be transformed into an OPC.
 This transformation is not-trivial and involves the projection of 3D coordinates onto a sphere based on a set of sensor parameters.
 An exemplary implementation thereof is included in the lidar toolbox of MATLAB\footnote{\href{https://de.mathworks.com/help/lidar/ug/unorgaized-to-organized-pointcloud-conversion.html}{https://de.mathworks.com/help/lidar/ug/unorgaized-to-organized-pointcloud-conversion.html}}.
 However, this transformation neglects the global structure of the environment, as it returns a two-dimensional representation of the environment.
-Therefore, we focus on \textit{unorganized} point clouds in this work and exclude \textit{PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet} and \textit{PlaneRCNN} from our evaluation.
+Therefore, we focus on unorganized point clouds in this work and exclude PEAC, CAPE, SCH-RG, D-KHT, DDFF, PlaneNet, PlaneRecNet and PlaneRCNN from our evaluation.
 
 The detected planes need to be in the same format because, even for the same plane, different representations could very well lead to different results.
-Assume a plane in cartesian form ($n,d$) and a plane represented by its inliers (3D/2D). The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
+Assume a plane in cartesian form ($n,d$) and a plane represented by its (3D/2D) inliers. The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
 Conversely, the plane described by its inliers allows for holes and non-rectangular shapes, e.g., doorways or a round table, respectively.
-Being able to represent planes of any shape is important for many applications. Moreover, only the 3D inliers \textit{3D-IN} conform to
-the determined input type of $UPC$ (see Section~\ref{subsec:output}).
-We thereby determine \textit{three-dimensional inliers} (\textit{3D-IN}) as the preferred \textit{plane format} and exclude all methods which do not comply, namely \textit{CAPE, PlaneNet, PlaneRecNet}, and \textit{PlaneRCNN}.
-
-Note that, hereafter, we refer to \textit{3D-IN} solely as \textit{inliers}.
+Being able to represent planes of any shape is important for many applications. Moreover, only the 3D inliers (3D-IN) conform to
+the determined input type of UPC (see Section~\ref{subsec:output}).
+We thereby determine 3D-IN as the preferred plane format and exclude all methods which do not comply, namely CAPE, PlaneNet, PlaneRecNet, and PlaneRCNN.
+Note that, hereafter, we refer to 3D-IN solely as inliers.
 
 
 Applying these restrictions, we end up with, and thus include, the following plane detection algorithms in our evaluation:
@@ -177,7 +175,7 @@ Applying these restrictions, we end up with, and thus include, the following pla
     \item \textbf{OBRG}
 \end{itemize}
 
-\paragraph{Temporal Subdivision in Phases}
+\paragraph{Temporal Subdivision of Phases}
 \label{par:prepostalgos}
 To enable a precise evaluation, we subdivide these algorithms into a pre-processing phase, a plane detection phase, and a post-processing phase, whereas we use the terms "phase" and "step" interchangeably in this work. In the following, we outline the pre-processing and post-processing steps taken by the selected algorithms. To avoid redundancy,
 we refer the reader to the Subsections~\ref{subsec:bg-rspd}-\ref{subsec:bg-obrg} for a detailed explanation of each
@@ -192,23 +190,23 @@ During post-processing, OPS merges smaller planes if they pass a coplanarity tes
 resulting plane. In the post-processing step, OBRG refines the borders of detected planes by inserting
 previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
 
-
 \begin{table}[H]
     \centering
-    \parbox{0.7\textwidth}{\caption[Pre-processing \& Post-processing Phases of Selected Algorithms]{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of
-    a pre-/post-processing step.}
+    % \parbox{0.7\textwidth}{\caption[Pre-processing \& Post-processing Phases of Selected Algorithms]{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of
+    %         a pre-/post-processing step.}
+    % }
+    \caption[Pre-processing \& Post-processing Phases of Selected Algorithms]{The Pre-processing and post-processing steps of the plane detection algorithms. "/" denotes the absence of a pre-/post-processing step.}
     \label{tab:pre-post}
-    }
-    \resizebox{0.7\textwidth}{!}{%
-        \begin{tabular}{ccccc}
-            \toprule
-            \textbf{Step} & \textbf{RSPD} & \textbf{OPS} & \textbf{3D-KHT} & \textbf{OBRG} \\
-            \midrule
-            Pre           & NE            & NE           & OC              & OC + NE       \\
-            Post          & /             & Merge        & /               & Refinement    \\
-            \bottomrule
-        \end{tabular}
-    }
+    % \resizebox{0.7\textwidth}{!}{%
+    \begin{tabular}{ccccc}
+        \toprule
+        \textbf{Phase}  & \textbf{RSPD} & \textbf{OPS} & \textbf{3D-KHT} & \textbf{OBRG} \\
+        \midrule
+        Pre-processing  & NE            & NE           & OC              & OC + NE       \\
+        Post-processing & /             & Merge        & /               & Refinement    \\
+        \bottomrule
+    \end{tabular}
+    % }
 \end{table}
 
 
@@ -225,19 +223,19 @@ selection of algorithms in Section~\ref{sec:pdaselection}, especially the criter
 
 \paragraph{Scene Format}
 \label{par:sceneformat}
-The Format of a scene in a given dataset corresponds directly to the \textit{Input Type} criterion for the selection of algorithms (see Paragraph~\ref{par:input}).
-Thereby, the \textit{scene format} can be divided into the same four classes:
+The Format of a scene in a given dataset corresponds directly to the Input Type criterion for the selection of algorithms (see Paragraph~\ref{par:input}).
+Thereby, the scene format can be divided into the same four classes:
 \begin{itemize}
-    \item \textit{unorganized} or \textit{unstructured point cloud} (UPC)
-    \item \textit{organized} or \textit{structured point cloud} (OPC)
-    \item \textit{Depth-Image} (DI)
-    \item \textit{RGB-Image} (RGBI)
+    \item unorganized or unstructured point cloud (UPC)
+    \item organized or structured point cloud (OPC)
+    \item Depth-Image (DI)
+    \item RGB-Image (RGBI)
 \end{itemize}
 To avoid redundancy, we refer the reader to Subsection~\ref{subsec:input} and Paragraph~\ref{par:input} for more information.
 
 \paragraph{Realism}
-We differentiate between \textit{synthetic} and \textit{real/realistic} datasets.
-\textit{Real} datasets represent real environments, as they are often recorded manually.
+We differentiate between synthetic and real/realistic datasets.
+Real datasets represent real environments, as they are often recorded manually.
 In contrast, synthetic datasets often include a collection of geometric bodies and are usually created digitally.
 Two representatives of both types are shown in Figure~\ref{fig:ds_realism}.
 
@@ -266,14 +264,14 @@ Two representatives of both types are shown in Figure~\ref{fig:ds_realism}.
 
 
 \paragraph{Recorded Environment}
-Since \textit{realistic} datasets are created through manual recording, it is useful to
-differentiate between \textit{indoor} and \textit{outdoor} environments.
-Note that we consider this criterion only to apply for \textit{real} datasets as \textit{synthetic}
+Since realistic datasets are created through manual recording, it is useful to
+differentiate between indoor and outdoor environments.
+Note that we consider this criterion only to apply for real datasets as synthetic
 datasets are not recorded manually.
 
 \paragraph{Ground Truth}
 Lastly, not all datasets are created out of the same motivation. Therefore, the method of evaluation differs widely over the range of available datasets.
-In general, the \textit{Ground Truth} (GT) of currently popular datasets can fall into one of the following categories (compare Table~\ref{tab:datasets}):
+In general, the ground truth (GT) of currently popular datasets can fall into one of the following categories (compare Table~\ref{tab:datasets}):
 
 \begin{itemize}
     \item Planes,
@@ -281,31 +279,31 @@ In general, the \textit{Ground Truth} (GT) of currently popular datasets can fal
     \item trajectory.
 \end{itemize}
 
-A \textit{Ground Truth} can represent the detectable planes in a scene.
-Therein, the format of the planes depends on the \textit{Plane Format} of the algorithm (see Paragraph~\ref{subsec:planeformat}).
+A ground truth can represent the detectable planes in a scene.
+Therein, the format of the planes depends on the plane format of the algorithm (see Paragraph~\ref{subsec:planeformat}).
 
 Often, datasets from the field of semantic segmenation or object detection are used for the evaluation of plane detection algorithms.
-Therein, all, or most, objects of a scene are assigned specific \textit{object classes}, e.g., "Wall", "Ceiling", "Table", or "Cup".
-The \textit{Ground Truth} provides a labeling of these objects. This labeling can take the form of annotated 3D bounding boxes or sets of
+Therein, all, or most, objects of a scene are assigned specific object classes, e.g., "Wall", "Ceiling", "Table", or "Cup".
+The ground truth provides a labeling of these objects. This labeling can take the form of annotated 3D bounding boxes or sets of
 pixels in the input image.
 
-Lastly, some datasets provide a $GT$ that focuses on the trajectory of the recording sensor.
+Lastly, some datasets provide a GT that focuses on the trajectory of the recording sensor.
 
-Naturally, this classification can only apply to datasets that include a \textit{Grund Truth}.
+Naturally, this classification can only apply to datasets that include a grund truth.
 
 \subsection{Datasets}
 Table~\ref{tab:datasets} summarizes datasets currently prevalent in the scientific literature regarding plane detection.
 Most of the datasets therein are used in the corresponding papers of the plane detection algorithms presented in Table~\ref{tab:algos}.
 However, this does not influence the selection process. The table shows the respective classifications of each algorithm according to the criteria above.
-Note that \textit{SYNPEB} and \textit{SegComp} are \textit{synthetic} datasets and, therefore, are neither \textit{indoor} nor \textit{outdoor}.
-Furthermore, we are not aware of a \textit{ground truth} for the \textit{ARCO} dataset.
+Note that SYNPEB and SegComp are synthetic datasets and, therefore, are neither indoor nor outdoor.
+Furthermore, we are not aware of a ground truth for the ARCO dataset.
 
 \begin{table}[H]
     \centering
-    \caption[State-of-The-Art Datasets]{Plane detection Datasets. The \textit{GT} column specifies what the ground truth of each dataset represents.
+    \caption[State-of-The-Art Datasets]{Plane detection Datasets. The GT column specifies what the ground truth of each dataset represents.
         The datasets are clustered by their type of format. The remaining order is arbitrary.
-        The second column "Section" provides the placement within this work.
-        Note that we include our dataset (FIN) in this table for completeness reasons.
+        The second column provides the placement within this work.
+        Note that we include our $FIN$ dataset in this table for completeness reasons.
     }
 
     \resizebox{\textwidth}{!}{%
@@ -332,10 +330,10 @@ Furthermore, we are not aware of a \textit{ground truth} for the \textit{ARCO} d
 \end{table}
 
 
-In Subsection~\ref{subsec:pdaselect}, we determine \textit{unorganized} point clouds as the type of input.
-Furthermore, since we give special focus to the real-world applicability of plane detection algorithms, we must evaluate them on \textit{realistic} datasets, thereby excluding all datasets except \textit{2D-3D-S} and \textit{Leica}. 
-Lastly, we are especially interested in realistic \textit{indoor} environments, as motivated by Chapter~\ref{chap:Introduction}.
-Therefore, \textit{Leica} ceases to be an option and we subsequently choose \textit{2D-3D-S} as the dataset for the evaluation.
+In Subsection~\ref{subsec:pdaselect}, we determine unorganized point clouds as the type of input.
+Furthermore, since we give special focus to the real-world applicability of plane detection algorithms, we must evaluate them on realistic datasets, thereby excluding all datasets except \textit{2D-3D-S} and Leica.
+Lastly, we are especially interested in realistic indoor environments, as motivated by Chapter~\ref{chap:Introduction}.
+Therefore, Leica ceases to be an option and we subsequently choose 2D-3D-S as the dataset for the evaluation.
 
 
 Nevertheless, we cannot use the ground truth included in \textit{2D-3D-S} because it represents the segmented scene at the level of objects~\cite[Section~4.1]{2017arXiv170201105A} instead of focusing on layers within the scene.
@@ -343,19 +341,17 @@ As a consequence thereof, we create a suitable ground truth of the \textit{2D-3D
 We provide details of this time-expensive process in Section~\ref{sec:gtseg}.
 
 
-Lastly, \textit{2D-3D-S} does not inherit any temporal component, i.e., the \textit{unorganized} point clouds do not grow incrementally over time.
+Lastly, \textit{2D-3D-S} does not inherit any temporal component, i.e., the unorganized point clouds do not grow incrementally over time.
 To the best of our knowledge, there exists no dataset that meets the above criteria and, additionally, provides a plane-focused ground truth.
 Therefore, we record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg,
 henceforth referred to as the \textit{FIN} dataset.
 
-
-
-To perform a thorough comparison between the \textit{FIN} and \textit{2D-3D-S}, and, subsequently, between the static and the dynamic dataset, we record a scene for each of the following scene types:
+To perform a thorough comparison between the \textit{FIN} and \textit{2D-3D-S}, we record a scene for each of the following scene types:
 \begin{itemize}
-    \item office
-    \item conference room
     \item auditorium
+    \item conference room
     \item hallway
+    \item office
 \end{itemize}
 
 We focus on these four scene types because they are the most common in a realistic indoor environment.
@@ -388,7 +384,7 @@ Lastly, since this is a novel dataset and thus has no ground truth, we create a 
         \caption[Hallway Scene]{}
         \label{fig:finhw}
     \end{subfigure}
-    \caption[FIN Dataset]{The recorded point clouds for each scene type: (a) auditorium, (b) conference room, (c) office and (d) hallway.
+    \caption[FIN Dataset]{The recorded point clouds for each scene type: (a) $auditorium$, (b) c$onference room$, (c) $office$ and (d) $hallway$.
         The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.}
     \label{fig:fin}
 \end{figure}
