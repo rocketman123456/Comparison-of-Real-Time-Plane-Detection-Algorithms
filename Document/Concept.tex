@@ -6,43 +6,45 @@
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=15 cm]{images/concept_specific.png}
-    \caption[AR/VR System]{The procedure of the plane detection process. The specialized sensor records data ([1]), which is passed to
+    % \includegraphics[width=15 cm]{images/concept_specific.png}
+    \def\svgwidth{\textwidth}
+    \input{images/conceptfig.pdf_tex}
+    \caption[AR/VR System]{A general view on an AR/VR system's architecture. The specialized sensor records data ([1]), which is passed to
         a SLAM algorithm ([2]). After map assembly, a point cloud is handed to a plane detection algorithm ([3]).
         The detected planes are given to a use-case-specific application ([4]).}
     \label{fig:concept}
 \end{figure}
 
-Many AR and VR Systems integrate plane detection into their software. Some use it only to calculate the ground floor while others use plane detection to build a smaller model of the environment.
-Figure~\ref{fig:concept} shows a generic block diagram of such a VR/AR system including plane detection.
+Many AR/VR Systems integrate plane detection into their software \textbf{\textcolor{red}{QUELLEN}}.
+% Some use it only to calculate the ground floor while others use plane detection to build a smaller model of the environment.
+Figure~\ref{fig:concept} shows a generic block diagram of such a AR/VR system including plane detection.
 The environment is continuously recorded by a specialized sensor, which is usually a camera, a depth sensor, or a combination thereof ([1]). A SLAM algorithm then integrates the new data into its already existing map ([2]). The map, in form of a point cloud, is subsequently passed to a plane detection algorithm ([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application ([4]).
 The application then further processes those planes as required by the underlying use case.
 
-To remove any noticeable delay in the application, the plane detection step has to run within a specific time limit. This temporal constraint is henceforth referred to as \textit{real-time}.
-We introduce a precise definition of \textit{real-time} in Section~\ref{sec:realtime}.
+To remove any noticeable delay in the application, the plane detection step has to run within a specific time limit. This temporal constraint is usually referred to as \textit{real-time}. \citeauthor{Davison_2003}~\cite{Davison_2003} observe that \textit{real-time} is usually bound to the sensor's frequency.
+Motivated by this, we introduce a precise definition of \textit{real-time} in Section~\ref{sec:realtime}.
 
 When creating such an AR/VR system, the choice of plane detection algorithm is naturally of great importance. The problem is that most published algorithms are inherently incomparable.
 Often different datasets or metrics are used, which precludes a quantitative comparison.
-Moreover, algorithms are often incomparable by internal functionality due to differences in inputs and the format of the detected planes. Plane detection algorithms are, in some cases, developed to run on specific hardware.
+Moreover, algorithms are often incomparable by internal functionality due to differences in inputs and the format of the detected planes. Plane detection algorithms are, in some cases, developed to run on specific hardware \textbf{\textcolor{red}{quelle}}.
 We can safely conclude that selecting a single 'best' algorithm, solely based on the results presented in their respective work, is impossible.
 
-To determine the \textit{real-time} applicability in a realistic environment, we perform a uniform comparison of plane detection algorithms. Therein, we especially pay attention to the accuracy and the calculation times of an algorithm.
+Motivated by Chapter~\ref{chap:Introduction}, we aim to determine the \textit{real-time} applicability in a realistic environment. To achieve this, we perform a uniform comparison of suitable plane detection algorithms. Therein, we especially pay attention to the accuracy and the calculation times.
 This comparison will thereby yield the algorithm that produces the best results as well.
 However, to perform this evaluation, we need the following:
 
 \begin{enumerate}
     \item \label{enum:pda}Appropriate plane detection algorithms,
-    \item \label{enum:ds} a useful dataset, \textit{and}
+    \item \label{enum:ds} a realistic dataset, \textit{and}
     \item \label{enum:rt} a definition of \textit{real-time}.
 \end{enumerate}
 The following sections are dedicated to these requirements.
 
 \section{Selection of Plane Detection Algorithms}\label{sec:pdaselection}
-
-Since most algorithms differ in certain aspects, it is not possible to compare them all uniformly.
+Since most algorithms differ in certain aspects, it is not possible to perform a comparison that includes every single one.
 Furthermore, not all algorithms are created from the same motivation and focus on different things.
 Evaluating an algorithm in a scenario it has not been designed for is likely to yield meaningless results.
-It is, therefore, necessary to first define objective criteria to superficially determine which algorithm shows relevance for the context of this work.
+It is, therefore, necessary to first define objective criteria upon which algorithms are judged to select suitable candidates for the remainder of this work.
 
 
 \subsection{Criteria}
@@ -58,7 +60,7 @@ We detail the different types of input in Section~\ref{sec:dataformats}. To reit
 environment falls into one of four categories:
 \begin{itemize}
     \item unorganized or unstructured point cloud (UPC),
-    \item unorganized or structured point cloud (OPC),
+    \item organized or structured point cloud (OPC),
     \item Depth-Image (DI), \textit{and}
     \item RGB-Image (RGBI),
 \end{itemize}
@@ -119,7 +121,7 @@ minimal effort as well.
 \begin{table}[H]
     \centering
     \caption[State-of-The-Art Plane Detection Algorithms]{A list of Plane Detection Algorithms compiled by reviewing the current literature. The algorithms are clustered by their type of input.
-        The Section column provides the placement within this work. We refer to Subsection~\ref{subsec:criteria} for details regarding the specific namings. In the Hardware column, note that GPU implies the usage of the CPU.}
+        The Section column provides the placement within this work. We refer to Subsection~\ref{subsec:criteria} for details regarding the specific namings of different plane formats. In the Hardware column, note that GPU implies the usage of the CPU.}
     \resizebox{\textwidth}{!}{%
         \begin{tabular}{cccccc}
             \toprule
@@ -160,7 +162,7 @@ Therefore, we focus on unorganized point clouds in this work and exclude PEAC, C
 The detected planes need to be in the same format because, even for the same plane, different representations could very well lead to different results.
 Assume a plane in cartesian form ($n,d$) and a plane represented by its (3D/2D) inliers. The calculated metrics may differ significantly because the plane in cartesian form is infinitely dense.
 Conversely, the plane described by its inliers allows for holes and non-rectangular shapes, e.g., doorways or a round table, respectively.
-Being able to represent planes of any shape is important for many applications. Moreover, only the 3D inliers (3D-IN) conform to
+Being able to represent planes of arbitrary shape is important for many applications. Moreover, only the 3D inliers (3D-IN) conform to
 the determined input type of UPC (see Section~\ref{subsec:output}).
 We thereby determine 3D-IN as the preferred plane format and exclude all methods which do not comply, namely CAPE, PlaneNet, PlaneRecNet, and PlaneRCNN.
 Note that, hereafter, we refer to 3D-IN solely as inliers.
@@ -214,16 +216,16 @@ previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
 
 \section{Selection of Datasets}
 \label{sec:datasets}
+After having obtained a set of suitable algorithms and, according to requirements introduced at the beginning of this chapter (see Section~\ref{enum:ds}), the selection of realistic dataset is needed.
 Just like a substantial amount of algorithms are incomparable for different reasons, datasets differ in certain aspects as well.
 Therefore, this section deals with the selection of an appropriate dataset.
 
 \subsection{Criteria}
-First, we introduce a set of criteria upon which currently popular datasets are compared. These criteria are widely influenced by the
-selection of algorithms in Section~\ref{sec:pdaselection}, especially the criteria therein (see Subsection~\ref{subsec:criteria}).
+We introduce a set of criteria upon which currently popular datasets are compared. These criteria are widely influenced by the criteria used for the previous selection of algorithms (see Subsection~\ref{subsec:criteria}).
 
 \paragraph{Scene Format}
 \label{par:sceneformat}
-The Format of a scene in a given dataset corresponds directly to the Input Type criterion for the selection of algorithms (see Paragraph~\ref{par:input}).
+The Format of a scene in a given dataset corresponds directly to the input of algorithms (see Paragraph~\ref{par:input}).
 Thereby, the scene format can be divided into the same four classes:
 \begin{itemize}
     \item unorganized or unstructured point cloud (UPC)
@@ -237,7 +239,7 @@ To avoid redundancy, we refer the reader to Subsection~\ref{subsec:input} and Pa
 We differentiate between synthetic and real/realistic datasets.
 Real datasets represent real environments, as they are often recorded manually.
 In contrast, synthetic datasets often include a collection of geometric bodies and are usually created digitally.
-Two representatives of both types are shown in Figure~\ref{fig:ds_realism}.
+Two representatives for both types are shown in Figure~\ref{fig:ds_realism}.
 
 \begin{figure}[H]
     \centering
@@ -257,7 +259,7 @@ Two representatives of both types are shown in Figure~\ref{fig:ds_realism}.
     \end{subfigure}
     \hspace{\fill}
     \caption[Synthetic and Realistic Dataset Comparison]{A synthetic dataset (a) and a real office scene (b).
-        The former is from the \textit{SegComp}~\cite{article} dataset, and the latter is from the \textit{2D-3D-S}~\cite{2017arXiv170201105A} dataset.
+        The former is from the \textit{SegComp}~\cite{article} dataset, and the latter is from the 2D-3D-S~\cite{2017arXiv170201105A} dataset.
         Note that we cropped the office point cloud for visualization purposes.}
     \label{fig:ds_realism}
 \end{figure}
@@ -278,30 +280,28 @@ In general, the ground truth (GT) of currently popular datasets can fall into on
     \item classes, \textit{or}
     \item trajectory.
 \end{itemize}
-
-A ground truth can represent the detectable planes in a scene.
+In some datasets, the ground truth represents a set of detectable planes.
+The specific
 Therein, the format of the planes depends on the plane format of the algorithm (see Paragraph~\ref{subsec:planeformat}).
 
 Often, datasets from the field of semantic segmenation or object detection are used for the evaluation of plane detection algorithms.
-Therein, all, or most, objects of a scene are assigned specific object classes, e.g., "Wall", "Ceiling", "Table", or "Cup".
-The ground truth provides a labeling of these objects. This labeling can take the form of annotated 3D bounding boxes or sets of
-pixels in the input image.
+Therein, objects in a scene are assigned specific object classes, e.g., "Wall", "Ceiling", "Table", or "Cup".
+The ground truth provides a labeling of these objects. This labeling can take the form of annotated 3D bounding boxes or sets of pixels in the input image.
 
-Lastly, some datasets provide a GT that focuses on the trajectory of the recording sensor.
+Lastly, some datasets provide a GT that focuses on the trajectory of the recording sensor. This trajectory is usually taken from integrated sensors like \textit{Inertial Measurement Units} (IMUs).
 
-Naturally, this classification can only apply to datasets that include a grund truth.
+Naturally, this classification can only apply to datasets that include a ground truth.
 
 \subsection{Datasets}
-Table~\ref{tab:datasets} summarizes datasets currently prevalent in the scientific literature regarding plane detection.
+Table~\ref{tab:datasets} summarizes currently prevalent datasets in the scientific literature regarding plane detection.
 Most of the datasets therein are used in the corresponding papers of the plane detection algorithms presented in Table~\ref{tab:algos}.
-However, this does not influence the selection process. The table shows the respective classifications of each algorithm according to the criteria above.
-Note that SYNPEB and SegComp are synthetic datasets and, therefore, are neither indoor nor outdoor.
+However, this does not influence the selection process. Note that SYNPEB and SegComp are synthetic datasets and, therefore, are neither indoor nor outdoor.
 Furthermore, we are not aware of a ground truth for the ARCO dataset.
 
 \begin{table}[H]
     \centering
     \caption[State-of-The-Art Datasets]{Plane detection Datasets. The GT column specifies what the ground truth of each dataset represents.
-        The datasets are clustered by their type of format. The remaining order is arbitrary.
+        The datasets are clustered by their type of format. 
         The second column provides the placement within this work.
         Note that we include our $FIN$ dataset in this table for completeness reasons.
     }
@@ -309,20 +309,20 @@ Furthermore, we are not aware of a ground truth for the ARCO dataset.
     \resizebox{\textwidth}{!}{%
         \begin{tabular}{cccccc}
             \toprule
-            \textbf{Dataset}                                                                                                                                                                      & \textbf{Section}         & \textbf{Scene Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\
+            \textbf{Dataset}                                                                                                                                                             & \textbf{Section}         & \textbf{Scene Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\
             \midrule
-            \textbf{2D-3D-S}      \cite{2017arXiv170201105A}                                                                                                                                      & \ref{subsec:bg-stanford} & UPC                   & Y             & Y               & classes     \\
-            \textbf{Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}} & \ref{subsec:bg-Leica}    & UPC                   & Y             & N               & planes      \\
-            \textbf{Kinect}      \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                 & \ref{subsec:bg-Kinect}   & OPC                   & Y             & Y               & planes      \\
-            \textbf{SYNPEB}      \cite{schaefer19icra}                                                                                                                                            & \ref{subsec:bg-SYNPEB}   & OPC                   & N             & /               & planes      \\
-            \textbf{ARCO}        \cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015}                                                                                                         & \ref{subsec:bg-ARCO}     & OPC                   & Y             & Y               & /           \\
-            \textbf{SegComp}     \cite{article}                                                                                                                                                   & \ref{subsec:bg-segcomp}  & DI                    & N             & /               & planes      \\
-            \textbf{NYU V2}      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & \ref{subsec:bg-NYU}      & DI                    & Y             & Y               & classes     \\
-            \textbf{ICL-NUIM}    \cite{handa:etal:ICRA2014}                                                                                                                                       & \ref{subsec:bg-ICL}      & DI                    & Y             & Y               & trajectory  \\
-            \textbf{SUNRGB-D}         \cite{7298655}                                                                                                                                              & \ref{subsec:bg-SUN}      & DI                    & Y             & Y               & classes     \\
-            \textbf{TUM}         \cite{sturm12iros}                                                                                                                                               & \ref{subsec:bg-TUM}      & DI                    & Y             & Y               & trajectory  \\
+            2D-3D-S      \cite{2017arXiv170201105A}                                                                                                                                      & \ref{subsec:bg-stanford} & UPC                   & Y             & Y               & classes     \\
+            Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}} & \ref{subsec:bg-Leica}    & UPC                   & Y             & N               & planes      \\
+            Kinect     \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                  & \ref{subsec:bg-Kinect}   & OPC                   & Y             & Y               & planes      \\
+            SYNPEB      \cite{schaefer19icra}                                                                                                                                            & \ref{subsec:bg-SYNPEB}   & OPC                   & N             & /               & planes      \\
+            ARCO       \cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015}                                                                                                          & \ref{subsec:bg-ARCO}     & OPC                   & Y             & Y               & /           \\
+            SegComp     \cite{article}                                                                                                                                                   & \ref{subsec:bg-segcomp}  & DI                    & N             & /               & planes      \\
+            NYU V2      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & \ref{subsec:bg-NYU}      & DI                    & Y             & Y               & classes     \\
+            ICL-NUIM    \cite{handa:etal:ICRA2014}                                                                                                                                       & \ref{subsec:bg-ICL}      & DI                    & Y             & Y               & trajectory  \\
+            SUNRGB-D         \cite{7298655}                                                                                                                                              & \ref{subsec:bg-SUN}      & DI                    & Y             & Y               & classes     \\
+            TUM         \cite{sturm12iros}                                                                                                                                               & \ref{subsec:bg-TUM}      & DI                    & Y             & Y               & trajectory  \\
             \midrule
-            \textbf{FIN (ours)}                                                                                                                                                                   & \ref{sec:finimpl}        & UPC                   & Y             & Y               & planes      \\
+            FIN (ours)                                                                                                                                                                   & \ref{sec:finimpl}        & UPC                   & Y             & Y               & planes      \\
             \bottomrule
         \end{tabular}
     }
@@ -331,68 +331,74 @@ Furthermore, we are not aware of a ground truth for the ARCO dataset.
 
 
 In Subsection~\ref{subsec:pdaselect}, we determine unorganized point clouds as the type of input.
-Furthermore, since we give special focus to the real-world applicability of plane detection algorithms, we must evaluate them on realistic datasets, thereby excluding all datasets except \textit{2D-3D-S} and Leica.
-Lastly, we are especially interested in realistic indoor environments, as motivated by Chapter~\ref{chap:Introduction}.
+Furthermore, since we give special focus to the real-world applicability of plane detection algorithms, we must evaluate them on realistic datasets, thereby excluding all datasets except 2D-3D-S and Leica.
+Additionally, we are especially interested in realistic $indoor$ environments, as motivated by Chapter~\ref{chap:Introduction}.
 Therefore, Leica ceases to be an option and we subsequently choose 2D-3D-S as the dataset for the evaluation.
 
-
-Nevertheless, we cannot use the ground truth included in \textit{2D-3D-S} because it represents the segmented scene at the level of objects~\cite[Section~4.1]{2017arXiv170201105A} instead of focusing on layers within the scene.
-As a consequence thereof, we create a suitable ground truth of the \textit{2D-3D-S} dataset through manual segmentation.
+Nevertheless, we cannot use the ground truth included in 2D-3D-S because it represents the segmented scene at the level of objects~\cite[Section~4.1]{2017arXiv170201105A} instead of focusing on planes within the scene.
+As a consequence thereof, we create a suitable ground truth of the 2D-3D-S dataset through manual segmentation.
 We provide details of this time-expensive process in Section~\ref{sec:gtseg}.
 
 
-Lastly, \textit{2D-3D-S} does not inherit any temporal component, i.e., the unorganized point clouds do not grow incrementally over time.
-To the best of our knowledge, there exists no dataset that meets the above criteria and, additionally, provides a plane-focused ground truth.
-Therefore, we record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg,
-henceforth referred to as the \textit{FIN} dataset.
 
-To perform a thorough comparison between the \textit{FIN} and \textit{2D-3D-S}, we record a scene for each of the following scene types:
-\begin{itemize}
-    \item auditorium
-    \item conference room
-    \item hallway
-    \item office
-\end{itemize}
+Since the unorganized point clouds do not grow incrementally over time, 2D-3D-S does not inherit any temporal component.
+Moreover, \citeauthor{2017arXiv170201105A}~\cite{2017arXiv170201105A} recorded the dataset with a static 360° camera. Therefore, the dataset is not entirely realistic, though being recorded in a real environment.
+
+
+To our knowledge, no dataset meets the above criteria, is genuinely realistic, and includes a plane-focused ground truth.
+Therefore, we record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg, namely  the FIN dataset.
+
+To perform a comparison between the FIN and 2D-3D-S, we record a scene for each of the following scene types (see Figure~\ref{fig:fin}):
+\begin{center}
+    
+    \begin{multicols}{2}
+        \begin{itemize}
+            \item auditorium
+            \item hallway
+            % \item[\vspace{\fill}]
+            % \item[\vspace{\fill}]
+            \item conference room
+            \item office
+        \end{itemize}
+    \end{multicols}
+\end{center}
 
 We focus on these four scene types because they are the most common in a realistic indoor environment.
-The recorded point clouds can be seen in Figure~\ref{fig:fin}.
-Lastly, since this is a novel dataset and thus has no ground truth, we create a ground truth. The details thereof are explained in Section~\ref{sec:finimpl}.
-
+Lastly, since this is a novel dataset, we need to create a ground truth. The details thereof are explained in Section~\ref{sec:finimpl}.
 
 \begin{figure}[H]
-    \begin{subfigure}{0.5\textwidth}
-        \centering
-        \includegraphics[width=.9\linewidth]{images/307.png}
-        \caption[Auditorium Scene]{}
-        \label{fig:fin307}
-    \end{subfigure}
-    \begin{subfigure}{0.5\textwidth}
-        \centering
-        \includegraphics[width=.9\linewidth]{images/333.png}
-        \caption[Conference Room Scene]{}
-        \label{fig:fin333}
-    \end{subfigure}
-    \begin{subfigure}{0.5\textwidth}
-        \centering
-        \includegraphics[width=0.9\linewidth]{images/425.png}
-        \caption[Office Scene]{}
-        \label{fig:fin425}
-    \end{subfigure}
-    \begin{subfigure}{0.5\textwidth}
-        \centering
-        \includegraphics[width=0.9\linewidth]{images/hallway.png}
-        \caption[Hallway Scene]{}
-        \label{fig:finhw}
-    \end{subfigure}
-    \caption[FIN Dataset]{The recorded point clouds for each scene type: (a) $auditorium$, (b) c$onference room$, (c) $office$ and (d) $hallway$.
-        The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.}
-    \label{fig:fin}
-\end{figure}
-
+    % \centering
+        \begin{subfigure}{0.5\textwidth}
+            \centering
+            \includegraphics[width=.9\linewidth]{images/307.png}
+            \caption[Auditorium Scene]{}
+            \label{fig:fin307}
+        \end{subfigure}
+        \begin{subfigure}{0.5\textwidth}
+            \centering
+            \includegraphics[width=.9\linewidth]{images/333.png}
+            \caption[Conference Room Scene]{}
+            \label{fig:fin333}
+        \end{subfigure}
+        \begin{subfigure}{0.5\textwidth}
+            \centering
+            \includegraphics[width=0.9\linewidth]{images/425.png}
+            \caption[Office Scene]{}
+            \label{fig:fin425}
+        \end{subfigure}
+        \begin{subfigure}{0.5\textwidth}
+            \centering
+            \includegraphics[width=0.9\linewidth]{images/hallway.png}
+            \caption[Hallway Scene]{}
+            \label{fig:finhw}
+        \end{subfigure}
+        \caption[FIN Dataset]{The recorded point clouds for each scene type: (a) $auditorium$, (b) \textit{conference room}, (c) $office$ and (d) $hallway$.
+            The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.}
+        \label{fig:fin}
+    \end{figure}
 
 \section{Definition Real-Time}\label{sec:realtime}
-Finally, as mentioned in the beginning of Chapter~\ref{chap:Concept}, we must define the meaning of \textit{real-time} to determine the \textit{real-time} applicability of a plane detection algorithm.
-
+Finally, as mentioned in the beginning of this Chapter, we must define the meaning of \textit{real-time} to determine the \textit{real-time} applicability of a plane detection algorithm.
 
 In Subsection~\ref{subsec:pdaselect}, we introduce the differentiation between pre-processing and post-processing steps.
 It is possible that one phase of an algorithm accounts for the majority of the total calculation time and that the algorithm
@@ -413,21 +419,12 @@ rate of minimum 1, i.e., the total processing time of an algorithm lies under on
 use \textit{Total Real-Time} and $RT_{tot}$ interchangeably.
 
 \paragraph{Real-Time Plane Calculation $\mathbf{RT_{calc}}$}
-Being a subset of \textit{totally Real-Time} applicability, \textit{Real-Time Plane Calculation} determines the \textit{real-time} applicability if the processing time of an algorithm
+Being a subset of \textit{total Real-Time} applicability, \textit{Real-Time Plane Calculation} determines the \textit{real-time} applicability if the processing time of an algorithm
 \textit{excluding} pre-processing lies under the aforementioned upper bound of $1s$. Like $RT_{tot}$, we use
 \textit{Real-Time Plane Calculation} and $RT_{calc}$ interchangeably.
 
-%TODO  Eig nur needed wenn die algos langsamer sind als 1s ODER sollte die cloud extrem wachsen kann man sich auf die 6 meter beschränken, erstmal aber nicht}\\
-% \subsection*{reduktion (opt)}
-% We can reduce complexity further by taking the specifications (background)
-% of the D455 into account. The RMS error of the D455 is reported to be 2\% at 4 meters distance to the sensor.
-% Furthermore, the ideal distance is stated to range between $0.6 - 6$ meters.
-% To maintain a dense and precise representation of our environment, we therefore limit the detection of planes to a
-% radius of 6 meters from the current position.
-
 \section{Summary}
-Many applications have constraints in the form of a temporal component. Augmented or Virtual Reality applications that include plane detection
-are no exception. In addition to time constraints, good quality is often tightly coupled to expensive or closed technology.
+Many Augmented Reality applications have constraints in the form of a temporal component. Augmented or Virtual Reality applications that include plane detection are no exception. Thereby, these constraints apply to the plane detection algorithms as well. In addition to time constraints, good quality is often tightly coupled to expensive or closed technology.
 In this work, we aim to evaluate the quality of \textit{real-time} plane detection algorithms under the use of more affordable hardware, namely two Intel RealSense sensors. Therein, we are especially interested in the aspect of \textit{real-time} applicability in a realistic environment.
 
 At the beginning of this chapter, we state that three aspects are required for this evaluation: A set of plane detection algorithms, useful datasets, and a definition

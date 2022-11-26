@@ -238,9 +238,10 @@ def whatevs(path: str, algos=ALGOS):
         for j, tf in enumerate(frames):
             A[algo][j] = data[j]
         ax2.plot(frames2, sizes[:,0],'--',color='purple')
+        ax.grid(True)
         if i != 3:
-            ax.get_xaxis().set_visible(False)
-            ax2.get_xaxis().set_visible(False)
+            ax.set_xticklabels([])
+            ax2.set_xticklabels([])
         ax.set_yscale('log')
         ax.plot(frames, data[:,1],marker='.',linewidth=3, label = "$t_{pre}$")
         ax.plot(frames, data[:,0],marker='.',linewidth=3, label="$t_{calc}$")
@@ -253,11 +254,12 @@ def whatevs(path: str, algos=ALGOS):
                     marker='.',  label='$t_{tot}$')
         ax.plot(0,0,'--',label="$size$")
         ax.set_yscale('log')
+
         ax2.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
 
         ax2.set_yscale('log')
-        ax2.set_yticks([1000, 10000, 100000,750000]) #round(max(max_calc, max_pre)*1.1)])
-        ax2.set_yticklabels(['$1.000$','$10.000$','$100.000$','$750.000$'])
+        ax2.set_yticks([0, 1000, 10000, 100000,750000]) #round(max(max_calc, max_pre)*1.1)])
+        ax2.set_yticklabels(['0','$1.000$','$10.000$','$100.000$','$750.000$'])
     
         ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
         # ax2.legend()
@@ -284,12 +286,11 @@ def whatevs(path: str, algos=ALGOS):
             ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
             ax.set_yticks([0.01,1,10,round(maxlim[1])])
             ax.set_yticklabels([r'$\leq$0.01', "1","10",f'{round(maxlim[1])}'])
-            ax.grid(axis='y')
             ax.set_ylim(0.01,round(maxlim[1]))    
         # else:
             # ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
     
-    plt.savefig('dynoffice.svg',format='svg')
+    plt.savefig('dynhallway.svg',format='svg')
     # plt.show()
     # plt.close()
     # return A
