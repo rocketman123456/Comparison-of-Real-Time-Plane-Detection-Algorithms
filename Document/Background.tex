@@ -606,25 +606,19 @@ Moreover, they are parameterized by a center point, which is defined by $\rho$, 
 \subsection{Depth Dependent Flood Fill}
 \label{subsec:bg-ddff}
 \textit{Depth Dependent Flood Fill} (DDFF)~\cite{Roychoudhury_Missura_Bennewitz_2021_new} is a region growing-based algorithm that detects planes in organized point clouds.
-The algorithm builds upon and improves their previous method~\cite{Roychoudhury_Missura_Bennewitz_2021_old}.
+The algorithm builds upon their previous method~\cite{Roychoudhury_Missura_Bennewitz_2021_old}.
 
-The algorithm starts by selecting appropriate seeds. First, the organized point cloud gets subdivided into cubes of a
-pre-determined size $\sigma_{seed}$. Within these cubes, the points are checked for depth discontinuities, as well as
-curvature discontinuities. They are evaluated against $\sigma_{seed}$ and a normal orientation difference
-threshold $\theta_{ang}$, respectively. If neither of the thresholds are exceeded, the center of the cube is marked as
-a seed for region growing.
+The algorithm starts by selecting appropriate seeds. The organized point cloud gets subdivided into cubes of a pre-determined size $\sigma_{seed}$. The points inside are then checked for depth and curvature discontinuities. If neither case holds, the center of the cube is marked as a seed for region growing.
 
-The region growing is performed on point-level. Starting from a given seed $s$, a region is expanded by checking
-neighbors within a horizontal span.
-Given a horizontal span of length n, its middle pixel $p$, the minimum plane size $\sigma$ is calculated as follows:
-
+The region growing is performed on point-level. Starting from a given seed $s$, a region is expanded by checking neighbors within the same horizontal span.
+Given a horizontal span of length $n$ and its middle pixel $p$, the minimum plane size $\sigma$ is calculated:
 \begin{equation}
+    \noindent
     \sigma = \rho(p) = \kappa_\rho \cdot \delta(p)^2 + \gamma_\rho,
 \end{equation}
-where $\delta(p)$ is the depth value of $p$, and $\kappa_\rho, \gamma_\rho$ are tuneable parameters.
-If the span is growing towards the right, the pixel $n$ that is $\sigma$ pixel away from the right border is checked
-for membership. Additionally, $n$'s upper and lower neighbors are also checked for membership. If $n$ and at least one
-of $n$'s vertical neighbors pass the following membership test, $n$ and all pixels in between are added to the span of $s$.
+where $\delta(p)$ is the depth value of $p$, and $\kappa_\rho \text{ and } \gamma_\rho$ are tuneable parameters.
+A pixel $n$ that is $\sigma$ pixel away from the left or right border of the span is observed next.
+$n$ and all pixels toward the border are added to the span of $s$ if $n$ and at least one of its vertical neighbors pass the following membership test:
 
 \begin{enumerate}
     \item The perpendicular distance of $n$ to the plane defined by $s$ and its normal is smaller than
@@ -634,36 +628,28 @@ of $n$'s vertical neighbors pass the following membership test, $n$ and all pixe
     \item $n$ is neither NaN, nor 0.
 \end{enumerate}
 
-This region growing process yields a set of oversegmented planes. In a refinement step, the set of planes is reduced
-by performing merging of planes.
-First, a neighborhood graph of the rough segments is constructed. Any segments that share a border, i.e., the bordering
-pixels have a small euclidian distance, are connected through a bidirectional edge.
-The graph is traversed in a breadth-first manner, merging two connected nodes, $a,b$, if they satisfy the following condition:
-
+In a last refinement step, the set of planes is reduced by merging oversegmented planes.
+First, a neighborhood graph of the rough segments is constructed. 
+Any segments that share a border are connected through a bidirectional edge.
+The graph is traversed in a breadth-first manner, merging two connected nodes, $a,b$, if they satisfy the following conditions:
 \begin{enumerate}
     \item the seed normals of a and b diverge less than a threshold $\tau_{angle}$, \textit{and}
     \item the perpendicular distance between the segments is less than threshold $\tau_{merge}$.
 \end{enumerate}
-If $a$ fails the membership test with its neighbor $b$, the membership test is repeated between $b$ and all planes $a$
-has merged with. If this fails, the unidirectional edge $(ab)$ is removed from the graph. Note that the edge $(ba)$ will
-be validated later, as b is subject to change through merges with other neighbors.
-
-After a successful merge, a new centroid and normal are obtained by adding both plane normals and centroids together,
-while the respective amount of inliers acts as a weight.
+If $a$, and all the planes $a$ merged with fail this membership test with $b$, the edge $(ab)$ is removed from the graph. Note that the edge $(ba)$ will be validated later, as b is subject to change through merges with other neighbors.
+After a successful merge, a new centroid and normal are obtained by adding both plane normals and centroids together, while the respective amount of inliers acts as a weight.
 
 The BFS iteration is repeated, until no merge occurs during an iteration. The authors state that, typically, no more than five
 iterations are needed~\cite[Section~III.E]{Roychoudhury_Missura_Bennewitz_2021_new}.
+If this fails, the unidirectional edge $(ab)$ is removed from the graph. 
 
-The flooding under the constraint of minimum plane size leaves gaps. Therefore, as a refinement step, a two-pass
-algorithm is used to fill these gaps. The first pass scans top-to-bottom, and the second bottom-to-top.
-In both passes, horizontal strips of non-assigned pixels are detected. If the vertical neighbors have the same plane label,
-we mark all unmarked pixels with the same label.
+The flooding under the constraint of minimum plane size leaves gaps. Therefore, as a refinement step, a two-pass algorithm is used to fill them. In both passes, horizontal strips of non-assigned pixels are detected. If both vertical neighbors of an unmarked pixel share a label, the unmarked pixel is marked with this label.
 
 \subsection{PlaneNet}
 \label{subsec:bg-planenet}
-\textit{PlaneNet}~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} is a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.
+PlaneNet~\cite{Liu_Yang_Ceylan_Yumer_Furukawa_2018} is a deep learning-based approach to piece-wise planar reconstruction of a scene from a single RBB-Image.
 
-\begin{figure}[H]
+\begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{images/planenet.png}
     \caption[PlaneNet Architecture]{The PlaneNet Architecture. Taken from the respective paper~\cite[Figure~2]{Liu_Yang_Ceylan_Yumer_Furukawa_2018}.}
@@ -686,9 +672,9 @@ An additional dense conditional random field (DCRF) is applied to obtain the seg
 
 \subsection{PlaneRecNet}
 \label{subsec:bg-planerecnet}
-\textit{PlaneRecNet}~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images
+PlaneRecNet~\cite{Xie_Shu_Rambach_Pagani_Stricker_2022} is a deep learning-based approach for piece-wise plane detection and reconstruction that takes RGB images
 as input.
-\begin{figure}[H]
+\begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{images/planerecnet.png}
     \caption[PlaneRecNet Architecture]{The PlaneRecNet Architecture. Taken from the respective paper~\cite[Figure~1]{Xie_Shu_Rambach_Pagani_Stricker_2022}}.
@@ -712,22 +698,16 @@ scene reconstruction of the input image. No further refinement is implemented.
 
 \subsection{PlaneRCNN}
 \label{subsec:bg-planercnn}
-\textit{PlaneRCNN}~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019} is a deep neural architecture that detects planar
+PlaneRCNN~\cite{Liu_Kim_Gu_Furukawa_Kautz_2019} is a deep neural architecture that detects planar
 regions and reconstructs a piecewise planar depth map from RGB-Images.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/planercnn.png}
-    \caption[PlaneRCNN Architecture]{The PlaneRCNN Architecture. Taken from the respective paper~\cite[Figure~2]{Liu_Kim_Gu_Furukawa_Kautz_2019}.}
-    \label{fig:planercnn}
-\end{figure}
-
 The architecture of PlaneRCNN, as seen in Figure~\ref{fig:planercnn}, consists of three primary modules:
 \begin{enumerate}
     \item The plane detection network,
     \item a segmentation refinement network, \textit{and}
     \item a warping loss module.
 \end{enumerate}
+
+
 The first module is built upon the semantic segmentation network MaskRCNN~\cite{he2017mask}. The module is modified to differentiate between "planar" and "non-planar"
 object instances. In contrast to \textit{PlaneNet} (see Subsection~\ref{subsec:bg-planenet}), the number of planes to detect is not pre-determined. Moreover,
 plane parameters and segmentation masks are calculated.
@@ -735,6 +715,13 @@ plane parameters and segmentation masks are calculated.
 The second module, namely the \textit{segmentation refinement network}, refines the extracted segmentation masks obtained from the \textit{plane detection network}.
 This is done by introducing non-locality into a U-Net~\cite{ronneberger2015u} by combining a convolution layer with an accumulation of feature volumes. The authors name this
 particular step the \textit{ConvAccu} module~\cite[Section~3.2]{Liu_Kim_Gu_Furukawa_Kautz_2019}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/planercnn.png}
+    \caption[PlaneRCNN Architecture]{The PlaneRCNN Architecture. Taken from the respective paper~\cite[Figure~2]{Liu_Kim_Gu_Furukawa_Kautz_2019}.}
+    \label{fig:planercnn}
+\end{figure}
+
 
 The \textit{warping loss module} implements a refinement step.  This module uses a second angle of the same view to ensure consistency. A view from 20 frames ahead is
 projected into the current view to further refine the segmentation process. It is worth noting, that this is only performed during training to improve the accuracy.
@@ -746,13 +733,11 @@ dataset. The individual datasets are outlined in the following subsections.
 
 \subsection{2D-3D-S}
 \label{subsec:bg-stanford}
-2D-3D-S~\cite{2017arXiv170201105A} was recorded in three different buildings and divided into six distinct areas, including 272 different scenes. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}.
-An individual scene has a complete unstructured point cloud and a list of annotated files representing semantically different objects that can be found therein.
-The dataset includes a wide range of point cloud sizes, i.e., number of points, with a minimum of ${\sim}8\cdot10^4$ and a maximum of ${\sim}9\cdot10^6$, and an  average of ${\sim}1\cdot10^6$.
+2D-3D-S~\cite{2017arXiv170201105A} was recorded in three different buildings of the Stanford University and divided into six distinct areas, including 272 different scenes. During the recording, a 360° \textit{Matterport}\footnote{\href{https://matterport.com/de/cameras/360-cameras}{https://matterport.com/de/cameras/360-cameras}} camera was used. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}. The scenes include a complete unstructured point cloud and a list of annotated files representings emantically different objects that can be found therein. Within the dataset, the point cloud sizes, i.e., number of points, range from ${\sim}8\cdot10^4$ to ${\sim}9\cdot10^6$, with an average of ${\sim}1\cdot10^6$.
 
 \subsection{Leica}
 \label{subsec:bg-Leica}
-The \textit{Leica}\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}
+The Leica\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}}
 dataset is a collection of 23 scans of outdoor environments.
 Each scan consists of a dense unorganized point cloud which has been recorded by the \textit{Leica BLK360}
 LiDAR Scanner\footnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360}{https://shop.leica-geosystems.com/de/leica-blk/blk360}}.
@@ -761,48 +746,48 @@ storage of 3D data, e.g., point clouds, laser scans or images.
 
 \subsection{Kinect}
 \label{subsec:bg-Kinect}
-The \textit{Kinect}~\cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011} dataset is a set of 30 organized point clouds. The recording was performed, as the
+The Kinect~\cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011} dataset is a set of 30 organized point clouds. The recording was performed, as the
 dataset's name suggests, with a Microsoft Kinect camera with a 640x480 resolution.
 A ground truth that focuses on plane and cylinder segmentation is provided in addition to the point clouds.
 
 \subsection{SYNPEB}
 \label{subsec:bg-SYNPEB}
-The \textit{SYNPEB} dataset was introduced by \citeauthor{schaefer19icra}~\cite{schaefer19icra} to improve upon the popular
+The SYNPEB dataset was introduced by \citeauthor{schaefer19icra}~\cite{schaefer19icra} to improve upon the popular
 \textit{SegComp} dataset. The synthetic dataset includes a 6x7x3m room with various geometric objects inside.
 Moreover, a total of 40 scans from different views within the room are provided as organized point clouds with
 a resolution of 500x500. Lastly, the provided ground truth represents a planar segmentation of the scene.
 
 \subsection{ARCO}
 \label{subsec:bg-ARCO}
-The \textit{ARCO}~\cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015} dataset consists of 6 organized point clouds that have been recorded with a Microsoft Kinect camera.
+The ARCO~\cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015} dataset consists of 6 organized point clouds that have been recorded with a Microsoft Kinect camera.
 All scenes show real indoor spaces, including a living room, a kitchen, a saloon, a hallway, furniture, and an ordinary room.
 They are saved in the popular \textit{.pcd}\footnote{\href{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}{http://pointclouds.org/documentation/tutorials/pcd\_file\_format}} file format.
 We are not aware of the existence of a ground truth.
 
 \subsection{SegComp}
 \label{subsec:bg-segcomp}
-The \textit{SegComp}~\cite{article} dataset
+The SegComp~\cite{article} dataset
 includes a collection of over 400 depth images, as well as a corresponding ground truth. Additionally, a complete
 evaluation package is provided on the corresponding website\footnote{\href{http://www.eng.usf.edu/cvprg/range/seg-comp/SegComp.html}{http://www.eng.usf.edu/cvprg/range/seg-comp/SegComp.html}}.
 The images are saved in their own file format, namely \textit{.gt-seq}.
 
 \subsection{NYU V2}
 \label{subsec:bg-NYU}
-The \textit{NYU-V2}~\cite{10.1007/978-3-642-33715-4_54} dataset is an improvement of the preceding version, namely \textit{NYU-V1}\footnote{\href{https://cs.nyu.edu/\~silberman/datasets/nyu\_depth\_v1.html}{https://cs.nyu.edu/\~silberman/datasets/nyu\_depth\_v1.html}}.
+The NYU-V2~\cite{10.1007/978-3-642-33715-4_54} dataset is an improvement of the preceding version, namely \textit{NYU-V1}\footnote{\href{https://cs.nyu.edu/\~silberman/datasets/nyu\_depth\_v1.html}{https://cs.nyu.edu/\~silberman/datasets/nyu\_depth\_v1.html}}.
 The dataset consists of 1449 RGB-D images, 464 scenes from 3 cities, and more than $400,000$ unlabeled frames.
 A ground truth in form of labeled objects is provided, as well as a toolbox for arbitrary manipulation of data. Everything
 was recorded with the Microsoft Kinect camera.
 
 \subsection{ICL-NUIM}
 \label{subsec:bg-ICL}
-The \textit{ICL-NUIM}~\cite{Handa_Whelan_McDonald_Davison_2014} dataset was introduced for the benchmarking of RGB-D, VO and SLAM algorithms.
+The ICL-NUIM~\cite{Handa_Whelan_McDonald_Davison_2014} dataset was introduced for the benchmarking of RGB-D, VO and SLAM algorithms.
 Eight scenes are included, which are comprised of a surface ground truth, depth images, and the trajectory of the camera.
 The dataset includes a total of over 8000 images over these four scenes, whereas four have been recorded two
 indoor environments, namely a living room, and an office.
 
 \subsection{SUNRGB-D}
 \label{subsec:bg-SUN}
-The \textit{SUNRGB-D}~\cite{7298655} dataset is used for 3D object detection. The data is split into a training set and a testing set.
+The SUNRGB-D~\cite{7298655} dataset is used for 3D object detection. The data is split into a training set and a testing set.
 Over both sets, a total of over $13,000$ RGB-D images are included, with corresponding ground truths in form of 3D bounding boxes.
 Furthermore, a toolbox is provided.
 The dataset differentiates between 19 different objects, including, but not limited to: "wall", "door", "bookshelf", and "table".
@@ -811,7 +796,7 @@ under "Other Materials".
 
 \subsection{TUM}
 \label{subsec:bg-TUM}
-The \textit{TUM}~\cite{sturm12iros} dataset was created for the evaluation of VO and Visual-SLAM systems.
+The TUM~\cite{sturm12iros} dataset was created for the evaluation of VO and Visual-SLAM systems.
 A Microsoft Kinect sensor with a resolution of 640x480 is used to record a total of 39 scenes in indoor environments.
 While the dataset is primarily focused on trajectories, organized point clouds are provided as well. A ground
 truth trajectory is provided for each scene.
