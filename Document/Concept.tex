@@ -167,20 +167,26 @@ We thereby determine 3D-IN as the preferred plane format and exclude all methods
 Note that, hereafter, we refer to 3D-IN solely as inliers.
 
 
-Applying these restrictions, we end up with, and thus include, the following plane detection algorithms in our evaluation:
+Finally, we end up with, and thus include, the following plane detection algorithms in our evaluation:
 
-\begin{itemize}
-    \item \textbf{RSPD}
-    \item \textbf{OPS}
-    \item \textbf{3D-KHT}
-    \item \textbf{OBRG}
-\end{itemize}
+\begin{multicols}{4}
+    \begin{itemize}
+        \item[\vspace{\fill}]
+        \item[\vspace{\fill}]
+        \item \textbf{RSPD}
+        \item \textbf{OPS}
+        \item \textbf{3D-KHT}
+        \item \textbf{OBRG}
+        \item[\vspace{\fill}]
+        \item[\vspace{\fill}]
+    \end{itemize}
+
+\end{multicols}
 
 \paragraph{Temporal Subdivision of Phases}
 \label{par:prepostalgos}
 To enable a precise evaluation, we subdivide these algorithms into a pre-processing phase, a plane detection phase, and a post-processing phase, whereas we use the terms "phase" and "step" interchangeably in this work. In the following, we outline the pre-processing and post-processing steps taken by the selected algorithms. To avoid redundancy,
-we refer the reader to the Subsections~\ref{subsec:bg-rspd}-\ref{subsec:bg-obrg} for a detailed explanation of each
-algorithm.
+we refer the reader to the Subsections~\ref{subsec:bg-rspd}-\ref{subsec:bg-obrg} for more details regarding the plane detection steps of each algorithm.
 
 The pre-and post-processing steps are summarized in Table~\ref{tab:pre-post}.
 RSPD, 3D-KHT, and OBRG construct an octree (OC) during their pre-processing phase.
@@ -188,8 +194,8 @@ Additionally, RSPD and OBRG perform an initial estimation of normals (NE).
 OPS estimates the normal vectors for a randomly chosen sample set of points of pre-determined size.
 
 During post-processing, OPS merges smaller planes if they pass a coplanarity test and then re-estimates the normals of the
-resulting plane. In the post-processing step, OBRG refines the borders of detected planes by inserting
-previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
+resulting plane. 
+In the post-processing step, OBRG refines the borders of detected planes by inserting previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
 
 \begin{table}[H]
     \centering
