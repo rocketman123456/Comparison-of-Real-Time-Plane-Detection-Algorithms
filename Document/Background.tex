@@ -408,43 +408,36 @@ The refinement process returns a complete set of planar regions.
 \label{subsec:bg-peac}
 \textit{Probabilistic Agglomerative Hierarchical Clustering} (PEAC)~\cite{Feng_Taguchi_Kamat_2014} is a plane detection algorithm that takes an organized
 point cloud as input.
-The agglomerative hierarchical clustering is based on an algorithm called
-\textit{line regression}\cite[Section~III.B]{Nguyen_Martinelli_Tomatis_Siegwart_2005}. The primary difference is
+The agglomerative hierarchical clustering is based on the \textit{line regression} algorithm\cite[Section~III.B]{Nguyen_Martinelli_Tomatis_Siegwart_2005}. The primary difference is
 that, instead of a double linked list, PEAC operates on a graph $G$.
 
-First, the input organized point cloud is divided into non-overlapping nodes through the initialization of $G$.
-Each node in $G$ has a pre-determined height $H$ and width $W$, whereas $H$ and $W$ correspond to index ranges in the
-point cloud, i.e., each node contains a set of points.
+First, the input organized point cloud is divided into non-overlapping nodes through the initialization of $G$. The nodes have a pre-determined height and width and thereby cluster a set of points.
 Then, $G$ is refined by removing the following types of nodes and corresponding edges~\cite[Section~III.A]{Feng_Taguchi_Kamat_2014}:
 \begin{enumerate}
     \item Nodes that contain NaN or 0 values, e.g., missing data,
-    \item nodes that contain at least one point that is depth-discontinuous with its four neighbors, e.g., neighbors
-          in the pixel space but not in coordinate space,
-    \item nodes with a high MSE, e.g., non-planar regions, \textit{and}
+    \item nodes that contain at least one point that is depth-discontinuous with its four neighbors,
+    \item non-planar nodes, \textit{and}
     \item nodes that share an edge with two different planes, e.g., the corners of walls.
 \end{enumerate}
-During this step, all points inside a node share a common plane normal.
+During this refinement step, all points inside a node share a common plane normal.
 
-The \textit{agglomerative hierarchical clustering} step starts with the construction of a min-MSE-heap data
-structure that contains the nodes of $G$, sorted in ascending order by the value of their MSE.
+The \textit{agglomerative hierarchical clustering} step starts with the construction of a data
+structure that contains the nodes of $G$, sorted in ascending order by their MSE.
 The following steps are then repeated exhaustively.
-First, the node $v$ that has the current minimum MSE is merged with one of its neighbors $u$ that minimizes the merged MSE.
-If the merged MSE is larger than a threshold $\theta_{MSE}$, then a plane is found and the merged node is removed from G.
-if $MSE_{merge}$ is larger than a threshold $\theta_{MSE}$, then a plane segment is found and extracted from $G$.
+First, the node $v$ that currently has the smallest MSE is merged with one of its neighbors $u$ that minimizes the merged MSE $MSE_{merge}$.
+If the $MSE_{merge}$ exceeds a threshold $\theta_{MSE}$, then a plane is found and the merged node is removed from G.
 Otherwise, the merged node is added back to $G$, joining the edges of $v$ and $u$.
 
-Lastly, a refinement step is employed. Due to the clustering of nodes that contain a set of points, certain types of
-artifacts can occur:
+Lastly, the detected planes are refined. Due to the clustering of nodes that contain a set of points, certain types of artifacts can occur~\cite[Section~IV]{Feng_Taguchi_Kamat_2014}:
 \begin{itemize}
     \item Sawtooth,
     \item unused data points, \textit{and}
     \item over-segmentation.
 \end{itemize}
 First, if not all neighbors of a node $v$ belong to the plane of $v$, all points of $v$ are added to a queue $Q_{RG}$.
-Then, region growing is performed on the points inside $Q_{RG}$, where the 4-connected neighbors are observed.
-A neighboring point $n$ is inserted into the segment $k$ of a point $v$ if $n$ does not belong to $k$, and
-the distance to $k$ is smaller than the distance to its current segment. Additionally, $n$ is inserted into $Q_{RG}$,
-which also happens if $n \in k$.
+Then, region growing is performed on the points inside $Q_{RG}$. Therein, the 4-connected neighbors of the current seed are observed.
+A neighboring point $n$ of a region is moved to other regions, if the distance thereto is shorter than the distance to its current region.  
+Additionally, $n$ is inserted into $Q_{RG}$.
 The region growing is followed by another \textit{agglomerative hierarchical clustering} step.
 
 
@@ -454,24 +447,22 @@ The region growing is followed by another \textit{agglomerative hierarchical clu
 planes and cylinders in organized point clouds.
 The authors propose this algorithm as an extension of their Probabilistic Visual Odometry Framework~\cite{Proença_Gao_2018_old}.
 
-In preparation for the region growing step, the cloud is subdivided into patches of pre-defined size, similar to
-the graph initialization of PEAC (see Section~\ref{subsec:bg-peac}).
-A patch size of 20x20 was used in their evaluation~\cite[Section~V.A]{Proença_Gao_2018}.
-Then, the planarity of the patches is tested, and a patch is considered non-planar, if:
+In preparation for the region growing step, the cloud is subdivided into patches of pre-defined size $P$, similar to the graph initialization of PEAC (see Section~\ref{subsec:bg-peac}).
+A $P$ value of 20x20 was used in their evaluation~\cite[Section~V.A]{Proença_Gao_2018}.
+Then, the planarity of the patches is tested, wherein a patch is considered non-planar, if:
 \begin{itemize}
     \item The amount of NaN or 0 points exceeds a threshold, \textit{or}
-    \item the patch has depth discontinuities,
+    \item the patch has depth discontinuities.
 \end{itemize}
-whereas the depth discontinuities are only checked for pixels on an axis-aligned cross through the center of the patch
-A plane is then fit through the patch inliers by performing principle component analysis (PCA). The plane's MSE
-corresponds to the lowest eigenvalue, and the plane's normal vector is its eigenvector.
-A patch is considered planar, if its mean depth value is within the standard deviation of all depth values in the patch, plus a tolerance.
+Therein, only the pixels on an axis-aligned cross through the center of the patch are checked for  depth discontinuities.
+A plane is then fit through the patch inliers by performing principle component analysis. The plane's MSE corresponds to the lowest eigenvalue, and the plane's normal vector is its eigenvector.
+Patches are considered planar if the mean depth deviates less than a threshold $\theta_{depth}$ from the standart deviation of the points inside the patch.
 
-The normal vectors are converted from cartesian to spherical coordinates, thus being described by a polar angle, and
-an azimuth angle. These spherical normal vectors are then assorted into bins, thus building a histogram $H$.
-This histogram is now used for the region growing step.
-First, a set of patches $C$ of the most frequent bin in $H$ are obtained. Stop, if the most frequent bin
-yields fewer patches than a threshold $k_1$. The patch with the smallest MSE out of $C$ is chosen as a seed $s$.
+The normal vectors are converted from cartesian to spherical coordinates, thereby being described by a polar angle, and an azimuth angle. A histogram $H$ is built by assorting these normals into bins.
+This histogram is subsequently used for the region growing step.
+First, a set of patches $C$ of the most frequent bin in $H$ are obtained. 
+The region growing terminates if $|C|$ is smaller than a threshold $k_1$. 
+The patch with the smallest MSE out of $C$ is chosen as a seed $s$.
 In general, a 4-connected neighborhood is used in this approach, and a neighboring patch $n$ is inserted into a region, if:
 \begin{enumerate}
     \item $n$ is not assigned to any region,
@@ -479,29 +470,18 @@ In general, a 4-connected neighborhood is used in this approach, and a neighbori
     \item the orthogonal distance of $n$'s center to the region is less than $T_d(s) = l\sqrt{(1-T_N^2)}$,
 \end{enumerate}
 where $l$ is the distance between the corner points of $s$.
-If a complete segment $S$ is found, all included patches are removed from the list of remaining patches, and
-the bins of the histogram are updated accordingly. Lastly, if $S$ exceeds the minimum plane size $k_2$, it is added
-to the set of detected planes.
+If no further growth is possible, a complete segment $S$ is found. All included patches in $S$ are removed from the list of remaining patches, and the bins of the histogram are updated accordingly. Lastly, if $S$ exceeds the minimum plane size $k_2$, it is considered a plane candidate.
 
-The planarity of all segments is now assessed. This is done by calculating the covariance of all included points and,
-subsequently, comparing the ratio of the second largest eigenvalue to the smallest eigenvalue thereof. If this ratio
-exceeds a pre-determined parameter $plane_min_score$, the segment is considered a plane.
+By comparing the ratio of the second largest eigenvalue to the smallest eigenvalue of the included points, the planarity of a region is evaluated. If this ratio exceeds a pre-determined parameter $\theta_{plane}$, the segment is considered a plane.
 Otherwise, additional steps are needed.
-First, the surface of a segment is checked for invariance, which is a property of open cylinders.
-For this task, PCA is performed on the stacked matrix of normal vectors of the segment.
-Then, the ratio of the first eigenvalue to the last eigenvalue of this covariance matrix, namely the condition number,
-is calculated. If the condition number exceeds a threshold $\theta_{cond}$, the segment is comprised of a set of
-cylinders or planes~\cite[Section~III.D]{Proença_Gao_2018}.
 
-Using the eigenvector with the smallest eigenvalue, the center points and normal vectors of all patches
-in the segment are then projected onto a plane. Then, multiple models are fit by performing sequential RANSAC.
-Planes are then fit through each model obtained by RANSAC. If the MSE of the plane is lower than the MSE of
-the corresponding cylinder model, the model is considered a plane, and a cylinder otherwise.
+First, the surface of a segment is checked for invariance, which is done by a principle components analysis on the normal vectors. Therein, if their condition number exceeds a threshold $\theta_{cond}$, the segment is comprised of a set of cylinders or planes~\cite[Section~III.D]{Proença_Gao_2018}.
+
+The center points and normal vectors of all patches in the segment are then projected onto a plane. Then, plane and cylinder models are fit by performing RANSAC.
+If the MSE of the plane model is lower than the MSE of the corresponding cylinder model, the model is considered a plane, and a cylinder otherwise.
 
 Lastly, the segments are undergone a refinement step.
-First, segments are eroded by removing boundary patches through the use of a 3x3 kernel. Next, the eroded segments are expanded by using
-a 3x3 8-neighbor kernel. The authors propose, that all patches valid for refinement are given by the difference between
-the expanded segment and the eroded segment. Lastly, each pixel $p$ within the patches is added to
+First, segments are eroded by removing boundary patches through the use of a 3x3 kernel. Next, the eroded segments are expanded by using a 3x3 8-neighbor kernel. The authors propose, that all patches valid for refinement are given by the difference between the expanded segment and the eroded segment. Lastly, each pixel $p$ within the patches is added to
 the segment $S$ if:
 \begin{equation}
     dist(p,S) \leq MSE_S \cdot k,
