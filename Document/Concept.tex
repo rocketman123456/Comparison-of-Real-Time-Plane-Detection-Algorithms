@@ -15,8 +15,7 @@
     \label{fig:concept}
 \end{figure}
 
-Many AR/VR Systems integrate plane detection into their software \textbf{\textcolor{red}{QUELLEN}}.
-% Some use it only to calculate the ground floor while others use plane detection to build a smaller model of the environment.
+Many AR/VR Systems integrate plane detection into their software\footnote{\href{https://measurekit.com/}{https://measurekit.com/}}\footnote{\href{https://www.locometric.com/roomscan}{https://www.locometric.com/roomscan}}\footnote{\href{https://www.housecraftapp.com/}{https://www.housecraftapp.com/}}.
 Figure~\ref{fig:concept} shows a generic block diagram of such a AR/VR system including plane detection.
 The environment is continuously recorded by a specialized sensor, which is usually a camera, a depth sensor, or a combination thereof ([1]). A SLAM algorithm then integrates the new data into its already existing map ([2]). The map, in form of a point cloud, is subsequently passed to a plane detection algorithm ([3]). The algorithm performs the necessary steps to detect all planes inside the current map and passes the planes to the application ([4]).
 The application then further processes those planes as required by the underlying use case.
@@ -26,7 +25,7 @@ Motivated by this, we introduce a precise definition of \textit{real-time} in Se
 
 When creating such an AR/VR system, the choice of plane detection algorithm is naturally of great importance. The problem is that most published algorithms are inherently incomparable.
 Often different datasets or metrics are used, which precludes a quantitative comparison.
-Moreover, algorithms are often incomparable by internal functionality due to differences in inputs and the format of the detected planes. Plane detection algorithms are, in some cases, developed to run on specific hardware \textbf{\textcolor{red}{quelle}}.
+Moreover, algorithms are often incomparable by internal functionality due to differences in inputs and the format of the detected planes. Plane detection algorithms are, in some cases, developed to run on specific hardware~\cite{gpuhough,Mols_Li_Hanebeck_2020}.
 We can safely conclude that selecting a single 'best' algorithm, solely based on the results presented in their respective work, is impossible.
 
 Motivated by Chapter~\ref{chap:Introduction}, we aim to determine the \textit{real-time} applicability in a realistic environment. To achieve this, we perform a uniform comparison of suitable plane detection algorithms. Therein, we especially pay attention to the accuracy and the calculation times.
