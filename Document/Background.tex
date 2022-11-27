@@ -306,8 +306,7 @@ the normal of the resulting plane is calculated via singular value decomposition
 \subsection{3D Kernel-based Hough Transform}
 \label{subsec:bg-3dkht}
 With the \textit{3D Kernel-based Hough Transform} (3D-KHT),
-\citeauthor{LimbergerOliveira2015HT3D}~\cite{LimbergerOliveira2015HT3D} propose a hough transform-based plane detection method,
-that accepts unorganized point clouds as input.
+\citeauthor{LimbergerOliveira2015HT3D}~\cite{LimbergerOliveira2015HT3D} propose a Hough transform-based plane detection method,that accepts unorganized point clouds as input.
 
 The point cloud is spatially subdivided. The authors propose the usage of octrees over k-d trees because the k-d tree lacks efficiency in creation and manipulation.
 Furthermore, the octree succeeds in capturing the shapes inside the point cloud, while the k-d tree does not.
@@ -490,27 +489,20 @@ where $k$ is a constant. The authors use $k=9$ in their work.
 
 \subsection{Plane Extraction using Spherical Convex Hulls}
 \label{subsec:bg-schrg}
-As the name suggests, \textit{Plane Extraction using Spherical Convex Hulls} (SCH-RG) employs spherical convex hulls to
-detect planes in organized point clouds.
-The primary concept behind this method is that the planes are not parameterized, but rather represented as
-a set of geometric constraints in the spherical coordinate system.
+As the name suggests, \textit{Plane Extraction using Spherical Convex Hulls} (SCH-RG) employs spherical convex hulls to detect planes in organized point clouds through region growing.
+The primary concept behind this method is that the planes are not parameterized, but rather represented as a set of geometric constraints in the spherical coordinate system.
 
 First, a set of pre-processing steps is employed.
-First, a bilateral filter is used for the reduction of noise. Subsequently, a normal map of the entire image
-is generated.
-To prepare for the region growing step, appropriate seeds are selected. This is effectively done by subdividing the
-image into a grid, discarding non-planar cells, and choosing the cell centroids as seeds.
-The planarity of a cell is determined by its mean-square-error (MSE), which is calculated through all included
-points and the best fitting plane. This MSE is then compared against a MSE threshold.
+The sensor noise is reduced through bilateral filtering. 
+Subsequently, a normal map of the OPC is generated. 
+To prepare for the region growing step, appropriate seeds are selected. Similar to PEAC and CAPE, the 2D point cloud is subdivided into equal-sized patches, and the patch centroids are choosen as seeds.
+A patch is considered planar if its MSE is smaller than a threshold.
 
 Having obtained a set of seed points, the region growing step is employed.
-Each time a new seed is retrieved, all normals of the corresponding cell are gathered and transformed
-into the spherical domain. A queue is used for the retrieval of seeds and neighboring points.
+A queue is used for the retrieval of seeds and neighboring points.
+Each time a new seed is retrieved, all normals of the corresponding patch are gathered and transformed into the spherical domain.
 Starting from a seed $s$, neighboring points and their normals are sequentially retrieved.
-If a neighbor $n$ is already assigned to some region or the depth difference is larger than a threshold $T$, it is
-discarded. If $n$ is located inside of the spherical convex hull of the region of $s$,
-it is added to the region, and its neighbors are inserted into the queue. If $n$ is not inside a
-convex hull, it is necessary to check whether $n$ is outside of the so-called \textit{cluster-permissible region} (CPR):
+If a neighbor $n$ is already assigned to a region or the depth difference to $s$ exceeds a threshold $T$, it is discarded. If $n$ is located inside of the spherical convex hull of the region of $s$, it is added to the region, and its neighbors are inserted into the queue. If $n$ is not inside a convex hull, it is necessary to check whether $n$ is outside of the so-called \textit{cluster-permissible region} (CPR):
 \begin{equation}
     \text{CPR}(p) = \{q \in \mathbb{S} | \angle(p,q)\leq 2\theta\},
 \end{equation}
@@ -520,7 +512,7 @@ If $n$ is outside the CPR of the current region, it is discarded. Otherwise, the
 $n$ is added into the set of points included in the region, and its neighbors are inserted into the queue.
 It is worth noting, that seed points that are associated with already detected planes are discarded upon retrieval.
 
-Lastly, dilation is performed to eliminate holes in planes. This is not further detailed in~\cite[Section~III.B]{Mols_Li_Hanebeck_2020}.
+Lastly, dilation is performed to eliminate holes in planes~\cite[Section~III.B]{Mols_Li_Hanebeck_2020}.
 
 
 \subsection{Depth Kernel-based Hough Transform}
@@ -533,22 +525,13 @@ The algorithm is performed in three stages: \textit{Clustering, Voting,} and \te
 \paragraph{Clustering}
 In the clustering step, a quadtree is constructed to spatially subdivide the image. A node recursively subdivides
 itself, until a minimum of included points $s_{ms}$ is reached, or until the set of points is considered approximately
-coplanar. The latter is determined through PCA. Therein, the mean and
-a covariance matrix are computed.
-Pre-computing and subsequently referencing Summed-Area-Tables (SATs) is done to increase the efficiency
-of this step, leading to a constant-time calculation of the covariance matrix.
-If a non-planar node has less than $s_{ms}$ points, these points are then considered non-relevant and
-ignored during the voting step.
+coplanar. The latter is determined through a PCA. Pre-computing and subsequently referencing \textit{Summed-Area-Tables} (SATs) is done to increase the efficiency of this step, leading to a constant-time calculation of the covariance matrix.
+If a non-planar node has less than $s_{ms}$ points, these points are then considered non-relevant and ignored during the voting step.
 
 \paragraph{Voting}
 The clustering step returns a set of approximately coplanar point clusters.
 The best-fitting plane of each cluster is calculated. It is determined by the cluster's mean point,
-and a normal vector which is the eigenvector associated with the least eigenvalue of the covariance matrix.
-Two things are necessary to perform the voting step:
-\begin{itemize}
-    \item An Accumulator to store the votes, \textit{and}
-    \item a set of gaussian kernels corresponding to the coplanar clusters.
-\end{itemize}
+and a normal vector which is the eigenvector associated with the least eigenvalue of the covariance matrix. An accumulator to store the votes and a set of gaussian kernels corresponding to the coplanar clusters are necessary to perform the voting step.
 Given the mean point $\mu_{(x,y,z)}$ and the unit normal vector $\overrightarrow{n}=(n_x,n_y,n_z)^T$ of a cluster,
 the center of the gaussian kernel is calculated:
 \def\A{
@@ -575,25 +558,28 @@ The covariance matrix of the gaussian kernel can then be calculated through firs
     \Sigma_{(\rho,\phi,\theta)} = J\Sigma_{(x,y,z)}J^T,
 \end{equation}
 where $J$ is the Jacobi-Matrix of Equation~\ref{eq:kht-kernel}.
-
-An unbiased spherical accumulator, like in \cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, is used to store votes.
+Similar to \cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}, an unbiased spherical accumulator is used to store votes.
 The axes of the accumulator range are in the following ranges:
-$$\theta \in [-\pi , +\pi], \phi \in [0, \pi], \rho \in [0, \rho_{high}]$$,
-where $\rho_{high}$ is determined by the farthest distance between the camera and a point of the input image.
-The discretization of $\theta$ and $\phi$ are pre-determined by the user and should be based on the expected
-granularity of detected planes. Most likely, this also relates to the expected amount of noise.
-During the voting itself, the accumulator bins are incremented if they are within two standard deviations of the
-kernel mean $\mu_{(\rho,\phi,\theta)}$.
+\begin{multicols}{3}
+    \noindent
+    \begin{equation}
+        \theta \in [-\pi , +\pi],  
+    \end{equation}
+    \begin{equation}
+        \phi \in [0, \pi], \text{ }and
+    \end{equation}
+    \begin{equation}
+        \rho \in [0, \rho_{high}].
+    \end{equation}
+\end{multicols}
+Therein, $\rho_{high}$ is the determined by the farthest distance between the camera and a point of the input image.
+The discretization of $\theta$ and $\phi$ are pre-determined by the user and should be based on the expected granularity of detected planes~\cite[Secion~3.3]{Vera_Lucio_Fernandes_Velho_2018}. This likely relates to the expected amount of noise as well.
+During the voting itself, the accumulator bins are incremented if they are within two standard deviations of the kernel mean $\mu_{(\rho,\phi,\theta)}$.
 
 \paragraph{Peak Detection}
-The voting step fills the bins of the accumulator with votes. A smoothing of the bins is performed to avoid
-oversegmentation or the detection of multiple equivalent planes.
-\citeauthor{Vera_Lucio_Fernandes_Velho_2018}~\cite[Section~3.5]{Vera_Lucio_Fernandes_Velho_2018} compute a convolution of the
-accumulator, as well as a 6-connected filter with a central weight of $0.2002$ and neighbor weights of $0.1333$.
-A hill-climbing strategy is then adopted to detect peaks in the accumulator. Each peak represents the
-parameterization of a detected plane. These planes are then sorted by relevance, whereas the relevance of a plane
-is determined by a weighted sum of the clusters that voted for the corresponding peak. The weights therein
-depend more on the number of corresponding pixels of a cluster, rather than the number of samples.
+The voting step fills the bins of the accumulator with votes. A smoothing of the bins is performed to avoid oversegmentation or the detection of multiple equivalent planes.
+\citeauthor{Vera_Lucio_Fernandes_Velho_2018}~\cite[Section~3.5]{Vera_Lucio_Fernandes_Velho_2018} compute a convolution of the accumulator, as well as a 6-connected filter with a central weight of $0.2002$ and neighbor weights of $0.1333$. 
+Each peak represents the parameterization of a detected plane. These planes are then sorted by relevance, whereas the relevance of a plane is determined by a weighted sum of the clusters that voted for the corresponding peak. The cluster weights correspond to the number of pixels, rather than the number of samples.
 
 All planes, parameterized by $(\rho,\phi,\theta)$, are then transformed back into cartesian coordinates.
 Moreover, they are parameterized by a center point, which is defined by $\rho$, and a normal vector $\overrightarrow{n}$:
