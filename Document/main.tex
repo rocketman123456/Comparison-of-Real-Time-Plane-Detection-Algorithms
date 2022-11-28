@@ -1,7 +1,12 @@
 \documentclass[fontsize=12pt, paper=a4, headinclude, twoside=true,chapterprefix=true,headings=big, parskip=half+, pagesize=auto, numbers=noenddot, headsepline, open=left, toc=listof, toc=bibliography]{scrreprt}
-\usepackage[automark]{scrlayer-scrpage}
+\usepackage[]{scrlayer-scrpage}
+\clearscrheadfoot
+% \ofoot*{\pagemark}    
+\ifoot*{\pagemark}    
 \pagestyle{scrheadings}
 \ohead{\rightmark}
+% \ofoot{1}
+% \ifoot{\thepage}
 \usepackage[utf8]{inputenc}
 \usepackage{makeidx}
 \usepackage{multicol}
@@ -114,10 +119,6 @@
 \subfile{Figures}
 \subfile{Tables}
 
-% \newpage
-% \thispagestyle{empty}
-% \mbox{}
-% \newpage
 
 \cleardoublepage
 % \pagenumbering{arabic}
@@ -138,6 +139,8 @@
 
 \newpage
 \thispagestyle{empty}
+\mbox{}
+% \newpage
 \begin{center}
 	\vspace*{5em}
 	\huge\textbf{Declaration of Academic Integrity}\\
