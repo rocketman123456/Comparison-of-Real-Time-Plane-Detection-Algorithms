@@ -83,7 +83,6 @@ In this work, we differentiate between the following:
 whereas the 3D-inliers of a plane are a set of 3D points in the format of an UPC.
 In contrast, 2D-inliers are two-dimensional representations of a plane.
 This includes all methods to describe a plane in a two-dimensional manner, e.g., sets of indices, pixels or segmentation masks. These plane formats generally correspond to two-dimensional input formats like organized point clouds or (depth-) images.
-
 Lastly, planes are often described mathematically over their normal vector $n$ and distance to the origin $d$.
 
 \paragraph{Hardware Requirements}
@@ -194,7 +193,7 @@ Additionally, RSPD and OBRG perform an initial estimation of normals (NE).
 OPS estimates the normal vectors for a randomly chosen sample set of points of pre-determined size.
 
 During post-processing, OPS merges smaller planes if they pass a coplanarity test and then re-estimates the normals of the
-resulting plane. 
+resulting plane.
 In the post-processing step, OBRG refines the borders of detected planes by inserting previously unallocated regions. RSPD and 3D-KHT do not perform post-processing.
 
 \begin{table}[H]
@@ -230,7 +229,8 @@ We introduce a set of criteria upon which currently popular datasets are compare
 
 \paragraph{Scene Format}
 \label{par:sceneformat}
-The Format of a scene in a given dataset corresponds directly to the input of algorithms (see Paragraph~\ref{par:input}).
+The Format of a scene in a given dataset corresponds directly to the input of algorithms.
+To avoid redundancy, we refer the reader to Subsection~\ref{subsec:input} and Paragraph~\ref{par:input} for more information.
 Thereby, the scene format can be divided into the same four classes:
 \begin{itemize}
     \item unorganized or unstructured point cloud (UPC)
@@ -238,7 +238,6 @@ Thereby, the scene format can be divided into the same four classes:
     \item Depth-Image (DI)
     \item RGB-Image (RGBI)
 \end{itemize}
-To avoid redundancy, we refer the reader to Subsection~\ref{subsec:input} and Paragraph~\ref{par:input} for more information.
 
 \paragraph{Realism}
 We differentiate between synthetic and real/realistic datasets.
@@ -246,10 +245,16 @@ Real datasets represent real environments, as they are often recorded manually.
 In contrast, synthetic datasets often include a collection of geometric bodies and are usually created digitally.
 Two representatives for both types are shown in Figure~\ref{fig:ds_realism}.
 
+\paragraph{Recorded Environment}
+Since realistic datasets are created through manual recording, it is useful to
+differentiate between indoor and outdoor environments.
+Note that we consider this criterion only to apply for real datasets as synthetic
+datasets are not recorded manually.
+
 \begin{figure}[H]
     \centering
     \hspace{\fill}
-    \begin{subfigure}{0.35\textwidth}
+    \begin{subfigure}{0.3\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/synthetic_ds.png}
         \caption[Synthetic Dataset Example]{}
@@ -270,11 +275,6 @@ Two representatives for both types are shown in Figure~\ref{fig:ds_realism}.
 \end{figure}
 
 
-\paragraph{Recorded Environment}
-Since realistic datasets are created through manual recording, it is useful to
-differentiate between indoor and outdoor environments.
-Note that we consider this criterion only to apply for real datasets as synthetic
-datasets are not recorded manually.
 
 \paragraph{Ground Truth}
 Lastly, not all datasets are created out of the same motivation. Therefore, the method of evaluation differs widely over the range of available datasets.
@@ -306,7 +306,7 @@ Furthermore, we are not aware of a ground truth for the ARCO dataset.
 \begin{table}[H]
     \centering
     \caption[State-of-The-Art Datasets]{Plane detection Datasets. The GT column specifies what the ground truth of each dataset represents.
-        The datasets are clustered by their type of format. 
+        The datasets are clustered by their type of format.
         The second column provides the placement within this work.
         Note that we include our $FIN$ dataset in this table for completeness reasons.
     }
@@ -354,53 +354,51 @@ To our knowledge, no dataset meets the above criteria, is genuinely realistic, a
 Therefore, we record an incrementally growing dataset in the Faculty of Computer Science at Otto-von-Guericke University Magdeburg, namely  the FIN dataset.
 
 To perform a comparison between the FIN and 2D-3D-S, we record a scene for each of the following scene types (see Figure~\ref{fig:fin}):
-\begin{center}
-    
-    \begin{multicols}{2}
-        \begin{itemize}
-            \item auditorium
-            \item hallway
-            % \item[\vspace{\fill}]
-            % \item[\vspace{\fill}]
-            \item conference room
-            \item office
-        \end{itemize}
-    \end{multicols}
-\end{center}
-
+{\setlength\multicolsep{0pt}%
+\begin{multicols}{2}
+    \begin{itemize}%[noitemsep,topsep=0pt]
+        \item auditorium
+        \item hallway
+        \item conference room
+        \item office
+    \end{itemize}
+\end{multicols}
+}
 We focus on these four scene types because they are the most common in a realistic indoor environment.
 Lastly, since this is a novel dataset, we need to create a ground truth. The details thereof are explained in Section~\ref{sec:finimpl}.
 
 \begin{figure}[H]
-    % \centering
-        \begin{subfigure}{0.5\textwidth}
-            \centering
-            \includegraphics[width=.9\linewidth]{images/307.png}
-            \caption[Auditorium Scene]{}
-            \label{fig:fin307}
-        \end{subfigure}
-        \begin{subfigure}{0.5\textwidth}
-            \centering
-            \includegraphics[width=.9\linewidth]{images/333.png}
-            \caption[Conference Room Scene]{}
-            \label{fig:fin333}
-        \end{subfigure}
-        \begin{subfigure}{0.5\textwidth}
-            \centering
-            \includegraphics[width=0.9\linewidth]{images/425.png}
-            \caption[Office Scene]{}
-            \label{fig:fin425}
-        \end{subfigure}
-        \begin{subfigure}{0.5\textwidth}
-            \centering
-            \includegraphics[width=0.9\linewidth]{images/hallway.png}
-            \caption[Hallway Scene]{}
-            \label{fig:finhw}
-        \end{subfigure}
-        \caption[FIN Dataset]{The recorded point clouds for each scene type: (a) $auditorium$, (b) \textit{conference room}, (c) $office$ and (d) $hallway$.
-            The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.}
-        \label{fig:fin}
-    \end{figure}
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=.8\linewidth]{images/307.png}
+        \caption[Auditorium Scene]{}
+        \label{fig:fin307}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=.8\linewidth]{images/333.png}
+        \caption[Conference Room Scene]{}
+        \label{fig:fin333}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.8\linewidth]{images/425.png}
+        \caption[Office Scene]{}
+        \label{fig:fin425}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.8\linewidth]{images/hallway.png}
+        \caption[Hallway Scene]{}
+        \label{fig:finhw}
+    \end{subfigure}
+    \caption[FIN Dataset]{The recorded point clouds for each scene type: (a) $auditorium$, (b) \textit{conference room}, (c) $office$ and (d) $hallway$.
+        The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.
+        Full-size figures can be found in Appendix~\ref{app:fin-scenes}}
+    \label{fig:fin}
+\end{figure}
+
 
 \section{Definition Real-Time}\label{sec:realtime}
 Finally, as mentioned in the beginning of this Chapter, we must define the meaning of \textit{real-time} to determine the \textit{real-time} applicability of a plane detection algorithm.
