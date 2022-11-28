@@ -18,15 +18,15 @@ Strict temporal constraints are often broadly referred to as \textit{real-time}.
 The definition of \textit{real-time} usually derives from the frequency of new sensor updates~\cite{Davison_2003}.
 Since the process of plane detection is often an integral part of these systems ~\cite{Wang_Bu_Zhang_Cheng_2022, Dai_Lund_Gao_2022, Kaess_2015}, these constraints also apply there.
 
-Real-time plane detection is already possible, though expensive hardware is often needed as a sensor's price increases
+\textit{Real-time} plane detection is already possible, though expensive hardware is often needed as a sensor's price increases
 with its precision and included functionality.
 For instance, AR devices like the \textit{Microsoft HoloLens 2} and imaging laser scanners like the \textit{Leica BLK360} produce very precise representations of the surrounding environment.
-Moreover, the \textit{HoloLens 2} can perform plane detection as part of its \textit{Scene Understanding SDK}\footnote{\href{https://learn.microsoft.com/en-us/windows/mixed-reality/design/scene-understanding}{https://learn.microsoft.com/en-us/windows/mixed-reality/design/scene-understanding}}. Therein, a recorded environment is represented as a dense triangle mesh in which planes are detected and subsequently assigned a plane category, e.g., walls, ceilings, and floors.
+Moreover, the \textit{HoloLens 2} can perform plane detection as part of its \textit{Scene Understanding Software Development Kit}\footnote{\href{https://learn.microsoft.com/en-us/windows/mixed-reality/design/scene-understanding}{https://learn.microsoft.com/en-us/windows/mixed-reality/design/scene-understanding}}. Therein, a recorded environment is represented as a dense triangle mesh in which planes are detected and subsequently assigned a plane category, e.g., walls, ceilings, and floors.
 Nevertheless, the affordability of the \textit{BLK360} is questionable with a starting price of ${\sim}\$19.000$. While the starting price of the \textit{HoloLens 2} may be affordable at ${\sim}\$3.500$, due to the software being closed source, we still consider the \textit{HoloLens 2} non-practical.
 
 Through this lack of affordability and practicability of high-end sensors, the usage of consumer off-the-shelf hardware is gaining interest.
 With AR development platforms like \textit{ARKit}\footnote{\href{https://developer.apple.com/augmented-reality/arkit/}{https://developer.apple.com/augmented-reality/arkit/}} or \textit{ARCore}\footnote{\href{https://developers.google.com/ar}{https://developers.google.com/ar}}, it is generally possible to perform AR \textit{plane detection} on mobile phones\footnote{\href{https://developers.google.com/ar/devices\#google\_play\_devices}{Supported devices of ARCore: https://developers.google.com/ar/devices\#google\_play\_devices}}. However, the choice of development environment and the used sensor is arbitrary.
-Being representatives for consumer off-the-shelf hardware, we use the \textit{Intel RealSense} cameras T265 and D455 (see Section~\ref{sec:bg-intel}) in this work. The cameras have a combined starting price of ${\sim}\$600$ and an open source software development kit (SDK), namely \textit{librealsense}\footnote{\href{https://github.com/IntelRealSense/librealsense}{https://github.com/IntelRealSense/librealsense}}, is provided.
+Being representatives for consumer off-the-shelf hardware, we use the \textit{Intel RealSense} cameras T265 and D455 (see Section~\ref{sec:bg-intel}) in this work. The cameras have a combined starting price of ${\sim}\$600$ and an open source software development kit, namely \textit{librealsense}\footnote{\href{https://github.com/IntelRealSense/librealsense}{https://github.com/IntelRealSense/librealsense}}, is provided.
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
 Decades of research on plane detection yielded numerous algorithms, and many are reported to be \textit{real-time} applicable by the respective authors~\cite{LimbergerOliveira2015HT3D, Roychoudhury_Missura_Bennewitz_2021_new, Xu_Xie_Chen_Wang_2020, yoohyun,Feng_Taguchi_Kamat_2014, 7953305}.
@@ -38,7 +38,7 @@ It is, therefore, impossible to assess the real-world applicability of most algo
 This thesis deals with a uniform comparison of plane detection algorithms.
 Through this comparison, we aim to evaluate the applicability of \textit{real-time} plane detection on consumer off-the-shelf hardware such as the \textit{Intel RealSense} cameras. The answer to this question will consequently determine which algorithm is most suitable.
 This work focuses on plane detection in complete environments, e.g. an entire room instead of just parts thereof.
-Furthermore, we restrict ourselves to plane detection in indoor environments.
+Furthermore, we restrict ourselves to plane detection in indoor environments as Augmented Reality is usually performed indoors.
 
 \section{Structure}
 The following chapter presents the basics or background information necessary for this work.
