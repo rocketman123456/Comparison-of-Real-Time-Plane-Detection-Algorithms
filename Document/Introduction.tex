@@ -10,13 +10,13 @@ As the \textit{Manhattan-world} assumption dictates, the general alignment of mo
 
 Due to this large amount of planes in everyday environments, automatic detection of these planes is growing in relevance:
 Plane detection is an essential component in numerous Augmented or Virtual Reality (AR/VR) applications and systems~\cite{Jurado_Jurado_Ortega_Feito_2021, sridhar2020instant}.
-Therein, planes are vital for general scene understanding as they lay the foundation for scene reconstruction~\cite{agarwala2022planeformers}, object recognition~\cite{Peternell_Steiner_2004, Qian_Ye_2014}, video games~\cite{ninja}, and are even used in applications that support people with disabilities, e.g. visual impairments~\cite{visimpaired, Schwarze_Lauer_Schwaab_Romanovas_Bohm_Jurgensohn_2015}.
+Therein, planes are vital for general scene understanding as they lay the foundation for scene reconstruction~\cite{agarwala2022planeformers}, object recognition~\cite{Peternell_Steiner_2004, Qian_Ye_2014}, video games~\cite{4538840}, and are even used in applications that support people with disabilities, e.g. visual impairments~\cite{visimpaired, Schwarze_Lauer_Schwaab_Romanovas_Bohm_Jurgensohn_2015}.
 
 
 Many of these applications operate under specific time constraints: The application could navigate a visually impaired person into a nearby wall if the plane detection is delayed, just as a noticeable lag in a video game caused by plane detection could spoil the user experience.
 Strict temporal constraints are often broadly referred to as \textit{real-time}.
 The definition of \textit{real-time} usually derives from the frequency of new sensor updates~\cite{Davison_2003}.
-Since the process of plane detection is often an integral part of these systems ~\cite{Wang_Bu_Zhang_Cheng_2022, Dai_Lund_Gao_2022, Kaess_2015}, these constraints also apply there.
+Since the process of plane detection is often an integral part of these systems ~\cite{Wang_Bu_Zhang_Cheng_2022, https://doi.org/10.48550/arxiv.2209.08248, Kaess_2015}, these constraints also apply there.
 
 \textit{Real-time} plane detection is already possible, though expensive hardware is often needed as a sensor's price increases
 with its precision and included functionality.
@@ -29,7 +29,7 @@ With AR development platforms like \textit{ARKit}\footnote{\href{https://develop
 Being representatives for consumer off-the-shelf hardware, we use the \textit{Intel RealSense} cameras T265 and D455 (see Section~\ref{sec:bg-intel}) in this work. The cameras have a combined starting price of ${\sim}\$600$ and an open source software development kit, namely \textit{librealsense}\footnote{\href{https://github.com/IntelRealSense/librealsense}{https://github.com/IntelRealSense/librealsense}}, is provided.
 
 In addition to the used sensors, selecting an appropriate plane detection algorithm is important as well.
-Decades of research on plane detection yielded numerous algorithms, and many are reported to be \textit{real-time} applicable by the respective authors~\cite{LimbergerOliveira2015HT3D, Roychoudhury_Missura_Bennewitz_2021_new, Xu_Xie_Chen_Wang_2020, yoohyun,Feng_Taguchi_Kamat_2014, 7953305}.
+Decades of research on plane detection yielded numerous algorithms, and many are reported to be \textit{real-time} applicable by the respective authors~\cite{LimbergerOliveira2015HT3D, Roychoudhury_Missura_Bennewitz_2021_new, Xu_Xie_Chen_Wang_2020, 6695732,Feng_Taguchi_Kamat_2014, 7953305}.
 While generally achieving the same goal, i.e., the detection of planar structures, notable differences in methodology exist: We can usually differentiate between algorithms by their type of input, the format of detected planes, additional hardware requirements, and core algorithm (see Section~\ref{sec:bg-pdintro}). Furthermore, most algorithms have been evaluated using different datasets and metrics.
 It is, therefore, impossible to assess the real-world applicability of most algorithms through the reported findings because the corresponding authors evaluated them in a scientific context and environment.
 

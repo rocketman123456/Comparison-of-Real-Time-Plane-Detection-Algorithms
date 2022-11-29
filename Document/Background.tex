@@ -192,7 +192,7 @@ Since more parameters are needed to describe a plane in 3D, the accumulator must
 Therefore, a three-dimensional accumulator is used. The performence of different shapes thereof had been discussed by \citeauthor{Borrmann_Elseberg_Lingemann_Nüchter_2011}~\cite{Borrmann_Elseberg_Lingemann_Nüchter_2011}.
 
 \subsection{RANSAC}
-RANSAC (Random Sample Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{Sun_Mordohai_2019, Yang_Forstner, Ashraf_Ahmed_2017}.
+RANSAC (Random Sample Consensus) has been researched for decades. While many use cases revolve around image processing, it is also heavily employed in many plane detection algorithms\cite{https://doi.org/10.48550/arxiv.1905.02553, Yang_Forstner, Ashraf_Ahmed_2017}.
 RANSAC is an iterative process. Each iteration randomly samples a certain amount of data points and fits a mathematical model through them. The level of outliers determines the quality of the obtained model and preserves the best overall model.
 
 Within the context of plane detection in 3D point clouds, an approach could involve random sampling of 3 points, fitting a plane through them,
@@ -278,10 +278,10 @@ This phase returns all maximally merged planar patches, i.e. the final planes.
 
 \subsection{Oriented Point Sampling}
 \label{subsec:bg-ops}
-\textit{Oriented Point Sampling} (OPS)~\cite{Sun_Mordohai_2019} accepts an unorganized point cloud as input.
+\textit{Oriented Point Sampling} (OPS)~\cite{https://doi.org/10.48550/arxiv.1905.02553} accepts an unorganized point cloud as input.
 
 
-First, a sample of points is uniformly selected from the entire point cloud. Sample sizes of $\alpha_s \in [0.3\%,3\%]$ are used in the Evaluation in~\cite[Table~3]{Sun_Mordohai_2019}.
+First, a sample of points is uniformly selected from the entire point cloud. Sample sizes of $\alpha_s \in [0.3\%,3\%]$ are used in the Evaluation in~\cite[Table~3]{https://doi.org/10.48550/arxiv.1905.02553}.
 The normal vectors of these points are estimated using \textit{singular value decomposition} (SVD) and the k-nearest-neighbors ($KNN$), which are obtained using a k-d tree.
 An inverse distance weight function is employed to prioritize neighboring points that are closer to the sample of which the normal vector is currently being estimated.
 
@@ -682,7 +682,7 @@ The entire architecture of PlaneRecNet is portrayed in Figure~\ref{fig:planerecn
 The general approach of this method is to calculate plane parameters through PCA or RANSAC
 after providing a precisely estimated depth.
 This is achieved by implementing two separate branches, namely \textit{Plane segmentation}, and \textit{Depth estimation}.
-Both branches obtain their input from a common precursor which is a \textit{ResNet}~\cite{He_Zhang_Ren_Sun_2015} backbone.
+Both branches obtain their input from a common precursor which is a \textit{ResNet}~\cite{https://doi.org/10.48550/arxiv.1512.03385} backbone.
 The \textit{Plane segmentation} branch is a lightweight configuration of SOLOV2~\cite{wang2020solov2} that has been modified to
 fit the context of plane detection.
 The \textit{Depth estimation} branch is a lightweight \textit{Feature Pyramid Network} (FPN)~\cite{Lin_Dollár_Girshick_He_Hariharan_Belongie_2017}.
@@ -730,7 +730,7 @@ dataset. The individual datasets are outlined in the following subsections.
 
 \subsection{2D-3D-S}
 \label{subsec:bg-stanford}
-2D-3D-S~\cite{2017arXiv170201105A} was recorded in three different buildings of the Stanford University and divided into six distinct areas, including 272 different scenes. During the recording, a 360° \textit{Matterport}\footnote{\href{https://matterport.com/de/cameras/360-cameras}{https://matterport.com/de/cameras/360-cameras}} camera was used. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}. The scenes include a complete unstructured point cloud and a list of annotated files representings emantically different objects that can be found therein. Within the dataset, the point cloud sizes, i.e., number of points, range from ${\sim}8\cdot10^4$ to ${\sim}9\cdot10^6$, with an average of ${\sim}1\cdot10^6$.
+2D-3D-S~\cite{https://doi.org/10.48550/arxiv.1702.01105} was recorded in three different buildings of the Stanford University and divided into six distinct areas, including 272 different scenes. During the recording, a 360° \textit{Matterport}\footnote{\href{https://matterport.com/de/cameras/360-cameras}{https://matterport.com/de/cameras/360-cameras}} camera was used. A detailed statistic of the included scene types can be found in Table~\ref{tab:stanfordStats}. The scenes include a complete unstructured point cloud and a list of annotated files representings emantically different objects that can be found therein. Within the dataset, the point cloud sizes, i.e., number of points, range from ${\sim}8\cdot10^4$ to ${\sim}9\cdot10^6$, with an average of ${\sim}1\cdot10^6$.
 
 \subsection{Leica}
 \label{subsec:bg-Leica}

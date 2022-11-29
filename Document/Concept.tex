@@ -126,7 +126,7 @@ minimal effort as well.
             \textbf{Plane Detection Algorithm}                      & \textbf{Section}            & \textbf{Input Data} & \textbf{Plane Format} & \textbf{Hardware} & \textbf{Available} \\
             \midrule
             RSPD \cite{Araújo_Oliveira_2020}                        & \ref{subsec:bg-rspd}        & UPC                 & 3D-IN, $(n,d)$        & CPU               & Y                  \\
-            OPS \cite{Sun_Mordohai_2019}                            & \ref{subsec:bg-ops}         & UPC                 & 3D-IN                 & CPU               & Y                  \\
+            OPS \cite{https://doi.org/10.48550/arxiv.1905.02553}                            & \ref{subsec:bg-ops}         & UPC                 & 3D-IN                 & CPU               & Y                  \\
             3DKHT \cite{LimbergerOliveira2015HT3D}                  & \ref{subsec:bg-3dkht}       & UPC                 & 3D-IN                 & CPU               & Y                  \\
             OBRG \cite{Vo_Truong-Hong_Laefer_Bertolotto_2015}       & \ref{subsec:bg-obrg}        & UPC                 & 3D-IN                 & CPU               & Y                  \\
             PEAC \cite{Feng_Taguchi_Kamat_2014}                     & \ref{subsec:bg-peac}        & OPC                 & 2D-IN                 & CPU               & Y                  \\
@@ -269,7 +269,7 @@ datasets are not recorded manually.
     \end{subfigure}
     \hspace{\fill}
     \caption[Synthetic and Realistic Dataset Comparison]{A synthetic dataset (a) and a real office scene (b).
-        The former is from the \textit{SegComp}~\cite{article} dataset, and the latter is from the 2D-3D-S~\cite{2017arXiv170201105A} dataset.
+        The former is from the \textit{SegComp}~\cite{article} dataset, and the latter is from the 2D-3D-S~\cite{https://doi.org/10.48550/arxiv.1702.01105} dataset.
         Note that we cropped the office point cloud for visualization purposes.}
     \label{fig:ds_realism}
 \end{figure}
@@ -316,14 +316,14 @@ Furthermore, we are not aware of a ground truth for the ARCO dataset.
             \toprule
             \textbf{Dataset}                                                                                                                                                             & \textbf{Section}         & \textbf{Scene Format} & \textbf{Real} & \textbf{Indoor} & \textbf{GT} \\
             \midrule
-            2D-3D-S      \cite{2017arXiv170201105A}                                                                                                                                      & \ref{subsec:bg-stanford} & UPC                   & Y             & Y               & classes     \\
+            2D-3D-S      \cite{https://doi.org/10.48550/arxiv.1702.01105}                                                                                                                                      & \ref{subsec:bg-stanford} & UPC                   & Y             & Y               & classes     \\
             Leica\tablefootnote{\href{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}{https://shop.leica-geosystems.com/de/leica-blk/blk360/dataset-downloads}} & \ref{subsec:bg-Leica}    & UPC                   & Y             & N               & planes      \\
             Kinect     \cite{Oehler_Stueckler_Welle_Schulz_Behnke_2011}                                                                                                                  & \ref{subsec:bg-Kinect}   & OPC                   & Y             & Y               & planes      \\
             SYNPEB      \cite{schaefer19icra}                                                                                                                                            & \ref{subsec:bg-SYNPEB}   & OPC                   & N             & /               & planes      \\
             ARCO       \cite{Hidalgo-Paniagua_Vega-Rodriguez_Pavón_Ferruz_2015}                                                                                                          & \ref{subsec:bg-ARCO}     & OPC                   & Y             & Y               & /           \\
             SegComp     \cite{article}                                                                                                                                                   & \ref{subsec:bg-segcomp}  & DI                    & N             & /               & planes      \\
             NYU V2      \cite{10.1007/978-3-642-33715-4_54}                                                                                                                              & \ref{subsec:bg-NYU}      & DI                    & Y             & Y               & classes     \\
-            ICL-NUIM    \cite{handa:etal:ICRA2014}                                                                                                                                       & \ref{subsec:bg-ICL}      & DI                    & Y             & Y               & trajectory  \\
+            ICL-NUIM    \cite{Handa_Whelan_McDonald_Davison_2014}                                                                                                                                       & \ref{subsec:bg-ICL}      & DI                    & Y             & Y               & trajectory  \\
             SUNRGB-D         \cite{7298655}                                                                                                                                              & \ref{subsec:bg-SUN}      & DI                    & Y             & Y               & classes     \\
             TUM         \cite{sturm12iros}                                                                                                                                               & \ref{subsec:bg-TUM}      & DI                    & Y             & Y               & trajectory  \\
             \midrule
@@ -340,14 +340,14 @@ Furthermore, since we give special focus to the real-world applicability of plan
 Additionally, we are especially interested in realistic $indoor$ environments, as motivated by Chapter~\ref{chap:Introduction}.
 Therefore, Leica ceases to be an option and we subsequently choose 2D-3D-S as the dataset for the evaluation.
 
-Nevertheless, we cannot use the ground truth included in 2D-3D-S because it represents the segmented scene at the level of objects~\cite[Section~4.1]{2017arXiv170201105A} instead of focusing on planes within the scene.
+Nevertheless, we cannot use the ground truth included in 2D-3D-S because it represents the segmented scene at the level of objects~\cite[Section~4.1]{https://doi.org/10.48550/arxiv.1702.01105} instead of focusing on planes within the scene.
 As a consequence thereof, we create a suitable ground truth of the 2D-3D-S dataset through manual segmentation.
 We provide details of this time-expensive process in Section~\ref{sec:gtseg}.
 
 
 
 Since the unorganized point clouds do not grow incrementally over time, 2D-3D-S does not inherit any temporal component.
-Moreover, \citeauthor{2017arXiv170201105A}~\cite{2017arXiv170201105A} recorded the dataset with a static 360° camera. Therefore, the dataset is not entirely realistic, though being recorded in a real environment.
+Moreover, \citeauthor{https://doi.org/10.48550/arxiv.1702.01105}~\cite{https://doi.org/10.48550/arxiv.1702.01105} recorded the dataset with a static 360° camera. Therefore, the dataset is not entirely realistic, though being recorded in a real environment.
 
 
 To our knowledge, no dataset meets the above criteria, is genuinely realistic, and includes a plane-focused ground truth.

@@ -22,9 +22,9 @@ Note that the subsections of RSPD and OPS are joined due to their similarities o
 
 \subsection{RSPD \& OPS}
 We implement RSPD\footnote{\href{https://github.com/abnerrjo/PlaneDetection}{https://github.com/abnerrjo/PlaneDetection}} and OPS\footnote{\href{https://github.com/victor-amblard/OrientedPointSampling}{https://github.com/victor-amblard/OrientedPointSampling}} using their respective open source implementations on GitHub.
-Note that, while the implementation of RSPD is provided by one of the authors, we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{Sun_Mordohai_2019}~\cite{Sun_Mordohai_2019}.
+Note that, while the implementation of RSPD is provided by one of the authors, we could not determine whether the user who uploaded his implementation of OPS is affiliated with \citeauthor{https://doi.org/10.48550/arxiv.1905.02553}~\cite{https://doi.org/10.48550/arxiv.1905.02553}.
 Both methods are implemented in C++ and depend on the C++ linear algebra library \textit{Eigen}\footnote{\href{https://eigen.tuxfamily.org/index.php}{https://eigen.tuxfamily.org/index.php}},
-and the C++ API of the Point-Cloud Library~\cite{Rusu_ICRA2011_PCL}, \textit{libpcl-dev}.
+and the C++ API of the Point-Cloud Library~\cite{5980567}, \textit{libpcl-dev}.
 
 \subsection{3D-KHT}
 
@@ -40,7 +40,7 @@ To our knowledge, no open-source implementation is available for the algorithm.
 We, therefore, use our own implementation, which can be found on our Github repository\footnote{\href{https://github.com/lupeterm/OBRG}{https://github.com/lupeterm/OBRG}}.
 
 We implement the algorithm using Python. We choose to write our own octree implementation for spatial subdivision of our point cloud, since
-the implementation of public libraries like \textit{open3d}~\cite{Zhou2018} are limited in terms of leaf node functionality.
+the implementation of public libraries like \textit{open3d}~\cite{https://doi.org/10.48550/arxiv.1801.09847} are limited in terms of leaf node functionality.
 The subdivision is followed by calculating the saliency features using \textit{open3d}'s normal estimation function.
 We follow the pseudocode as stated in \cite[Algorithm~1]{Vo_Truong-Hong_Laefer_Bertolotto_2015}. We modify the insertion into the set
 of regions by adding a containment check, to avoid redundancy of regions. By reducing the number of regions (incl. redundancies), we also
@@ -53,7 +53,7 @@ reduce the total calculation time.
 
 \section{2D-3D-S}
 \label{sec:gtseg}
-The 2D-3D-S dataset provides a ground truth in form of annotated point clouds corresponding to 13 object classes~\cite[Table~1]{2017arXiv170201105A}. Since these annotated objects are not
+The 2D-3D-S dataset provides a ground truth in form of annotated point clouds corresponding to 13 object classes~\cite[Table~1]{https://doi.org/10.48550/arxiv.1702.01105}. Since these annotated objects are not
 always planar, we cannot use them for the evaluation of plane detection algorithms. Thus, we create a ground truth that focuses on planar structures.
 
 We use the open-source 3D point cloud and mesh processing software \textit{CloudCompare}\footnote{\href{https://www.danielgm.net/cc/}{https://www.danielgm.net/cc/}} to visualize a scene and manually segment included planes.
@@ -87,7 +87,7 @@ would result in a total of 36-45 hours. To reduce the time spent in segmentation
 and omit scenes that show no noticeable difference compared to others. This analysis reduces the number of segmented scenes to slightly more than half
 of the total, thereby reducing the time to 18-23 hours.
 
-The results of the manual segmentation process are documented in Table~\ref{tab:stanfordStats}, which is inspired by~\cite[Table~7]{2017arXiv170201105A}. Like the original, it shows the amounts of scenes per scene type in each area.
+The results of the manual segmentation process are documented in Table~\ref{tab:stanfordStats}, which is inspired by~\cite[Table~7]{https://doi.org/10.48550/arxiv.1702.01105}. Like the original, it shows the amounts of scenes per scene type in each area.
 We extended the table with a column dedicated to the planes included in each scene type. According to the table, a total amount of 3410 planes
 are included in the dataset.
 
