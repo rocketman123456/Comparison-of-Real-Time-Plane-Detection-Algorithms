@@ -33,19 +33,18 @@ Integrating a plane detection algorithm into an application would require furthe
 \paragraph{Manual Segmentation}
 The subjective nature of the manual segmentation process described in Section~\ref{sec:gtseg} influences the evaluation. While this does not seem to pose a dramatic effect on the 2D-3D-S results, the segmentation can lead to errors due to the level of noise in the FIN dataset. For instance, with increasing "thickness" of planes, the number of possible orientations of a detected plane also increases (see Figure~\ref{fig:poss-planes}). The red segment in the figure represents the ground truth we would choose to represent the plane as it is more aligned to the true wall, and has a lower ratio of noise compared to the other options in green and blue. If an algorithm detected a plane in one of the four other variants, both the voxel overlap and the accuracy would decrease, even if both planes correspond.
 
-\begin{figure}[]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/possible_planes.png}
-    \caption[Plane Orientation Ambiguity]{Possible Plane Orientations. Shown is the top view of a wall with a width of ${\sim}1$m from the \textit{conference room} scene of the FIN dataset is shown on the left. The colors indicate different possible plane orientations.}
-    \label{fig:poss-planes}
-\end{figure}
-
-
+\clearpage
 \paragraph{Used Technology}
 A small caveat to note is that the FIN dataset is recorded using a specific combination of technology, namely Intel's T265, D455, and the corresponding software including RTAB-MAP.
 Since these sensors were chosen as representatives for consumer off-the-shelf hardware, the results point out the general applicability in a realistic environment. However, the results may vary when employing different technology. 
 
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/possible_planes.png}
+    \caption[Plane Orientation Ambiguity]{Possible Plane Orientations. Shown is the top view of a wall with a width of ${\sim}1$m from the \textit{conference room} scene of the FIN dataset is shown on the left. The colors indicate different possible plane orientations.}
+    \label{fig:poss-planes}
+\end{figure}
 
 \section{Future Work}
 In this section, we elaborate on topics of further research.
@@ -54,8 +53,9 @@ In this section, we elaborate on topics of further research.
 \paragraph{Normal Estimation}
 We see the most potential for improvement in the pre-processing steps of the algorithms. In our experience, the extent of the normal vector estimation influences the pre-processing time. For instance, RSPD estimates the normal vectors of the entire point cloud, whereas OPS only estimates a certain percentage of the point cloud. The differences in pre-processing times (see Tables~\ref{tab:res-3d2ds-total} and~\ref{tab:res-fin-total}) raise the question of what the extents of \textit{real-time} applicability are if the normal vectors of the point cloud are known before the plane detection step in the application (compare Figure~\ref{fig:concept}). For instance, RTAB-MAP can estimate and export the normal vectors of the point cloud by modifying its odometry approach. Therefore, RSPD, OPS, and OBRG would not need to estimate the normal vectors, reducing the pre-processing time greatly. However, this would require further research.
 
+\clearpage
 \paragraph{Cloud Size Reduction}
-When recording environments similar to the hallway or the $auditorium$ scene, it is often the case that the spatial dimension of the point cloud grows beyond the distance limitations of the sensor, e.g., the recorded hallway spans longer than the sensor can "see". It is, therefore, not necessary to re-calculate the planes in areas past the sensor's reach. We are interested in a plane detection method that restricts the plane detection to a certain radius around the sensor's position and a subsequent merging of old and new planes. Additionally, this could be the basis for a plane-based SLAM approach.
+When recording environments similar to the \textit{hallway} or the \textit{auditorium} scene, it is often the case that the spatial dimension of the point cloud grows beyond the distance limitations of the sensor, e.g., the recorded hallway spans longer than the sensor can "see". It is, therefore, not necessary to re-calculate the planes in areas past the sensor's reach. We are interested in a plane detection method that restricts the plane detection to a certain radius around the sensor's position and a subsequent merging of old and new planes. Additionally, this could be the basis for a plane-based SLAM approach.
 
 \paragraph{Outdoor Environment}
 In Chapter~\ref{chap:Introduction}, we limited ourselves to evaluating plane detection algorithms in indoor environments. Therefore, we cannot make any statements about the applicability in outdoor environments. Since we compiled results in a realistic indoor environment, it would be interesting to evaluate the generalization of these algorithms. As discussed throughout this thesis, a comparison needs uniformity. Since we created an indoor dataset, selected datasets, and provided all necessary metrics and definitions, only an appropriate dataset is needed.

@@ -286,7 +286,6 @@ In general, the ground truth (GT) of currently popular datasets can fall into on
     \item trajectory.
 \end{itemize}
 In some datasets, the ground truth represents a set of detectable planes.
-The specific
 Therein, the format of the planes depends on the plane format of the algorithm (see Paragraph~\ref{subsec:planeformat}).
 
 Often, datasets from the field of semantic segmenation or object detection are used for the evaluation of plane detection algorithms.
@@ -393,13 +392,13 @@ Lastly, since this is a novel dataset, we need to create a ground truth. The det
         \caption[Hallway Scene]{}
         \label{fig:finhw}
     \end{subfigure}
-    \caption[FIN Dataset]{The recorded point clouds for each scene type: (a) $auditorium$, (b) \textit{conference room}, (c) \textit{office} and (d) $hallway$.
+    \caption[FIN Dataset]{The recorded point clouds for each scene type: (a) \textit{auditorium}, (b) \textit{conference room}, (c) \textit{office} and (d) \textit{hallway}.
         The ceilings have been manually removed for visualization purposes but remain in the dataset for the experiments.
         Full-size figures can be found in Appendix~\ref{app:fin-scenes}}
     \label{fig:fin}
 \end{figure}
 
-
+\clearpage
 \section{Definition Real-Time}\label{sec:realtime}
 Finally, as mentioned in the beginning of this Chapter, we must define the meaning of \textit{real-time} to determine the \textit{real-time} applicability of a plane detection algorithm.
 
@@ -433,5 +432,5 @@ In this work, we aim to evaluate the quality of \textit{real-time} plane detecti
 At the beginning of this chapter, we state that three aspects are required for this evaluation: A set of plane detection algorithms, useful datasets, and a definition
 of \textit{real-time}.
 The selection of the best plane detection algorithm, however, is non-trivial. After defining meaningful criteria for objective judgement, we
-select appropriate plane detection algorithms. Moreover, we select realistic datasets, one of which is a novel creation, and present two definitions of \textit{real-time} namely $RT_{tot}$ and $RT_{calc}$.
+select appropriate plane detection algorithms. Moreover, we select realistic datasets, one of which is a novel creation, and present two definitions of \textit{real-time}, namely $RT_{tot}$ and $RT_{calc}$.
 \end{document}
