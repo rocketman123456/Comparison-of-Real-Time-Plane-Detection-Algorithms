@@ -120,12 +120,16 @@ if __name__ == '__main__':
     # cloud_path = sys.argv[1]
     # gt_path = sys.argv[2]
     # algo_path = sys.argv[3]
+    cloud_path = "Stanford3dDataset_v1.2_Aligned_Version/TEST/hallway_7/hallway_7.txt"
+    gt_path = "Stanford3dDataset_v1.2_Aligned_Version/TEST/hallway_7/GT"
+    algo_path = "Stanford3dDataset_v1.2_Aligned_Version/TEST/hallway_7/RSPyD"
+
     # cloud_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/pointclouds/boiler_room.pcl"
     # gt_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ground_truth.geo"
     # algo_path = "/home/pedda/Documents/uni/BA/clones/datasets/RSPD/detections/boiler_room_ransac_schnabel.geo"
-    cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/auditorium_2.txt"
-    gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/GT"
-    algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/RSPD/auditorium_2.geo"
+    # cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/auditorium_2.txt"
+    # gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/GT"
+    # algo_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_2/auditorium_2/RSPD/auditorium_2.geo"
     # cloud_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/FIN-Dataset/auditorium/1664003770.004746437.txt"
     # gt_path = "/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/FIN-Dataset/auditorium/GT"
     # algo_path = "/home/pedda/Documents/uni/BA/clones/PlaneDetection/CommandLineOption/test/"

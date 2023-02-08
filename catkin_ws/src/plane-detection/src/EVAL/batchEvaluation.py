@@ -1,6 +1,5 @@
 from logging import root
 import argparse
-from socketserver import ForkingTCPServer
 import matplotlib.pyplot as plt
 import os
 from typing import Dict, List
@@ -11,14 +10,19 @@ import numpy as np
 from fileio import create_pcd
 import seaborn as sb
 import sys
+from tqdm import tqdm
 sys.path.append('/home/pedda/Documents/coding/OBRG/')
+sys.path.append('/home/pedda/Documents/coding/RSPyD/')
+import rspyd
 import obrg
+from time import time
+import open3d as o3d
 plt.rcParams.update({'font.size': 19})
 
 # globals
-ALGOS = ['RSPD', 'OPS', '3DKHT', 'OBRG']
-ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': '', 'OBRG': '', 'Application':''}
-ALGO_IN = {'RSPD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt', 'OBRG': '.txt', 'Application':'.txt'}
+ALGOS = ['RSPD', 'OPS', '3DKHT', 'OBRG', 'RSPyD']
+ALGO_ext = {'RSPD': '.geo', 'OPS': '', '3DKHT': '','RSPyD': '', 'OBRG': '', 'Application':''}
+ALGO_IN = {'RSPD': '.txt','RSPyD': '.txt', 'OPS': '.pcd', '3DKHT': '.txt', 'OBRG': '.txt', 'Application':'.txt'}
 
 
 def get_file_sizes_time_pairs(root_folder: str):
@@ -394,6 +398,34 @@ def run_specific(dataset_path, binaries_path, algos=ALGOS):
         # run PDA on dataset
         if algo == 'OBRG':
             obrg.calculate(cloud_file, dataset_path)
+        elif algo == 'RSPyD':
+            points = np.loadtxt(cloud_file, usecols=(0, 1, 2), delimiter=' ')
+            point_cloud = o3d.geometry.PointCloud()
+            point_cloud.points = o3d.utility.Vector3dVector(points)
+            point_cloud = point_cloud.voxel_down_sample(voxel_size=0.05)
+            point_cloud.estimate_normals(
+                search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+            t = time()
+            kd_tree = o3d.geometry.KDTreeFlann(point_cloud)
+            connectivity = rspyd.ConGraph(len(point_cloud.points))
+            for i in tqdm(range(len(point_cloud.points))):
+                if len(neighbors := connectivity.get_neighbors(i)) >= 30:
+                    connectivity.add_node(i, neighbors)
+                else:
+                    [_, neighbors, _] = kd_tree.search_knn_vector_3d(
+                        point_cloud.points[i], 31)
+                    connectivity.add_node(i, neighbors[1:])
+
+            detector = rspyd.Detector(point_cloud, connectivity)
+            detector.config(0.5, 0.258819, 0.75)
+            t1 = time()
+            pre = t1-t
+            planes = detector.detect()
+            t2 = time()-t1
+            np.savetxt(os.path.join(dataset_path, algo,f'{dataset}-times.txt'),[pre,t2, -1], delimiter=' ')
+            for i, p in enumerate(planes):
+                a = np.take(np.asarray(point_cloud.points), p.inliers, axis=0)
+                np.savetxt(os.path.join(dataset_path, algo,f'plane-{i}.txt'), a, delimiter=' ')
         else:
             print(f'Calling {algo} on {dataset}!')
             command = f'{binary} {cloud_file} {result_file}'
@@ -451,11 +483,11 @@ if __name__ == '__main__':
     algorithm_binaries = args.algo_binaries
     # run_specific("/home/pedda/Documents/uni/BA/Thesis/catkin_ws/src/plane-detection/src/EVAL/Stanford3dDataset_v1.2_Aligned_Version/Area_5/office_3",algorithm_binaries, ['OPS'])
     # for i in range(2,3):
-        # batch_detect(os.path.join(rootFolder, f'Area_{i}'), algorithm_binaries, ['OPS'])
-        # batch_evaluate(os.path.join(rootFolder, f'Area_{i}'), ['OPS'])
-    collect_results(os.path.join(rootFolder, f'Area_{5}'), ['OPS'])
+    # batch_detect(os.path.join(rootFolder, 'Area_3'), algorithm_binaries, ['RSPyD'])
+    # batch_evaluate(os.path.join(rootFolder, f'Area_{3}'), ['RSPyD'])
+    # collect_results(os.path.join(rootFolder, f'Area_{3}'), ['RSPyD'])
     combine_area_results('Stanford3dDataset_v1.2_Aligned_Version')
-    # get_df(os.path.join(rootFolder,"results"))
+    get_df(os.path.join(rootFolder,"results"))
     # get_df2(os.path.join(rootFolder,"results"))
     # vis_total_results('Stanford3dDataset_v1.2_Aligned_Version')
     # get_file_sizes_time_pairs(rootFolder)

@@ -155,7 +155,7 @@ class IOHelper:
             print(
                 f'no time results found for {self.method} and {self.dataset}!')
             return 0, 0, 0
-        return np.loadtxt(path, skiprows=1, dtype=float)
+        return np.loadtxt(path, dtype=float).reshape(3)
 
     def read_cloud(self, path=None) -> np.ndarray:
         print('Reading Point cloud')

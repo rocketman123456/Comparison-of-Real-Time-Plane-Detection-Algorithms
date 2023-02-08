@@ -4,41 +4,39 @@
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {2.1}{\ignorespaces Common Input Types}}{7}{table.caption.6}%
+\contentsline {table}{\numberline {2.1}{\ignorespaces Common Input Types}}{6}{table.caption.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {2.2}{\ignorespaces Intel RealSense T265 \& D455 Specification}}{9}{table.caption.7}%
-\defcounter {refsection}{0}\relax 
-\addvspace {10\p@ }
-\defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {3.1}{\ignorespaces State-of-The-Art Plane Detection Algorithms}}{36}{table.caption.27}%
-\defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {3.2}{\ignorespaces Pre-processing \& Post-processing Phases of Selected Algorithms}}{37}{table.caption.29}%
-\defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {3.3}{\ignorespaces State-of-The-Art Datasets}}{40}{table.caption.35}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Intel RealSense T265 \& D455 Specification}}{8}{table.caption.7}%
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {4.1}{\ignorespaces 2S-3D-S Dataset Statistics}}{47}{table.caption.40}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces State-of-The-Art Plane Detection Algorithms}}{32}{table.caption.25}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {4.2}{\ignorespaces FIN Dataset Statistics}}{48}{table.caption.41}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Pre-processing \& Post-processing Phases of Selected Algorithms}}{33}{table.caption.27}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {3.3}{\ignorespaces State-of-The-Art Datasets}}{36}{table.caption.33}%
+\defcounter {refsection}{0}\relax 
+\addvspace {10\p@ }
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {4.1}{\ignorespaces 2S-3D-S Dataset Statistics}}{43}{table.caption.38}%
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {4.2}{\ignorespaces FIN Dataset Statistics}}{44}{table.caption.39}%
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.1}{\ignorespaces RSPD Parameterization}}{52}{table.caption.45}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces RSPD Parameterization}}{47}{table.caption.43}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.2}{\ignorespaces OPS Parameterization}}{53}{table.caption.48}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces OPS Parameterization}}{48}{table.caption.46}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.3}{\ignorespaces 3D-KHT Parameterization}}{53}{table.caption.51}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces 3D-KHT Parameterization}}{48}{table.caption.49}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.4}{\ignorespaces OBRG Parameterization}}{54}{table.caption.54}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces OBRG Parameterization}}{49}{table.caption.52}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.5}{\ignorespaces Average 2D-3D-S Results}}{55}{table.caption.57}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Average 2D-3D-S Results}}{50}{table.caption.55}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.6}{\ignorespaces Average FIN Results}}{59}{table.caption.63}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Average FIN Results}}{54}{table.caption.61}%
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {5.7}{\ignorespaces Real-Time Applicabilities of Selected Algorithms}}{63}{table.caption.69}%
-\defcounter {refsection}{0}\relax 
-\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.7}{\ignorespaces Real-Time Applicabilities of Selected Algorithms}}{58}{table.caption.67}%
 \defcounter {refsection}{0}\relax 
 \addvspace {10\p@ }
 \defcounter {refsection}{0}\relax 

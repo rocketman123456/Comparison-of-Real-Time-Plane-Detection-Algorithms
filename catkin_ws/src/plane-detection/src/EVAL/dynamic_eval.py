@@ -13,11 +13,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 sys.path.append('/home/pedda/Documents/coding/OBRG/')
+sys.path.append('/home/pedda/Documents/coding/RSPyD/')
 import obrg
+import rspyd
 import matplotlib
-matplotlib.rcParams.update({'font.size': 40, 'figure.subplot.bottom': 0.06,'figure.subplot.top': 0.95, 'figure.subplot.right': 0.88})
+matplotlib.rcParams.update({'font.size': 40, 'figure.subplot.bottom': 0.06,'figure.subplot.top': 0.954, 'figure.subplot.right': 0.922,'figure.subplot.hspace':0.359,'figure.subplot.wspace':0.225, 'figure.subplot.left': 0.106})
 
-
+F_SIZE = 40
 def dyn_eval(path_to_subclouds: str, binaries_path: str):
     subcloud_paths: List[str] = [file for file in os.listdir(
         path_to_subclouds) if file.endswith('.pcd')]
@@ -137,6 +139,28 @@ def dynamic_detection(dataset_path: str, binaries_path: str, algos=ALGOS):
             # run PDA on dataset
             if algo == 'OBRG':
                 obrg.calculate(cloud_file, dataset_path)
+            elif algo == 'RSPyD':
+                points = np.loadtxt(cloud_file, usecols=(0, 1, 2), delimiter=' ')
+                point_cloud = o3d.geometry.PointCloud()
+                point_cloud.points = o3d.utility.Vector3dVector(points)
+                # point_cloud = point_cloud.voxel_down_sample(voxel_size=0.08)
+                point_cloud.estimate_normals(
+                    search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=rspyd.NUM_NEIGHBORS))
+                kd_tree = o3d.geometry.KDTreeFlann(point_cloud)
+                connectivity = rspyd.ConGraph(len(point_cloud.points))
+                for i, point in enumerate(point_cloud.points):
+                    if len(neighbors := connectivity.get_neighbors(i)) >= rspyd.NUM_NEIGHBORS:
+                        connectivity.add_node(i, neighbors)
+                    else:
+                        [_, neighbors, _] = kd_tree.search_knn_vector_3d(
+                            point_cloud.points[i], rspyd.NUM_NEIGHBORS+1)
+                        connectivity.add_node(i, neighbors[1:])
+                        
+                detector = rspyd.Detector(point_cloud, connectivity)
+                detector.config(0.5, 0.258819, 0.75)
+                planes = detector.detect()
+                for i, p in enumerate(planes):
+                    np.savetxt(os.path.join(algo_path,f'plane-{i}.txt'), p.inlier, delimiter=' ')
             else:
                 print(f'Calling {algo} on {cloud_file}!')
                 command = f'{binary} {cloud_file} {result_file}'
@@ -205,7 +229,7 @@ def whatevs(path: str, algos=ALGOS):
         # sizes.append([os.path.getsize(os.path.join(path,cfile))/1000000, int(cfile[6:10])])
         with open(os.path.join(path,cfile)) as file:
             sizes.append([len(file.readlines()), int(cfile[6:10])])
-    fig = plt.figure(figsize=[45,60])
+    fig = plt.figure(figsize=[140,66])
     sizes.sort(key= lambda x: x[1])
     sizes = np.array(sizes)
     print(sizes[-1])
@@ -225,8 +249,9 @@ def whatevs(path: str, algos=ALGOS):
                 data.append([time,pr,po, int(file[12:16])])
             else:
                 data.append([time,pr,po, int(file[6:10])])
-        ax = fig.add_subplot(len(algos),1, i+1)
-        ax.set_title(algo, loc='left',y=0.9, x=0.01, pad=-16, fontdict={'size':80})
+        # ax = fig.add_subplot(len(algos),1, i+1)
+        ax = fig.add_subplot(2,2, i+1)
+        ax.set_title(algo, loc='left',y=0.9, x=0.01, pad=-16, fontdict={'size':F_SIZE})
         ax2 = ax.twinx()
         times = np.array(list(sorted(times)))
         data.sort(key = lambda x : x[3])
@@ -239,13 +264,13 @@ def whatevs(path: str, algos=ALGOS):
             A[algo][j] = data[j]
         ax2.plot(frames2, sizes[:,0],'--',color='purple')
         ax.grid(True)
-        if i != 3:
-            ax.set_xticklabels([])
-            ax2.set_xticklabels([])
+        # if i != 3:
+        #     ax.set_xticklabels([])
+        #     ax2.set_xticklabels([])
         ax.set_yscale('log')
-        ax.plot(frames, data[:,1],marker='.',linewidth=3, label = "$t_{pre}$")
-        ax.plot(frames, data[:,0],marker='.',linewidth=3, label="$t_{calc}$")
-        ax.plot(frames, data[:,2],marker='.',linewidth=3, label ="$t_{post}$")
+        ax.plot(frames, data[:,1],marker='.',linewidth=2, label = "$t_{pre}$")
+        ax.plot(frames, data[:,0],marker='.',linewidth=2, label="$t_{calc}$")
+        ax.plot(frames, data[:,2],marker='.',linewidth=2, label ="$t_{post}$")
         if algo not in ['RSPD','3DKHT']:
             ax.plot(frames, np.sum(data[:,:3], axis=1),
                     marker='.',  label='$t_{tot}$')
@@ -263,10 +288,10 @@ def whatevs(path: str, algos=ALGOS):
     
         ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
         # ax2.legend()
-    fig.text(0.045, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in seconds',
-         ha='center', va='center', rotation='vertical', fontdict={'size':80})
-    fig.text(0.99, 0.5, 'Number of Points', ha='center', va='center', rotation='vertical',fontdict={'size':80})
-    fig.text(0.5,0, 'Individual Time Frames', ha='center', va='bottom', rotation='horizontal',fontdict={'size':80})
+    fig.text(0.045, 0.5, '$t_{pre}, t_{calc}, t_{post}, t_{tot}$ in Sekunden',
+         ha='center', va='center', rotation='vertical', fontdict={'size':F_SIZE})
+    fig.text(0.99, 0.5, 'Anzahl an Punkten', ha='center', va='center', rotation='vertical',fontdict={'size':F_SIZE})
+    fig.text(0.5,0, 'Individuelle Zeitschritte', ha='center', va='bottom', rotation='horizontal',fontdict={'size':F_SIZE})
     box = fig.axes[0].get_position()
     # fig.axes[0].set_position([box.x0, box.y0 + box.height * 0.1,
     #                 box.width, box.height * 0.9])
@@ -275,23 +300,28 @@ def whatevs(path: str, algos=ALGOS):
     # fig.axes[0].legend(loc='center right', fancybox=True, shadow=True, ncol=5)
     lines_labels = [fig.axes[0].get_legend_handles_labels()]
     lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
-    fig.legend(lines, labels, loc='upper center', fancybox=True, shadow=True, ncol=5, prop={'size':70})
+    fig.legend(lines, labels, loc='center', fancybox=True, shadow=True, ncol=5, prop={'size':F_SIZE})
     maxlim = max([ax.get_ylim() for ax in fig.axes[::2]], key=lambda x: x[1])
     minlim = min([ax.get_ylim() for ax in fig.axes[::2] if ax.get_ylim()[0] > 0],key=lambda x: x[0])
     print(minlim, maxlim)    
     for i, ax in enumerate(fig.axes):
-        ax.tick_params(labelsize=60)
-        if i %2 == 0:
+        ax.tick_params(labelsize=20)
+
+        # if i %2 == 1:
+        if ax.get_title('left') in algos:
             ax.set_yscale('log')
             ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
             ax.set_yticks([0.01,1,10,round(maxlim[1])])
             ax.set_yticklabels([r'$\leq$0.01', "1","10",f'{round(maxlim[1])}'])
             ax.set_ylim(0.01,round(maxlim[1]))    
-        # else:
-            # ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
+        else:
+            ax.set_yticks([0, 1000, 10000, 100000,750000]) #round(max(max_calc, max_pre)*1.1)])
+            ax.set_yticklabels(['0','$1.000$','$10.000$','$100.000$','$750.000$'])
+            ax.set_yscale('log')
+            ax.yaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter())
     
-    plt.savefig('dynhallway.svg',format='svg')
-    # plt.show()
+    # plt.savefig('dynhallway.svg',format='svg')
+    plt.show()
     # plt.close()
     # return A
 
@@ -410,7 +440,8 @@ if __name__ == '__main__':
     last_cloud = args.last_cloud
     gt_path = f"{dataset}/GT"
     
-    # dynamic_detection(dataset, binaries, ['RSPD'])
+    dynamic_detection(dataset, binaries, ['RSPyD'])
+
     # # # os.rename(os.path.join(dataset,'Application'), os.path.join(dataset, '3DKHT'))
     # for algo in ['RSPD']:
     #     algo_path = os.path.join(dataset, algo)
@@ -434,5 +465,5 @@ if __name__ == '__main__':
     # dynamic_collection(dataset, ['RSPD'])
     # get_dyn_df(os.path.join(dataset, 'results'))
     # results_over_time(os.path.join(dataset,'results'), ['RSPD'])
-    whatevs(dataset)
+    # whatevs(dataset)
     # avg("FIN-Dataset")
